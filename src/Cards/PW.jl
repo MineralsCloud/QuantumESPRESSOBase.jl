@@ -13,8 +13,8 @@ module PW
 
 using Parameters: @with_kw
 
-using QuantumESPRESSO
-using QuantumESPRESSO.Cards
+using QuantumESPRESSOBase
+using QuantumESPRESSOBase.Cards
 
 export AtomicSpecies,
     AtomicSpeciesCard,

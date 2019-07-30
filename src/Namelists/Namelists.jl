@@ -16,7 +16,7 @@ using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
 using Parameters: type2dict
 
-using QuantumESPRESSO: InputEntry
+using QuantumESPRESSOBase: InputEntry
 
 export Namelist, to_dict, dropdefault
 

@@ -13,7 +13,7 @@ module PH
 
 using Parameters: @with_kw
 
-using QuantumESPRESSO.Namelists: Namelist
+using QuantumESPRESSOBase.Namelists: Namelist
 
 export INPUTPHNamelist
 

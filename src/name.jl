@@ -1,10 +1,10 @@
-using QuantumESPRESSO.Namelists
-using QuantumESPRESSO.Namelists.PW
-using QuantumESPRESSO.Namelists.PH
-using QuantumESPRESSO.Cards
-using QuantumESPRESSO.Cards.PW
-using QuantumESPRESSO.QuantumESPRESSOInput
-using QuantumESPRESSO.QuantumESPRESSOInput.PW
+using QuantumESPRESSOBase.Namelists
+using QuantumESPRESSOBase.Namelists.PW
+using QuantumESPRESSOBase.Namelists.PH
+using QuantumESPRESSOBase.Cards
+using QuantumESPRESSOBase.Cards.PW
+using QuantumESPRESSOBase.QuantumESPRESSOInput
+using QuantumESPRESSOBase.QuantumESPRESSOInput.PW
 
 export name
 

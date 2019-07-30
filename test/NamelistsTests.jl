@@ -9,9 +9,9 @@ module NamelistsTests
 using LinearAlgebra
 using Test
 
-using QuantumESPRESSO.Namelists.PW
-using QuantumESPRESSO.Cards.PW
-using QuantumESPRESSO.QuantumESPRESSOInput.PW
+using QuantumESPRESSOBase.Namelists.PW
+using QuantumESPRESSOBase.Cards.PW
+using QuantumESPRESSOBase.QuantumESPRESSOInput.PW
 
 as = AtomicSpeciesCard([AtomicSpecies("Fe", 55.845, "Fe.pseudopotential")])
 ap = AtomicPositionsCard(data=[AtomicPosition(atom="Fe", pos=[0, 0, 0])])

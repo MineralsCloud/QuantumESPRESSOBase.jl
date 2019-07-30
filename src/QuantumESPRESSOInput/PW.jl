@@ -14,11 +14,11 @@ module PW
 using IterTools: fieldvalues
 using Parameters: @with_kw
 
-using QuantumESPRESSO.Namelists
-using QuantumESPRESSO.Namelists.PW
-using QuantumESPRESSO.Cards
-using QuantumESPRESSO.Cards.PW
-using QuantumESPRESSO.QuantumESPRESSOInput
+using QuantumESPRESSOBase.Namelists
+using QuantumESPRESSOBase.Namelists.PW
+using QuantumESPRESSOBase.Cards
+using QuantumESPRESSOBase.Cards.PW
+using QuantumESPRESSOBase.QuantumESPRESSOInput
 
 export PWInput,
     namelists,

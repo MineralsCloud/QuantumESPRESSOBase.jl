@@ -13,7 +13,7 @@ module Cards
 
 using Parameters
 
-using QuantumESPRESSO: InputEntry
+using QuantumESPRESSOBase: InputEntry
 
 export Card, option, allowed_options
 
