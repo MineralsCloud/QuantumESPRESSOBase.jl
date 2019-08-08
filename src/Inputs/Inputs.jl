@@ -11,9 +11,9 @@ julia>
 """
 module Inputs
 
-export Input
+export AbstractInput
 
-abstract type Input end
+abstract type AbstractInput end
 
 include("PW.jl")
 
