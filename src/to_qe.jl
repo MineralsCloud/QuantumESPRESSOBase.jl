@@ -38,7 +38,11 @@ function to_qe(dict::AbstractDict; indent::AbstractString = "    ")::String
     return content
 end
 function to_qe(nml::Namelist; indent::AbstractString = "    ")::String
-    return "&$(name(typeof(nml)))\n" * to_qe(to_dict(nml); indent = indent) * "/\n"
+    namelist_name = (uppercase ∘ string ∘ name ∘ typeof)(nml)
+    content = """&$(namelist_name)
+    $(to_qe(dropdefault(nml); indent = indent))
+    /
+    """
 end
 function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
     return join(map(string, fieldvalues(data)), sep)
@@ -92,9 +96,7 @@ function to_qe(input::PWInput; indent::AbstractString = "    ", sep::AbstractStr
     else
         str = ""
         for namelist in namelists(input)
-            str *= "&" * uppercase(string(name(typeof(namelist)))) * "\n"
-            str *= to_qe(dropdefault(namelist))
-            str *= "/\n"
+            str *= to_qe(namelist)
         end
         for card in cards(input)
             str *= to_qe(card)
