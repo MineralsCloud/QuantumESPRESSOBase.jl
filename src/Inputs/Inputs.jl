@@ -1,5 +1,5 @@
 """
-# module QuantumESPRESSOInput
+# module Inputs
 
 
 
@@ -9,7 +9,7 @@
 julia>
 ```
 """
-module QuantumESPRESSOInput
+module Inputs
 
 export Input
 
