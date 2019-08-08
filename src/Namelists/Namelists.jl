@@ -49,7 +49,7 @@ function Base.dump(path::AbstractPath, nml::Namelist)
             @warn "Currently not supported!"
         else
             error("Unknown extension type given!")
-        end # if-elseif-else
+        end
     end
 end # function Base.dump
 
