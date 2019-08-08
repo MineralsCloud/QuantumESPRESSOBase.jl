@@ -15,10 +15,10 @@ using QuantumESPRESSOBase.QuantumESPRESSOInput.PW
 as = AtomicSpeciesCard([AtomicSpecies("Fe", 55.845, "Fe.pseudopotential")])
 ap = AtomicPositionsCard(data=[AtomicPosition(atom="Fe", pos=[0, 0, 0])])
 cell = CellParametersCard(data=ones(3, 3))
-k = KPointsCard(option="gamma", data=[GammaPoint()])
+k = KPointsCard(option="automatic", data=[GammaPoint()])
 
-pw = PWInput(system=SystemNamelist(celldm=[1]), atomicspecies=as, atomicpositions=ap,
-    kpoints=k, cellparameters=cell
+pw = PWInput(system=SystemNamelist(celldm=[1]), atomic_species=as, atomic_positions=ap,
+    k_points=k, cell_parameters=cell
 )
 
 end
