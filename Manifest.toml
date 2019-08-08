@@ -3,11 +3,23 @@
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
+[[CSTParser]]
+deps = ["Tokenize"]
+git-tree-sha1 = "c69698c3d4a7255bc1b4bc2afc09f59db910243b"
+uuid = "00ebfdb7-1f24-5e51-bd34-a7502290713f"
+version = "0.6.2"
+
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
 git-tree-sha1 = "84aa74986c5b9b898b0d1acaf3258741ee64754f"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
 version = "2.1.0"
+
+[[DataStructures]]
+deps = ["InteractiveUtils", "OrderedCollections"]
+git-tree-sha1 = "0809951a1774dc724da22d26e4289bbaab77809a"
+uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+version = "0.17.0"
 
 [[Dates]]
 deps = ["Printf"]
@@ -22,10 +34,10 @@ deps = ["Random", "Serialization", "Sockets"]
 uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[FilePaths]]
-deps = ["Compat", "FilePathsBase", "Reexport", "URIParser"]
-git-tree-sha1 = "9819e84a360a6254d86c47827ad16f6ada6e39f9"
+deps = ["FilePathsBase", "MacroTools", "Reexport", "URIParser"]
+git-tree-sha1 = "191796576b7f69cfe66d63b3d66a2741783204eb"
 uuid = "8fc22ac5-c921-52a6-82fd-178b2807b824"
-version = "0.7.0"
+version = "0.8.0"
 
 [[FilePathsBase]]
 deps = ["Dates", "LinearAlgebra", "Printf", "Test", "UUIDs"]
@@ -35,7 +47,7 @@ version = "0.6.0"
 
 [[Fortran90Namelists]]
 deps = ["Compat", "IterTools", "Parameters"]
-git-tree-sha1 = "2b21bc9b7b8f457d7a5b9ff88169e2e8f0736c67"
+git-tree-sha1 = "5b4cf3e5ba15c9fb676dc36ccb953f3251a0d529"
 repo-rev = "develop"
 repo-url = "https://github.com/singularitti/Fortran90Namelists.jl.git"
 uuid = "8fb689aa-71ff-4044-8071-0cffc910b57d"
@@ -68,6 +80,12 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
+
+[[MacroTools]]
+deps = ["CSTParser", "Compat", "DataStructures", "Test", "Tokenize"]
+git-tree-sha1 = "d6e9dedb8c92c3465575442da456aec15a89ff76"
+uuid = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
+version = "0.5.1"
 
 [[Markdown]]
 deps = ["Base64"]
@@ -140,6 +158,11 @@ uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 [[Test]]
 deps = ["Distributed", "InteractiveUtils", "Logging", "Random"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[[Tokenize]]
+git-tree-sha1 = "c8a8b00ae44a94950814ff77850470711a360225"
+uuid = "0796e94c-ce3b-5d07-9a54-7f471281c624"
+version = "0.5.5"
 
 [[URIParser]]
 deps = ["Test", "Unicode"]
