@@ -11,6 +11,9 @@ julia>
 """
 module Namelists
 
+# ============================================================================ #
+#                               Import and export                              #
+# ============================================================================ #
 using FilePaths: AbstractPath, extension, exists
 using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
@@ -19,12 +22,14 @@ using Parameters: type2dict
 using QuantumESPRESSOBase: InputEntry
 
 export Namelist, to_dict, dropdefault
+# ============================================================================ #
+
 
 abstract type Namelist <: InputEntry end
 
 function to_dict(nml::Namelist)::Dict{Symbol,Any}
     return type2dict(nml)
-end # function to_dict
+end
 
 function dropdefault(nml::Namelist)
     default = typeof(nml)()
@@ -48,7 +53,12 @@ function Base.dump(path::AbstractPath, nml::Namelist)
     end
 end # function Base.dump
 
+
+# ============================================================================ #
+#                                    Include                                   #
+# ============================================================================ #
 include("PW.jl")
 include("PH.jl")
+# ============================================================================ #
 
 end
