@@ -81,6 +81,12 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
+[[MLStyle]]
+deps = ["Statistics", "Test"]
+git-tree-sha1 = "12d2f421dcff9c12b2aebcc25759f0cdca16a16b"
+uuid = "d8e11817-5142-5d16-987a-aa16d5891078"
+version = "0.3.0"
+
 [[MacroTools]]
 deps = ["CSTParser", "Compat", "DataStructures", "Test", "Tokenize"]
 git-tree-sha1 = "d6e9dedb8c92c3465575442da456aec15a89ff76"
