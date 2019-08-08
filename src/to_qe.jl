@@ -5,8 +5,8 @@ using QuantumESPRESSOBase.Namelists
 using QuantumESPRESSOBase.Namelists.PW
 using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PW
-using QuantumESPRESSOBase.QuantumESPRESSOInput
-using QuantumESPRESSOBase.QuantumESPRESSOInput.PW
+using QuantumESPRESSOBase.Inputs
+using QuantumESPRESSOBase.Inputs.PW
 
 export to_qe
 

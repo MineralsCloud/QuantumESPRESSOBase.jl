@@ -1,6 +1,6 @@
 using FilePaths
 
-using QuantumESPRESSOBase.QuantumESPRESSOInput.PW
+using QuantumESPRESSOBase.Inputs.PW
 
 function Base.write(io::IO, pw::PWInput, debug::Bool = true)
     write(io, to_qe(pw, debug = debug))
