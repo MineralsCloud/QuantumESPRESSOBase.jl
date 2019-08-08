@@ -18,13 +18,13 @@ using QuantumESPRESSOBase.Namelists
 using QuantumESPRESSOBase.Namelists.PW
 using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PW
-using QuantumESPRESSOBase.QuantumESPRESSOInput
+using QuantumESPRESSOBase.Inputs
 
 export PWInput,
     namelists,
     cards
 
-@with_kw struct PWInput <: Input
+@with_kw struct PWInput <: AbstractInput
     control::ControlNamelist = ControlNamelist()
     system::SystemNamelist
     electrons::ElectronsNamelist = ElectronsNamelist()
