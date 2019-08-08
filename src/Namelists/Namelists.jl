@@ -17,6 +17,7 @@ module Namelists
 using FilePaths: AbstractPath, extension, exists
 using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
+using MLStyle: @match
 using Parameters: type2dict
 
 using QuantumESPRESSOBase: InputEntry
@@ -43,12 +44,10 @@ function Base.dump(path::AbstractPath, nml::Namelist)
     entries = Dict(key => to_fortran(value) for (key, value) in to_dict(nml))
     iswritable(path) || error("File $(path) not writable!")
     open(path, "r+") do io
-        if extension(path) == "json"
-            JSON.print(io, entries)
-        elseif extension(path) == "yaml" || extension(path) == "yml"
-            @warn "Currently not supported!"
-        else
-            error("Unknown extension type given!")
+        @match extension(path) begin
+            "json" => JSON.print(io, entries)
+            "yaml" || "yml" => @warn "Currently not supported!"
+            _ => error("Unknown extension type given!")
         end
     end
 end # function Base.dump
