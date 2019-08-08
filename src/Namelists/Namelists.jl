@@ -34,6 +34,7 @@ function dropdefault(nml::Namelist)
             result[k] = v
         end
     end
+    isempty(result) && @info "Every entry in the namelist is the default value!"
     return result
 end
 
