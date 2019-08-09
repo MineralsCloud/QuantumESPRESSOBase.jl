@@ -24,7 +24,7 @@ function Parameters.reconstruct(card::Card, newdict::AbstractDict)
     return reconstruct(card, newdict)
 end # function reconstruct
 
-include("PW.jl")
+include("PWscf.jl")
 include("option.jl")
 include("allowed_options.jl")
 

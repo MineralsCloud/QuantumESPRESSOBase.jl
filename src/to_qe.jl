@@ -2,11 +2,11 @@ using Fortran90Namelists.JuliaToFortran: to_fortran
 using IterTools: fieldvalues
 
 using QuantumESPRESSOBase.Namelists
-using QuantumESPRESSOBase.Namelists.PW
+using QuantumESPRESSOBase.Namelists.PWscf
 using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PW
+using QuantumESPRESSOBase.Cards.PWscf
 using QuantumESPRESSOBase.Inputs
-using QuantumESPRESSOBase.Inputs.PW
+using QuantumESPRESSOBase.Inputs.PWscf
 
 export to_qe
 

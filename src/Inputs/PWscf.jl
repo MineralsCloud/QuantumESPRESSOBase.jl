@@ -1,5 +1,5 @@
 """
-# module PW
+# module PWscf
 
 
 
@@ -9,15 +9,15 @@
 julia>
 ```
 """
-module PW
+module PWscf
 
 using IterTools: fieldvalues
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists
-using QuantumESPRESSOBase.Namelists.PW
+using QuantumESPRESSOBase.Namelists.PWscf
 using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PW
+using QuantumESPRESSOBase.Cards.PWscf
 using QuantumESPRESSOBase.Inputs
 
 export PWInput,
