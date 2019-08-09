@@ -209,6 +209,7 @@ end  # struct IonsNamelist
     cell_dofree::String = "all"
 end  # struct CellNamelist
 
+# The following default values are picked from `<QE source>/PP/dos.f90`
 @with_kw struct DOSNamelist <: Namelist
     prefix::String = "pwscf"
     outdir::String = "./"
