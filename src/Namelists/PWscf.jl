@@ -19,7 +19,8 @@ export ControlNamelist,
     SystemNamelist,
     ElectronsNamelist,
     IonsNamelist,
-    CellNamelist
+    CellNamelist,
+    DOSNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -207,5 +208,16 @@ end  # struct IonsNamelist
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
 end  # struct CellNamelist
+
+@with_kw struct DOSNamelist <: Namelist
+    prefix::String = "pwscf"
+    outdir::String = "./"
+    ngauss::Int = 0
+    degauss::Float64 = 0.0
+    Emin::Float64 = -1000000.0
+    Emax::Float64 = 1000000.0
+    DeltaE::Float64 = 0.01
+    fildos::String = "$(prefix).dos"
+end  # struct DOSNamelist
 
 end
