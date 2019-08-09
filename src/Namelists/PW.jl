@@ -166,8 +166,8 @@ end  # struct SystemNamelist
     mixing_fixed_ns::Int = 0
     diagonalization::String = "david"
     ortho_para::Int = 0
-    diago_thr_init::Float64 = 1e-06
-    diago_cg_maxiter::Int = 400
+    diago_thr_init::Float64 = 0.0
+    diago_cg_maxiter::Int = 20
     diago_david_ndim::Int = 4
     diago_full_acc::Bool = false
     efield::Float64 = 0.0
