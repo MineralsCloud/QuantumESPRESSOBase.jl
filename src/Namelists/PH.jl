@@ -17,6 +17,7 @@ using QuantumESPRESSOBase.Namelists: Namelist
 
 export INPUTPHNamelist
 
+# The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
 @with_kw struct INPUTPHNamelist <: Namelist
     amass::Vector{Union{Missing, Float64}} = [0.0]
     outdir::String = "./"
