@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export INPUTPHNamelist, MatdynNamelist
+export INPUTPHNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
 @with_kw struct INPUTPHNamelist <: Namelist
@@ -77,6 +77,14 @@ export INPUTPHNamelist, MatdynNamelist
     # drho_star::String = 1
 end  # struct INPUTPHNamelist
 
+# The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
+@with_kw struct Q2rNamelist <: Namelist
+    fildyn::String = " "
+    flfrc::String = " "
+    loto_2d::Bool = false
+    zasr::String = "no"
+end  # struct Q2rNamelist
+
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
 @with_kw struct MatdynNamelist <: Namelist
     dos::Bool = false
@@ -109,5 +117,20 @@ end  # struct INPUTPHNamelist
     nosym::Bool = false
     loto_2d::Bool = false
 end  # struct MatdynNamelist
+
+@with_kw struct DynmatNamelist <: Namelist
+    asr::String = "no"
+    axis::Int = 3
+    fildyn::String = "matdyn"
+    filout::String = "dynmat.out"
+    filmol::String = "dynmat.mold"
+    filxsf::String = "dynmat.axsf"
+    fileig::String = " "
+    amass::Vector{Union{Missing,Float64}} = zeros(1)
+    q::Vector{Union{Missing,Float64}} = zeros(3)
+    lperm::Bool = false
+    lplasma::Bool = false
+    loto_2d::Bool = false
+end  # struct DynmatNamelist
 
 end
