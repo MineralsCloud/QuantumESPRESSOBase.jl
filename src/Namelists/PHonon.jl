@@ -118,4 +118,19 @@ end  # struct Q2rNamelist
     loto_2d::Bool = false
 end  # struct MatdynNamelist
 
+@with_kw struct DynmatNamelist <: Namelist
+    asr::String = "no"
+    axis::Int = 3
+    fildyn::String = "matdyn"
+    filout::String = "dynmat.out"
+    filmol::String = "dynmat.mold"
+    filxsf::String = "dynmat.axsf"
+    fileig::String = " "
+    amass::Vector{Union{Missing,Float64}} = zeros(1)
+    q::Vector{Union{Missing,Float64}} = zeros(3)
+    lperm::Bool = false
+    lplasma::Bool = false
+    loto_2d::Bool = false
+end  # struct DynmatNamelist
+
 end
