@@ -202,8 +202,8 @@ end  # struct IonsNamelist
 @with_kw struct CellNamelist <: Namelist
     cell_dynamics::String = "none"
     press::Float64 = 0.0
-    wmass::Float64 = 0.001
-    cell_factor::Float64 = 2.0
+    wmass::Float64 = 0.0
+    cell_factor::Float64 = 0.0
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
 end  # struct CellNamelist
