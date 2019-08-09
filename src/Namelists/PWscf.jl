@@ -19,7 +19,9 @@ export ControlNamelist,
     SystemNamelist,
     ElectronsNamelist,
     IonsNamelist,
-    CellNamelist
+    CellNamelist,
+    DOSNamelist,
+    BandsNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -207,5 +209,33 @@ end  # struct IonsNamelist
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
 end  # struct CellNamelist
+
+# The following default values are picked from `<QE source>/PP/src/dos.f90`
+@with_kw struct DOSNamelist <: Namelist
+    prefix::String = "pwscf"
+    outdir::String = "./"
+    ngauss::Int = 0
+    degauss::Float64 = 0.0
+    Emin::Float64 = -1000000.0
+    Emax::Float64 = 1000000.0
+    DeltaE::Float64 = 0.01
+    fildos::String = "$(prefix).dos"
+end  # struct DOSNamelist
+
+# The following default values are picked from `<QE source>/PP/src/bands.f90`
+@with_kw struct BandsNamelist <: Namelist
+    prefix::String = "pwscf"
+    outdir::String = "./"
+    filband::String = "bands.out"
+    spin_component::Int = 1
+    lsigma::Vector{Union{Missing, Bool}} = falses(3)  # The default value in QE's source code is just one `false`
+    lp::Bool = false
+    filp::String = "p_avg.dat"
+    lsym::Bool = true
+    no_overlap::Bool = true
+    plot_2d::Bool = false
+    firstk::Int = 0
+    lastk::Int = 10000000
+end  # struct BandsNamelist
 
 end
