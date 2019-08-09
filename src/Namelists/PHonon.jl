@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export INPUTPHNamelist, MatdynNamelist
+export INPUTPHNamelist, Q2rNamelist, MatdynNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
 @with_kw struct INPUTPHNamelist <: Namelist
@@ -76,6 +76,14 @@ export INPUTPHNamelist, MatdynNamelist
     # dvscf_star::String = 1
     # drho_star::String = 1
 end  # struct INPUTPHNamelist
+
+# The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
+@with_kw struct Q2rNamelist <: Namelist
+    fildyn::String = " "
+    flfrc::String = " "
+    loto_2d::Bool = false
+    zasr::String = "no"
+end  # struct Q2rNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
 @with_kw struct MatdynNamelist <: Namelist
