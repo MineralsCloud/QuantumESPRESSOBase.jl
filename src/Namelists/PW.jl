@@ -29,7 +29,7 @@ export ControlNamelist,
     restart_mode::String = "from_scratch"
     wf_collect::Bool = true
     nstep::Int = 1
-    iprint::Int = 1
+    iprint::Int = 100000
     tstress::Bool = false
     tprnfor::Bool = false
     dt::Float64 = 20.0
@@ -41,15 +41,15 @@ export ControlNamelist,
     etot_conv_thr::Float64 = 0.0001
     forc_conv_thr::Float64 = 0.001
     disk_io::String = "medium"
-    pseudo_dir::String = raw"$HOME/espresso/pseudo/"
+    pseudo_dir::String = "$(ENV["HOME"])/espresso/pseudo/"
     tefield::Bool = false
     dipfield::Bool = false
     lelfield::Bool = false
     nberrycyc::Int = 1
     lorbm::Bool = false
     lberry::Bool = false
-    gdir::Int = 1
-    nppstr::Int = 1
+    gdir::Int = 0
+    nppstr::Int = 0
     lfcpopt::Bool = false
     gate::Bool = false
 end  # struct ControlNamelist
