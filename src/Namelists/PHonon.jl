@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export INPUTPHNamelist
+export INPUTPHNamelist, MatdynNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
 @with_kw struct INPUTPHNamelist <: Namelist
@@ -76,5 +76,38 @@ export INPUTPHNamelist
     # dvscf_star::String = 1
     # drho_star::String = 1
 end  # struct INPUTPHNamelist
+
+# The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
+@with_kw struct MatdynNamelist <: Namelist
+    dos::Bool = false
+    deltaE::Float64 = 1.0
+    ndos::Int = 1
+    nk1::Int = 0
+    nk2::Int = 0
+    nk3::Int = 0
+    asr::String = "no"
+    readtau::Bool = false
+    flfrc::String = " "
+    fldos::String = "matdyn.dos"
+    flfrq::String = "matdyn.freq"
+    flvec::String = "matdyn.modes"
+    fleig::String = "matdyn.eig"
+    fldyn::String = " "
+    fltau::String = " "
+    amass::Vector{Union{Missing, Float64}} = zeros(1)
+    at::Matrix{Union{Missing, Float64}} = zeros(3, 3)  # FIXME: not very sure
+    ntyp::Int = 0
+    l1::Int = 1
+    l2::Int = 1
+    l3::Int = 1
+    la2F::Bool = false
+    q_in_band_form::Bool = false
+    eigen_similarity::Bool = false
+    q_in_cryst_coord::Bool = false
+    na_ifc::Bool = false
+    fd::Bool = false
+    nosym::Bool = false
+    loto_2d::Bool = false
+end  # struct MatdynNamelist
 
 end
