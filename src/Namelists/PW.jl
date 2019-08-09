@@ -179,7 +179,7 @@ end  # struct SystemNamelist
 end  # struct ElectronsNamelist
 
 @with_kw struct IonsNamelist <: Namelist
-    ion_dynamics::String = "bfgs"
+    ion_dynamics::String = "none"
     ion_positions::String = "default"
     pot_extrapolation::String = "atomic"
     wfc_extrapolation::String = "none"
@@ -193,7 +193,7 @@ end  # struct ElectronsNamelist
     upscale::Float64 = 100.0
     bfgs_ndim::Int = 1
     trust_radius_max::Float64 = 0.8
-    trust_radius_min::Float64 = 0.001
+    trust_radius_min::Float64 = 0.001  # The default value in QE's source code is 0.0001
     trust_radius_ini::Float64 = 0.5
     w_1::Float64 = 0.01
     w_2::Float64 = 0.5
