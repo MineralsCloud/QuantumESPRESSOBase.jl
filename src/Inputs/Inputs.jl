@@ -15,6 +15,6 @@ export AbstractInput
 
 abstract type AbstractInput end
 
-include("PW.jl")
+include("PWscf.jl")
 
 end

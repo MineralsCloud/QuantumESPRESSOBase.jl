@@ -2,11 +2,11 @@ using Fortran90Namelists.JuliaToFortran: to_fortran
 using IterTools: fieldvalues
 
 using QuantumESPRESSOBase.Namelists
-using QuantumESPRESSOBase.Namelists.PW
+using QuantumESPRESSOBase.Namelists.PWscf
 using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PW
+using QuantumESPRESSOBase.Cards.PWscf
 using QuantumESPRESSOBase.Inputs
-using QuantumESPRESSOBase.Inputs.PW
+using QuantumESPRESSOBase.Inputs.PWscf
 
 export to_qe
 
@@ -90,7 +90,7 @@ function to_qe(card::KPointsCard; indent::AbstractString = "    ", sep::Abstract
     end
     return content
 end
-function to_qe(input::PWInput; indent::AbstractString = "    ", sep::AbstractString = " ", debug::Bool = true)::String
+function to_qe(input::PWscfInput; indent::AbstractString = "    ", sep::AbstractString = " ", debug::Bool = true)::String
     if debug
         return join(map(to_qe, fieldvalues(input)), "\n")
     else
