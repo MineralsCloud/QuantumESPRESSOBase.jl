@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export INPUTPHNamelist, Q2rNamelist, MatdynNamelist
+export INPUTPHNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
 @with_kw struct INPUTPHNamelist <: Namelist
