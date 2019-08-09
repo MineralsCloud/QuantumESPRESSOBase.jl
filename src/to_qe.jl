@@ -90,7 +90,7 @@ function to_qe(card::KPointsCard; indent::AbstractString = "    ", sep::Abstract
     end
     return content
 end
-function to_qe(input::PWInput; indent::AbstractString = "    ", sep::AbstractString = " ", debug::Bool = true)::String
+function to_qe(input::PWscfInput; indent::AbstractString = "    ", sep::AbstractString = " ", debug::Bool = true)::String
     if debug
         return join(map(to_qe, fieldvalues(input)), "\n")
     else
