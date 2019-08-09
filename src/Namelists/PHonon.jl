@@ -94,10 +94,8 @@ end  # struct INPUTPHNamelist
     fleig::String = "matdyn.eig"
     fldyn::String = " "
     fltau::String = " "
-    fildyn::String = " "
-    fildyn_prefix::String = " "
     amass::Vector{Union{Missing, Float64}} = zeros(1)
-    at::Matrix{Union{Missing, Float64}} = zeros(2, 2)
+    at::Matrix{Union{Missing, Float64}} = zeros(3, 3)  # FIXME: not very sure
     ntyp::Int = 0
     l1::Int = 1
     l2::Int = 1
