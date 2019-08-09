@@ -26,7 +26,7 @@ export PWInput,
 
 @with_kw struct PWInput <: AbstractInput
     control::ControlNamelist = ControlNamelist()
-    system::SystemNamelist
+    system::SystemNamelist = SystemNamelist()
     electrons::ElectronsNamelist = ElectronsNamelist()
     ions::IonsNamelist = IonsNamelist()
     cell::CellNamelist = CellNamelist()
