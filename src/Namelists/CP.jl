@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export ControlNamelist, SystemNamelist
+export ControlNamelist, SystemNamelist, ElectronsNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -89,5 +89,34 @@ end  # struct ControlNamelist
     ts_vdw_isolated::Bool = false
     assume_isolated::Bool = "none"
 end  # struct SystemNamelist
+
+@with_kw struct ElectronsNamelist <: Namelist
+    electron_maxstep::Int = 100
+    electron_dynamics::String = "none"
+    conv_thr::Float64 = 1e-6
+    niter_cg_restart::Int = 20
+    efield::Float64 = 0.0
+    epol::Int = 3
+    emass::Float64 = 400.0
+    emass_cutoff::Float64 = 2.5
+    orthogonalization::String = "ortho"
+    ortho_eps::Float64 = 1e-8
+    ortho_max::Int = 20
+    ortho_para::Int = 0
+    electron_damping::Float64 = 0.1
+    electron_velocities::String = "default"
+    electron_temperature::String = "not_controlled"
+    ekincw::Float64 = 0.001
+    fnosee::Float64 = 1.0
+    startingwfc::String = "random"
+    tcg::Bool = false
+    maxiter::Int = 100
+    passop::Float64 = 0.3
+    n_inner::Int = 2
+    ninter_cold_restart::Int = 1
+    lambda_cold::Float64 = 0.03
+    grease::Float64 = 1.0
+    ampre::Float64 = 0.0
+end  # struct ElectronsNamelist
 
 end
