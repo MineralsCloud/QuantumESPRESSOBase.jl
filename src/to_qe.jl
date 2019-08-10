@@ -90,16 +90,16 @@ function to_qe(card::KPointsCard; indent::AbstractString = "    ", sep::Abstract
     end
     return content
 end
-function to_qe(input::PWscfInput; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = true)::String
+function to_qe(input::PWscfInput; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false)::String
     if verbose
-        return join(map(to_qe, fieldvalues(input)), "\n")
+        return join(map(x -> to_qe(x, indent = indent, sep = sep), fieldvalues(input)), "\n")
     else
         str = ""
         for namelist in namelists(input)
-            str *= to_qe(namelist)
+            str *= to_qe(namelist, indent = indent, sep = sep)
         end
         for card in cards(input)
-            str *= to_qe(card)
+            str *= to_qe(card, indent = indent, sep = sep)
         end
         return str
     end
