@@ -23,24 +23,24 @@ export to_qe
 julia>
 ```
 """
-function to_qe(dict::AbstractDict; indent::AbstractString = "    ")::String
+function to_qe(dict::AbstractDict; indent::AbstractString = "    ", sep::AbstractString = " ")::String
     content = ""
     for (key, value) in dict
         if value isa Vector
             for (i, x) in enumerate(value)
                 ismissing(x) && continue
-                content *= "$(indent)$(key)($i) = $(to_fortran(x))\n"
+                content *= "$indent$key($i)$sep=$sep$(to_fortran(x))\n"
             end
         else
-            content *= "$(indent)$(key) = $(to_fortran(value))\n"
+            content *= "$indent$key$sep=$sep$(to_fortran(value))\n"
         end
     end
     return content
 end
-function to_qe(nml::Namelist; indent::AbstractString = "    ")::String
+function to_qe(nml::Namelist; indent::AbstractString = "    ", sep::AbstractString = " ")::String
     namelist_name = (uppercase ∘ string ∘ name ∘ typeof)(nml)
-    content = """&$(namelist_name)
-    $(to_qe(dropdefault(nml); indent = indent))
+    content = """&$namelist_name
+    $(to_qe(dropdefault(nml); indent = indent, sep = sep))
     /
     """
 end
