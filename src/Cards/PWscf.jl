@@ -13,6 +13,7 @@ module PWscf
 
 using MLStyle: @match
 using Parameters: @with_kw
+using Setfield: @lens, get
 
 using QuantumESPRESSOBase
 using QuantumESPRESSOBase.Cards
