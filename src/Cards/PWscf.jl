@@ -64,8 +64,11 @@ end
 # ============================== AtomicPosition ============================== #
 @with_kw struct AtomicPosition{A <: AbstractString,B <: AbstractVector{<: Real},C <: AbstractVector{Int}}
     atom::A
-    pos::B; @assert length(pos) == 3
-    if_pos::C = [1, 1, 1]; @assert length(if_pos) == 3
+    pos::B
+    if_pos::C = [1, 1, 1]
+    @assert length(pos) == 3
+    @assert length(if_pos) == 3
+    @assert all(x in (0, 1) for x in if_pos) "`if_pos` must be either 0 or 1!"
 end
 
 @with_kw struct AtomicPositionsCard{A <: AbstractString,B <: AbstractVector{<: AtomicPosition}} <: Card
