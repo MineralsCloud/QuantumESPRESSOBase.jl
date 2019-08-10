@@ -167,7 +167,7 @@ end  # struct CellNamelist
     Surf_t::Float64 = 0.0
     rho_thr::Float64 = 0.0
     dthr::Float64 = 0.0
-end
+end  # struct PressAiNamelist
 
 @with_kw struct WannierNamelist <: Namelist
     wf_efield = false
@@ -200,6 +200,6 @@ end
     exx_ps_rcut_pair = 5.0
     exx_me_rcut_self = 10.0
     exx_me_rcut_pair = 7.0
-end
+end  # struct WannierNamelist
 
 end
