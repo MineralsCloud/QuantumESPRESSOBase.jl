@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist
+export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist, PressAiNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -156,5 +156,17 @@ end  # struct IonsNamelist
     greash::Float64 = 1.0
     cell_dofree::String = "all"
 end  # struct CellNamelist
+
+@with_kw struct PressAiNamelist <: Namelist
+    abivol::Bool = false
+    abisur::Bool = false
+    P_ext::Float64 = 0.0
+    pvar::Bool = false
+    P_in::Float64 = 0.0
+    P_fin::Float64 = 0.0
+    Surf_t::Float64 = 0.0
+    rho_thr::Float64 = 0.0
+    dthr::Float64 = 0.0
+end
 
 end
