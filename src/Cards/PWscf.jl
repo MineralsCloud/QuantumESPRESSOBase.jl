@@ -26,13 +26,22 @@ export AtomicSpecies,
     MonkhorstPackGrid,
     GammaPoint,
     SpecialKPoint,
-    KPointsCard
+    KPointsCard,
+    pseudopotential_format
 
 # =============================== AtomicSpecies ============================== #
 struct AtomicSpecies{A <: AbstractString,B <: Real,C <: AbstractString}
     atom::A
     mass::B
     pseudopotential::C
+end
+
+function pseudopotential_format(data::AtomicSpecies)::String
+    @match lowercase(splitext(data.pseudopotential)[2]) begin
+        "vdb" || "van" => "Vanderbilt US pseudopotential code"
+        "RRKJ3" => "Andrea Dal Corso's code (old format)"
+        _ => "old PWscf norm-conserving format"
+    end
 end
 
 struct AtomicSpeciesCard{T <: AbstractVector{<: AtomicSpecies}} <: Card
