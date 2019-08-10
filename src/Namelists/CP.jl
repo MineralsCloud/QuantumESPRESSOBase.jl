@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist, PressAiNamelist
+export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist, PressAiNamelist, WannierNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -167,6 +167,39 @@ end  # struct CellNamelist
     Surf_t::Float64 = 0.0
     rho_thr::Float64 = 0.0
     dthr::Float64 = 0.0
+end
+
+@with_kw struct WannierNamelist <: Namelist
+    wf_efield = false
+    wf_switch = false
+    sw_len = 1
+    efx0 = 0.0
+    efy0 = 0.0
+    efz0 = 0.0
+    efx1 = 0.0
+    efy1 = 0.0
+    efz1 = 0.0
+    wfsd = 1
+    wfdt = 5.0
+    maxwfdt = 0.3
+    nit = 10
+    nsd = 10
+    wf_q = 1500.0
+    wf_friction = 0.3
+    nsteps = 20
+    tolw = 1e-8
+    adapt = true
+    calwf = 3
+    nwf = 0
+    wffort = 40
+    writev = false
+    exx_neigh = 60
+    exx_dis_cutoff = 8.0
+    exx_poisson_eps = 1e-6
+    exx_ps_rcut_self = 6.0
+    exx_ps_rcut_pair = 5.0
+    exx_me_rcut_self = 10.0
+    exx_me_rcut_pair = 7.0
 end
 
 end
