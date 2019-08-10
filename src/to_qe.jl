@@ -25,14 +25,15 @@ julia>
 """
 function to_qe(dict::AbstractDict; indent::AbstractString = "    ", sep::AbstractString = " ")::String
     content = ""
+    f = string ∘ to_fortran
     for (key, value) in dict
         if value isa Vector
             for (i, x) in enumerate(value)
                 ismissing(x) && continue
-                content *= "$indent$key($i)$sep=$sep$(to_fortran(x))\n"
+                content *= "$indent$key($i)$sep=$sep$(f(x))\n"
             end
         else
-            content *= "$indent$key$sep=$sep$(to_fortran(value))\n"
+            content *= "$indent$key$sep=$sep$(f(value))\n"
         end
     end
     return content
