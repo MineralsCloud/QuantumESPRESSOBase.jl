@@ -95,8 +95,11 @@ end
 abstract type KPoint end
 
 @with_kw struct MonkhorstPackGrid{A <: AbstractVector{Int},B <: AbstractVector{Int}} <: KPoint
-    grid::A; @assert length(grid) == 3
-    offsets::B; @assert length(offsets) == 3 && all(x ∈ (0, 1) for x in offsets)
+    grid::A
+    offsets::B
+    @assert length(grid) == 3
+    @assert length(offsets) == 3
+    @assert all(x ∈ (0, 1) for x in offsets)
 end
 
 struct GammaPoint <: KPoint end
