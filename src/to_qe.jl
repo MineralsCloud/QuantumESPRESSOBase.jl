@@ -29,10 +29,10 @@ function to_qe(dict::AbstractDict; indent::AbstractString = "    ")::String
         if value isa Vector
             for (i, x) in enumerate(value)
                 ismissing(x) && continue
-                content *= "$(indent)$(key)($i) = $(string(to_fortran(x)))\n"
+                content *= "$(indent)$(key)($i) = $(to_fortran(x))\n"
             end
         else
-            content *= "$(indent)$(key) = $(string(to_fortran(value)))\n"
+            content *= "$(indent)$(key) = $(to_fortran(value))\n"
         end
     end
     return content
