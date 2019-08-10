@@ -93,12 +93,12 @@ function to_qe(card::KPointsCard; indent::AbstractString = "    ", sep::Abstract
     return content
 end
 function to_qe(input::PWscfInput; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false)::String
-    str = ""
+    content = ""
     for namelist in namelists(input)
-        str *= to_qe(namelist, indent = indent, sep = sep, verbose = verbose)
+        content *= to_qe(namelist, indent = indent, sep = sep, verbose = verbose)
     end
     for card in cards(input)
-        str *= to_qe(card, indent = indent, sep = sep)
+        content *= to_qe(card, indent = indent, sep = sep)
     end
-    return str
+    return content
 end
