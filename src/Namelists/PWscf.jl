@@ -30,7 +30,7 @@ export ControlNamelist,
     verbosity::String = "low"
     restart_mode::String = "from_scratch"
     wf_collect::Bool = true
-    nstep::Int = 1
+    nstep::Int = 50
     iprint::Int = 100000
     tstress::Bool = false
     tprnfor::Bool = false
@@ -42,7 +42,7 @@ export ControlNamelist,
     max_seconds::Float64 = 10000000.0
     etot_conv_thr::Float64 = 0.0001
     forc_conv_thr::Float64 = 0.001
-    disk_io::String = "medium"
+    disk_io::String = "low"
     pseudo_dir::String = "$(ENV["HOME"])/espresso/pseudo/"
     tefield::Bool = false
     dipfield::Bool = false
