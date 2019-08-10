@@ -36,6 +36,18 @@ struct AtomicSpecies{A <: AbstractString,B <: Real,C <: AbstractString}
     pseudopotential::C
 end
 
+"""
+    pseudopotential_format(data::AtomicSpecies)::String
+
+Return the pseudopotential format.
+
+The pseudopotential file is assumed to be in the new UPF format.
+If it doesn't work, the pseudopotential format is determined by
+the file name:
+- "*.vdb or *.van": Vanderbilt US pseudopotential code
+- "*.RRKJ3": Andrea Dal Corso's code (old format)
+- none of the above: old PWscf norm-conserving format
+"""
 function pseudopotential_format(data::AtomicSpecies)::String
     @match lowercase(splitext(data.pseudopotential)[2]) begin
         "vdb" || "van" => "Vanderbilt US pseudopotential code"
