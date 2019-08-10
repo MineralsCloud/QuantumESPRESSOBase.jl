@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export ControlNamelist, SystemNamelist, ElectronsNamelist
+export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -118,5 +118,28 @@ end  # struct SystemNamelist
     grease::Float64 = 1.0
     ampre::Float64 = 0.0
 end  # struct ElectronsNamelist
+
+@with_kw struct IonsNamelist <: Namelist
+    ion_dynamics::String = "none"
+    ion_positions::String = "default"
+    ion_velocities::String = "default"
+    ion_damping::Float64 = 0.2
+    ion_radius::Vector{Union{Missing, Float64}} = [0.5]  # The default value in QE's source code is just one 0.5
+    iesr::Int = 1
+    ion_nstepe::Int = 1
+    remove_rigid_rot::Bool = false
+    ion_temperature::String = "not_controlled"
+    tempw::Float64 = 300.0
+    fnosep::Float64 = 1.0
+    tolp::Float64 = 100.0
+    nhpcl::Int = 1
+    nhptyp::Int = 0
+    nhgrp::Vector{Union{Missing, Int}} = [0]
+    fnhscl::Vector{Union{Missing, Float64}} = zeros(1)
+    ndega::Int = 0
+    tranp::Vector{Union{Missing, Bool}} = falses(1)
+    amprp::Vector{Union{Missing, Float64}} = zeros(1)
+    greasp::Float64 = 1.0
+end  # struct IonsNamelist
 
 end
