@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist
+export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -141,5 +141,20 @@ end  # struct ElectronsNamelist
     amprp::Vector{Union{Missing, Float64}} = zeros(1)
     greasp::Float64 = 1.0
 end  # struct IonsNamelist
+
+@with_kw struct CellNamelist <: Namelist
+    cell_parameters::String = "default"
+    cell_dynamics::String = "none"
+    cell_velocities::String = "default"
+    cell_damping::Float64 = 0.1
+    press::Float64 = 0.0
+    wmass::Float64 = 0.0
+    cell_factor::Float64 = 1.2
+    cell_temperature::String = "not_controlled"
+    temph::Float64 = 0.0
+    fnoseh::Float64 = 1.0
+    greash::Float64 = 1.0
+    cell_dofree::String = "all"
+end  # struct CellNamelist
 
 end
