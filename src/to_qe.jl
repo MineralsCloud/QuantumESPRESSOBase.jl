@@ -41,8 +41,7 @@ end
 function to_qe(nml::Namelist; indent::AbstractString = "    ", sep::AbstractString = " ")::String
     namelist_name = (uppercase ∘ string ∘ name ∘ typeof)(nml)
     content = """&$namelist_name
-    $(to_qe(dropdefault(nml); indent = indent, sep = sep))
-    /
+    $(to_qe(dropdefault(nml); indent = indent, sep = sep))/
     """
 end
 function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
