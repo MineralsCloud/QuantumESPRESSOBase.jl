@@ -39,7 +39,7 @@ end
 function pseudopotential_format(data::AtomicSpecies)::String
     @match lowercase(splitext(data.pseudopotential)[2]) begin
         "vdb" || "van" => "Vanderbilt US pseudopotential code"
-        "RRKJ3" => "Andrea Dal Corso's code (old format)"
+        "rrkj3" => "Andrea Dal Corso's code (old format)"
         _ => "old PWscf norm-conserving format"
     end
 end
