@@ -24,31 +24,25 @@ export ControlNamelist
     verbosity::String = "low"
     isave::Int = 100
     restart_mode::String = "restart"
-    wf_collect::Bool = true
-    nstep::Int = 1
+    nstep::Int = 50
     iprint::Int = 10
     tstress::Bool = false
     tprnfor::Bool = false
     dt::Float64 = 1.0
     outdir::String = "./"
-    wfcdir::String = "./"
+    saverho::Bool = true
     prefix::String = "cp"
-    lkpoint_dir::Bool = true
-    max_seconds::Float64 = 10000000.0
-    etot_conv_thr::Float64 = 0.0001
-    forc_conv_thr::Float64 = 0.001
-    disk_io::String = "medium"
+    ndr::Int = 50
+    ndw::Int = 50
+    tabps::Bool = false
+    max_seconds::Float64 = 1e7
+    etot_conv_thr::Float64 = 1e-4
+    forc_conv_thr::Float64 = 1e-3
+    ekin_conv_thr::Float64 = 1e-6
+    disk_io::String = "default"
+    memory::String = "default"
     pseudo_dir::String = "$(ENV["HOME"])/espresso/pseudo/"
     tefield::Bool = false
-    dipfield::Bool = false
-    lelfield::Bool = false
-    nberrycyc::Int = 1
-    lorbm::Bool = false
-    lberry::Bool = false
-    gdir::Int = 0
-    nppstr::Int = 0
-    lfcpopt::Bool = false
-    gate::Bool = false
 end  # struct ControlNamelist
 
 end
