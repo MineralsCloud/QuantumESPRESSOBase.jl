@@ -72,6 +72,12 @@ end
     option::A = "alat"; @assert option in allowed_options(AtomicPositionsCard)
     data::B
 end
+
+function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
+    lens = @lens _.data.atom
+    @assert isempty(symdiff(map(Base.Fix2(get, lens) ∘ unique, (x, y)))) "labels of the atoms are different in `ATOMIC_SPECIES` and `ATOMIC_POSITIONS` card!"
+end # function validate
+validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
