@@ -38,10 +38,12 @@ function to_qe(dict::AbstractDict; indent::AbstractString = "    ", sep::Abstrac
     end
     return content
 end
-function to_qe(nml::Namelist; indent::AbstractString = "    ", sep::AbstractString = " ")::String
+function to_qe(nml::Namelist; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false)::String
     namelist_name = (uppercase ∘ string ∘ name ∘ typeof)(nml)
+    f = verbose ? to_dict : dropdefault
+    inner_content = to_qe(f(nml); indent = indent, sep = sep)
     content = """&$namelist_name
-    $(to_qe(dropdefault(nml); indent = indent, sep = sep))/
+    $inner_content/
     """
 end
 function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
@@ -91,16 +93,12 @@ function to_qe(card::KPointsCard; indent::AbstractString = "    ", sep::Abstract
     return content
 end
 function to_qe(input::PWscfInput; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false)::String
-    if verbose
-        return join(map(x -> to_qe(x, indent = indent, sep = sep), fieldvalues(input)), "\n")
-    else
-        str = ""
-        for namelist in namelists(input)
-            str *= to_qe(namelist, indent = indent, sep = sep)
-        end
-        for card in cards(input)
-            str *= to_qe(card, indent = indent, sep = sep)
-        end
-        return str
+    str = ""
+    for namelist in namelists(input)
+        str *= to_qe(namelist, indent = indent, sep = sep, verbose = verbose)
     end
+    for card in cards(input)
+        str *= to_qe(card, indent = indent, sep = sep)
+    end
+    return str
 end
