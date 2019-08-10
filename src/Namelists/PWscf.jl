@@ -54,6 +54,10 @@ export ControlNamelist,
     nppstr::Int = 0
     lfcpopt::Bool = false
     gate::Bool = false
+    @assert calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
+    @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
+    @assert restart_mode ∈ ("from_scratch", "restart")
+    @assert disk_io ∈ ("high", "medium", "low", "none")
 end  # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
