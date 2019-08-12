@@ -54,11 +54,15 @@ export ControlNamelist,
     nppstr::Int = 0
     lfcpopt::Bool = false
     gate::Bool = false
+    @assert calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
+    @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
+    @assert restart_mode ∈ ("from_scratch", "restart")
+    @assert disk_io ∈ ("high", "medium", "low", "none")
 end  # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Union{Missing, Float64}} = zeros(6); @assert length(celldm) ≤ 6
+    celldm::Vector{Union{Missing, Float64}} = zeros(6)
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -153,6 +157,19 @@ end  # struct ControlNamelist
     block_1::Float64 = 0.45
     block_2::Float64 = 0.55
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
+    @assert length(celldm) ≤ 6
+    @assert length(starting_charge) == ntyp
+    @assert length(starting_magnetization) == ntyp
+    @assert length(Hubbard_U) == ntyp
+    @assert length(Hubbard_J0) == ntyp
+    @assert length(Hubbard_alpha) == ntyp
+    @assert length(Hubbard_beta) == ntyp
+    @assert length(Hubbard_J) == ntyp
+    @assert length(angle1) == ntyp
+    @assert length(angle2) == ntyp
+    @assert length(fixed_magnetization) == 3
+    @assert length(london_c6) == ntyp
+    @assert length(london_rvdw) == ntyp
 end  # struct SystemNamelist
 
 @with_kw struct ElectronsNamelist <: Namelist
