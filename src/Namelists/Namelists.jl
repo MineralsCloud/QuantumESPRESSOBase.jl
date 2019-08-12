@@ -28,6 +28,15 @@ export Namelist, to_dict, dropdefault
 
 abstract type Namelist <: InputEntry end
 
+"""
+    to_dict(nml; keeporder = true)
+
+Convert a `Namelist` to a dictionary.
+
+# Arguments
+- `nml::Namelist`: the namelist to be converted.
+- `keeporder::Bool = true`: whether or not use the default order of parameters in QE's docs.
+"""
 function to_dict(nml::Namelist; keeporder::Bool = true)
     dict = (keeporder ? OrderedDict{Symbol,Any}() : Dict{Symbol,Any}())
     for n in propertynames(nml)
