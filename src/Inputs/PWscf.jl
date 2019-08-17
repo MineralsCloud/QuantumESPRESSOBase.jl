@@ -11,6 +11,7 @@ julia>
 """
 module PWscf
 
+using Compat: isnothing
 using IterTools: fieldvalues
 using Parameters: @with_kw
 
@@ -33,17 +34,14 @@ export PWscfInput, autogenerate_cell_parameters, namelists, cards
     atomic_positions::AtomicPositionsCard
     k_points::KPointsCard
     cell_parameters::Union{Nothing,CellParametersCard}
+    @assert !(isnothing(cell_parameters) && system.ibrav == 0) "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
 end  # struct PWscfInput
 
 function autogenerate_cell_parameters(obj::PWscfInput)
-    if isnothing(obj.cell_parameters) && obj.system.ibrav == 0
-        error("Cannot specify `ibrav = 0` with an empty `cell_parameters`!")
-    else
-        return reconstruct(
-            obj,
-            Dict(:system => reconstruct(system, ibrav = 0), :cell_parameters => bravais_lattice(system))
-        )
-    end
+    return reconstruct(
+        obj,
+        Dict(:system => reconstruct(system, ibrav = 0), :cell_parameters => bravais_lattice(system))
+    )
 end # function autogenerate_cell_parameters
 
 filter_field_by_supertype(obj, ::Type{T}) where {T} =
