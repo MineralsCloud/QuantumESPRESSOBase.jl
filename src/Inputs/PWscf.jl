@@ -40,7 +40,10 @@ end  # struct PWscfInput
 function autogenerate_cell_parameters(obj::PWscfInput)
     return reconstruct(
         obj,
-        Dict(:system => reconstruct(system, ibrav = 0), :cell_parameters => bravais_lattice(system))
+        Dict(
+            :system => reconstruct(obj.system, ibrav = 0),
+            :cell_parameters => reconstruct(obj.cell_parameters, data = bravais_lattice(system))
+        )
     )
 end # function autogenerate_cell_parameters
 
