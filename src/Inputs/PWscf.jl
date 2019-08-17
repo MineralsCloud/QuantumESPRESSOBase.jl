@@ -32,7 +32,7 @@ export PWscfInput, namelists, cards
     atomic_species::AtomicSpeciesCard
     atomic_positions::AtomicPositionsCard
     k_points::KPointsCard
-    cell_parameters::Union{Nothing,CellParametersCard} = nothing
+    cell_parameters::Union{Nothing,CellParametersCard}
 end  # struct PWscfInput
 function PWscfInput(
     control::ControlNamelist,
