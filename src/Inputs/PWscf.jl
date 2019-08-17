@@ -33,21 +33,31 @@ export PWscfInput, namelists, cards
     atomic_positions::AtomicPositionsCard
     k_points::KPointsCard
     cell_parameters::Union{Nothing,CellParametersCard} = nothing
-    function PWscfInput(
-        control::ControlNamelist,
-        system::SystemNamelist,
-        electrons::ElectronsNamelist,
-        ions::IonsNamelist,
-        cell::CellNamelist,
-        atomic_species::AtomicSpeciesCard,
-        atomic_positions::AtomicPositionsCard,
-        k_points::KPointsCard,
-        cell_parameters::Nothing
-    )
-        system.ibrav == 0 && error("Cannot specify `ibrav = 0` with an empty `cell_parameters`!")
-        new(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, bravais_lattice(system))
-    end
 end  # struct PWscfInput
+function PWscfInput(
+    control::ControlNamelist,
+    system::SystemNamelist,
+    electrons::ElectronsNamelist,
+    ions::IonsNamelist,
+    cell::CellNamelist,
+    atomic_species::AtomicSpeciesCard,
+    atomic_positions::AtomicPositionsCard,
+    k_points::KPointsCard,
+    cell_parameters::Nothing
+)
+    system.ibrav == 0 && error("Cannot specify `ibrav = 0` with an empty `cell_parameters`!")
+    return PWscfInput(
+        control,
+        system,
+        electrons,
+        ions,
+        cell,
+        atomic_species,
+        atomic_positions,
+        k_points,
+        bravais_lattice(system)
+    )
+end
 
 filter_field_by_supertype(obj, ::Type{T}) where {T} =
     filter(x -> isa(x, T), map(x -> getfield(obj, x), fieldnames(typeof(obj))) |> collect)
