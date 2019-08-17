@@ -33,7 +33,7 @@ export PWscfInput,
     atomic_species::AtomicSpeciesCard
     atomic_positions::AtomicPositionsCard
     k_points::KPointsCard
-    cell_parameters::CellParametersCard
+    cell_parameters::Union{Nothing,CellParametersCard} = nothing
 end  # struct PWscfInput
 
 filter_field_by_supertype(obj, ::Type{T}) where {T} = filter(x->isa(x, T), map(x->getfield(obj, x), fieldnames(typeof(obj))) |> collect)
