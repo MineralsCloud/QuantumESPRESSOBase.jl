@@ -1,3 +1,5 @@
+using QuantumESPRESSOBase.Namelists.PWscf
+
 export bravais_lattice
 
 bravais_lattice(nml::SystemNamelist) = bravais_lattice(nml.ibrav, nml.celldm)
