@@ -1,5 +1,5 @@
 """
-# module PW
+# module PWscf
 
 
 
@@ -9,7 +9,7 @@
 julia>
 ```
 """
-module PW
+module PWscf
 
 using Parameters: @with_kw
 
@@ -19,7 +19,9 @@ export ControlNamelist,
     SystemNamelist,
     ElectronsNamelist,
     IonsNamelist,
-    CellNamelist
+    CellNamelist,
+    DOSNamelist,
+    BandsNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -28,7 +30,7 @@ export ControlNamelist,
     verbosity::String = "low"
     restart_mode::String = "from_scratch"
     wf_collect::Bool = true
-    nstep::Int = 1
+    nstep::Int = 50
     iprint::Int = 100000
     tstress::Bool = false
     tprnfor::Bool = false
@@ -40,7 +42,7 @@ export ControlNamelist,
     max_seconds::Float64 = 10000000.0
     etot_conv_thr::Float64 = 0.0001
     forc_conv_thr::Float64 = 0.001
-    disk_io::String = "medium"
+    disk_io::String = "low"
     pseudo_dir::String = "$(ENV["HOME"])/espresso/pseudo/"
     tefield::Bool = false
     dipfield::Bool = false
@@ -52,11 +54,15 @@ export ControlNamelist,
     nppstr::Int = 0
     lfcpopt::Bool = false
     gate::Bool = false
+    @assert calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
+    @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
+    @assert restart_mode ∈ ("from_scratch", "restart")
+    @assert disk_io ∈ ("high", "medium", "low", "none")
 end  # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Union{Missing, Float64}} = zeros(6); @assert length(celldm) ≤ 6
+    celldm::Vector{Union{Missing, Float64}} = zeros(6)
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -151,6 +157,19 @@ end  # struct ControlNamelist
     block_1::Float64 = 0.45
     block_2::Float64 = 0.55
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
+    @assert length(celldm) ≤ 6
+    # @assert length(starting_charge) == ntyp
+    # @assert length(starting_magnetization) == ntyp
+    # @assert length(Hubbard_U) == ntyp
+    # @assert length(Hubbard_J0) == ntyp
+    # @assert length(Hubbard_alpha) == ntyp
+    # @assert length(Hubbard_beta) == ntyp
+    # @assert length(Hubbard_J) == ntyp
+    # @assert length(angle1) == ntyp
+    # @assert length(angle2) == ntyp
+    @assert length(fixed_magnetization) == 3
+    # @assert length(london_c6) == ntyp
+    # @assert length(london_rvdw) == ntyp
 end  # struct SystemNamelist
 
 @with_kw struct ElectronsNamelist <: Namelist
@@ -207,5 +226,33 @@ end  # struct IonsNamelist
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
 end  # struct CellNamelist
+
+# The following default values are picked from `<QE source>/PP/src/dos.f90`
+@with_kw struct DOSNamelist <: Namelist
+    prefix::String = "pwscf"
+    outdir::String = "./"
+    ngauss::Int = 0
+    degauss::Float64 = 0.0
+    Emin::Float64 = -1000000.0
+    Emax::Float64 = 1000000.0
+    DeltaE::Float64 = 0.01
+    fildos::String = "$(prefix).dos"
+end  # struct DOSNamelist
+
+# The following default values are picked from `<QE source>/PP/src/bands.f90`
+@with_kw struct BandsNamelist <: Namelist
+    prefix::String = "pwscf"
+    outdir::String = "./"
+    filband::String = "bands.out"
+    spin_component::Int = 1
+    lsigma::Vector{Union{Missing, Bool}} = falses(3)  # The default value in QE's source code is just one `false`
+    lp::Bool = false
+    filp::String = "p_avg.dat"
+    lsym::Bool = true
+    no_overlap::Bool = true
+    plot_2d::Bool = false
+    firstk::Int = 0
+    lastk::Int = 10000000
+end  # struct BandsNamelist
 
 end

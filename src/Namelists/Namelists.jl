@@ -18,7 +18,7 @@ using FilePaths: AbstractPath, extension, exists
 using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
 using MLStyle: @match
-using Parameters: type2dict
+using DataStructures: OrderedDict
 
 using QuantumESPRESSOBase: InputEntry
 
@@ -28,8 +28,21 @@ export Namelist, to_dict, dropdefault
 
 abstract type Namelist <: InputEntry end
 
-function to_dict(nml::Namelist)::Dict{Symbol,Any}
-    return type2dict(nml)
+"""
+    to_dict(nml; defaultorder = true)
+
+Convert a `Namelist` to a dictionary.
+
+# Arguments
+- `nml::Namelist`: the namelist to be converted.
+- `defaultorder::Bool = true`: whether or not use the default order of parameters in QE's docs.
+"""
+function to_dict(nml::Namelist; defaultorder::Bool = true)
+    dict = (defaultorder ? OrderedDict{Symbol,Any}() : Dict{Symbol,Any}())
+    for n in propertynames(nml)
+        dict[n] = getproperty(nml, n)
+    end
+    return dict
 end
 
 function dropdefault(nml::Namelist)
@@ -56,8 +69,9 @@ end # function Base.dump
 # ============================================================================ #
 #                                    Include                                   #
 # ============================================================================ #
-include("PW.jl")
-include("PH.jl")
+include("PWscf.jl")
+include("CP.jl")
+include("PHonon.jl")
 # ============================================================================ #
 
 end

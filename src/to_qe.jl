@@ -2,11 +2,11 @@ using Fortran90Namelists.JuliaToFortran: to_fortran
 using IterTools: fieldvalues
 
 using QuantumESPRESSOBase.Namelists
-using QuantumESPRESSOBase.Namelists.PW
+using QuantumESPRESSOBase.Namelists.PWscf
 using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PW
+using QuantumESPRESSOBase.Cards.PWscf
 using QuantumESPRESSOBase.Inputs
-using QuantumESPRESSOBase.Inputs.PW
+using QuantumESPRESSOBase.Inputs.PWscf
 
 export to_qe
 
@@ -23,25 +23,27 @@ export to_qe
 julia>
 ```
 """
-function to_qe(dict::AbstractDict; indent::AbstractString = "    ")::String
+function to_qe(dict::AbstractDict; indent::AbstractString = "    ", sep::AbstractString = " ")::String
     content = ""
+    f = string ∘ to_fortran
     for (key, value) in dict
         if value isa Vector
             for (i, x) in enumerate(value)
                 ismissing(x) && continue
-                content *= "$(indent)$(key)($i) = $(string(to_fortran(x)))\n"
+                content *= "$indent$key($i)$sep=$sep$(f(x))\n"
             end
         else
-            content *= "$(indent)$(key) = $(string(to_fortran(value)))\n"
+            content *= "$indent$key$sep=$sep$(f(value))\n"
         end
     end
     return content
 end
-function to_qe(nml::Namelist; indent::AbstractString = "    ")::String
+function to_qe(nml::Namelist; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false)::String
     namelist_name = (uppercase ∘ string ∘ name ∘ typeof)(nml)
-    content = """&$(namelist_name)
-    $(to_qe(dropdefault(nml); indent = indent))
-    /
+    f = verbose ? to_dict : dropdefault
+    inner_content = to_qe(f(nml); indent = indent, sep = sep)
+    content = """&$namelist_name
+    $inner_content/
     """
 end
 function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
@@ -90,17 +92,13 @@ function to_qe(card::KPointsCard; indent::AbstractString = "    ", sep::Abstract
     end
     return content
 end
-function to_qe(input::PWInput; indent::AbstractString = "    ", sep::AbstractString = " ", debug::Bool = true)::String
-    if debug
-        return join(map(to_qe, fieldvalues(input)), "\n")
-    else
-        str = ""
-        for namelist in namelists(input)
-            str *= to_qe(namelist)
-        end
-        for card in cards(input)
-            str *= to_qe(card)
-        end
-        return str
+function to_qe(input::PWscfInput; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false)::String
+    content = ""
+    for namelist in namelists(input)
+        content *= to_qe(namelist, indent = indent, sep = sep, verbose = verbose)
     end
+    for card in cards(input)
+        content *= to_qe(card, indent = indent, sep = sep)
+    end
+    return content
 end

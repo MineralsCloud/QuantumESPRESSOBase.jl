@@ -1,5 +1,5 @@
 using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PW
+using QuantumESPRESSOBase.Cards.PWscf
 
 export allowed_options
 
