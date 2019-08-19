@@ -12,7 +12,6 @@ julia>
 module PWscf
 
 using Compat: isnothing
-using IterTools: fieldvalues
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase: bravais_lattice
