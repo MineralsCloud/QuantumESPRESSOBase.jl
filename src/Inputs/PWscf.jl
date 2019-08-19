@@ -22,7 +22,7 @@ using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PWscf
 using QuantumESPRESSOBase.Inputs
 
-export PWscfInput, autogenerate_cell_parameters, namelists, cards
+export PWscfInput, autogenerate_cell_parameters, namelists, cards, compulsory_namelists, compulsory_cards
 
 @with_kw struct PWscfInput <: AbstractInput
     control::ControlNamelist = ControlNamelist()
@@ -53,5 +53,9 @@ filter_field_by_supertype(obj, ::Type{T}) where {T} =
 namelists(input::PWscfInput) = filter_field_by_supertype(input, Namelist)
 
 cards(input::PWscfInput) = filter_field_by_supertype(input, Card)
+
+compulsory_namelists(input::PWscfInput) = [getfield(input, x) for x in (:control, :system, :electrons)]
+
+compulsory_cards(input::PWscfInput) = [getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points)]
 
 end
