@@ -18,7 +18,7 @@ using QuantumESPRESSOBase.Namelists.PHonon
 using QuantumESPRESSOBase.Cards.PHonon
 using QuantumESPRESSOBase.Inputs
 
-export PhononInput, Q2RInput
+export PhononInput, Q2RInput, MatdynInput
 
 @with_kw struct PhononInput <: AbstractInput
     phonon::PhononNamelist = PhononNamelist()
@@ -31,6 +31,11 @@ end  # struct PhononInput
     grid::AbstractVector
     nqs::Int
     @assert length(grid) == 3
+end
+
+@with_kw struct MatdynInput <: AbstractInput
+    matdyn::MatdynNamelist = MatdynNamelist()
+    q_points::QPointsSpecsCard
 end
 
 end
