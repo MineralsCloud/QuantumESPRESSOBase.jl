@@ -23,6 +23,7 @@ export PhononInput
 @with_kw struct PhononInput <: AbstractInput
     phonon::PhononNamelist = PhononNamelist()
     q_points::QPointsSpecsCard
+    @assert phonon.qplot == true
 end  # struct PhononInput
 
 end
