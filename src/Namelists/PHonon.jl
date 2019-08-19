@@ -15,10 +15,10 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export INPUTPHNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
+export PhononNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
-@with_kw struct INPUTPHNamelist <: Namelist
+@with_kw struct PhononNamelist <: Namelist
     amass::Vector{Union{Missing, Float64}} = [0.0]
     outdir::String = "./"
     prefix::String = "pwscf"
@@ -75,7 +75,7 @@ export INPUTPHNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
     last_q::Int = -1000
     # dvscf_star::String = 1
     # drho_star::String = 1
-end  # struct INPUTPHNamelist
+end  # struct PhononNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
 @with_kw struct Q2RNamelist <: Namelist
