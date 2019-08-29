@@ -42,7 +42,7 @@ export ControlNamelist,
     max_seconds::Float64 = 10000000.0
     etot_conv_thr::Float64 = 0.0001
     forc_conv_thr::Float64 = 0.001
-    disk_io::String = "low"
+    disk_io::String = "default"  # THis is different from QE doc
     pseudo_dir::String = "$(ENV["HOME"])/espresso/pseudo/"
     tefield::Bool = false
     dipfield::Bool = false
@@ -78,7 +78,7 @@ end  # struct ControlNamelist
     starting_magnetization::Vector{Union{Missing, Float64}} = ones(ntyp)
     ecutwfc::Float64 = 0.0
     ecutrho::Float64 = 0.0
-    ecutfock::Float64 = -1.0
+    ecutfock::Float64 = ecutrho
     nr1::Int = 0
     nr2::Int = 0
     nr3::Int = 0
@@ -110,6 +110,7 @@ end  # struct ControlNamelist
     nqx1::Int = 1
     nqx2::Int = 1
     nqx3::Int = 1
+    localization_thr::Float64 = 0.0  # This is only for QE 6.4
     lda_plus_u::Bool = false
     lda_plus_u_kind::Int = 0
     Hubbard_U::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
@@ -192,8 +193,8 @@ end  # struct SystemNamelist
     efield::Float64 = 0.0
     efield_cart::Vector{Union{Missing, Float64}} = [0.0, 0.0, 0.0]
     efield_phase::String = "none"
-    startingpot::String = "atomic"
-    startingwfc::String = "atomic+random"
+    startingpot::String = "atomic"  # This depends on `calculation`
+    startingwfc::String = "atomic+random"  # This depends on `calculation`
     tqr::Bool = false
 end  # struct ElectronsNamelist
 
