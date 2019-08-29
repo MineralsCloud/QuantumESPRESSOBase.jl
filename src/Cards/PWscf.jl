@@ -67,9 +67,9 @@ end
     atom::A
     pos::B
     if_pos::C = [1, 1, 1]
-    @assert length(pos) == 3
-    @assert length(if_pos) == 3
-    @assert all(x in (0, 1) for x in if_pos) "`if_pos` must be either 0 or 1!"
+    @assert length(pos) == 3 "`pos` must be a three-element-vector! However it is of length $(length(pos))!"
+    @assert length(if_pos) == 3 "`if_pos` must be a three-element-vector! However it is of length $(length(if_pos))!"
+    @assert all(x ∈ (0, 1) for x in if_pos) "`if_pos` must be either 0 or 1!"
 end
 
 @with_kw struct AtomicPositionsCard{A <: AbstractString,B <: AbstractVector{<: AtomicPosition}} <: Card
@@ -97,16 +97,17 @@ abstract type KPoint end
 @with_kw struct MonkhorstPackGrid{A <: AbstractVector{Int},B <: AbstractVector{Int}} <: KPoint
     grid::A
     offsets::B
-    @assert length(grid) == 3
-    @assert length(offsets) == 3
-    @assert all(x ∈ (0, 1) for x in offsets)
+    @assert length(grid) == 3 "`grid` must be a three-element-vector! However it is of length $(length(grid))!"
+    @assert length(offsets) == 3 "`offsets` must be a three-element-vector! However it is of length $(length(offsets))!"
+    @assert all(x ∈ (0, 1) for x in offsets) "`offsets` must be either 0 or 1!"
 end
 
 struct GammaPoint <: KPoint end
 
 @with_kw struct SpecialKPoint{A <: AbstractVector{Float64},B <: Real} <: KPoint
-    coordinates::A; @assert length(coordinates) == 3
+    coordinates::A
     weight::B
+    @assert length(coordinates) == 3 "`coordinates` must be a three-element-vector! However it is of length $(length(coordinates))!"
 end
 
 @with_kw struct KPointsCard{A <: AbstractString,B <: AbstractVector{<: KPoint}} <: Card
