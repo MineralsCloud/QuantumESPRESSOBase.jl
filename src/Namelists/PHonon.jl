@@ -130,7 +130,6 @@ end  # struct MatdynNamelist
     q::Vector{Union{Missing,Float64}} = zeros(3)
     lperm::Bool = false
     lplasma::Bool = false
-    loto_2d::Bool = false
 end  # struct DynmatNamelist
 
 end
