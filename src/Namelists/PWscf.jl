@@ -42,8 +42,8 @@ export ControlNamelist,
     max_seconds::Float64 = 10000000.0
     etot_conv_thr::Float64 = 0.0001
     forc_conv_thr::Float64 = 0.001
-    disk_io::String = "default"  # THis is different from QE doc
-    pseudo_dir::String = "$(ENV["HOME"])/espresso/pseudo/"
+    disk_io::String = ifelse(calculation == "scf", "low", "medium")
+    pseudo_dir::String = raw"$HOME/espresso/pseudo/"
     tefield::Bool = false
     dipfield::Bool = false
     lelfield::Bool = false
