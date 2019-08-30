@@ -14,6 +14,7 @@ module Namelists
 # ============================================================================ #
 #                               Import and export                              #
 # ============================================================================ #
+import Compat
 using FilePaths: AbstractPath, extension, exists
 using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
@@ -59,11 +60,11 @@ function dropdefault(nml::Namelist)
 end
 
 """
-    Base.dump(path, nml::Namelist)
+    serialize(path, nml::Namelist)
 
 Serialize a `Namelist` to `path`. Currently, only JSON and YAML formats are supported.
 """
-function Base.dump(path::AbstractPath, nml::Namelist)
+function Compat.serialize(path::AbstractPath, nml::Namelist)
     exists(path) || touch(path)  # If the file does not exist, create one
     entries = Dict(key => to_fortran(value) for (key, value) in to_dict(nml))
     iswritable(path) || error("File $(path) is not writable!")
@@ -74,7 +75,7 @@ function Base.dump(path::AbstractPath, nml::Namelist)
             _ => error("Unknown extension type given!")
         end
     end
-end # function Base.dump
+end
 
 
 # ============================================================================ #
