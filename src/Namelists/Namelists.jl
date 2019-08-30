@@ -45,6 +45,11 @@ function to_dict(nml::Namelist; defaultorder::Bool = true)
     return dict
 end
 
+"""
+    dropdefault(nml::Namelist)
+
+Return an `AbstractDict` of non-default values of a `Namelist`.
+"""
 function dropdefault(nml::Namelist)
     default = typeof(nml)()
     result = filter!(item -> item.second != getfield(default, item.first), to_dict(nml))
@@ -52,6 +57,11 @@ function dropdefault(nml::Namelist)
     return result
 end
 
+"""
+    Base.dump(path, nml::Namelist)
+
+Serialize a `Namelist` to `path`. Currently, only JSON and YAML formats are supported.
+"""
 function Base.dump(path::AbstractPath, nml::Namelist)
     exists(path) || touch(path)
     entries = Dict(key => to_fortran(value) for (key, value) in to_dict(nml))
