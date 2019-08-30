@@ -23,6 +23,22 @@ using QuantumESPRESSOBase.Inputs
 
 export PWscfInput, autofill_cell_parameters, namelists, cards, compulsory_namelists, compulsory_cards
 
+"""
+    PWscfInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
+
+Construct a `PWscfInput` which represents the input of program `pw.x`.
+
+# Arguments
+- `control::ControlNamelist=ControlNamelist()`: the `CONTROL` namelist of the input. Optional.
+- `system::SystemNamelist=SystemNamelist()`: the `SYSTEM` namelist of the input. Optional.
+- `electrons::ElectronsNamelist=ElectronsNamelist()`: the `ELECTRONS` namelist of the input. Optional.
+- `ions::IonsNamelist=IonsNamelist()`: the `IONS` namelist of the input. Optional.
+- `cell::CellNamelist=CellNamelist()`: the `CELL` namelist of the input. Optional.
+- `atomic_species::AtomicSpeciesCard`: the `ATOMIC_SPECIES` card of the input. Must be provided explicitly.
+- `atomic_positions::AtomicPositionsCard`: the `ATOMIC_POSITIONS` card of the input. Must be provided explicitly.
+- `k_points::KPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
+- `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
+"""
 @with_kw struct PWscfInput <: AbstractInput
     control::ControlNamelist = ControlNamelist()
     system::SystemNamelist = SystemNamelist()
