@@ -43,7 +43,7 @@ Generate automatically a `CellParametersCard` for a `PWscfInput` if its `cell_pa
 
 Sometimes the `ibrav` field of a `PWscfInput` is not `0`, with its `cell_parameters` field to be empty.
 But there are cases we want to write its `CellParametersCard` explicitly. This function will take a `PWscfInput` described
-above and generate a new `PWscfInput` with its `ibrav == 0` and `cell_parameters` not empty.
+above and generate a new `PWscfInput` with its `ibrav = 0` and `cell_parameters` not empty.
 """
 function autogenerate_cell_parameters(obj::PWscfInput)
     return reconstruct(
