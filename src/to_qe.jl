@@ -11,17 +11,9 @@ using QuantumESPRESSOBase.Inputs.PWscf
 export to_qe
 
 """
-    to_qe()
+    to_qe(x, indent::AbstractString = "    ", sep::AbstractString = " ")
 
-
-
-# Arguments
-
-# Examples
-
-```jldoctest
-julia>
-```
+Return a string representing the object, valid form Quantum ESPRESSO's input.
 """
 function to_qe(dict::AbstractDict; indent::AbstractString = "    ", sep::AbstractString = " ")::String
     content = ""

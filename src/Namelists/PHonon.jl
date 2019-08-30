@@ -75,7 +75,7 @@ export PhononNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
     last_q::Int = -1000
     # dvscf_star::String = 1
     # drho_star::String = 1
-end  # struct PhononNamelist
+end # struct PhononNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
 @with_kw struct Q2RNamelist <: Namelist
@@ -83,7 +83,7 @@ end  # struct PhononNamelist
     flfrc::String = " "
     loto_2d::Bool = false
     zasr::String = "no"
-end  # struct Q2RNamelist
+end # struct Q2RNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
 @with_kw struct MatdynNamelist <: Namelist
@@ -116,7 +116,7 @@ end  # struct Q2RNamelist
     fd::Bool = false
     nosym::Bool = false
     loto_2d::Bool = false
-end  # struct MatdynNamelist
+end # struct MatdynNamelist
 
 @with_kw struct DynmatNamelist <: Namelist
     asr::String = "no"
@@ -130,6 +130,6 @@ end  # struct MatdynNamelist
     q::Vector{Union{Missing,Float64}} = zeros(3)
     lperm::Bool = false
     lplasma::Bool = false
-end  # struct DynmatNamelist
+end # struct DynmatNamelist
 
 end
