@@ -21,7 +21,7 @@ using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PWscf
 using QuantumESPRESSOBase.Inputs
 
-export PWscfInput, autogenerate_cell_parameters, namelists, cards, compulsory_namelists, compulsory_cards
+export PWscfInput, autofill_cell_parameters, namelists, cards, compulsory_namelists, compulsory_cards
 
 @with_kw struct PWscfInput <: AbstractInput
     control::ControlNamelist = ControlNamelist()
@@ -37,7 +37,7 @@ export PWscfInput, autogenerate_cell_parameters, namelists, cards, compulsory_na
 end  # struct PWscfInput
 
 """
-    autogenerate_cell_parameters(obj::PWscfInput)
+    autofill_cell_parameters(obj::PWscfInput)
 
 Generate automatically a `CellParametersCard` for a `PWscfInput` if its `cell_parameters` field is `nothing`.
 
@@ -45,7 +45,7 @@ Sometimes the `ibrav` field of a `PWscfInput` is not `0`, with its `cell_paramet
 But there are cases we want to write its `CellParametersCard` explicitly. This function will take a `PWscfInput` described
 above and generate a new `PWscfInput` with its `ibrav = 0` and `cell_parameters` not empty.
 """
-function autogenerate_cell_parameters(obj::PWscfInput)
+function autofill_cell_parameters(obj::PWscfInput)
     return reconstruct(
         obj,
         Dict(
@@ -53,7 +53,7 @@ function autogenerate_cell_parameters(obj::PWscfInput)
             :cell_parameters => reconstruct(obj.cell_parameters, data = bravais_lattice(system))
         )
     )
-end # function autogenerate_cell_parameters
+end # function autofill_cell_parameters
 
 """
     filter_field_by_supertype(obj, ::Type)
