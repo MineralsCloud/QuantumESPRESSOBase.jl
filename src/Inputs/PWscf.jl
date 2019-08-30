@@ -12,7 +12,7 @@ julia>
 module PWscf
 
 using Compat: isnothing
-using Parameters: @with_kw
+using Parameters: @with_kw, reconstruct
 
 using QuantumESPRESSOBase: bravais_lattice
 using QuantumESPRESSOBase.Namelists
