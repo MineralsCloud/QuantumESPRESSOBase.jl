@@ -34,7 +34,7 @@ export PWscfInput, autofill_cell_parameters, namelists, cards, compulsory_nameli
     k_points::KPointsCard
     cell_parameters::Union{Nothing,CellParametersCard}
     @assert !(isnothing(cell_parameters) && system.ibrav == 0) "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
-end  # struct PWscfInput
+end # struct PWscfInput
 
 """
     autofill_cell_parameters(obj::PWscfInput)

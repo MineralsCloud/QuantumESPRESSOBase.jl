@@ -58,7 +58,7 @@ export ControlNamelist,
     @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
     @assert restart_mode ∈ ("from_scratch", "restart")
     @assert disk_io ∈ ("high", "medium", "low", "none")
-end  # struct ControlNamelist
+end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
@@ -171,7 +171,7 @@ end  # struct ControlNamelist
     @assert length(fixed_magnetization) == 3
     # @assert length(london_c6) == ntyp
     # @assert length(london_rvdw) == ntyp
-end  # struct SystemNamelist
+end # struct SystemNamelist
 
 @with_kw struct ElectronsNamelist <: Namelist
     electron_maxstep::Int = 100
@@ -196,7 +196,7 @@ end  # struct SystemNamelist
     startingpot::String = "atomic"  # This depends on `calculation`
     startingwfc::String = "atomic+random"  # This depends on `calculation`
     tqr::Bool = false
-end  # struct ElectronsNamelist
+end # struct ElectronsNamelist
 
 @with_kw struct IonsNamelist <: Namelist
     ion_dynamics::String = "none"
@@ -217,7 +217,7 @@ end  # struct ElectronsNamelist
     trust_radius_ini::Float64 = 0.5
     w_1::Float64 = 0.01
     w_2::Float64 = 0.5
-end  # struct IonsNamelist
+end # struct IonsNamelist
 
 @with_kw struct CellNamelist <: Namelist
     cell_dynamics::String = "none"
@@ -226,7 +226,7 @@ end  # struct IonsNamelist
     cell_factor::Float64 = 0.0
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
-end  # struct CellNamelist
+end # struct CellNamelist
 
 # The following default values are picked from `<QE source>/PP/src/dos.f90`
 @with_kw struct DOSNamelist <: Namelist
@@ -238,7 +238,7 @@ end  # struct CellNamelist
     Emax::Float64 = 1000000.0
     DeltaE::Float64 = 0.01
     fildos::String = "$(prefix).dos"
-end  # struct DOSNamelist
+end # struct DOSNamelist
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
 @with_kw struct BandsNamelist <: Namelist
@@ -254,6 +254,6 @@ end  # struct DOSNamelist
     plot_2d::Bool = false
     firstk::Int = 0
     lastk::Int = 10000000
-end  # struct BandsNamelist
+end # struct BandsNamelist
 
 end

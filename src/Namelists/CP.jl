@@ -43,7 +43,7 @@ export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNam
     memory::String = "default"
     pseudo_dir::String = "$(ENV["HOME"])/espresso/pseudo/"
     tefield::Bool = false
-end  # struct ControlNamelist
+end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
@@ -88,7 +88,7 @@ end  # struct ControlNamelist
     ts_vdw_econv_thr::Float64 = 1e-6
     ts_vdw_isolated::Bool = false
     assume_isolated::Bool = "none"
-end  # struct SystemNamelist
+end # struct SystemNamelist
 
 @with_kw struct ElectronsNamelist <: Namelist
     electron_maxstep::Int = 100
@@ -117,7 +117,7 @@ end  # struct SystemNamelist
     lambda_cold::Float64 = 0.03
     grease::Float64 = 1.0
     ampre::Float64 = 0.0
-end  # struct ElectronsNamelist
+end # struct ElectronsNamelist
 
 @with_kw struct IonsNamelist <: Namelist
     ion_dynamics::String = "none"
@@ -140,7 +140,7 @@ end  # struct ElectronsNamelist
     tranp::Vector{Union{Missing, Bool}} = falses(1)
     amprp::Vector{Union{Missing, Float64}} = zeros(1)
     greasp::Float64 = 1.0
-end  # struct IonsNamelist
+end # struct IonsNamelist
 
 @with_kw struct CellNamelist <: Namelist
     cell_parameters::String = "default"
@@ -155,7 +155,7 @@ end  # struct IonsNamelist
     fnoseh::Float64 = 1.0
     greash::Float64 = 1.0
     cell_dofree::String = "all"
-end  # struct CellNamelist
+end # struct CellNamelist
 
 @with_kw struct PressAiNamelist <: Namelist
     abivol::Bool = false
@@ -167,7 +167,7 @@ end  # struct CellNamelist
     Surf_t::Float64 = 0.0
     rho_thr::Float64 = 0.0
     dthr::Float64 = 0.0
-end  # struct PressAiNamelist
+end # struct PressAiNamelist
 
 @with_kw struct WannierNamelist <: Namelist
     wf_efield::Bool = false
@@ -200,6 +200,6 @@ end  # struct PressAiNamelist
     exx_ps_rcut_pair::Float64 = 5.0
     exx_me_rcut_self::Float64 = 10.0
     exx_me_rcut_pair::Float64 = 7.0
-end  # struct WannierNamelist
+end # struct WannierNamelist
 
 end
