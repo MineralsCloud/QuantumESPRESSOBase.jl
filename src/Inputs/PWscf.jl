@@ -72,11 +72,11 @@ function autofill_cell_parameters(obj::PWscfInput)
 end # function autofill_cell_parameters
 
 """
-    filter_field_by_supertype(obj, ::Type)
+    filterfields(obj, ::Type)
 
 A helper function to implement `namelists` and `cards`. It should not be exported.
 """
-filter_field_by_supertype(obj, ::Type{T}) where {T} =
+filterfields(obj, ::Type{T}) where {T} =
     filter(x -> isa(x, T), map(x -> getfield(obj, x), fieldnames(typeof(obj))) |> collect)
 
 """
@@ -84,14 +84,14 @@ filter_field_by_supertype(obj, ::Type{T}) where {T} =
 
 Return a vector of `Namelist`s of a `PWscfInput`.
 """
-namelists(input::PWscfInput) = filter_field_by_supertype(input, Namelist)
+namelists(input::PWscfInput) = filterfields(input, Namelist)
 
 """
     cards(input::PWscfInput)
 
 Return a vector of `Card`s of a `PWscfInput`.
 """
-cards(input::PWscfInput) = filter_field_by_supertype(input, Card)
+cards(input::PWscfInput) = filterfields(input, Card)
 
 """
     compulsory_namelists(input::PWscfInput)
