@@ -4,16 +4,22 @@ using QuantumESPRESSOBase.Cards.PWscf
 export allowed_options
 
 """
-    allowed_options()
+    allowed_options(T::Type{<: Card})
 
-
-
-# Arguments
+Return the allowed options for `Card` `T`.
 
 # Examples
-
 ```jldoctest
-julia>
+julia> using QuantumESPRESSOBase.Cards, QuantumESPRESSOBase.Cards.PWscf
+
+julia> allowed_options(AtomicPositionsCard)
+("alat", "bohr", "angstrom", "crystal", "crystal_sg")
+
+julia> allowed_options(CellParametersCard)
+("alat", "bohr", "angstrom")
+
+julia> allowed_options(KPointsCard)
+("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 ```
 """
 allowed_options(::Type{<: Card}) = nothing
