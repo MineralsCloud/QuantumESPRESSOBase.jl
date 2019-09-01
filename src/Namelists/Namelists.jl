@@ -16,11 +16,11 @@ module Namelists
 # ============================================================================ #
 import Serialization
 
+using DataStructures: OrderedDict
 using FilePaths: AbstractPath, extension, exists
 using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
 using MLStyle: @match
-using DataStructures: OrderedDict
 
 using QuantumESPRESSOBase: InputEntry
 

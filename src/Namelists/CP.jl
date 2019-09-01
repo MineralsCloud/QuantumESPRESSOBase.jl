@@ -47,7 +47,8 @@ end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Union{Missing, Float64}} = zeros(6); @assert length(celldm) ≤ 6
+    celldm::Vector{Union{Missing,Float64}} = zeros(6)
+    @assert length(celldm) ≤ 6
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -80,7 +81,7 @@ end # struct ControlNamelist
     input_dft::String = "none"
     exx_fraction::Float64 = 0.25
     lda_plus_u::Bool = false
-    Hubbard_U::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_U::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
     vdw_corr::String = "none"
     london_s6::Float64 = 0.75
     london_rcut::Float64 = 200.0
@@ -124,7 +125,7 @@ end # struct ElectronsNamelist
     ion_positions::String = "default"
     ion_velocities::String = "default"
     ion_damping::Float64 = 0.2
-    ion_radius::Vector{Union{Missing, Float64}} = [0.5]  # The default value in QE's source code is just one 0.5
+    ion_radius::Vector{Union{Missing,Float64}} = [0.5]  # The default value in QE's source code is just one 0.5
     iesr::Int = 1
     ion_nstepe::Int = 1
     remove_rigid_rot::Bool = false
@@ -134,11 +135,11 @@ end # struct ElectronsNamelist
     tolp::Float64 = 100.0
     nhpcl::Int = 1
     nhptyp::Int = 0
-    nhgrp::Vector{Union{Missing, Int}} = [0]
-    fnhscl::Vector{Union{Missing, Float64}} = zeros(1)
+    nhgrp::Vector{Union{Missing,Int}} = [0]
+    fnhscl::Vector{Union{Missing,Float64}} = zeros(1)
     ndega::Int = 0
-    tranp::Vector{Union{Missing, Bool}} = falses(1)
-    amprp::Vector{Union{Missing, Float64}} = zeros(1)
+    tranp::Vector{Union{Missing,Bool}} = falses(1)
+    amprp::Vector{Union{Missing,Float64}} = zeros(1)
     greasp::Float64 = 1.0
 end # struct IonsNamelist
 

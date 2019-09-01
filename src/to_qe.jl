@@ -84,7 +84,10 @@ function to_qe(card::KPointsCard; indent::AbstractString = "    ", sep::Abstract
     end
     return content
 end
-function to_qe(input::PWscfInput; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false)::String
+function to_qe(
+    input::PWscfInput;
+    indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false
+)::String
     content = ""
     for namelist in namelists(input)
         content *= to_qe(namelist, indent = indent, sep = sep, verbose = verbose)

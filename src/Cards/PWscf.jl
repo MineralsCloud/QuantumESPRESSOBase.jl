@@ -31,7 +31,7 @@ export AtomicSpecies,
     pseudopotential_format
 
 # =============================== AtomicSpecies ============================== #
-struct AtomicSpecies{A <: AbstractString,B <: Real,C <: AbstractString}
+struct AtomicSpecies{A<:AbstractString,B<:Real,C<:AbstractString}
     atom::A
     mass::B
     pseudopotential::C
@@ -57,13 +57,13 @@ function pseudopotential_format(data::AtomicSpecies)::String
     end
 end
 
-struct AtomicSpeciesCard{T <: AbstractVector{<: AtomicSpecies}} <: Card
+struct AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
     data::T
 end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{A <: AbstractString,B <: AbstractVector{<: Real},C <: AbstractVector{Int}}
+@with_kw struct AtomicPosition{A<:AbstractString,B<:AbstractVector{<:Real},C<:AbstractVector{Int}}
     atom::A
     pos::B
     if_pos::C = [1, 1, 1]
@@ -72,7 +72,7 @@ end
     @assert all(x ∈ (0, 1) for x in if_pos) "`if_pos` must be either 0 or 1!"
 end
 
-@with_kw struct AtomicPositionsCard{A <: AbstractString,B <: AbstractVector{<: AtomicPosition}} <: Card
+@with_kw struct AtomicPositionsCard{A<:AbstractString,B<:AbstractVector{<:AtomicPosition}} <: Card
     option::A = "alat"; @assert option in allowed_options(AtomicPositionsCard)
     data::B
 end
@@ -85,7 +85,7 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{A <: AbstractString,B <: AbstractMatrix} <: Card
+@with_kw struct CellParametersCard{A<:AbstractString,B<:AbstractMatrix} <: Card
     option::A = "alat"; @assert option in allowed_options(CellParametersCard)
     data::B; @assert size(data) == (3, 3)
 end
@@ -94,7 +94,7 @@ end
 # ================================== KPoint ================================== #
 abstract type KPoint end
 
-@with_kw struct MonkhorstPackGrid{A <: AbstractVector{Int},B <: AbstractVector{Int}} <: KPoint
+@with_kw struct MonkhorstPackGrid{A<:AbstractVector{Int},B<:AbstractVector{Int}} <: KPoint
     grid::A
     offsets::B
     @assert length(grid) == 3 "`grid` must be a three-element-vector! However it is of length $(length(grid))!"
@@ -104,13 +104,13 @@ end
 
 struct GammaPoint <: KPoint end
 
-@with_kw struct SpecialKPoint{A <: AbstractVector{Float64},B <: Real} <: KPoint
+@with_kw struct SpecialKPoint{A<:AbstractVector{Float64},B<:Real} <: KPoint
     coordinates::A
     weight::B
     @assert length(coordinates) == 3 "`coordinates` must be a three-element-vector! However it is of length $(length(coordinates))!"
 end
 
-@with_kw struct KPointsCard{A <: AbstractString,B <: AbstractVector{<: KPoint}} <: Card
+@with_kw struct KPointsCard{A<:AbstractString,B<:AbstractVector{<:KPoint}} <: Card
     option::A = "tpiba"; @assert option in allowed_options(KPointsCard)
     data::B
     @assert begin
