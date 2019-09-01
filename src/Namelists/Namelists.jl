@@ -17,7 +17,6 @@ module Namelists
 import Serialization
 
 using DataStructures: OrderedDict
-using FilePaths: AbstractPath, extension, exists
 using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
 using MLStyle: @match
@@ -65,14 +64,14 @@ end
 
 Serialize a `Namelist` to `path`. Currently, only JSON and YAML formats are supported.
 """
-function Serialization.serialize(path::AbstractPath, nml::Namelist)
-    exists(path) || touch(path)  # If the file does not exist, create one
+function Serialization.serialize(path::AbstractString, nml::Namelist)
+    isfile(path) || touch(path)  # If the file does not exist, create one
     entries = Dict(key => to_fortran(value) for (key, value) in to_dict(nml))
-    iswritable(path) || error("File $(path) is not writable!")
+    @assert iswritable(path) "File $(path) is not writable!"
     open(path, "r+") do io
-        @match extension(path) begin  # If the extension of the file is:
-            "json" => JSON.print(io, entries)
-            "yaml" || "yml" => @warn "Currently not supported!"
+        @match splitext(path)[2] begin  # If the extension of the file is:
+            ".json" => JSON.print(io, entries)
+            ".yaml" || ".yml" => @warn "Currently not supported!"
             _ => error("Unknown extension type given!")
         end
     end
