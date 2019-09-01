@@ -73,8 +73,9 @@ end
 end
 
 @with_kw struct AtomicPositionsCard{A<:AbstractString,B<:AbstractVector{<:AtomicPosition}} <: Card
-    option::A = "alat"; @assert option in allowed_options(AtomicPositionsCard)
+    option::A = "alat"
     data::B
+    @assert option in allowed_options(AtomicPositionsCard)
 end
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
@@ -86,8 +87,10 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 
 # ============================== CellParameters ============================== #
 @with_kw struct CellParametersCard{A<:AbstractString,B<:AbstractMatrix} <: Card
-    option::A = "alat"; @assert option in allowed_options(CellParametersCard)
-    data::B; @assert size(data) == (3, 3)
+    option::A = "alat"
+    data::B
+    @assert option in allowed_options(CellParametersCard)
+    @assert size(data) == (3, 3)
 end
 # ============================================================================ #
 
@@ -111,8 +114,9 @@ struct GammaPoint <: KPoint end
 end
 
 @with_kw struct KPointsCard{A<:AbstractString,B<:AbstractVector{<:KPoint}} <: Card
-    option::A = "tpiba"; @assert option in allowed_options(KPointsCard)
+    option::A = "tpiba"
     data::B
+    @assert option in allowed_options(KPointsCard)
     @assert begin
         @match option begin
             "automatic" => eltype(data) <: MonkhorstPackGrid
