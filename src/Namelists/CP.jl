@@ -41,7 +41,7 @@ export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNam
     ekin_conv_thr::Float64 = 1e-6
     disk_io::String = "default"
     memory::String = "default"
-    pseudo_dir::String = "$(ENV["HOME"])/espresso/pseudo/"
+    pseudo_dir::String = raw"$HOME/espresso/pseudo/"
     tefield::Bool = false
 end # struct ControlNamelist
 
