@@ -48,7 +48,6 @@ end # struct ControlNamelist
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
     celldm::Vector{Union{Missing,Float64}} = zeros(6)
-    @assert length(celldm) ≤ 6
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -89,6 +88,7 @@ end # struct ControlNamelist
     ts_vdw_econv_thr::Float64 = 1e-6
     ts_vdw_isolated::Bool = false
     assume_isolated::Bool = "none"
+    @assert length(celldm) ≤ 6
 end # struct SystemNamelist
 
 @with_kw struct ElectronsNamelist <: Namelist

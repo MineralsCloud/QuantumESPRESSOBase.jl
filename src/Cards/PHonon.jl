@@ -22,8 +22,8 @@ abstract type QPoint end
 
 @with_kw struct SpecialQPoint{A<:AbstractVector{Float64},B<:Real} <: QPoint
     coordinates::A
-    @assert length(coordinates) == 3
     weight::B
+    @assert length(coordinates) == 3
 end
 
 struct QPointsSpecsCard{A<:AbstractVector{SpecialQPoint}} <: Card
