@@ -34,8 +34,8 @@ export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNam
     prefix::String = "pwscf"
     lkpoint_dir::Bool = true
     max_seconds::Float64 = 10000000.0
-    etot_conv_thr::Float64 = 0.0001
-    forc_conv_thr::Float64 = 0.001
+    etot_conv_thr::Float64 = 1e-4
+    forc_conv_thr::Float64 = 1e-3
     disk_io::String = ifelse(calculation == "scf", "low", "medium")
     pseudo_dir::String = raw"$HOME/espresso/pseudo/"
     tefield::Bool = false
@@ -170,9 +170,9 @@ end # struct SystemNamelist
 @with_kw struct ElectronsNamelist <: Namelist
     electron_maxstep::Int = 100
     scf_must_converge::Bool = true
-    conv_thr::Float64 = 1e-06
+    conv_thr::Float64 = 1e-6
     adaptive_thr::Bool = false
-    conv_thr_init::Float64 = 0.001
+    conv_thr_init::Float64 = 1e-3
     conv_thr_multi::Float64 = 0.1
     mixing_mode::String = "plain"
     mixing_beta::Float64 = 0.7
@@ -207,7 +207,7 @@ end # struct ElectronsNamelist
     upscale::Float64 = 100.0
     bfgs_ndim::Int = 1
     trust_radius_max::Float64 = 0.8
-    trust_radius_min::Float64 = 0.001  # The default value in QE's source code is 0.0001
+    trust_radius_min::Float64 = 1e-3  # The default value in QE's source code is 0.0001
     trust_radius_ini::Float64 = 0.5
     w_1::Float64 = 0.01
     w_2::Float64 = 0.5
