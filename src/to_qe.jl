@@ -1,5 +1,4 @@
 using Fortran90Namelists.JuliaToFortran: to_fortran
-using IterTools: fieldvalues
 
 using QuantumESPRESSOBase.Namelists
 using QuantumESPRESSOBase.Namelists.PWscf
@@ -39,7 +38,7 @@ function to_qe(nml::Namelist; indent::AbstractString = "    ", sep::AbstractStri
     """
 end
 function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
-    return join(map(string, fieldvalues(data)), sep)
+    return join(map(string, [getfield(data, i) for i in 1:nfields(data)]), sep)
 end
 function to_qe(card::AtomicSpeciesCard; indent::AbstractString = "    ", sep::AbstractString = " ")::String
     """
