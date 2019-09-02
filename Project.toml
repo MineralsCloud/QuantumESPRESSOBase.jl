@@ -6,7 +6,6 @@ version = "0.1.0"
 [deps]
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-FilePaths = "8fc22ac5-c921-52a6-82fd-178b2807b824"
 Fortran90Namelists = "8fb689aa-71ff-4044-8071-0cffc910b57d"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 MLStyle = "d8e11817-5142-5d16-987a-aa16d5891078"
