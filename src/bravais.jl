@@ -41,25 +41,23 @@ bravais_lattice(::Val{4}, celldm::AbstractVector{Union{Missing, Float64}}) = cel
 ]
 function bravais_lattice(::Val{5}, celldm::AbstractVector{Union{Missing, Float64}})
     c = cellem[3]
-    tx = sqrt((1-c)/2)
-    ty = sqrt((1-c)/6)
-    tz = sqrt((1+2c)/3)
-    return
-    celldm[1] * [
+    tx = sqrt((1 - c)/2)
+    ty = sqrt((1 - c)/6)
+    tz = sqrt((1 + 2c)/3)
+    return celldm[1] * [
     tx  -ty  tz
-    0  2ty   tz
-    -tx  -ty tz
+    0   2ty  tz
+    -tx -ty  tz
 ]
 end
 function bravais_lattice(::Val{-5}, celldm::AbstractVector{Union{Missing, Float64}})
     ap = celldm[1] / sqrt(3)
     c = cellem[3]
-    ty = sqrt((1-c)/6)
-    tz = sqrt((1+2c)/3)
-    u = tz - 2*sqrt(2)*ty
-    v = tz + sqrt(2)*ty
-    retrun
-    ap * [
+    ty = sqrt((1 - c)/6)
+    tz = sqrt((1 + 2c)/3)
+    u = tz - 2sqrt(2) * ty
+    v = tz + sqrt(2) * ty
+    retrun ap * [
     u  v  v
     v  u  v
     v  v  u
@@ -123,10 +121,10 @@ bravais_lattice(::Val{13}, celldm::AbstractVector{Union{Missing, Float64}}) = ce
 bravais_lattice(::Val{-13}, celldm::AbstractVector{Union{Missing, Float64}}) = celldm[1] * [
            1/2                 -celldm[2]/2                      0
            1/2                  celldm[2]/2                      0
-    celldm[3]*celldm[5]              0             celldm[3]*sqrt(1-celldm[5]^2)
+    celldm[3] * celldm[5]            0             celldm[3] * sqrt(1-celldm[5]^2)
 ]
 bravais_lattice(::Val{14}, celldm::AbstractVector{Union{Missing, Float64}}) = celldm[1] * [
-             1                                    0                                                                                  0
-    celldm[2]*celldm[6]              celldm[2]* sqrt(1-celldm[6]^2)                                                                   0
-    celldm[3]*celldm[5]  celldm[3]*(celldm[4]-celldm[5]*celldm[6])/sqrt(1-celldm[6]^2)   celldm[3] * sqrt(1 + 2*celldm[4]*celldm[5]*celldm[6] - celldm[4]^2 - celldm[5]^2 - celldm[6]^2) / sqrt(1-celldm[6]^2)
+             1                                    0                                                0
+    celldm[2] * celldm[6]              celldm[2] * sqrt(1 - celldm[6]^2)                              0
+    celldm[3] * celldm[5]  celldm[3]*(celldm[4] - celldm[5]*celldm[6])/sqrt(1 - celldm[6]^2)   celldm[3] * sqrt(1 + 2celldm[4]*celldm[5]*celldm[6] - celldm[4]^2 - celldm[5]^2 - celldm[6]^2)/sqrt(1 - celldm[6]^2)
 ]
