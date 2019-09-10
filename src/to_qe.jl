@@ -1,5 +1,4 @@
 using Fortran90Namelists.JuliaToFortran: to_fortran
-using IterTools: fieldvalues
 
 using QuantumESPRESSOBase.Namelists
 using QuantumESPRESSOBase.Namelists.PWscf
@@ -11,17 +10,9 @@ using QuantumESPRESSOBase.Inputs.PWscf
 export to_qe
 
 """
-    to_qe()
+    to_qe(x, indent::AbstractString = "    ", sep::AbstractString = " ")
 
-
-
-# Arguments
-
-# Examples
-
-```jldoctest
-julia>
-```
+Return a string representing the object, valid form Quantum ESPRESSO's input.
 """
 function to_qe(dict::AbstractDict; indent::AbstractString = "    ", sep::AbstractString = " ")::String
     content = ""
@@ -47,7 +38,7 @@ function to_qe(nml::Namelist; indent::AbstractString = "    ", sep::AbstractStri
     """
 end
 function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
-    return join(map(string, fieldvalues(data)), sep)
+    return join(map(string, [getfield(data, i) for i in 1:nfields(data)]), sep)
 end
 function to_qe(card::AtomicSpeciesCard; indent::AbstractString = "    ", sep::AbstractString = " ")::String
     """
@@ -92,7 +83,10 @@ function to_qe(card::KPointsCard; indent::AbstractString = "    ", sep::Abstract
     end
     return content
 end
-function to_qe(input::PWscfInput; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false)::String
+function to_qe(
+    input::PWscfInput;
+    indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false
+)::String
     content = ""
     for namelist in namelists(input)
         content *= to_qe(namelist, indent = indent, sep = sep, verbose = verbose)

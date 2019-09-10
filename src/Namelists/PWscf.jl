@@ -15,13 +15,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export ControlNamelist,
-    SystemNamelist,
-    ElectronsNamelist,
-    IonsNamelist,
-    CellNamelist,
-    DOSNamelist,
-    BandsNamelist
+export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist, DOSNamelist, BandsNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -40,10 +34,10 @@ export ControlNamelist,
     prefix::String = "pwscf"
     lkpoint_dir::Bool = true
     max_seconds::Float64 = 10000000.0
-    etot_conv_thr::Float64 = 0.0001
-    forc_conv_thr::Float64 = 0.001
-    disk_io::String = "low"
-    pseudo_dir::String = "$(ENV["HOME"])/espresso/pseudo/"
+    etot_conv_thr::Float64 = 1e-4
+    forc_conv_thr::Float64 = 1e-3
+    disk_io::String = ifelse(calculation == "scf", "low", "medium")
+    pseudo_dir::String = raw"$HOME/espresso/pseudo/"
     tefield::Bool = false
     dipfield::Bool = false
     lelfield::Bool = false
@@ -57,12 +51,12 @@ export ControlNamelist,
     @assert calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
     @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
     @assert restart_mode ∈ ("from_scratch", "restart")
-    @assert disk_io ∈ ("high", "medium", "low", "none")
-end  # struct ControlNamelist
+    @assert disk_io ∈ ("high", "medium", "low", "none", "default")
+end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Union{Missing, Float64}} = zeros(6)
+    celldm::Vector{Union{Missing,Float64}} = zeros(6)
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -73,12 +67,12 @@ end  # struct ControlNamelist
     ntyp::Int = 0
     nbnd::Int = 0
     tot_charge::Float64 = 0.0
-    starting_charge::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    starting_charge::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
     tot_magnetization::Float64 = -1.0
-    starting_magnetization::Vector{Union{Missing, Float64}} = ones(ntyp)
+    starting_magnetization::Vector{Union{Missing,Float64}} = ones(ntyp)
     ecutwfc::Float64 = 0.0
     ecutrho::Float64 = 0.0
-    ecutfock::Float64 = -1.0
+    ecutfock::Float64 = ecutrho
     nr1::Int = 0
     nr2::Int = 0
     nr3::Int = 0
@@ -110,23 +104,24 @@ end  # struct ControlNamelist
     nqx1::Int = 1
     nqx2::Int = 1
     nqx3::Int = 1
+    localization_thr::Float64 = 0.0  # This is only for QE 6.4
     lda_plus_u::Bool = false
     lda_plus_u_kind::Int = 0
-    Hubbard_U::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    Hubbard_J0::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    Hubbard_alpha::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    Hubbard_beta::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    Hubbard_J::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_U::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_J0::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_alpha::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_beta::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_J::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
     starting_ns_eigenvalue::Float64 = -1.0
     U_projection_type::String = "atomic"
     edir::Int = 1
     emaxpos::Float64 = 0.5
     eopreg::Float64 = 0.1
     eamp::Float64 = 0.001  # The default value in QE's source code is 0.0
-    angle1::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    angle2::Vector{Union{Missing, Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    angle1::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    angle2::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
     constrained_magnetization::String = "none"
-    fixed_magnetization::Vector{Union{Missing, Float64}} = zeros(3)  # The default value in QE's source code is just one 0.0
+    fixed_magnetization::Vector{Union{Missing,Float64}} = zeros(3)  # The default value in QE's source code is just one 0.0
     lambda::Float64 = 1.0
     report::Int = 100
     lspinorb::Bool = false
@@ -139,8 +134,8 @@ end  # struct ControlNamelist
     vdw_corr::String = "none"
     london::Bool = false
     london_s6::Float64 = 0.75
-    london_c6::Vector{Union{Missing, Float64}} = -ones(ntyp)  # The default value in QE's source code is just one -1.0
-    london_rvdw::Vector{Union{Missing, Float64}} = -ones(ntyp)  # The default value in QE's source code is just one -1.0
+    london_c6::Vector{Union{Missing,Float64}} = -ones(ntyp)  # The default value in QE's source code is just one -1.0
+    london_rvdw::Vector{Union{Missing,Float64}} = -ones(ntyp)  # The default value in QE's source code is just one -1.0
     london_rcut::Float64 = 200.0
     ts_vdw_econv_thr::Float64 = 1e-06
     ts_vdw_isolated::Bool = false
@@ -170,14 +165,14 @@ end  # struct ControlNamelist
     @assert length(fixed_magnetization) == 3
     # @assert length(london_c6) == ntyp
     # @assert length(london_rvdw) == ntyp
-end  # struct SystemNamelist
+end # struct SystemNamelist
 
 @with_kw struct ElectronsNamelist <: Namelist
     electron_maxstep::Int = 100
     scf_must_converge::Bool = true
-    conv_thr::Float64 = 1e-06
+    conv_thr::Float64 = 1e-6
     adaptive_thr::Bool = false
-    conv_thr_init::Float64 = 0.001
+    conv_thr_init::Float64 = 1e-3
     conv_thr_multi::Float64 = 0.1
     mixing_mode::String = "plain"
     mixing_beta::Float64 = 0.7
@@ -190,12 +185,12 @@ end  # struct SystemNamelist
     diago_david_ndim::Int = 4
     diago_full_acc::Bool = false
     efield::Float64 = 0.0
-    efield_cart::Vector{Union{Missing, Float64}} = [0.0, 0.0, 0.0]
+    efield_cart::Vector{Union{Missing,Float64}} = [0.0, 0.0, 0.0]
     efield_phase::String = "none"
-    startingpot::String = "atomic"
-    startingwfc::String = "atomic+random"
+    startingpot::String = "atomic"  # This depends on `calculation`
+    startingwfc::String = "atomic+random"  # This depends on `calculation`
     tqr::Bool = false
-end  # struct ElectronsNamelist
+end # struct ElectronsNamelist
 
 @with_kw struct IonsNamelist <: Namelist
     ion_dynamics::String = "none"
@@ -212,11 +207,11 @@ end  # struct ElectronsNamelist
     upscale::Float64 = 100.0
     bfgs_ndim::Int = 1
     trust_radius_max::Float64 = 0.8
-    trust_radius_min::Float64 = 0.001  # The default value in QE's source code is 0.0001
+    trust_radius_min::Float64 = 1e-3  # The default value in QE's source code is 0.0001
     trust_radius_ini::Float64 = 0.5
     w_1::Float64 = 0.01
     w_2::Float64 = 0.5
-end  # struct IonsNamelist
+end # struct IonsNamelist
 
 @with_kw struct CellNamelist <: Namelist
     cell_dynamics::String = "none"
@@ -225,7 +220,7 @@ end  # struct IonsNamelist
     cell_factor::Float64 = 0.0
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
-end  # struct CellNamelist
+end # struct CellNamelist
 
 # The following default values are picked from `<QE source>/PP/src/dos.f90`
 @with_kw struct DOSNamelist <: Namelist
@@ -237,7 +232,7 @@ end  # struct CellNamelist
     Emax::Float64 = 1000000.0
     DeltaE::Float64 = 0.01
     fildos::String = "$(prefix).dos"
-end  # struct DOSNamelist
+end # struct DOSNamelist
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
 @with_kw struct BandsNamelist <: Namelist
@@ -245,7 +240,7 @@ end  # struct DOSNamelist
     outdir::String = "./"
     filband::String = "bands.out"
     spin_component::Int = 1
-    lsigma::Vector{Union{Missing, Bool}} = falses(3)  # The default value in QE's source code is just one `false`
+    lsigma::Vector{Union{Missing,Bool}} = falses(3)  # The default value in QE's source code is just one `false`
     lp::Bool = false
     filp::String = "p_avg.dat"
     lsym::Bool = true
@@ -253,6 +248,6 @@ end  # struct DOSNamelist
     plot_2d::Bool = false
     firstk::Int = 0
     lastk::Int = 10000000
-end  # struct BandsNamelist
+end # struct BandsNamelist
 
 end

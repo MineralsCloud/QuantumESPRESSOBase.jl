@@ -15,16 +15,16 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists: Namelist
 
-export INPUTPHNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
+export PhononNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
-@with_kw struct INPUTPHNamelist <: Namelist
-    amass::Vector{Union{Missing, Float64}} = [0.0]
+@with_kw struct PhononNamelist <: Namelist
+    amass::Vector{Union{Missing,Float64}} = [0.0]
     outdir::String = "./"
     prefix::String = "pwscf"
     niter_ph::Int = 100
     tr2_ph::Float64 = 1e-12
-    alpha_mix::Vector{Union{Missing, Float64}} = 0.7 * ones(niter_ph)
+    alpha_mix::Vector{Union{Missing,Float64}} = 0.7 * ones(niter_ph)
     nmix_ph::Int = 4
     verbosity::String = "default"
     reduce_io::Bool = false
@@ -75,7 +75,7 @@ export INPUTPHNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
     last_q::Int = -1000
     # dvscf_star::String = 1
     # drho_star::String = 1
-end  # struct INPUTPHNamelist
+end # struct PhononNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
 @with_kw struct Q2RNamelist <: Namelist
@@ -83,7 +83,7 @@ end  # struct INPUTPHNamelist
     flfrc::String = " "
     loto_2d::Bool = false
     zasr::String = "no"
-end  # struct Q2RNamelist
+end # struct Q2RNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
 @with_kw struct MatdynNamelist <: Namelist
@@ -102,8 +102,8 @@ end  # struct Q2RNamelist
     fleig::String = "matdyn.eig"
     fldyn::String = " "
     fltau::String = " "
-    amass::Vector{Union{Missing, Float64}} = zeros(1)
-    at::Matrix{Union{Missing, Float64}} = zeros(3, 3)  # FIXME: not very sure
+    amass::Vector{Union{Missing,Float64}} = zeros(1)
+    at::Matrix{Union{Missing,Float64}} = zeros(3, 3)  # FIXME: not very sure
     ntyp::Int = 0
     l1::Int = 1
     l2::Int = 1
@@ -116,7 +116,7 @@ end  # struct Q2RNamelist
     fd::Bool = false
     nosym::Bool = false
     loto_2d::Bool = false
-end  # struct MatdynNamelist
+end # struct MatdynNamelist
 
 @with_kw struct DynmatNamelist <: Namelist
     asr::String = "no"
@@ -130,7 +130,6 @@ end  # struct MatdynNamelist
     q::Vector{Union{Missing,Float64}} = zeros(3)
     lperm::Bool = false
     lplasma::Bool = false
-    loto_2d::Bool = false
-end  # struct DynmatNamelist
+end # struct DynmatNamelist
 
 end

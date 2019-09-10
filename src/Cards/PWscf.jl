@@ -31,7 +31,7 @@ export AtomicSpecies,
     pseudopotential_format
 
 # =============================== AtomicSpecies ============================== #
-struct AtomicSpecies{A <: AbstractString,B <: Real,C <: AbstractString}
+struct AtomicSpecies{A<:AbstractString,B<:Real,C<:AbstractString}
     atom::A
     mass::B
     pseudopotential::C
@@ -51,30 +51,31 @@ the file name:
 """
 function pseudopotential_format(data::AtomicSpecies)::String
     @match lowercase(splitext(data.pseudopotential)[2]) begin
-        "vdb" || "van" => "Vanderbilt US pseudopotential code"
-        "rrkj3" => "Andrea Dal Corso's code (old format)"
+        ".vdb" || ".van" => "Vanderbilt US pseudopotential code"
+        ".rrkj3" => "Andrea Dal Corso's code (old format)"
         _ => "old PWscf norm-conserving format"
     end
 end
 
-struct AtomicSpeciesCard{T <: AbstractVector{<: AtomicSpecies}} <: Card
+struct AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
     data::T
 end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{A <: AbstractString,B <: AbstractVector{<: Real},C <: AbstractVector{Int}}
+@with_kw struct AtomicPosition{A<:AbstractString,B<:AbstractVector{<:Real},C<:AbstractVector{Int}}
     atom::A
     pos::B
     if_pos::C = [1, 1, 1]
-    @assert length(pos) == 3
-    @assert length(if_pos) == 3
-    @assert all(x in (0, 1) for x in if_pos) "`if_pos` must be either 0 or 1!"
+    @assert length(pos) == 3 "`pos` must be a three-element-vector! However it is of length $(length(pos))!"
+    @assert length(if_pos) == 3 "`if_pos` must be a three-element-vector! However it is of length $(length(if_pos))!"
+    @assert all(x ∈ (0, 1) for x in if_pos) "`if_pos` must be either 0 or 1!"
 end
 
-@with_kw struct AtomicPositionsCard{A <: AbstractString,B <: AbstractVector{<: AtomicPosition}} <: Card
-    option::A = "alat"; @assert option in allowed_options(AtomicPositionsCard)
+@with_kw struct AtomicPositionsCard{A<:AbstractString,B<:AbstractVector{<:AtomicPosition}} <: Card
+    option::A = "alat"
     data::B
+    @assert option in allowed_options(AtomicPositionsCard)
 end
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
@@ -85,33 +86,37 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{A <: AbstractString,B <: AbstractMatrix} <: Card
-    option::A = "alat"; @assert option in allowed_options(CellParametersCard)
-    data::B; @assert size(data) == (3, 3)
+@with_kw struct CellParametersCard{A<:AbstractString,B<:AbstractMatrix} <: Card
+    option::A = "alat"
+    data::B
+    @assert option in allowed_options(CellParametersCard)
+    @assert size(data) == (3, 3)
 end
 # ============================================================================ #
 
 # ================================== KPoint ================================== #
 abstract type KPoint end
 
-@with_kw struct MonkhorstPackGrid{A <: AbstractVector{Int},B <: AbstractVector{Int}} <: KPoint
+@with_kw struct MonkhorstPackGrid{A<:AbstractVector{Int},B<:AbstractVector{Int}} <: KPoint
     grid::A
     offsets::B
-    @assert length(grid) == 3
-    @assert length(offsets) == 3
-    @assert all(x ∈ (0, 1) for x in offsets)
+    @assert length(grid) == 3 "`grid` must be a three-element-vector! However it is of length $(length(grid))!"
+    @assert length(offsets) == 3 "`offsets` must be a three-element-vector! However it is of length $(length(offsets))!"
+    @assert all(x ∈ (0, 1) for x in offsets) "`offsets` must be either 0 or 1!"
 end
 
 struct GammaPoint <: KPoint end
 
-@with_kw struct SpecialKPoint{A <: AbstractVector{Float64},B <: Real} <: KPoint
-    coordinates::A; @assert length(coordinates) == 3
+@with_kw struct SpecialKPoint{A<:AbstractVector{Float64},B<:Real} <: KPoint
+    coordinates::A
     weight::B
+    @assert length(coordinates) == 3 "`coordinates` must be a three-element-vector! However it is of length $(length(coordinates))!"
 end
 
-@with_kw struct KPointsCard{A <: AbstractString,B <: AbstractVector{<: KPoint}} <: Card
-    option::A = "tpiba"; @assert option in allowed_options(KPointsCard)
+@with_kw struct KPointsCard{A<:AbstractString,B<:AbstractVector{<:KPoint}} <: Card
+    option::A = "tpiba"
     data::B
+    @assert option in allowed_options(KPointsCard)
     @assert begin
         @match option begin
             "automatic" => eltype(data) <: MonkhorstPackGrid
