@@ -57,7 +57,7 @@ function bravais_lattice(::Val{-5}, celldm::AbstractVector{Union{Missing, Float6
     tz = sqrt((1 + 2c)/3)
     u = tz - 2sqrt(2) * ty
     v = tz + sqrt(2) * ty
-    retrun ap * [
+    return ap * [
     u  v  v
     v  u  v
     v  v  u
