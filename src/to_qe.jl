@@ -14,7 +14,10 @@ export to_qe
 
 Return a string representing the object, valid form Quantum ESPRESSO's input.
 """
-function to_qe(dict::AbstractDict; indent::AbstractString = "    ", sep::AbstractString = " ")::String
+function to_qe(
+    dict::AbstractDict;
+    indent::AbstractString = "    ", sep::AbstractString = " "
+)::String
     content = ""
     f = string ∘ to_fortran
     for (key, value) in dict
@@ -29,7 +32,10 @@ function to_qe(dict::AbstractDict; indent::AbstractString = "    ", sep::Abstrac
     end
     return content
 end
-function to_qe(nml::Namelist; indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false)::String
+function to_qe(
+    nml::Namelist;
+    indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false
+)::String
     namelist_name = (uppercase ∘ string ∘ name ∘ typeof)(nml)
     f = verbose ? to_dict : dropdefault
     inner_content = to_qe(f(nml); indent = indent, sep = sep)
@@ -38,9 +44,12 @@ function to_qe(nml::Namelist; indent::AbstractString = "    ", sep::AbstractStri
     """
 end
 function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
-    return join(map(string, [getfield(data, i) for i in 1:nfields(data)]), sep)
+    return join(map(string, [getfield(data, i) for i = 1:nfields(data)]), sep)
 end
-function to_qe(card::AtomicSpeciesCard; indent::AbstractString = "    ", sep::AbstractString = " ")::String
+function to_qe(
+    card::AtomicSpeciesCard;
+    indent::AbstractString = "    ", sep::AbstractString = " "
+)::String
     """
     ATOMIC_SPECIES
     $(join(["$(indent)$(to_qe(x; sep = sep))" for x in card.data], "\n"))
@@ -50,13 +59,19 @@ function to_qe(data::AtomicPosition; sep::AbstractString = " ", with_if_pos::Boo
     with_if_pos && return join(map(string, [data.atom; data.pos; data.if_pos]), sep)
     return join(map(string, [data.atom; data.pos]), sep)
 end
-function to_qe(card::AtomicPositionsCard; indent::AbstractString = "    ", sep::AbstractString = " ")::String
+function to_qe(
+    card::AtomicPositionsCard;
+    indent::AbstractString = "    ", sep::AbstractString = " "
+)::String
     """
     ATOMIC_POSITIONS$(sep){ $(card.option) }
     $(join(["$(indent)$(to_qe(x; sep = sep))" for x in card.data], "\n"))
     """
 end
-function to_qe(card::CellParametersCard; indent::AbstractString = "    ", sep::AbstractString = " ")::String
+function to_qe(
+    card::CellParametersCard;
+    indent::AbstractString = "    ", sep::AbstractString = " "
+)::String
     """
     CELL_PARAMETERS$(sep){ $(card.option) }
     $(join(["$(indent)$(join(row, sep))" for row in eachrow(card.data)], "\n"))
@@ -71,7 +86,10 @@ end
 function to_qe(data::SpecialKPoint; sep::AbstractString = " ")::String
     return join(map(string, [data.coordinates; data.weight]), sep)
 end
-function to_qe(card::KPointsCard; indent::AbstractString = "    ", sep::AbstractString = " ")::String
+function to_qe(
+    card::KPointsCard;
+    indent::AbstractString = "    ", sep::AbstractString = " "
+)::String
     content = "K_POINTS$(sep){ $(card.option) }\n"
     if card.option in ("gamma", "automatic")
         content *= "$(indent)$(to_qe(first(card.data)))\n"
