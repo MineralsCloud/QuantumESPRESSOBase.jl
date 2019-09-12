@@ -62,13 +62,12 @@ But there are cases we want to write its `CellParametersCard` explicitly. This f
 above and generate a new `PWscfInput` with its `ibrav = 0` and `cell_parameters` not empty.
 """
 function autofill_cell_parameters(template::PWscfInput)
-    system = template.system
     return reconstruct(
         template,
         Dict(
             :system => reconstruct(template.system, ibrav = 0),
             # Use the `ibrav` of the original `SystemNamelist` to construct a lattice
-            :cell_parameters => reconstruct(template.cell_parameters, data = bravais_lattice(system))
+            :cell_parameters => reconstruct(template.cell_parameters, CellParametersCard("bohr", bravais_lattice(template.system)))
         )
     )
 end # function autofill_cell_parameters
