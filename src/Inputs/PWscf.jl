@@ -66,7 +66,8 @@ function autofill_cell_parameters(template::PWscfInput)
         template,
         Dict(
             :system => reconstruct(template.system, ibrav = 0),
-            :cell_parameters => reconstruct(template.cell_parameters, data = bravais_lattice(system))
+            # Use the `ibrav` of the original `SystemNamelist` to construct a lattice
+            :cell_parameters => reconstruct(template.cell_parameters, data = bravais_lattice(template.system.ibrav))
         )
     )
 end # function autofill_cell_parameters
