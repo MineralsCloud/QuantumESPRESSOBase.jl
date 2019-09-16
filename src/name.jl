@@ -1,10 +1,10 @@
-using QuantumESPRESSOBase.Namelists
-using QuantumESPRESSOBase.Namelists.PWscf
-using QuantumESPRESSOBase.Namelists.PHonon
-using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PWscf
-using QuantumESPRESSOBase.Inputs
-using QuantumESPRESSOBase.Inputs.PWscf
+using .Namelists
+using .Namelists.PWscf
+using .Namelists.PHonon
+using .Cards
+using .Cards.PWscf
+using .Inputs
+using .Inputs.PWscf
 
 export name
 

@@ -1,11 +1,11 @@
 using Fortran90Namelists.JuliaToFortran: to_fortran
 
-using QuantumESPRESSOBase.Namelists
-using QuantumESPRESSOBase.Namelists.PWscf
-using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PWscf
-using QuantumESPRESSOBase.Inputs
-using QuantumESPRESSOBase.Inputs.PWscf
+using .Namelists
+using .Namelists.PWscf
+using .Cards
+using .Cards.PWscf
+using .Inputs
+using .Inputs.PWscf
 
 export to_qe
 

@@ -19,7 +19,7 @@ using QuantumESPRESSOBase.Namelists
 using QuantumESPRESSOBase.Namelists.PWscf
 using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PWscf
-using QuantumESPRESSOBase.Inputs
+using ..Inputs
 
 export PWscfInput, autofill_cell_parameters, namelists, cards, compulsory_namelists, compulsory_cards
 

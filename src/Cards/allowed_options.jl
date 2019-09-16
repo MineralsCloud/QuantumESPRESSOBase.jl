@@ -1,7 +1,4 @@
-using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PWscf
-
-export allowed_options
+using .PWscf
 
 """
     allowed_options(T::Type{<: Card})
