@@ -13,7 +13,7 @@ module PHonon
 
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase.Namelists: Namelist
+using ..Namelists: Namelist
 
 export PhononNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
 

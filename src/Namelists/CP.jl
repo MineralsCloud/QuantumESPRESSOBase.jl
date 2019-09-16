@@ -13,7 +13,7 @@ module CP
 
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase.Namelists: Namelist
+using ..Namelists: Namelist
 
 export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist, PressAiNamelist, WannierNamelist
 
