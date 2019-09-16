@@ -1,7 +1,4 @@
-using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PWscf
-
-export option
+using .PWscf
 
 """
     option(x::Card)
