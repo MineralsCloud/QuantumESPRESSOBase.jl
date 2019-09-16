@@ -1,4 +1,4 @@
-using QuantumESPRESSOBase.Namelists.PWscf
+using .Namelists.PWscf
 
 export bravais_lattice
 
