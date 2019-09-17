@@ -16,5 +16,6 @@ export AbstractInput
 abstract type AbstractInput end
 
 include("PWscf.jl")
+include("PHonon.jl")
 
 end

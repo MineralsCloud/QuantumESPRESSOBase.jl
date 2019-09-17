@@ -27,7 +27,7 @@ abstract type QPoint end
 end
 
 struct QPointsSpecsCard{A<:AbstractVector{SpecialQPoint}} <: Card
-    data::B
+    data::A
 end
 
 end
