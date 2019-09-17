@@ -18,7 +18,7 @@ using QuantumESPRESSOBase.Namelists.PHonon
 using QuantumESPRESSOBase.Cards.PHonon
 using QuantumESPRESSOBase.Inputs
 
-export PHononInput, Q2RInput, MatdynInput
+export PHononInput, Q2RInput, MatdynInput, DynmatInput
 
 @with_kw struct PHononInput <: AbstractInput
     inputph::PHNamelist = PHNamelist()
@@ -36,6 +36,10 @@ end
 @with_kw struct MatdynInput <: AbstractInput
     input::MatdynNamelist = MatdynNamelist()
     q_points::QPointsSpecsCard
+end
+
+@with_kw struct DynmatInput <: AbstractInput
+    input::DynmatNamelist = DynmatNamelist()
 end
 
 end
