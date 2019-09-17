@@ -23,7 +23,6 @@ export PHononInput, Q2RInput, MatdynInput, DynmatInput
 @with_kw struct PHononInput <: AbstractInput
     inputph::PHNamelist = PHNamelist()
     q_points::QPointsSpecsCard
-    @assert phonon.qplot == true
 end # struct PHononInput
 
 @with_kw struct Q2RInput <: AbstractInput
