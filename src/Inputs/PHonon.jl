@@ -21,7 +21,7 @@ using QuantumESPRESSOBase.Inputs
 export PHononInput, Q2RInput, MatdynInput
 
 @with_kw struct PHononInput <: AbstractInput
-    phonon::PhononNamelist = PhononNamelist()
+    phonon::PHNamelist = PHNamelist()
     q_points::QPointsSpecsCard
     @assert phonon.qplot == true
 end # struct PHononInput
