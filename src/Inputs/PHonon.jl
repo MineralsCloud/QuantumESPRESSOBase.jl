@@ -21,20 +21,20 @@ using QuantumESPRESSOBase.Inputs
 export PHononInput, Q2RInput, MatdynInput
 
 @with_kw struct PHononInput <: AbstractInput
-    phonon::PHNamelist = PHNamelist()
+    inputph::PHNamelist = PHNamelist()
     q_points::QPointsSpecsCard
     @assert phonon.qplot == true
 end # struct PHononInput
 
 @with_kw struct Q2RInput <: AbstractInput
-    q2r::Q2RNamelist = Q2RNamelist()
+    input::Q2RNamelist = Q2RNamelist()
     grid::AbstractVector
     nqs::Int
     @assert length(grid) == 3
 end
 
 @with_kw struct MatdynInput <: AbstractInput
-    matdyn::MatdynNamelist = MatdynNamelist()
+    input::MatdynNamelist = MatdynNamelist()
     q_points::QPointsSpecsCard
 end
 
