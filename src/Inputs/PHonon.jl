@@ -18,13 +18,13 @@ using QuantumESPRESSOBase.Namelists.PHonon
 using QuantumESPRESSOBase.Cards.PHonon
 using QuantumESPRESSOBase.Inputs
 
-export PhononInput, Q2RInput, MatdynInput
+export PHononInput, Q2RInput, MatdynInput
 
-@with_kw struct PhononInput <: AbstractInput
+@with_kw struct PHononInput <: AbstractInput
     phonon::PhononNamelist = PhononNamelist()
     q_points::QPointsSpecsCard
     @assert phonon.qplot == true
-end # struct PhononInput
+end # struct PHononInput
 
 @with_kw struct Q2RInput <: AbstractInput
     q2r::Q2RNamelist = Q2RNamelist()
