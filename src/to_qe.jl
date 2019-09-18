@@ -16,7 +16,8 @@ Return a string representing the object, valid form Quantum ESPRESSO's input.
 """
 function to_qe(
     dict::AbstractDict;
-    indent::AbstractString = "    ", sep::AbstractString = " "
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
 )::String
     content = ""
     f = string ∘ to_fortran
@@ -34,7 +35,9 @@ function to_qe(
 end
 function to_qe(
     nml::Namelist;
-    indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+    verbose::Bool = false,
 )::String
     namelist_name = (uppercase ∘ string ∘ name ∘ typeof)(nml)
     f = verbose ? to_dict : dropdefault
@@ -48,7 +51,8 @@ function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
 end
 function to_qe(
     card::AtomicSpeciesCard;
-    indent::AbstractString = "    ", sep::AbstractString = " "
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
 )::String
     """
     ATOMIC_SPECIES
@@ -61,7 +65,8 @@ function to_qe(data::AtomicPosition; sep::AbstractString = " ", with_if_pos::Boo
 end
 function to_qe(
     card::AtomicPositionsCard;
-    indent::AbstractString = "    ", sep::AbstractString = " "
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
 )::String
     """
     ATOMIC_POSITIONS$(sep){ $(card.option) }
@@ -70,7 +75,8 @@ function to_qe(
 end
 function to_qe(
     card::CellParametersCard;
-    indent::AbstractString = "    ", sep::AbstractString = " "
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
 )::String
     """
     CELL_PARAMETERS$(sep){ $(card.option) }
@@ -88,7 +94,8 @@ function to_qe(data::SpecialKPoint; sep::AbstractString = " ")::String
 end
 function to_qe(
     card::KPointsCard;
-    indent::AbstractString = "    ", sep::AbstractString = " "
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
 )::String
     content = "K_POINTS$(sep){ $(card.option) }\n"
     if card.option in ("gamma", "automatic")
@@ -103,7 +110,9 @@ function to_qe(
 end
 function to_qe(
     input::PWscfInput;
-    indent::AbstractString = "    ", sep::AbstractString = " ", verbose::Bool = false
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+    verbose::Bool = false,
 )::String
     content = ""
     for namelist in namelists(input)
