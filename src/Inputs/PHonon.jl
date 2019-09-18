@@ -27,8 +27,8 @@ end # struct PHononInput
 
 @with_kw struct Q2RInput <: AbstractInput
     input::Q2RNamelist = Q2RNamelist()
-    grid::AbstractVector
-    nqs::Int
+    grid::Union{Nothing,AbstractVector} = nothing
+    nqs::Union{Nothing,Int} = nothing
     @assert length(grid) == 3
 end
 
