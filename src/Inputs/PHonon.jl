@@ -22,7 +22,7 @@ export PHononInput, Q2RInput, MatdynInput, DynmatInput
 
 @with_kw struct PHononInput <: AbstractInput
     inputph::PHNamelist = PHNamelist()
-    q_points::QPointsSpecsCard
+    q_points::Union{Nothing,QPointsSpecsCard} = nothing
 end # struct PHononInput
 
 @with_kw struct Q2RInput <: AbstractInput
