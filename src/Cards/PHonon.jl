@@ -29,3 +29,5 @@ end
 struct QPointsSpecsCard{A<:AbstractVector{SpecialQPoint}} <: Card
     data::A
 end
+
+end
