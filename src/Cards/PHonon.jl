@@ -28,6 +28,13 @@ end
 
 struct QPointsSpecsCard{A<:AbstractVector{SpecialQPoint}} <: Card
     data::A
+
+@with_kw struct Q2RPoint{A<:AbstractVector{Float64}} <: QPoint
+    coordinates::A
+end
+
+struct Q2RPointCard{A<:AbstractVector{Q2RPoint}} <: Card
+    data::A
 end
 
 end
