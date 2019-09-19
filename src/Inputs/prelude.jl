@@ -7,15 +7,15 @@ _filterfields(obj, ::Type{T}) where {T} =
     filter(x -> isa(x, T), map(x -> getfield(obj, x), fieldnames(typeof(obj))) |> collect)
 
 """
-    namelists(input::PWscfInput)
+    namelists(input::AbstractInput)
 
-Return a vector of `Namelist`s of a `PWscfInput`.
+Return a vector of `Namelist`s of a `AbstractInput`'s subtypes.
 """
-namelists(input::PWscfInput) = _filterfields(input, Namelist)
+namelists(input::AbstractInput) = _filterfields(input, Namelist)
 
 """
-    cards(input::PWscfInput)
+    cards(input::AbstractInput)
 
-Return a vector of `Card`s of a `PWscfInput`.
+Return a vector of `Card`s of a `AbstractInput`'s subtypes.
 """
-cards(input::PWscfInput) = _filterfields(input, Card)
+cards(input::AbstractInput) = _filterfields(input, Card)
