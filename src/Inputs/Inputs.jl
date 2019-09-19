@@ -11,10 +11,7 @@ julia>
 """
 module Inputs
 
-export AbstractInput
-
-abstract type AbstractInput end
-
+include("prelude.jl")
 include("PWscf.jl")
 include("PHonon.jl")
 

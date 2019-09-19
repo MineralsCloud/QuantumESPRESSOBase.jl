@@ -21,7 +21,7 @@ using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PWscf
 using ..Inputs
 
-export PWscfInput, autofill_cell_parameters, namelists, cards, compulsory_namelists, compulsory_cards
+export PWscfInput, autofill_cell_parameters, compulsory_namelists, compulsory_cards
 
 """
     PWscfInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
@@ -71,28 +71,6 @@ function autofill_cell_parameters(template::PWscfInput)
         )
     )
 end # function autofill_cell_parameters
-
-"""
-    filterfields(obj, ::Type)
-
-A helper function to implement `namelists` and `cards`. It should not be exported.
-"""
-filterfields(obj, ::Type{T}) where {T} =
-    filter(x -> isa(x, T), map(x -> getfield(obj, x), fieldnames(typeof(obj))) |> collect)
-
-"""
-    namelists(input::PWscfInput)
-
-Return a vector of `Namelist`s of a `PWscfInput`.
-"""
-namelists(input::PWscfInput) = filterfields(input, Namelist)
-
-"""
-    cards(input::PWscfInput)
-
-Return a vector of `Card`s of a `PWscfInput`.
-"""
-cards(input::PWscfInput) = filterfields(input, Card)
 
 """
     compulsory_namelists(input::PWscfInput)
