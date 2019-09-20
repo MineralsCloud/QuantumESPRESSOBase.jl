@@ -26,7 +26,7 @@ abstract type QPoint end
     @assert length(coordinates) == 3
 end
 
-struct QPointsSpecsCard{A<:AbstractVector{SpecialQPoint}} <: Card
+struct QPointsSpecsCard{A<:AbstractVector{<:SpecialQPoint}} <: Card
     data::A
 end
 
