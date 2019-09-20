@@ -48,7 +48,7 @@ function to_qe(
     """
 end
 function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
-    return join(map(string, [getfield(data, i) for i = 1:nfields(data)]), sep)
+    return join([getfield(data, i) for i = 1:nfields(data)], sep)
 end
 function to_qe(
     card::AtomicSpeciesCard;
@@ -61,8 +61,8 @@ function to_qe(
     """
 end
 function to_qe(data::AtomicPosition; sep::AbstractString = " ", verbose::Bool = false)::String
-    verbose && return join(map(string, [data.atom; data.pos; data.if_pos]), sep)
-    return join(map(string, [data.atom; data.pos]), sep)
+    verbose && return join([data.atom; data.pos; data.if_pos], sep)
+    return join([data.atom; data.pos], sep)
 end
 function to_qe(
     card::AtomicPositionsCard;
