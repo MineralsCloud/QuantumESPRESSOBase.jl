@@ -5,7 +5,6 @@ using .Namelists.PWscf
 using .Cards
 using .Cards.PWscf
 using .Inputs
-using .Inputs.PWscf
 
 export to_qe
 
@@ -109,7 +108,7 @@ function to_qe(
     return content
 end
 function to_qe(
-    input::PWscfInput;
+    input::AbstractInput;
     indent::AbstractString = "    ",
     sep::AbstractString = " ",
     verbose::Bool = false,
