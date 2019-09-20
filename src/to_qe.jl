@@ -60,8 +60,8 @@ function to_qe(
     $(join([indent * to_qe(x, sep = sep) for x in card.data], "\n"))
     """
 end
-function to_qe(data::AtomicPosition; sep::AbstractString = " ", with_if_pos::Bool = false)::String
-    with_if_pos && return join(map(string, [data.atom; data.pos; data.if_pos]), sep)
+function to_qe(data::AtomicPosition; sep::AbstractString = " ", verbose::Bool = false)::String
+    verbose && return join(map(string, [data.atom; data.pos; data.if_pos]), sep)
     return join(map(string, [data.atom; data.pos]), sep)
 end
 function to_qe(
