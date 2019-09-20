@@ -11,10 +11,10 @@ julia>
 """
 module Inputs
 
-export AbstractInput
+using QuantumESPRESSOBase.Namelists
+using QuantumESPRESSOBase.Cards
 
-abstract type AbstractInput end
-
+include("prelude.jl")
 include("PWscf.jl")
 include("PHonon.jl")
 
