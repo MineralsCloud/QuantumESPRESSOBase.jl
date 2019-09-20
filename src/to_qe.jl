@@ -109,7 +109,7 @@ function to_qe(
     return content
 end
 function to_qe(
-    card::QPointsSpecsCard,
+    card::QPointsSpecsCard;
     indent::AbstractString = "    ",
     sep::AbstractString = " "
 )::String
