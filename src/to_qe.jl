@@ -4,6 +4,7 @@ using .Namelists
 using .Namelists.PWscf
 using .Cards
 using .Cards.PWscf
+using .Cards.PHonon
 using .Inputs
 
 export to_qe
@@ -104,6 +105,17 @@ function to_qe(
         for x in card.data
             content *= "$(indent)$(to_qe(x, sep = sep))\n"
         end
+    end
+    return content
+end
+function to_qe(
+    card::QPointsSpecsCard,
+    indent::AbstractString = "    ",
+    sep::AbstractString = " "
+)::String
+    content = "$(length(card.data))\n"
+    for p in card.data
+        content *= "$(indent)$(join(p.coordinates, sep))$sep$(p.weight)\n"
     end
     return content
 end
