@@ -15,9 +15,7 @@ using Compat: isnothing
 using Parameters: @with_kw, reconstruct
 
 using QuantumESPRESSOBase: bravais_lattice
-using QuantumESPRESSOBase.Namelists
 using QuantumESPRESSOBase.Namelists.PWscf
-using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PWscf
 using ..Inputs
 
