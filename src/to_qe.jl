@@ -110,7 +110,7 @@ function to_qe(
     return content
 end
 function to_qe(
-    input::PWscfInput;
+    input::Union{PWscfInput, PhononInput, Q2RInput, MatdynInput, DynmatInput};
     indent::AbstractString = "    ",
     sep::AbstractString = " ",
     verbose::Bool = false,
