@@ -11,5 +11,6 @@ include("Inputs/Inputs.jl")
 include("name.jl")
 include("to_qe.jl")
 include("validate.jl")
+include("show.jl")
 
 end # module
