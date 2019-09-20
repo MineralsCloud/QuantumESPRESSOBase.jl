@@ -1,3 +1,4 @@
+using Compat: eachrow
 using Fortran90Namelists.JuliaToFortran: to_fortran
 
 using .Namelists
