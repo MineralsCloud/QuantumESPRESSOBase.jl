@@ -96,4 +96,13 @@ end # testset
         0.4 0.4 0.4 1.0
         0.5 0.5 0.5 1.0
     ])
+    object = PWscfInput(
+        control = control,
+        system = system,
+        electrons = electrons,
+        atomic_species = atomic_species,
+        atomic_positions = atomic_positions,
+        k_points = k_points,
+        cell_parameters = nothing
+    )
 end # testset
