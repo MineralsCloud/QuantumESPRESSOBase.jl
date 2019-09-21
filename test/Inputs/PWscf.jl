@@ -5,7 +5,7 @@ using QuantumESPRESSOBase.Cards.PWscf
 using QuantumESPRESSOBase.Inputs.PWscf
 
 @testset "Test constructing a `PWscfInput`: silicon" begin
-# This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
+    # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     control = ControlNamelist(
         tstress = true,
         tprnfor = true,
@@ -46,6 +46,7 @@ using QuantumESPRESSOBase.Inputs.PWscf
 end # testset
 
 @testset "Test constructing a `PWscfInput`: silicon bands" begin
+    # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     control = ControlNamelist(
         calculation = "bands",
         pseudo_dir = raw"$PSEUDO_DIR/",
