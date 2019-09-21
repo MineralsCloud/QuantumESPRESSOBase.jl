@@ -34,16 +34,16 @@ using QuantumESPRESSOBase.Inputs.PWscf
     k_points = KPointsCard(
         "tpiba",
         [
-            SpecialKPoint(0.125, 0.125, 0.125, 1.0),
-            SpecialKPoint(0.125, 0.125, 0.375, 3.0),
-            SpecialKPoint(0.125, 0.125, 0.625, 3.0),
-            SpecialKPoint(0.125, 0.125, 0.875, 3.0),
-            SpecialKPoint(0.125, 0.375, 0.375, 3.0),
-            SpecialKPoint(0.125, 0.375, 0.625, 6.0),
-            SpecialKPoint(0.125, 0.375, 0.875, 6.0),
-            SpecialKPoint(0.125, 0.625, 0.625, 3.0),
-            SpecialKPoint(0.375, 0.375, 0.375, 1.0),
-            SpecialKPoint(0.375, 0.375, 0.625, 3.0)
+            0.125 0.125 0.125 1.0
+            0.125 0.125 0.375 3.0
+            0.125 0.125 0.625 3.0
+            0.125 0.125 0.875 3.0
+            0.125 0.375 0.375 3.0
+            0.125 0.375 0.625 6.0
+            0.125 0.375 0.875 6.0
+            0.125 0.625 0.625 3.0
+            0.375 0.375 0.375 1.0
+            0.375 0.375 0.625 3.0
         ]
     )
     object = PWscfInput(
