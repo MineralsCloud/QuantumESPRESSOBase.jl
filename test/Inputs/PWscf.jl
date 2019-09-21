@@ -113,6 +113,7 @@ end # testset
 end # testset
 
 @testset "Test constructing a `PWscfInput`: aluminium" begin
+    # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(
             calculation = "scf",
