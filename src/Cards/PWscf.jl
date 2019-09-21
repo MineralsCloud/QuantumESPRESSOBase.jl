@@ -128,6 +128,10 @@ SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
         end
     end
 end
+function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
+    @assert(size(data, 2) == 4, "The size of the matrix should be (N, 4)! However $(size(data)) is given!")
+    return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
+end
 # ============================================================================ #
 
 end
