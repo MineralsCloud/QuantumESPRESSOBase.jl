@@ -71,6 +71,7 @@ end
     @assert length(if_pos) == 3 "`if_pos` must be a three-element-vector! However it is of length $(length(if_pos))!"
     @assert all(x ∈ (0, 1) for x in if_pos) "`if_pos` must be either 0 or 1!"
 end
+AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
 
 @with_kw struct AtomicPositionsCard{A<:AbstractString,B<:AbstractVector{<:AtomicPosition}} <: Card
     option::A = "alat"
@@ -112,6 +113,7 @@ struct GammaPoint <: KPoint end
     weight::B
     @assert length(coordinates) == 3 "`coordinates` must be a three-element-vector! However it is of length $(length(coordinates))!"
 end
+SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 @with_kw struct KPointsCard{A<:AbstractString,B<:AbstractVector{<:KPoint}} <: Card
     option::A = "tpiba"
