@@ -105,7 +105,7 @@ function to_qe(
     else  # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
         content *= "$(length(card.data))\n"
         for x in card.data
-            content *= indent * to_qe(x, sep = sep) * "\n" 
+            content *= indent * to_qe(x, sep = sep) * "\n"
         end
     end
     return content

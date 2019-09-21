@@ -13,27 +13,15 @@ using QuantumESPRESSOBase.Inputs.PWscf
         prefix = "silicon",
         pseudo_dir = raw"$PSEUDO_DIR/"
     )
-    system = SystemNamelist(
-        ibrav = 2,
-        celldm = [10.2],
-        nat = 2,
-        ntyp = 1,
-        ecutwfc = 18.0
-    )
-    electrons = ElectronsNamelist(
-        conv_thr = 1.0e-8,
-        diagonalization = raw"$diago"
-    )
+    system = SystemNamelist(ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
+    electrons = ElectronsNamelist(conv_thr = 1.0e-8, diagonalization = raw"$diago")
     atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
-    atomic_positions = AtomicPositionsCard(
-        data = [
-            AtomicPosition("Si", [0.0, 0.0, 0.0]),
-            AtomicPosition("Si", [0.25, 0.25, 0.25])
-        ]
-    )
+    atomic_positions = AtomicPositionsCard(data = [
+        AtomicPosition("Si", [0.0, 0.0, 0.0]),
+        AtomicPosition("Si", [0.25, 0.25, 0.25])
+    ])
     k_points = KPointsCard(
-        "tpiba",
-        [
+        "tpiba", [
             0.125 0.125 0.125 1.0
             0.125 0.125 0.375 3.0
             0.125 0.125 0.625 3.0
@@ -72,46 +60,40 @@ end # testset
         ecutwfc = 18.0,
         nbnd = 8
     )
-    electrons = ElectronsNamelist(
-        diagonalization = raw"$diago"
-    )
+    electrons = ElectronsNamelist(diagonalization = raw"$diago")
     atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
-    atomic_positions = AtomicPositionsCard(
-        data = [
-            AtomicPosition("Si", [0.0, 0.0, 0.0]),
-            AtomicPosition("Si", [0.25, 0.25, 0.25])
-        ]
-    )
-    k_points = KPointsCard(
-        data = [
-            0.0 0.0 0.0 1.0
-            0.0 0.0 0.1 1.0
-            0.0 0.0 0.2 1.0
-            0.0 0.0 0.3 1.0
-            0.0 0.0 0.4 1.0
-            0.0 0.0 0.5 1.0
-            0.0 0.0 0.6 1.0
-            0.0 0.0 0.7 1.0
-            0.0 0.0 0.8 1.0
-            0.0 0.0 0.9 1.0
-            0.0 0.0 1.0 1.0
-            0.0 0.0 0.0 1.0
-            0.0 0.1 0.1 1.0
-            0.0 0.2 0.2 1.0
-            0.0 0.3 0.3 1.0
-            0.0 0.4 0.4 1.0
-            0.0 0.5 0.5 1.0
-            0.0 0.6 0.6 1.0
-            0.0 0.7 0.7 1.0
-            0.0 0.8 0.8 1.0
-            0.0 0.9 0.9 1.0
-            0.0 1.0 1.0 1.0
-            0.0 0.0 0.0 1.0
-            0.1 0.1 0.1 1.0
-            0.2 0.2 0.2 1.0
-            0.3 0.3 0.3 1.0
-            0.4 0.4 0.4 1.0
-            0.5 0.5 0.5 1.0
-        ]
-    )
+    atomic_positions = AtomicPositionsCard(data = [
+        AtomicPosition("Si", [0.0, 0.0, 0.0]),
+        AtomicPosition("Si", [0.25, 0.25, 0.25]),
+    ])
+    k_points = KPointsCard(data = [
+        0.0 0.0 0.0 1.0
+        0.0 0.0 0.1 1.0
+        0.0 0.0 0.2 1.0
+        0.0 0.0 0.3 1.0
+        0.0 0.0 0.4 1.0
+        0.0 0.0 0.5 1.0
+        0.0 0.0 0.6 1.0
+        0.0 0.0 0.7 1.0
+        0.0 0.0 0.8 1.0
+        0.0 0.0 0.9 1.0
+        0.0 0.0 1.0 1.0
+        0.0 0.0 0.0 1.0
+        0.0 0.1 0.1 1.0
+        0.0 0.2 0.2 1.0
+        0.0 0.3 0.3 1.0
+        0.0 0.4 0.4 1.0
+        0.0 0.5 0.5 1.0
+        0.0 0.6 0.6 1.0
+        0.0 0.7 0.7 1.0
+        0.0 0.8 0.8 1.0
+        0.0 0.9 0.9 1.0
+        0.0 1.0 1.0 1.0
+        0.0 0.0 0.0 1.0
+        0.1 0.1 0.1 1.0
+        0.2 0.2 0.2 1.0
+        0.3 0.3 0.3 1.0
+        0.4 0.4 0.4 1.0
+        0.5 0.5 0.5 1.0
+    ])
 end # testset
