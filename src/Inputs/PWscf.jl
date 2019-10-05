@@ -63,9 +63,10 @@ function autofill_cell_parameters(template::PWscfInput)
     return reconstruct(
         template,
         Dict(
-            :system => reconstruct(template.system, ibrav = 0),
+            # Non-empty `celldm` conflicts `CellParametersCard` with unit `"bohr"`.
+            :system => reconstruct(template.system, ibrav = 0, celldm = template.celldm[1]),
             # Use the `ibrav` of the original `SystemNamelist` to construct a lattice
-            :cell_parameters => CellParametersCard("bohr", bravais_lattice(template.system))
+            :cell_parameters => CellParametersCard("alat", bravais_lattice(template.system))
         )
     )
 end # function autofill_cell_parameters
