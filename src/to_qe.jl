@@ -1,4 +1,4 @@
-using Compat: eachrow
+using Compat: isnothing, eachrow
 using Fortran90Namelists.JuliaToFortran: to_fortran
 
 using .Namelists
@@ -25,7 +25,7 @@ function to_qe(
     for (key, value) in dict
         if value isa Vector
             for (i, x) in enumerate(value)
-                ismissing(x) && continue
+                isnothing(x) && continue
                 content *= indent * join(["$key($i)", "=", "$(f(x))\n"], sep)
             end
         else

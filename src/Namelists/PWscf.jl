@@ -56,7 +56,7 @@ end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Union{Missing,Float64}} = zeros(6)
+    celldm::Vector{Union{Nothing,Float64}} = zeros(6)
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -67,9 +67,9 @@ end # struct ControlNamelist
     ntyp::Int = 0
     nbnd::Int = 0
     tot_charge::Float64 = 0.0
-    starting_charge::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    starting_charge::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
     tot_magnetization::Float64 = -1.0
-    starting_magnetization::Vector{Union{Missing,Float64}} = ones(ntyp)
+    starting_magnetization::Vector{Union{Nothing,Float64}} = ones(ntyp)
     ecutwfc::Float64 = 0.0
     ecutrho::Float64 = 0.0
     ecutfock::Float64 = ecutrho
@@ -107,21 +107,21 @@ end # struct ControlNamelist
     localization_thr::Float64 = 0.0  # This is only for QE 6.4
     lda_plus_u::Bool = false
     lda_plus_u_kind::Int = 0
-    Hubbard_U::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    Hubbard_J0::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    Hubbard_alpha::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    Hubbard_beta::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    Hubbard_J::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_U::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_J0::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_alpha::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_beta::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_J::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
     starting_ns_eigenvalue::Float64 = -1.0
     U_projection_type::String = "atomic"
     edir::Int = 1
     emaxpos::Float64 = 0.5
     eopreg::Float64 = 0.1
     eamp::Float64 = 0.001  # The default value in QE's source code is 0.0
-    angle1::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    angle2::Vector{Union{Missing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    angle1::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    angle2::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
     constrained_magnetization::String = "none"
-    fixed_magnetization::Vector{Union{Missing,Float64}} = zeros(3)  # The default value in QE's source code is just one 0.0
+    fixed_magnetization::Vector{Union{Nothing,Float64}} = zeros(3)  # The default value in QE's source code is just one 0.0
     lambda::Float64 = 1.0
     report::Int = 100
     lspinorb::Bool = false
@@ -134,8 +134,8 @@ end # struct ControlNamelist
     vdw_corr::String = "none"
     london::Bool = false
     london_s6::Float64 = 0.75
-    london_c6::Vector{Union{Missing,Float64}} = -ones(ntyp)  # The default value in QE's source code is just one -1.0
-    london_rvdw::Vector{Union{Missing,Float64}} = -ones(ntyp)  # The default value in QE's source code is just one -1.0
+    london_c6::Vector{Union{Nothing,Float64}} = -ones(ntyp)  # The default value in QE's source code is just one -1.0
+    london_rvdw::Vector{Union{Nothing,Float64}} = -ones(ntyp)  # The default value in QE's source code is just one -1.0
     london_rcut::Float64 = 200.0
     ts_vdw_econv_thr::Float64 = 1e-06
     ts_vdw_isolated::Bool = false
@@ -185,7 +185,7 @@ end # struct SystemNamelist
     diago_david_ndim::Int = 4
     diago_full_acc::Bool = false
     efield::Float64 = 0.0
-    efield_cart::Vector{Union{Missing,Float64}} = [0.0, 0.0, 0.0]
+    efield_cart::Vector{Union{Nothing,Float64}} = [0.0, 0.0, 0.0]
     efield_phase::String = "none"
     startingpot::String = "atomic"  # This depends on `calculation`
     startingwfc::String = "atomic+random"  # This depends on `calculation`
@@ -240,7 +240,7 @@ end # struct DOSNamelist
     outdir::String = "./"
     filband::String = "bands.out"
     spin_component::Int = 1
-    lsigma::Vector{Union{Missing,Bool}} = falses(3)  # The default value in QE's source code is just one `false`
+    lsigma::Vector{Union{Nothing,Bool}} = falses(3)  # The default value in QE's source code is just one `false`
     lp::Bool = false
     filp::String = "p_avg.dat"
     lsym::Bool = true
