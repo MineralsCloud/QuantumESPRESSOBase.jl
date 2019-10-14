@@ -87,7 +87,7 @@ end # struct ControlNamelist
     ts_vdw::Bool = false
     ts_vdw_econv_thr::Float64 = 1e-6
     ts_vdw_isolated::Bool = false
-    assume_isolated::Bool = "none"
+    assume_isolated::String = "none"
     @assert length(celldm) ≤ 6
 end # struct SystemNamelist
 
