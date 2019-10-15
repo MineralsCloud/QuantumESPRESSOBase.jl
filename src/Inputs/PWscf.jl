@@ -12,7 +12,8 @@ julia>
 module PWscf
 
 using Compat: isnothing
-using Parameters: @with_kw, reconstruct
+using Parameters: @with_kw
+using Setfield: @set!
 
 using QuantumESPRESSOBase: bravais_lattice
 using QuantumESPRESSOBase.Namelists.PWscf
@@ -60,15 +61,10 @@ But there are cases we want to write its `CellParametersCard` explicitly. This f
 above and generate a new `PWscfInput` with its `ibrav = 0` and `cell_parameters` not empty.
 """
 function autofill_cell_parameters(template::PWscfInput)
-    return reconstruct(
-        template,
-        Dict(
-            # Non-empty `celldm` conflicts `CellParametersCard` with unit `"bohr"`.
-            :system => reconstruct(template.system, ibrav = 0, celldm = template.celldm[1]),
-            # Use the `ibrav` of the original `SystemNamelist` to construct a lattice
-            :cell_parameters => CellParametersCard("alat", bravais_lattice(template.system))
-        )
-    )
+    system = template.system
+    @set! template.cell_parameters = CellParametersCard("alat", bravais_lattice(system))
+    @set! template.system.ibrav = 0
+    @set! template.system.celldm = system.celldm[1]
 end # function autofill_cell_parameters
 
 """
