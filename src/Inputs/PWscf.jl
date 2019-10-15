@@ -64,7 +64,7 @@ function autofill_cell_parameters(template::PWscfInput)
     system = template.system
     @set! template.cell_parameters = CellParametersCard("alat", bravais_lattice(system))
     @set! template.system.ibrav = 0
-    @set! template.system.celldm = system.celldm[1]
+    @set! template.system.celldm = [system.celldm[1]]
 end # function autofill_cell_parameters
 
 """
