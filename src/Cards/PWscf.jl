@@ -22,7 +22,8 @@ using QuantumESPRESSOBase.Cards: Card,
     AtomicPosition,
     AtomicPositionsCard,
     CellParametersCard,
-    pseudopotential_format
+    pseudopotential_format,
+    allowed_options
 
 export AtomicSpecies,
     AtomicSpeciesCard,
