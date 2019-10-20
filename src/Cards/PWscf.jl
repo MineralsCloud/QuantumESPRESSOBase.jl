@@ -16,13 +16,13 @@ using Parameters: @with_kw
 using Setfield: @lens, get
 
 using QuantumESPRESSOBase
+using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards: Card,
                                  AtomicSpecies,
                                  AtomicSpeciesCard,
                                  AtomicPosition,
                                  AtomicPositionsCard,
                                  CellParametersCard,
-                                 allowed_options,
                                  pseudopotential_format
 
 export AtomicSpecies,
@@ -88,7 +88,7 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
 end
 # ============================================================================ #
 
-allowed_options(::Type{<:KPointsCard}) = (
+Cards.allowed_options(::Type{<:KPointsCard}) = (
     "tpiba",
     "automatic",
     "crystal",
