@@ -33,25 +33,41 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{A<:AbstractString,B<:AbstractVector{<:Real},C<:AbstractVector{Int}}
+@with_kw struct AtomicPosition{
+    A<:AbstractString,
+    B<:AbstractVector{<:Real},
+    C<:AbstractVector{Int},
+}
     atom::A
     pos::B
     if_pos::C = [1, 1, 1]
-    @assert length(pos) == 3 "`pos` must be a three-element-vector! However it is of length $(length(pos))!"
-    @assert length(if_pos) == 3 "`if_pos` must be a three-element-vector! However it is of length $(length(if_pos))!"
-    @assert all(x ∈ (0, 1) for x in if_pos) "`if_pos` must be either 0 or 1!"
+    @assert(
+        length(pos) == 3,
+        "`pos` must be a three-element-vector! However it is of length $(length(pos))!",
+    )
+    @assert(
+        length(if_pos) == 3,
+        "`if_pos` must be a three-element-vector! However it is of length $(length(if_pos))!",
+    )
+    @assert(all(x ∈ (0, 1) for x in if_pos), "`if_pos` must be either 0 or 1!")
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
 
-@with_kw struct AtomicPositionsCard{A<:AbstractString,B<:AbstractVector{<:AtomicPosition}} <: Card
+@with_kw struct AtomicPositionsCard{
+    A<:AbstractString,
+    B<:AbstractVector{<:AtomicPosition},
+} <: Card
     option::A = "alat"
     data::B
-    @assert option in allowed_options(AtomicPositionsCard)
+    @assert(option ∈ allowed_options(AtomicPositionsCard))
 end
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     lens = @lens _.data.atom
-    @assert isempty(symdiff(map(Base.Fix2(get, lens) ∘ unique, (x, y)))) "labels of the atoms are different in `ATOMIC_SPECIES` and `ATOMIC_POSITIONS` card!"
+    @assert(
+        isempty(symdiff(map(Base.Fix2(get, lens) ∘ unique, (x, y)))),
+        "labels of the atoms are different in `ATOMIC_SPECIES` and `ATOMIC_POSITIONS` card!",
+    )
 end # function validate
 validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
@@ -60,8 +76,8 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 @with_kw struct CellParametersCard{A<:AbstractString,B<:AbstractMatrix} <: Card
     option::A = "alat"
     data::B
-    @assert option in allowed_options(CellParametersCard)
-    @assert size(data) == (3, 3)
+    @assert(option ∈ allowed_options(CellParametersCard))
+    @assert(size(data) == (3, 3))
 end
 # ============================================================================ #
 
@@ -96,5 +112,6 @@ julia> allowed_options(KPointsCard)
 ```
 """
 allowed_options(::Type{<:Card}) = nothing
-allowed_options(::Type{<:AtomicPositionsCard}) = ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
+allowed_options(::Type{<:AtomicPositionsCard}) =
+    ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
