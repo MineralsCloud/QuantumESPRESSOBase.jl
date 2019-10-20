@@ -115,3 +115,11 @@ allowed_options(::Type{<:Card}) = nothing
 allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
+
+function cell_volume(card::CellParametersCard)
+    @match option(card) begin
+        "bohr" => det(card.data) * u"bohr^3"
+        "angstrom" => det(card.data) * u"angstrom^3"
+        "alat" => error("Information not enough! The `celldm[1]` parameter is unknown!")
+    end
+end # function cell_volume
