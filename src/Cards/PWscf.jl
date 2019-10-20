@@ -22,8 +22,8 @@ using QuantumESPRESSOBase.Cards: Card,
     AtomicPosition,
     AtomicPositionsCard,
     CellParametersCard,
-    pseudopotential_format,
-    allowed_options
+    allowed_options,
+    pseudopotential_format
 
 export AtomicSpecies,
     AtomicSpeciesCard,
@@ -75,5 +75,8 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 # ============================================================================ #
+
+allowed_options(::Type{<:KPointsCard}) =
+    ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 
 end

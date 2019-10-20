@@ -1,6 +1,7 @@
 module CP
 
-using QuantumESPRESSOBase.Cards: AtomicSpecies,
+using QuantumESPRESSOBase.Cards: Card,
+    AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
@@ -11,7 +12,6 @@ export AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
-    CellParametersCard,
-    pseudopotential_format
+    CellParametersCard
 
 end
