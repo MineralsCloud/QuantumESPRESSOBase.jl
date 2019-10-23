@@ -14,8 +14,6 @@ module Cards
 using MLStyle: @match
 using Parameters: @with_kw
 using Setfield: @lens, get
-using Unitful
-using UnitfulAtomic
 
 using QuantumESPRESSOBase: InputEntry
 

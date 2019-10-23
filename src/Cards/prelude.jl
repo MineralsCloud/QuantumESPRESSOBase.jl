@@ -116,10 +116,17 @@ allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
 
+const ANGSTROM_TO_BOHR = 1 / 0.529177210903
+
+"""
+    cell_volume(card::CellParametersCard)
+
+Return the cell volume according to the `CellParametersCard`'s parameters, in atomic unit.
+"""
 function cell_volume(card::CellParametersCard)
     @match option(card) begin
-        "bohr" => det(card.data) * u"bohr^3"
-        "angstrom" => det(card.data) * u"angstrom^3"
+        "bohr" => det(card.data)
+        "angstrom" => det(card.data) * ANGSTROM_TO_BOHR^3
         "alat" => error("Information not enough! The `celldm[1]` parameter is unknown!")
     end
 end # function cell_volume
