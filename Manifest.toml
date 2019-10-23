@@ -168,17 +168,3 @@ uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
 [[Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
-
-[[Unitful]]
-deps = ["LinearAlgebra", "Random"]
-git-tree-sha1 = "161092cff2e4ec6f22a458170dcb3ae4efad8352"
-repo-rev = "master"
-repo-url = "https://github.com/PainterQubits/Unitful.jl.git"
-uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
-version = "0.17.0"
-
-[[UnitfulAtomic]]
-deps = ["Unitful"]
-git-tree-sha1 = "2edb47dbda92ce8a91f53603041ffe7745427b01"
-uuid = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
-version = "0.3.0"
