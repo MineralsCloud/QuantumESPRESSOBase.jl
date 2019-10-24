@@ -11,12 +11,15 @@ julia>
 """
 module PWscf
 
+using LinearAlgebra: det
+
 using Compat: isnothing
 using Parameters: @with_kw
 using Setfield: @set!
 
 using QuantumESPRESSOBase: bravais_lattice
 using QuantumESPRESSOBase.Namelists.PWscf
+using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PWscf
 using ..Inputs
 
@@ -84,5 +87,14 @@ Return a vector of compulsory `Card`s of a `PWscfInput`.
 The compulsory `Card`s of a `PWscfInput` are `AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`.
 """
 compulsory_cards(input::PWscfInput) = [getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points)]
+
+function Cards.cell_volume(input::PWscfInput)
+    if isnothing(input.cell_parameters)
+        return det(bravais_lattice(input.system))
+    else
+        iszero(input.system.celldm[1]) && return cell_volume(input.cell_parameters)
+        return input.system.celldm[1]^3 * cell_volume(input.cell_parameters)
+    end
+end # function cell_volume
 
 end
