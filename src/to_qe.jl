@@ -3,6 +3,7 @@ using Fortran90Namelists.JuliaToFortran: to_fortran
 
 using .Namelists
 using .Namelists.PWscf
+using .Namelists.PHonon
 using .Cards
 using .Cards.PWscf
 using .Cards.PHonon
