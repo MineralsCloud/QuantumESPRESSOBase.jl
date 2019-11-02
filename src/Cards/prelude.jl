@@ -9,7 +9,7 @@ struct AtomicSpecies{A<:AbstractString,B<:Real,C<:AbstractString}
 end
 
 """
-    pseudopotential_format(data::AtomicSpecies)::String
+    pseudo_format(data::AtomicSpecies)::String
 
 Return the pseudopotential format.
 
@@ -20,7 +20,7 @@ the file name:
 - "*.RRKJ3": Andrea Dal Corso's code (old format)
 - none of the above: old PWscf norm-conserving format
 """
-function pseudopotential_format(data::AtomicSpecies)::String
+function pseudo_format(data::AtomicSpecies)::String
     @match lowercase(splitext(data.pseudo)[2]) begin
         ".vdb" || ".van" => "Vanderbilt US pseudopotential code"
         ".rrkj3" => "Andrea Dal Corso's code (old format)"
