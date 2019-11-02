@@ -74,7 +74,10 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{A<:AbstractString,B<:AbstractMatrix} <: AbstractCellParametersCard
+@with_kw struct CellParametersCard{
+    A<:AbstractString,
+    B<:AbstractMatrix,
+} <: AbstractCellParametersCard
     option::A = "alat"
     data::B
     @assert(option ∈ allowed_options(CellParametersCard))

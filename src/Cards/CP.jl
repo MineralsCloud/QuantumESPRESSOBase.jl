@@ -41,7 +41,10 @@ end
 # ============================================================================ #
 
 # ============================== RefCellParameters ============================== #
-@with_kw struct RefCellParametersCard{A<:AbstractString,B<:AbstractMatrix} <: AbstractCellParametersCard
+@with_kw struct RefCellParametersCard{
+    A<:AbstractString,
+    B<:AbstractMatrix,
+} <: AbstractCellParametersCard
     option::A = "bohr"
     data::B
     @assert(option ∈ allowed_options(RefCellParametersCard))
