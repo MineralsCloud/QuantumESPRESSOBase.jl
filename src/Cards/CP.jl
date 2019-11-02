@@ -11,10 +11,7 @@ export AtomicVelocity,
        AtomicForcesCard
 
 # ============================== AtomicVelocity ============================== #
-@with_kw struct AtomicVelocity{
-    A<:AbstractString,
-    B<:AbstractVector{<:Real},
-}
+@with_kw struct AtomicVelocity{A<:AbstractString,B<:AbstractVector{<:Real}}
     atom::A
     vel::B
     @assert(
@@ -34,10 +31,7 @@ end
 # ============================================================================ #
 
 # ============================== RefCellParameters ============================== #
-@with_kw struct RefCellParametersCard{
-    A<:AbstractVector,
-    B<:AbstractMatrix
-} <: Card
+@with_kw struct RefCellParametersCard{A<:AbstractVector,B<:AbstractMatrix} <: Card
     option::A = "bohr"
     data::B
     @assert(option ∈ allowed_options(RefCellParametersCard))
@@ -46,10 +40,7 @@ end
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
-@with_kw struct AtomicForce{
-    A<:AbstractString,
-    B<:AbstractVector{<:Real}
-}
+@with_kw struct AtomicForce{A<:AbstractString,B<:AbstractVector{<:Real}}
     atom::A
     forc::B
     @assert(

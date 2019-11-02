@@ -50,7 +50,7 @@ function to_qe(
     """
 end
 function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
-    return join([getfield(data, i) for i = 1:nfields(data)], sep)
+    return join([getfield(data, i) for i in 1:nfields(data)], sep)
 end
 function to_qe(
     card::AtomicSpeciesCard;
@@ -114,7 +114,7 @@ end
 function to_qe(
     card::QPointsSpecsCard;
     indent::AbstractString = "    ",
-    sep::AbstractString = " "
+    sep::AbstractString = " ",
 )::String
     content = "$(length(card.data))\n"
     for p in card.data
