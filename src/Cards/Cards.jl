@@ -19,7 +19,7 @@ using QuantumESPRESSOBase: InputEntry
 
 export Card,
        AbstractCellParametersCard,
-       option,
+       optionof,
        allowed_options,
        cell_volume
 

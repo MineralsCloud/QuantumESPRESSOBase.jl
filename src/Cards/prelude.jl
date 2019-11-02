@@ -86,15 +86,15 @@ end
 # ============================================================================ #
 
 """
-    option(x::Card)
+    optionof(x::Card)
 
 Return the option for `Card` `x`.
 
 A user should not use `x.option` to access a `Card`'s `option`. Because some `Card`s do not have an option.
-Using `option(x)` is suggested.
+Using `optionof(x)` is suggested.
 """
-option(card::Card) = getfield(card, :option)
-option(::AtomicSpeciesCard) = nothing
+optionof(card::Card) = getfield(card, :option)
+optionof(::AtomicSpeciesCard) = nothing
 
 """
     allowed_options(T::Type{<:Card})
@@ -128,7 +128,7 @@ const ANGSTROM_TO_BOHR = 1 / 0.529177210903
 Return the cell volume according to the `CellParametersCard`'s parameters, in atomic unit.
 """
 function cell_volume(card::CellParametersCard)
-    @match option(card) begin
+    @match optionof(card) begin
         "bohr" => det(card.data)
         "angstrom" => det(card.data) * ANGSTROM_TO_BOHR^3
         "alat" => error("Information not enough! The `celldm[1]` parameter is unknown!")
