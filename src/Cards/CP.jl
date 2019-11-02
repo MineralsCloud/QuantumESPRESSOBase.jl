@@ -58,15 +58,15 @@ Cards.allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 const ANGSTROM_TO_BOHR = 1 / 0.529177210903
 
 """
-    ref_cell_volume(card::RefCellParametersCard)
+    cell_volume(card::RefCellParametersCard)
 
-Return the referece cell volume according to the `RefCellParametersCard`'s parameters, in atomic unit.
+Return the cell volume according to the `RefCellParametersCard`'s parameters, in atomic unit.
 """
-function ref_cell_volume(card::RefCellParametersCard)
+function Cards.cell_volume(card::RefCellParametersCard)
     @match option(card) begin
         "bohr" => det(card.data)
         "angstrom" => det(card.data) * ANGSTROM_TO_BOHR^3
     end
-end # function ref_cell_volume
+end # function cell_volume
 
 end
