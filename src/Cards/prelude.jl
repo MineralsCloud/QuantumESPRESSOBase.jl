@@ -5,7 +5,7 @@ abstract type AbstractCellParametersCard <: Card end
 struct AtomicSpecies{A<:AbstractString,B<:Real,C<:AbstractString}
     atom::A
     mass::B
-    pseudopotential::C
+    pseudo::C
 end
 
 """
@@ -21,7 +21,7 @@ the file name:
 - none of the above: old PWscf norm-conserving format
 """
 function pseudopotential_format(data::AtomicSpecies)::String
-    @match lowercase(splitext(data.pseudopotential)[2]) begin
+    @match lowercase(splitext(data.pseudo)[2]) begin
         ".vdb" || ".van" => "Vanderbilt US pseudopotential code"
         ".rrkj3" => "Andrea Dal Corso's code (old format)"
         _ => "old PWscf norm-conserving format"
