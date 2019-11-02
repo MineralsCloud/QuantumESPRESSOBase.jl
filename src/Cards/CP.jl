@@ -1,10 +1,25 @@
 module CP
 
-using parameters: @with_kw
-using QuantumESPRESSOBase
-using ..Cards
+using MLStyle: @match
+using Parameters: @with_kw
 
-export AtomicVelocity,
+using QuantumESPRESSOBase
+using QuantumESPRESSOBase.Cards
+using QuantumESPRESSOBase.Cards: Card,
+                                 AtomicSpecies,
+                                 AtomicSpeciesCard,
+                                 AtomicPosition,
+                                 AtomicPositionsCard,
+                                 AbstractCellParametersCard,
+                                 CellParametersCard,
+                                 pseudopotential_format
+
+export AtomicSpecies,
+       AtomicSpeciesCard,
+       AtomicPosition,
+       AtomicPositionsCard,
+       CellParametersCard,
+       AtomicVelocity,
        AtomicVelocitiesCard,
        RefCellParametersCard,
        AtomicForce,
