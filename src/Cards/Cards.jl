@@ -17,7 +17,11 @@ using Setfield: @lens, get
 
 using QuantumESPRESSOBase: InputEntry
 
-export Card, option, allowed_options, cell_volume, ref_cell_volume
+export Card,
+       AbstractCellParametersCard,
+       option,
+       allowed_options,
+       cell_volume
 
 include("prelude.jl")
 include("PWscf.jl")

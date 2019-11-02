@@ -1,4 +1,5 @@
 abstract type Card <: InputEntry end
+abstract type AbstractCellParametersCard <: Card end
 
 # =============================== AtomicSpecies ============================== #
 struct AtomicSpecies{A<:AbstractString,B<:Real,C<:AbstractString}
@@ -73,7 +74,10 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{A<:AbstractString,B<:AbstractMatrix} <: Card
+@with_kw struct CellParametersCard{
+    A<:AbstractString,
+    B<:AbstractMatrix,
+} <: AbstractCellParametersCard
     option::A = "alat"
     data::B
     @assert(option ∈ allowed_options(CellParametersCard))
@@ -90,7 +94,7 @@ A user should not use `x.option` to access a `Card`'s `option`. Because some `Ca
 Using `option(x)` is suggested.
 """
 option(card::Card) = getfield(card, :option)
-option(card::AtomicSpeciesCard) = nothing
+option(::AtomicSpeciesCard) = nothing
 
 """
     allowed_options(T::Type{<:Card})
