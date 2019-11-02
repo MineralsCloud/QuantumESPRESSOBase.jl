@@ -123,11 +123,11 @@ allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
 const ANGSTROM_TO_BOHR = 1 / 0.529177210903
 
 """
-    cell_volume(card::CellParametersCard)
+    cell_volume(card)
 
-Return the cell volume according to the `CellParametersCard`'s parameters, in atomic unit.
+Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
 """
-function cell_volume(card::CellParametersCard)
+function cell_volume(card::AbstractCellParametersCard)
     @match optionof(card) begin
         "bohr" => det(card.data)
         "angstrom" => det(card.data) * ANGSTROM_TO_BOHR^3
