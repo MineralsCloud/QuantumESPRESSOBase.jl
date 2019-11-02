@@ -20,13 +20,8 @@ export AtomicVelocity,
     )
 end
 
-@with_kw struct AtomicVelocitiesCard{
-    A<:AbstractString,
-    B<:AbstractVector{<:AtomicVelocity},
-} <: Card
-    option::A = "a.u"
-    data::B
-    @assert(option ∈ allowed_options(AtomicVelocitiesCard))
+struct AtomicVelocitiesCard{A<:AbstractVector{<:AtomicVelocity}} <: Card
+    data::A
 end
 # ============================================================================ #
 
