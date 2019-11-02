@@ -57,8 +57,8 @@ Return the option for `Card` `x`.
 A user should not use `x.option` to access a `Card`'s `option`. Because some `Card`s do not have an option.
 Using `option(x)` is suggested.
 """
-option(card::Card) = getfield(card, :option)
-option(card::AtomicForcesCard) = nothing
+Cards.option(::AtomicVelocitiesCard) = "a.u"
+Cards.option(::AtomicForcesCard) = nothing
 
 """
     allowed_options(T::Type{<:Card})
@@ -70,15 +70,14 @@ Return the allowed options for `Card` `T`.
 julia> using QuantumESPRESSOBase.Cards, QuantumESPRESSOBase.Cards.PWscf
 
 julia> allowed_options(AtomicVelocitiesCard)
-("a.u")
+("a.u",)
 
 julia> allowed_options(RefCellParametersCard)
 ("bohr", "angstrom")
 ```
 """
-allowed_options(::Type{<:Card}) = nothing
-allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
-allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
+Cards.allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
+Cards.allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 
 const ANGSTROM_TO_BOHR = 1 / 0.529177210903
 

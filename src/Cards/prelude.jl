@@ -90,7 +90,7 @@ A user should not use `x.option` to access a `Card`'s `option`. Because some `Ca
 Using `option(x)` is suggested.
 """
 option(card::Card) = getfield(card, :option)
-option(card::AtomicSpeciesCard) = nothing
+option(::AtomicSpeciesCard) = nothing
 
 """
     allowed_options(T::Type{<:Card})
