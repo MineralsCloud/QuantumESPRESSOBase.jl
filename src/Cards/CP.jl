@@ -82,7 +82,7 @@ julia> allowed_options(RefCellParametersCard)
 ```
 """
 allowed_options(::Type{<:Card}) = nothing
-allowed_options(::Type{<:AtomicVelocity}) = ("a.u")
+allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
 allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 
 const ANGSTROM_TO_BOHR = 1 / 0.529177210903
