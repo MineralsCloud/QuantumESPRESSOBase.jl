@@ -37,10 +37,10 @@ end
 # ============================== AtomicForce ============================== #
 @with_kw struct AtomicForce{A<:AbstractString,B<:AbstractVector{<:Real}}
     atom::A
-    forc::B
+    force::B
     @assert(
-        length(forc) == 3,
-        "`forc` must be a three-element-vector! However it is of length $(length(forc))!",
+        length(force) == 3,
+        "`force` must be a three-element-vector! However it is of length $(length(force))!",
     )
 end
 
