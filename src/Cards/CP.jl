@@ -49,33 +49,9 @@ end
 end
 # ============================================================================ #
 
-"""
-    option(x::Card)
-
-Return the option for `Card` `x`.
-
-A user should not use `x.option` to access a `Card`'s `option`. Because some `Card`s do not have an option.
-Using `option(x)` is suggested.
-"""
 Cards.option(::AtomicVelocitiesCard) = "a.u"
 Cards.option(::AtomicForcesCard) = nothing
 
-"""
-    allowed_options(T::Type{<:Card})
-
-Return the allowed options for `Card` `T`.
-
-# Examples
-```jldoctest
-julia> using QuantumESPRESSOBase.Cards, QuantumESPRESSOBase.Cards.PWscf
-
-julia> allowed_options(AtomicVelocitiesCard)
-("a.u",)
-
-julia> allowed_options(RefCellParametersCard)
-("bohr", "angstrom")
-```
-"""
 Cards.allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
 Cards.allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 
