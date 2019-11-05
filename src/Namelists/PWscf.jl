@@ -244,7 +244,7 @@ end # struct ElectronsNamelist
     @assert(pot_extrapolation ∈ ("none", "atomic", "first_order", "second_order"), "Invalid `pot_extrapolation` $(pot_extrapolation)!")
     @assert(wfc_extrapolation ∈ ("none", "first_order", "second_order"), "Invalid `wfc_extrapolation` $(wfc_extrapolation)!")
     @assert(ion_temperature ∈ ("rescaling", "rescale-v", "rescale-T", "reduce-T", "berendsen", "andersen", "initial", "not_controlled"), "Invalid `ion_temperature` $(ion_temperature)!")
-    @assert(tempw > 0.0, "`tempw` $tempw out of range!")
+    @assert(tempw > 0, "`tempw` $tempw out of range!")
 end # struct IonsNamelist
 
 @with_kw struct CellNamelist <: Namelist
@@ -256,7 +256,7 @@ end # struct IonsNamelist
     cell_dofree::String = "all"
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
     @assert(cell_dynamics ∈ ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w"), "Invalid `cell_dynamics` $(cell_dynamics)!")
-    @assert(wmass >= 0.0, "`wmass` $wmass out of range!")
+    @assert(wmass >= 0, "`wmass` $wmass out of range!")
     @assert(cell_dofree ∈ ("all", "ibrav", "x", "y", "z", "xy", "xz", "yz", "xyz", "shape", "volume", "2Dxy", "2Dshape", "epitaxial_ab", "epitaxial_ac", "epitaxial_bc"), "Invalid `cell_dofree` $(cell_dofree)!")
 end # struct CellNamelist
 
