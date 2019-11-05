@@ -339,9 +339,9 @@ end # struct IonsNamelist
             "volume",
             "2Dxy",
             "2Dshape",
-            "epitaxial_ab",
-            "epitaxial_ac",
-            "epitaxial_bc",
+            "epitaxial_ab",  # New in 6.4
+            "epitaxial_ac",  # New in 6.4
+            "epitaxial_bc",  # New in 6.4
         ),
         "Invalid `cell_dofree` $(cell_dofree)!"
     )

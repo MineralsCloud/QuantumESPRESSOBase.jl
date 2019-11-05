@@ -174,7 +174,7 @@ end # struct SystemNamelist
     @assert(ortho_eps > 0, "`ortho_eps` $(ortho_eps) less or equal 0!")
     @assert(ortho_max >= 1, "`ortho_max` $(ortho_max) less than 1!")
     @assert(
-        electron_velocities ∈ ("zero", "default", "change_step"),
+        electron_velocities ∈ ("zero", "default", "change_step"),  # New in 6.4
         "Invalid `electron_velocities` $(electron_velocities)!"
     )
     @assert(
