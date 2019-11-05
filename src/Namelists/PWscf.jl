@@ -15,7 +15,13 @@ using Parameters: @with_kw
 
 using ..Namelists: Namelist
 
-export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist, DOSNamelist, BandsNamelist
+export ControlNamelist,
+       SystemNamelist,
+       ElectronsNamelist,
+       IonsNamelist,
+       CellNamelist,
+       DOSNamelist,
+       BandsNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -59,8 +65,14 @@ export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNam
     @assert(max_seconds >= 0, "`max_seconds` $max_seconds out of range!")
     @assert(etot_conv_thr >= 0, "`etot_conv_thr` $etot_conv_thr out of range!")
     @assert(forc_conv_thr >= 0, "`forc_conv_thr` $forc_conv_thr out of range!")
-    @assert(!all((gate, tefield, !dipfield)), "`gate` cannot be used with `tefield` if dipole correction is not active!")
-    @assert(all((gate, dipfield, !tefield)), "Dipole correction is not active if `tefield = false`!")
+    @assert(
+        !all((gate, tefield, !dipfield)),
+        "`gate` cannot be used with `tefield` if dipole correction is not active!"
+    )
+    @assert(
+        all((gate, dipfield, !tefield)),
+        "Dipole correction is not active if `tefield = false`!"
+    )
 end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
@@ -162,7 +174,10 @@ end # struct ControlNamelist
     block_2::Float64 = 0.55
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @assert(!(ibrav != 0 && all(iszero, (celldm[1], A))), "Invalid lattice parameters (`celldm` or `a`)!")
+    @assert(
+        !(ibrav != 0 && all(iszero, (celldm[1], A))),
+        "Invalid lattice parameters (`celldm` or `a`)!"
+    )
     @assert(length(celldm) <= 6)
     @assert(nat >= 0, "`nat` $nat is less than zero!")
     @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
@@ -184,8 +199,21 @@ end # struct ControlNamelist
     @assert length(fixed_magnetization) <= 3
     # @assert length(london_c6) == ntyp
     # @assert length(london_rvdw) == ntyp
-    @assert(exxdiv_treatment ∈ ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none"), "Invalid `exxdiv_treatment` $(exxdiv_treatment)!")
-    @assert(!(x_gamma_extrapolation && exxdiv_treatment ∈ ("vcut_ws", "vcut_spherical")), "`x_gamma_extrapolation` cannot be used with `vcut`!")
+    @assert(
+        exxdiv_treatment ∈ (
+            "gygi-baldereschi",
+            "gygi-bald",
+            "g-b",
+            "vcut_ws",
+            "vcut_spherical",
+            "none",
+        ),
+        "Invalid `exxdiv_treatment` $(exxdiv_treatment)!"
+    )
+    @assert(
+        !(x_gamma_extrapolation && exxdiv_treatment ∈ ("vcut_ws", "vcut_spherical")),
+        "`x_gamma_extrapolation` cannot be used with `vcut`!"
+    )
 end # struct SystemNamelist
 
 @with_kw struct ElectronsNamelist <: Namelist
@@ -212,11 +240,23 @@ end # struct SystemNamelist
     startingwfc::String = "atomic+random"  # This depends on `calculation`
     tqr::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
-    @assert(mixing_mode ∈ ("plain", "TF","local-TF"), "Invalid `mixing_mode` $(mixing_mode)!")
-    @assert(diagonalization ∈ ("david", "cg", "cg-serial", "david-serial"), "Invalid `diagonalization` $(diagonalization)!")
-    @assert(efield_phase ∈ ("read", "write", "none"), "Invalid `efield_phase` $(efield_phase)!")
+    @assert(
+        mixing_mode ∈ ("plain", "TF", "local-TF"),
+        "Invalid `mixing_mode` $(mixing_mode)!"
+    )
+    @assert(
+        diagonalization ∈ ("david", "cg", "cg-serial", "david-serial"),
+        "Invalid `diagonalization` $(diagonalization)!"
+    )
+    @assert(
+        efield_phase ∈ ("read", "write", "none"),
+        "Invalid `efield_phase` $(efield_phase)!"
+    )
     @assert(startingpot ∈ ("atomic", "file"), "Invalid `startingpot` $(startingpot)!")
-    @assert(startingwfc ∈ ("atomic", "atomic+random", "random", "file"), "Invalid `startingwfc` $(startingwfc)!")
+    @assert(
+        startingwfc ∈ ("atomic", "atomic+random", "random", "file"),
+        "Invalid `startingwfc` $(startingwfc)!"
+    )
 end # struct ElectronsNamelist
 
 @with_kw struct IonsNamelist <: Namelist
@@ -239,12 +279,36 @@ end # struct ElectronsNamelist
     w_1::Float64 = 0.01
     w_2::Float64 = 0.5
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
-    @assert(ion_dynamics ∈ ("bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman"), "Invalid `ion_dynamics` $(ion_dynamics)!")
-    @assert(ion_positions ∈ ("default", "from_input"), "Invalid `ion_position` $(ion_positions)!")
-    @assert(pot_extrapolation ∈ ("none", "atomic", "first_order", "second_order"), "Invalid `pot_extrapolation` $(pot_extrapolation)!")
-    @assert(wfc_extrapolation ∈ ("none", "first_order", "second_order"), "Invalid `wfc_extrapolation` $(wfc_extrapolation)!")
-    @assert(ion_temperature ∈ ("rescaling", "rescale-v", "rescale-T", "reduce-T", "berendsen", "andersen", "initial", "not_controlled"), "Invalid `ion_temperature` $(ion_temperature)!")
-    @assert(tempw > 0.0, "`tempw` $tempw out of range!")
+    @assert(
+        ion_dynamics ∈ ("bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman"),
+        "Invalid `ion_dynamics` $(ion_dynamics)!"
+    )
+    @assert(
+        ion_positions ∈ ("default", "from_input"),
+        "Invalid `ion_position` $(ion_positions)!"
+    )
+    @assert(
+        pot_extrapolation ∈ ("none", "atomic", "first_order", "second_order"),
+        "Invalid `pot_extrapolation` $(pot_extrapolation)!"
+    )
+    @assert(
+        wfc_extrapolation ∈ ("none", "first_order", "second_order"),
+        "Invalid `wfc_extrapolation` $(wfc_extrapolation)!"
+    )
+    @assert(
+        ion_temperature ∈ (
+            "rescaling",
+            "rescale-v",
+            "rescale-T",
+            "reduce-T",
+            "berendsen",
+            "andersen",
+            "initial",
+            "not_controlled",
+        ),
+        "Invalid `ion_temperature` $(ion_temperature)!"
+    )
+    @assert(tempw > 0, "`tempw` $tempw out of range!")
 end # struct IonsNamelist
 
 @with_kw struct CellNamelist <: Namelist
@@ -255,9 +319,32 @@ end # struct IonsNamelist
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
-    @assert(cell_dynamics ∈ ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w"), "Invalid `cell_dynamics` $(cell_dynamics)!")
-    @assert(wmass >= 0.0 "`wmass` $wmass out of range!")
-    @assert(cell_dofree ∈ ("all", "ibrav", "x", "y", "z", "xy", "xz", "yz", "xyz", "shape", "volume", "2Dxy", "2Dshape", "epitaxial_ab", "epitaxial_ac", "epitaxial_bc"), "Invalid `cell_dofree` $(cell_dofree)!")
+    @assert(
+        cell_dynamics ∈ ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w"),
+        "Invalid `cell_dynamics` $(cell_dynamics)!"
+    )
+    @assert(wmass >= 0, "`wmass` $wmass out of range!")
+    @assert(
+        cell_dofree ∈ (
+            "all",
+            "ibrav",
+            "x",
+            "y",
+            "z",
+            "xy",
+            "xz",
+            "yz",
+            "xyz",
+            "shape",
+            "volume",
+            "2Dxy",
+            "2Dshape",
+            "epitaxial_ab",  # New in 6.4
+            "epitaxial_ac",  # New in 6.4
+            "epitaxial_bc",  # New in 6.4
+        ),
+        "Invalid `cell_dofree` $(cell_dofree)!"
+    )
 end # struct CellNamelist
 
 # The following default values are picked from `<QE source>/PP/src/dos.f90`
@@ -270,7 +357,7 @@ end # struct CellNamelist
     Emax::Float64 = 1000000.0
     DeltaE::Float64 = 0.01
     fildos::String = "$(prefix).dos"
-    @assert(ngauss ∈ (0, 1,-1,-99), "Invalid `ngauss` $(ngauss)!")
+    @assert(ngauss ∈ (0, 1, -1, -99), "Invalid `ngauss` $(ngauss)!")
 end # struct DOSNamelist
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
@@ -287,7 +374,7 @@ end # struct DOSNamelist
     plot_2d::Bool = false
     firstk::Int = 0
     lastk::Int = 10000000
-    @assert(spin_component ∈ (1, 2), "Invalid `spin_component` $(spin_component)!")
+    @assert(spin_component ∈ 1:2, "Invalid `spin_component` $(spin_component)!")
 end # struct BandsNamelist
 
 end
