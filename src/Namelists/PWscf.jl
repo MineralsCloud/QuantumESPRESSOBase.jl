@@ -48,10 +48,19 @@ export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNam
     nppstr::Int = 0
     lfcpopt::Bool = false
     gate::Bool = false
-    @assert calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
-    @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
-    @assert restart_mode ∈ ("from_scratch", "restart")
-    @assert disk_io ∈ ("high", "medium", "low", "none", "default")
+    # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
+    @assert(calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md"))
+    @assert(verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal"))
+    @assert(restart_mode ∈ ("from_scratch", "restart"))
+    @assert(nstep >= 0, "`nstep` $nstep out of range!")
+    @assert(iprint >= 1, "`iprint` $iprint out of range!")
+    @assert(disk_io ∈ ("high", "medium", "low", "none", "default"))
+    @assert(dt >= 0, "`dt` $dt out of range!")
+    @assert(max_seconds >= 0, "`max_seconds` $max_seconds out of range!")
+    @assert(etot_conv_thr >= 0, "`etot_conv_thr` $etot_conv_thr out of range!")
+    @assert(forc_conv_thr >= 0, "`forc_conv_thr` $forc_conv_thr out of range!")
+    @assert(!all((gate, tefield, !dipfield)), "`gate` cannot be used with `tefield` if dipole correction is not active!")
+    @assert(all((gate, dipfield, !tefield)), "Dipole correction is not active if `tefield = false`!")
 end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist

@@ -43,6 +43,20 @@ export ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNam
     memory::String = "default"
     pseudo_dir::String = raw"$HOME/espresso/pseudo/"
     tefield::Bool = false
+    # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
+    @assert(calculation ∈ ("cp", "scf", "nscf", "relax", "vc-relax", "vc-cp", "cp-wf", "vc-cp-wf"))
+    @assert(verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal"))
+    @assert(isave >= 1, "`isave` $isave out of range!")
+    @assert(nstep >= 0, "`nstep` $nstep out of range!")
+    @assert(iprint >= 1, "`iprint` $iprint out of range!")
+    @assert(dt >= 0, "`dt` $dt out of range!")
+    @assert(ndr >= 50, "`ndr` $ndr out of range!")
+    @assert(ndw <= 0 || ndw >= 50, "`ndw` $ndw out of range!")
+    @assert(max_seconds >= 0, "`max_seconds` $max_seconds out of range!")
+    @assert(etot_conv_thr >= 0, "`etot_conv_thr` $etot_conv_thr out of range!")
+    @assert(forc_conv_thr >= 0, "`forc_conv_thr` $forc_conv_thr out of range!")
+    @assert(ekin_conv_thr >= 0, "`ekin_conv_thr` $ekin_conv_thr out of range!")
+    @assert(memory ∈ ("small", "default", "large"), "`memory` $memory not allowed!")
 end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
