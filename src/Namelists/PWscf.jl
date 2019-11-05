@@ -211,6 +211,12 @@ end # struct SystemNamelist
     startingpot::String = "atomic"  # This depends on `calculation`
     startingwfc::String = "atomic+random"  # This depends on `calculation`
     tqr::Bool = false
+    # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
+    @assert(mixing_mode ∈ ("plain", "TF","local-TF"), "Invalid `mixing_mode` $(mixing_mode)!")
+    @assert(diagonalization ∈ ("david", "cg", "cg-serial", "david-serial"), "Invalid `diagonalization` $(diagonalization)!")
+    @assert(efield_phase ∈ ("read", "write", "none"), "Invalid `efield_phase` $(efield_phase)!")
+    @assert(startingpot ∈ ("atomic", "file"), "Invalid `startingpot` $(startingpot)!")
+    @assert(startingwfc ∈ ("atomic", "atomic+random", "random", "file"), "Invalid `startingwfc` $(startingwfc)!")
 end # struct ElectronsNamelist
 
 @with_kw struct IonsNamelist <: Namelist
@@ -232,6 +238,13 @@ end # struct ElectronsNamelist
     trust_radius_ini::Float64 = 0.5
     w_1::Float64 = 0.01
     w_2::Float64 = 0.5
+    # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
+    @assert(ion_dynamics ∈ ("bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman"), "Invalid `ion_dynamics` $(ion_dynamics)!")
+    @assert(ion_positions ∈ ("default", "from_input"), "Invalid `ion_position` $(ion_positions)!")
+    @assert(pot_extrapolation ∈ ("none", "atomic", "first_order", "second_order"), "Invalid `pot_extrapolation` $(pot_extrapolation)!")
+    @assert(wfc_extrapolation ∈ ("none", "first_order", "second_order"), "Invalid `wfc_extrapolation` $(wfc_extrapolation)!")
+    @assert(ion_temperature ∈ ("rescaling", "rescale-v", "rescale-T", "reduce-T", "berendsen", "andersen", "initial", "not_controlled"), "Invalid `ion_temperature` $(ion_temperature)!")
+    @assert(tempw > 0.0, "`tempw` $tempw out of range!")
 end # struct IonsNamelist
 
 @with_kw struct CellNamelist <: Namelist
@@ -241,6 +254,10 @@ end # struct IonsNamelist
     cell_factor::Float64 = 0.0
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
+    # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
+    @assert(cell_dynamics ∈ ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w"), "Invalid `cell_dynamics` $(cell_dynamics)!")
+    @assert(wmass >= 0.0 "`wmass` $wmass out of range!")
+    @assert(cell_dofree ∈ ("all", "ibrav", "x", "y", "z", "xy", "xz", "yz", "xyz", "shape", "volume", "2Dxy", "2Dshape", "epitaxial_ab", "epitaxial_ac", "epitaxial_bc"), "Invalid `cell_dofree` $(cell_dofree)!")
 end # struct CellNamelist
 
 # The following default values are picked from `<QE source>/PP/src/dos.f90`
@@ -253,6 +270,7 @@ end # struct CellNamelist
     Emax::Float64 = 1000000.0
     DeltaE::Float64 = 0.01
     fildos::String = "$(prefix).dos"
+    @assert(ngauss ∈ (0, 1,-1,-99), "Invalid `ngauss` $(ngauss)!")
 end # struct DOSNamelist
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
@@ -269,6 +287,7 @@ end # struct DOSNamelist
     plot_2d::Bool = false
     firstk::Int = 0
     lastk::Int = 10000000
+    @assert(spin_component ∈ (1, 2), "Invalid `spin_component` $(spin_component)!")
 end # struct BandsNamelist
 
 end
