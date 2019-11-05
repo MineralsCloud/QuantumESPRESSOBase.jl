@@ -102,7 +102,18 @@ end # struct ControlNamelist
     ts_vdw_econv_thr::Float64 = 1e-6
     ts_vdw_isolated::Bool = false
     assume_isolated::String = "none"
-    @assert length(celldm) ≤ 6
+    # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
+    @assert(!(ibrav != 0 && all(iszero, (celldm[1], A))), "Invalid lattice parameters (`celldm` or `a`)!")
+    @assert(length(celldm) <= 6)
+    @assert(nat >= 0, "`nat` $nat is less than zero!")
+    @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
+    @assert(nspin ∈ (1, 2, 4), "`nspin` $nspin out of range!")
+    @assert(ecutwfc >= 0, "`ecutwfc` $ecutwfc out of range!")
+    @assert(ecutrho >= 0, "`ecutrho` $ecutrho out of range!")
+    @assert(!iszero(degauss), "`degauss` is not used in CP!")
+    @assert(ecfixed >= 0, "`ecfixed` $ecfixed out of range!")
+    @assert(qcutz >= 0, "`qcutz` $qcutz out of range!")
+    @assert(q2sigma >= 0, "`q2sigma` $q2sigma out of range!")
 end # struct SystemNamelist
 
 @with_kw struct ElectronsNamelist <: Namelist

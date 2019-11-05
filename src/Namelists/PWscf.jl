@@ -161,7 +161,17 @@ end # struct ControlNamelist
     block_1::Float64 = 0.45
     block_2::Float64 = 0.55
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
-    @assert length(celldm) ≤ 6
+    # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
+    @assert(!(ibrav != 0 && all(iszero, (celldm[1], A))), "Invalid lattice parameters (`celldm` or `a`)!")
+    @assert(length(celldm) <= 6)
+    @assert(nat >= 0, "`nat` $nat is less than zero!")
+    @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
+    @assert(nspin ∈ (1, 2, 4), "`nspin` $nspin out of range!")
+    @assert(ecutwfc >= 0, "`ecutwfc` $ecutwfc out of range!")
+    @assert(ecutrho >= 0, "`ecutrho` $ecutrho out of range!")
+    @assert(ecfixed >= 0, "`ecfixed` $ecfixed out of range!")
+    @assert(qcutz >= 0, "`qcutz` $qcutz out of range!")
+    @assert(q2sigma >= 0, "`q2sigma` $q2sigma out of range!")
     # @assert length(starting_charge) == ntyp
     # @assert length(starting_magnetization) == ntyp
     # @assert length(Hubbard_U) == ntyp
@@ -171,9 +181,11 @@ end # struct ControlNamelist
     # @assert length(Hubbard_J) == ntyp
     # @assert length(angle1) == ntyp
     # @assert length(angle2) == ntyp
-    @assert length(fixed_magnetization) == 3
+    @assert length(fixed_magnetization) <= 3
     # @assert length(london_c6) == ntyp
     # @assert length(london_rvdw) == ntyp
+    @assert(exxdiv_treatment ∈ ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none"), "Invalid `exxdiv_treatment` $(exxdiv_treatment)!")
+    @assert(!(x_gamma_extrapolation && exxdiv_treatment ∈ ("vcut_ws", "vcut_spherical")), "`x_gamma_extrapolation` cannot be used with `vcut`!")
 end # struct SystemNamelist
 
 @with_kw struct ElectronsNamelist <: Namelist
