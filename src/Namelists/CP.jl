@@ -164,7 +164,7 @@ end # struct SystemNamelist
     grease::Float64 = 1.0
     ampre::Float64 = 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
-    @assert(electron_dynamics ∈ ("none", "sd", "damp", "verlet", "cg"))
+    @assert(electron_dynamics ∈ ("none", "sd", "damp", "verlet", "cg"))  # Different from code
     @assert(emass > 0.0, "`emass` $emass less or equal 0!")
     @assert(emass_cutoff > 0.0, "`emass_cutoff` $emass_cutoff less or equal 0!")
     @assert(
