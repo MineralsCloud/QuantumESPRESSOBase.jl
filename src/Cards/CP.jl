@@ -12,7 +12,7 @@ using QuantumESPRESSOBase.Cards: Card,
                                  AtomicPositionsCard,
                                  AbstractCellParametersCard,
                                  CellParametersCard,
-                                 pseudopotential_format
+                                 pseudo_format
 
 export AtomicSpecies,
        AtomicSpeciesCard,
@@ -67,24 +67,10 @@ end
 end
 # ============================================================================ #
 
-Cards.option(::AtomicVelocitiesCard) = "a.u"
-Cards.option(::AtomicForcesCard) = nothing
+Cards.optionof(::AtomicVelocitiesCard) = "a.u"
+Cards.optionof(::AtomicForcesCard) = nothing
 
 Cards.allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
 Cards.allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
-
-const ANGSTROM_TO_BOHR = 1 / 0.529177210903
-
-"""
-    cell_volume(card::RefCellParametersCard)
-
-Return the cell volume according to the `RefCellParametersCard`'s parameters, in atomic unit.
-"""
-function Cards.cell_volume(card::RefCellParametersCard)
-    @match option(card) begin
-        "bohr" => det(card.data)
-        "angstrom" => det(card.data) * ANGSTROM_TO_BOHR^3
-    end
-end # function cell_volume
 
 end

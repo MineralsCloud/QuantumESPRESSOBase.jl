@@ -5,11 +5,11 @@ abstract type AbstractCellParametersCard <: Card end
 struct AtomicSpecies{A<:AbstractString,B<:Real,C<:AbstractString}
     atom::A
     mass::B
-    pseudopotential::C
+    pseudo::C
 end
 
 """
-    pseudopotential_format(data::AtomicSpecies)::String
+    pseudo_format(data::AtomicSpecies)::String
 
 Return the pseudopotential format.
 
@@ -20,8 +20,8 @@ the file name:
 - "*.RRKJ3": Andrea Dal Corso's code (old format)
 - none of the above: old PWscf norm-conserving format
 """
-function pseudopotential_format(data::AtomicSpecies)::String
-    @match lowercase(splitext(data.pseudopotential)[2]) begin
+function pseudo_format(data::AtomicSpecies)::String
+    @match lowercase(splitext(data.pseudo)[2]) begin
         ".vdb" || ".van" => "Vanderbilt US pseudopotential code"
         ".rrkj3" => "Andrea Dal Corso's code (old format)"
         _ => "old PWscf norm-conserving format"
@@ -86,15 +86,15 @@ end
 # ============================================================================ #
 
 """
-    option(x::Card)
+    optionof(x::Card)
 
 Return the option for `Card` `x`.
 
 A user should not use `x.option` to access a `Card`'s `option`. Because some `Card`s do not have an option.
-Using `option(x)` is suggested.
+Using `optionof(x)` is suggested.
 """
-option(card::Card) = getfield(card, :option)
-option(::AtomicSpeciesCard) = nothing
+optionof(card::Card) = getfield(card, :option)
+optionof(::AtomicSpeciesCard) = nothing
 
 """
     allowed_options(T::Type{<:Card})
@@ -123,12 +123,12 @@ allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
 const ANGSTROM_TO_BOHR = 1 / 0.529177210903
 
 """
-    cell_volume(card::CellParametersCard)
+    cell_volume(card)
 
-Return the cell volume according to the `CellParametersCard`'s parameters, in atomic unit.
+Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
 """
-function cell_volume(card::CellParametersCard)
-    @match option(card) begin
+function cell_volume(card::AbstractCellParametersCard)
+    @match optionof(card) begin
         "bohr" => det(card.data)
         "angstrom" => det(card.data) * ANGSTROM_TO_BOHR^3
         "alat" => error("Information not enough! The `celldm[1]` parameter is unknown!")
