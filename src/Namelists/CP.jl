@@ -324,8 +324,8 @@ end # struct PressAiNamelist
     exx_me_rcut_self::Float64 = 10.0
     exx_me_rcut_pair::Float64 = 7.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1634-L1650.
-    @assert(calwf ∈ (1, 2, 3, 4, 5), "`calwf` $(calwf) out of range!")
-    @assert(wfsd ∈ (1, 2, 3), "`wfsd` $(wfsd) out of range!")
+    @assert(1 <= calwf <= 5, "`calwf` $(calwf) out of range!")
+    @assert(1 <= wfsd <= 3, "`wfsd` $(wfsd) out of range!")
 end # struct WannierNamelist
 
 end
