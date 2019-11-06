@@ -39,21 +39,12 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{
-    A<:AbstractVector{<:Real},
-    B<:AbstractVector{<:Integer},
-}
+@with_kw struct AtomicPosition{A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
     atom::String
     pos::A
     if_pos::B = [1, 1, 1]
-    @assert(
-        length(pos) == 3,
-        "`pos` must be a three-element-vector! However it is of length $(length(pos))!",
-    )
-    @assert(
-        length(if_pos) == 3,
-        "`if_pos` must be a three-element-vector! However it is of length $(length(if_pos))!",
-    )
+    @assert(length(pos) == 3, "`pos` is not of length 3, but $(length(pos))!",)
+    @assert(length(if_pos) == 3, "`if_pos` is not of length 3, but $(length(if_pos))!",)
     @assert(all(x ∈ (0, 1) for x in if_pos), "`if_pos` must be either 0 or 1!")
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
