@@ -5,7 +5,7 @@ abstract type AbstractCellParametersCard <: Card end
 struct AtomicSpecies
     atom::String
     mass::Float64
-    pseudo::String
+    potential::String
 end
 
 abstract type PseudopotentialFormat end
@@ -14,7 +14,7 @@ struct AndreaDalCorso <: PseudopotentialFormat end
 struct OldNormConserving <: PseudopotentialFormat end
 
 """
-    pseudo_format(data::AtomicSpecies)::String
+    potential_format(data::AtomicSpecies)::String
 
 Return the pseudopotential format.
 
@@ -25,7 +25,7 @@ the file name:
 - "*.RRKJ3": Andrea Dal Corso's code (old format)
 - none of the above: old PWscf norm-conserving format
 """
-function pseudo_format(data::AtomicSpecies)::PseudopotentialFormat
+function potential_format(data::AtomicSpecies)::PseudopotentialFormat
     @match lowercase(splitext(data.pseudo)[2]) begin
         ".vdb" || ".van" => VanderbiltUltraSoft()
         ".rrkj3" => AndreaDalCorso()

@@ -24,7 +24,7 @@ using QuantumESPRESSOBase.Cards: Card,
                                  AtomicPosition,
                                  AtomicPositionsCard,
                                  CellParametersCard,
-                                 pseudo_format
+                                 potential_format
 
 export AtomicSpecies,
        AtomicSpeciesCard,
@@ -36,7 +36,7 @@ export AtomicSpecies,
        GammaPoint,
        SpecialKPoint,
        KPointsCard,
-       pseudo_format
+       potential_format
 
 # ================================== KPoint ================================== #
 abstract type KPoint end
