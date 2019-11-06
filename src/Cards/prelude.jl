@@ -8,6 +8,11 @@ struct AtomicSpecies
     pseudo::String
 end
 
+abstract type PseudopotentialFormat end
+struct VanderbiltUltraSoft <: PseudopotentialFormat end
+struct AndreaDalCorso <: PseudopotentialFormat end
+struct OldNormConserving <: PseudopotentialFormat end
+
 """
     pseudo_format(data::AtomicSpecies)::String
 
@@ -20,11 +25,11 @@ the file name:
 - "*.RRKJ3": Andrea Dal Corso's code (old format)
 - none of the above: old PWscf norm-conserving format
 """
-function pseudo_format(data::AtomicSpecies)::String
+function pseudo_format(data::AtomicSpecies)::PseudopotentialFormat
     @match lowercase(splitext(data.pseudo)[2]) begin
-        ".vdb" || ".van" => "Vanderbilt US pseudopotential code"
-        ".rrkj3" => "Andrea Dal Corso's code (old format)"
-        _ => "old PWscf norm-conserving format"
+        ".vdb" || ".van" => VanderbiltUltraSoft()
+        ".rrkj3" => AndreaDalCorso()
+        _ => OldNormConserving()
     end
 end
 
