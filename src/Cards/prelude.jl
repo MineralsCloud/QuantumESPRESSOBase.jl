@@ -2,10 +2,10 @@ abstract type Card <: InputEntry end
 abstract type AbstractCellParametersCard <: Card end
 
 # =============================== AtomicSpecies ============================== #
-struct AtomicSpecies{A<:AbstractString,B<:Real,C<:AbstractString}
-    atom::A
-    mass::B
-    pseudo::C
+struct AtomicSpecies
+    atom::String
+    mass::Float64
+    pseudo::String
 end
 
 """
@@ -35,13 +35,12 @@ end
 
 # ============================== AtomicPosition ============================== #
 @with_kw struct AtomicPosition{
-    A<:AbstractString,
-    B<:AbstractVector{<:Real},
-    C<:AbstractVector{Int},
+    A<:AbstractVector{<:Real},
+    B<:AbstractVector{<:Integer},
 }
-    atom::A
-    pos::B
-    if_pos::C = [1, 1, 1]
+    atom::String
+    pos::A
+    if_pos::B = [1, 1, 1]
     @assert(
         length(pos) == 3,
         "`pos` must be a three-element-vector! However it is of length $(length(pos))!",
@@ -71,7 +70,7 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{A<:AbstractMatrix} <: AbstractCellParametersCard
+@with_kw struct CellParametersCard{A<:AbstractMatrix{<:Real}} <: AbstractCellParametersCard
     option::String = "alat"
     data::A
     @assert(option ∈ allowed_options(CellParametersCard))
