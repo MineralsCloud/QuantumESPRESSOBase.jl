@@ -67,9 +67,9 @@ struct GammaPoint <: KPoint end
 end
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
-@with_kw struct KPointsCard{A<:AbstractString,B<:AbstractVector{<:KPoint}} <: Card
-    option::A = "tpiba"
-    data::B
+@with_kw struct KPointsCard{A<:AbstractVector{<:KPoint}} <: Card
+    option::String = "tpiba"
+    data::A
     @assert(option ∈ allowed_options(KPointsCard))
     @assert begin
         @match option begin

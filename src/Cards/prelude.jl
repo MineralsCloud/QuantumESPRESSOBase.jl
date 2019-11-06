@@ -54,12 +54,9 @@ end
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
 
-@with_kw struct AtomicPositionsCard{
-    A<:AbstractString,
-    B<:AbstractVector{<:AtomicPosition},
-} <: Card
-    option::A = "alat"
-    data::B
+@with_kw struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
+    option::String = "alat"
+    data::A
     @assert(option ∈ allowed_options(AtomicPositionsCard))
 end
 
@@ -74,12 +71,9 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{
-    A<:AbstractString,
-    B<:AbstractMatrix,
-} <: AbstractCellParametersCard
-    option::A = "alat"
-    data::B
+@with_kw struct CellParametersCard{A<:AbstractMatrix} <: AbstractCellParametersCard
+    option::String = "alat"
+    data::A
     @assert(option ∈ allowed_options(CellParametersCard))
     @assert(size(data) == (3, 3))
 end
