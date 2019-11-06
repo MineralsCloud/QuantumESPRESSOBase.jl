@@ -12,7 +12,7 @@ julia>
 module PWscf
 
 using Compat: eachrow
-using MLStyle: @match
+using Rematch: @match
 using Parameters: @with_kw
 using Setfield: @lens, get
 

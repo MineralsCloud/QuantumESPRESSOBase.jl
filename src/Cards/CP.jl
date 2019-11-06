@@ -1,6 +1,6 @@
 module CP
 
-using MLStyle: @match
+using Rematch: @match
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase

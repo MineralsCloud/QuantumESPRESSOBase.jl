@@ -19,7 +19,7 @@ import Serialization
 using DataStructures: OrderedDict
 using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
-using MLStyle: @match
+using Rematch: @match
 
 using QuantumESPRESSOBase: InputEntry
 
