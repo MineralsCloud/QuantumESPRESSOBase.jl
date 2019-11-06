@@ -41,7 +41,7 @@ export AtomicSpecies,
 # ================================== KPoint ================================== #
 abstract type KPoint end
 
-@with_kw struct MonkhorstPackGrid{A<:AbstractVector{Int},B<:AbstractVector{Int}} <: KPoint
+@with_kw struct MonkhorstPackGrid{A<:AbstractVector{Int},B<:AbstractVector{Int}}
     grid::A
     offsets::B
     @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!",)
@@ -61,14 +61,18 @@ struct GammaPoint <: KPoint end
 end
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
-@with_kw struct KPointsCard{A<:AbstractVector{<:KPoint}} <: Card
+@with_kw struct KPointsCard{A<:Union{
+    MonkhorstPackGrid,
+    GammaPoint,
+    AbstractVector{<:SpecialKPoint},
+}} <: Card
     option::String = "tpiba"
     data::A
     @assert(option ∈ allowed_options(KPointsCard))
     @assert begin
         @match option begin
-            "automatic" => eltype(data) <: MonkhorstPackGrid
-            "gamma" => eltype(data) <: GammaPoint
+            "automatic" => typeof(data) <: MonkhorstPackGrid
+            "gamma" => typeof(data) <: GammaPoint
             # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
             _ => eltype(data) <: SpecialKPoint
         end
