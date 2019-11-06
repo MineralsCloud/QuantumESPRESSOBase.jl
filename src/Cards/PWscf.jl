@@ -41,7 +41,7 @@ export AtomicSpecies,
 # ================================== KPoint ================================== #
 abstract type KPoint end
 
-@with_kw struct MonkhorstPackGrid{A<:AbstractVector{Int},B<:AbstractVector{Int}}
+@with_kw struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
     grid::A
     offsets::B
     @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!",)
@@ -51,7 +51,7 @@ end
 
 struct GammaPoint <: KPoint end
 
-@with_kw struct SpecialKPoint{A<:AbstractVector{Float64},B<:Real} <: KPoint
+@with_kw struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
     coordinates::A
     weight::B
     @assert(
