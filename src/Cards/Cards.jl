@@ -11,7 +11,7 @@ julia>
 """
 module Cards
 
-using MLStyle: @match
+using Rematch: @match
 using Parameters: @with_kw
 using Setfield: @lens, get
 
@@ -21,6 +21,7 @@ export Card,
        AbstractCellParametersCard,
        optionof,
        allowed_options,
+       option_convert,
        cell_volume
 
 include("prelude.jl")
