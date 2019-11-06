@@ -70,14 +70,14 @@ export ControlNamelist,
         "`gate` cannot be used with `tefield` if dipole correction is not active!"
     )
     @assert(
-        all((gate, dipfield, !tefield)),
+        !all((gate, dipfield, !tefield)),
         "Dipole correction is not active if `tefield = false`!"
     )
 end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Union{Nothing,Float64}} = zeros(6)
+    celldm::Vector{Union{Nothing,Float64}} = Vector{Float64}(undef, 6)
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -280,7 +280,7 @@ end # struct ElectronsNamelist
     w_2::Float64 = 0.5
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
     @assert(
-        ion_dynamics ∈ ("bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman"),
+        ion_dynamics ∈ ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman"),
         "Invalid `ion_dynamics` $(ion_dynamics)!"
     )
     @assert(

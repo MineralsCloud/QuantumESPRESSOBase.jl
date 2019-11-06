@@ -78,7 +78,7 @@ end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Union{Nothing,Float64}} = zeros(6)
+    celldm::Vector{Union{Nothing,Float64}} = Vector{Float64}(undef, 6)
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -130,7 +130,7 @@ end # struct ControlNamelist
     @assert(nspin ∈ (1, 2, 4), "`nspin` $nspin out of range!")
     @assert(ecutwfc >= 0, "`ecutwfc` $ecutwfc out of range!")
     @assert(ecutrho >= 0, "`ecutrho` $ecutrho out of range!")
-    @assert(!iszero(degauss), "`degauss` is not used in CP!")
+    @assert(iszero(degauss), "`degauss` is not used in CP!")
     @assert(ecfixed >= 0, "`ecfixed` $ecfixed out of range!")
     @assert(qcutz >= 0, "`qcutz` $qcutz out of range!")
     @assert(q2sigma >= 0, "`q2sigma` $q2sigma out of range!")
