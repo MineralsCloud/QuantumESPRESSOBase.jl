@@ -44,14 +44,8 @@ abstract type KPoint end
 @with_kw struct MonkhorstPackGrid{A<:AbstractVector{Int},B<:AbstractVector{Int}} <: KPoint
     grid::A
     offsets::B
-    @assert(
-        length(grid) == 3,
-        "`grid` must be a three-element-vector! However it is of length $(length(grid))!",
-    )
-    @assert(
-        length(offsets) == 3,
-        "`offsets` must be a three-element-vector! However it is of length $(length(offsets))!",
-    )
+    @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!",)
+    @assert(length(offsets) == 3, "`offsets` is not of length 3, but $(length(offsets))!",)
     @assert(all(x ∈ (0, 1) for x in offsets), "`offsets` must be either 0 or 1!")
 end
 
@@ -62,7 +56,7 @@ struct GammaPoint <: KPoint end
     weight::B
     @assert(
         length(coordinates) == 3,
-        "`coordinates` must be a three-element-vector! However it is of length $(length(coordinates))!",
+        "`coordinates` is not of length 3, but $(length(coordinates))!",
     )
 end
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
@@ -81,10 +75,7 @@ SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
     end
 end
 function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
-    @assert(
-        size(data, 2) == 4,
-        "The size of the matrix should be (N, 4)! However $(size(data)) is given!",
-    )
+    @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!",)
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 # ============================================================================ #
