@@ -12,6 +12,8 @@ using QuantumESPRESSOBase.Cards: Card,
                                  AtomicPositionsCard,
                                  AbstractCellParametersCard,
                                  CellParametersCard,
+                                 AtomicForce,
+                                 AtomicForcesCard,
                                  potential_format
 
 export AtomicSpecies,
@@ -19,6 +21,8 @@ export AtomicSpecies,
        AtomicPosition,
        AtomicPositionsCard,
        CellParametersCard,
+       AtomicForce,
+       AtomicForcesCard,
        AtomicVelocity,
        AtomicVelocitiesCard,
        RefCellParametersCard,
@@ -43,18 +47,6 @@ end
     data::A
     @assert(option ∈ allowed_options(RefCellParametersCard))
     @assert(size(data) == (3, 3))
-end
-# ============================================================================ #
-
-# ============================== AtomicForce ============================== #
-@with_kw struct AtomicForce{A<:AbstractVector{<:Real}}
-    atom::String
-    force::A
-    @assert(length(force) == 3, "`force` is not of length 3, but $(length(force))!",)
-end
-
-@with_kw struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
-    data::T
 end
 # ============================================================================ #
 

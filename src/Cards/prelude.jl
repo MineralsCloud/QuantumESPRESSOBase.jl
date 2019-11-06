@@ -74,6 +74,18 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 end
 # ============================================================================ #
 
+# ============================== AtomicForce ============================== #
+@with_kw struct AtomicForce{A<:AbstractVector{<:Real}}
+    atom::String
+    force::A
+    @assert(length(force) == 3, "`force` is not of length 3, but $(length(force))!",)
+end
+
+@with_kw struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
+    data::T
+end
+# ============================================================================ #
+
 """
     optionof(x::Card)
 
