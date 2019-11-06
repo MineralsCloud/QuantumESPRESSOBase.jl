@@ -120,7 +120,7 @@ allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
 
-const ANGSTROM_TO_BOHR = 1 / 0.529177210903
+const BOHR_TO_ANGSTROM = 0.529177210903
 
 """
     cell_volume(card)
@@ -130,7 +130,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 function cell_volume(card::AbstractCellParametersCard)
     @match optionof(card) begin
         "bohr" => det(card.data)
-        "angstrom" => det(card.data) * ANGSTROM_TO_BOHR^3
+        "angstrom" => det(card.data) / BOHR_TO_ANGSTROM^3
         "alat" => error("Information not enough! The `celldm[1]` parameter is unknown!")
     end
 end # function cell_volume
@@ -138,8 +138,8 @@ end # function cell_volume
 function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
     old_option = optionof(card)
     factor = @match (old_option => new_option) begin
-        ("bohr" => "angstrom") => inv(ANGSTROM_TO_BOHR)
-        ("angstrom" => "bohr") => ANGSTROM_TO_BOHR
+        ("bohr" => "angstrom") => BOHR_TO_ANGSTROM
+        ("angstrom" => "bohr") => 1 / BOHR_TO_ANGSTROM
         _ => error("Unknown option pair ($old_option => $new_option) given!")
     end
     return typeof(card)(new_option, card.data .* factor)
