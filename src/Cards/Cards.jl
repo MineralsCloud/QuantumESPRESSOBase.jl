@@ -21,6 +21,7 @@ export Card,
        AbstractCellParametersCard,
        optionof,
        allowed_options,
+       option_convert,
        cell_volume
 
 include("prelude.jl")

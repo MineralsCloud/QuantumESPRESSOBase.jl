@@ -134,3 +134,13 @@ function cell_volume(card::AbstractCellParametersCard)
         "alat" => error("Information not enough! The `celldm[1]` parameter is unknown!")
     end
 end # function cell_volume
+
+function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
+    old_option = optionof(card)
+    factor = @match (old_option => new_option) begin
+        ("bohr" => "angstrom") => inv(ANGSTROM_TO_BOHR)
+        ("angstrom" => "bohr") => ANGSTROM_TO_BOHR
+        _ => error("Unknown option pair ($old_option => $new_option) given!")
+    end
+    return typeof(card)(new_option, card.data .* factor)
+end # function option_convert
