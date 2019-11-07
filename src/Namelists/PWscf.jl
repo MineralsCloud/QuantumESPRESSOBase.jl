@@ -187,18 +187,18 @@ end # struct ControlNamelist
     @assert(ecfixed >= 0, "`ecfixed` $ecfixed out of range!")
     @assert(qcutz >= 0, "`qcutz` $qcutz out of range!")
     @assert(q2sigma >= 0, "`q2sigma` $q2sigma out of range!")
-    # @assert length(starting_charge) == ntyp
-    # @assert length(starting_magnetization) == ntyp
-    # @assert length(Hubbard_U) == ntyp
-    # @assert length(Hubbard_J0) == ntyp
-    # @assert length(Hubbard_alpha) == ntyp
-    # @assert length(Hubbard_beta) == ntyp
-    # @assert length(Hubbard_J) == ntyp
-    # @assert length(angle1) == ntyp
-    # @assert length(angle2) == ntyp
-    @assert length(fixed_magnetization) <= 3
-    # @assert length(london_c6) == ntyp
-    # @assert length(london_rvdw) == ntyp
+    @assert(length(starting_charge) <= ntyp)
+    @assert(length(starting_magnetization) <= ntyp)
+    @assert(length(Hubbard_U) <= ntyp)
+    @assert(length(Hubbard_J0) <= ntyp)
+    @assert(length(Hubbard_alpha) <= ntyp)
+    @assert(length(Hubbard_beta) <= ntyp)
+    @assert(length(Hubbard_J) <= ntyp)
+    @assert(length(angle1) <= ntyp)
+    @assert(length(angle2) <= ntyp)
+    @assert(length(fixed_magnetization) <= 3)
+    @assert(length(london_c6) <= ntyp)
+    @assert(length(london_rvdw) <= ntyp)
     @assert(
         exxdiv_treatment ∈ (
             "gygi-baldereschi",
