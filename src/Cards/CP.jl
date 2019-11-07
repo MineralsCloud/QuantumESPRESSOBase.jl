@@ -13,8 +13,7 @@ using QuantumESPRESSOBase.Cards: Card,
                                  AbstractCellParametersCard,
                                  CellParametersCard,
                                  AtomicForce,
-                                 AtomicForcesCard,
-                                 potential_format
+                                 AtomicForcesCard
 
 export AtomicSpecies,
        AtomicSpeciesCard,
