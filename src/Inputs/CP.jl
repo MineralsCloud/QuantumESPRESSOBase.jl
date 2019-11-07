@@ -4,14 +4,19 @@ using Compat: isnothing
 using Parameters: @with_kw
 
 using ...Namelists.CP: ControlNamelist,
-                      SystemNamelist,
-                      ElectronsNamelist,
-                      IonsNamelist,
-                      CellNamelist,
-                      PressAiNamelist,
-                      WannierNamelist
+                       SystemNamelist,
+                       ElectronsNamelist,
+                       IonsNamelist,
+                       CellNamelist,
+                       PressAiNamelist,
+                       WannierNamelist
 using ...Cards
-using ...Cards.CP: AtomicSpeciesCard, AtomicPositionsCard, AtomicVelocitiesCard, CellParametersCard, RefCellParametersCard, AtomicForcesCard
+using ...Cards.CP: AtomicSpeciesCard,
+                   AtomicPositionsCard,
+                   AtomicVelocitiesCard,
+                   CellParametersCard,
+                   RefCellParametersCard,
+                   AtomicForcesCard
 using ..Inputs: QuantumESPRESSOInput
 
 export CPInput
