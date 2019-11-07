@@ -17,9 +17,7 @@ using Setfield: @lens, get
 
 using QuantumESPRESSOBase: InputEntry
 
-export Card,
-       AbstractCellParametersCard,
-       PseudopotentialFormat,
+export PseudopotentialFormat,
        VanderbiltUltraSoft,
        AndreaDalCorso,
        OldNormConserving,

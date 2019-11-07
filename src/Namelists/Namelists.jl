@@ -23,7 +23,7 @@ using Rematch: @match
 
 using QuantumESPRESSOBase: InputEntry
 
-export Namelist, to_dict, dropdefault
+export to_dict, dropdefault
 # ============================================================================ #
 
 

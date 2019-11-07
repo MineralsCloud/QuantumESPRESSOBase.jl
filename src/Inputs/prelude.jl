@@ -1,4 +1,4 @@
-export AbstractInput, namelists, cards
+export namelists, cards
 
 abstract type AbstractInput end
 
