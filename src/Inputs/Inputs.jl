@@ -11,10 +11,12 @@ julia>
 """
 module Inputs
 
-using QuantumESPRESSOBase.Namelists: Namelist
-using QuantumESPRESSOBase.Cards
+using Setfield: @set!
 
-export namelists, cards
+using ..Namelists: Namelist
+using ..Cards
+
+export namelists, cards, autofill_cell_parameters, compulsory_namelists, compulsory_cards
 
 abstract type QuantumESPRESSOInput end
 
@@ -36,7 +38,12 @@ Return a vector of `Card`s of a `QuantumESPRESSOInput`'s subtypes.
 """
 cards(input::QuantumESPRESSOInput) = _filterfields(input, Card)
 
+# =============================== Modules ============================== #
 include("PWscf.jl")
+include("CP.jl")
 include("PHonon.jl")
+# ============================================================================ #
+
+include("postlude.jl")
 
 end
