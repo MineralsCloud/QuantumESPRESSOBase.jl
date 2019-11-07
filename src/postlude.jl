@@ -7,7 +7,7 @@ using .Namelists.PHonon
 using .Cards
 using .Cards.PWscf
 using .Cards.PHonon
-using .Inputs: AbstractInput, namelists, cards
+using .Inputs: QuantumESPRESSOInput, namelists, cards
 using .Inputs.PWscf
 
 export asfieldname, to_qe
@@ -152,7 +152,7 @@ function to_qe(
     return content
 end
 function to_qe(
-    input::AbstractInput;
+    input::QuantumESPRESSOInput;
     indent::AbstractString = "    ",
     sep::AbstractString = " ",
     verbose::Bool = false,
