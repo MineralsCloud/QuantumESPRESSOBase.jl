@@ -10,7 +10,5 @@ include("bravais_lattice.jl")
 include("Inputs/Inputs.jl")
 include("postlude.jl")
 include("to_qe.jl")
-include("validate.jl")
-include("show.jl")
 
 end # module
