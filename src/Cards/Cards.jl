@@ -17,8 +17,7 @@ using Setfield: @lens, get
 
 using QuantumESPRESSOBase: InputEntry
 
-export PseudopotentialFormat,
-       VanderbiltUltraSoft,
+export VanderbiltUltraSoft,
        AndreaDalCorso,
        OldNormConserving,
        optionof,
