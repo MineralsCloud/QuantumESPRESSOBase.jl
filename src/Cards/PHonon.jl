@@ -14,7 +14,7 @@ module PHonon
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase
-using ..Cards
+using ..Cards: Card
 
 export QPoint, SpecialQPoint, QPointsSpecsCard
 

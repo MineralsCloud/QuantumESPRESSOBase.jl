@@ -21,7 +21,7 @@ using QuantumESPRESSOBase: bravais_lattice
 using QuantumESPRESSOBase.Namelists.PWscf
 using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PWscf
-using ..Inputs
+using ..Inputs: QuantumESPRESSOInput
 
 export PWscfInput, autofill_cell_parameters, compulsory_namelists, compulsory_cards
 
@@ -41,7 +41,7 @@ Construct a `PWscfInput` which represents the input of program `pw.x`.
 - `k_points::KPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
 - `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 """
-@with_kw struct PWscfInput <: AbstractInput
+@with_kw struct PWscfInput <: QuantumESPRESSOInput
     control::ControlNamelist = ControlNamelist()
     system::SystemNamelist = SystemNamelist()
     electrons::ElectronsNamelist = ElectronsNamelist()
