@@ -8,8 +8,37 @@ using .Cards
 using .Cards.PWscf
 using .Cards.PHonon
 using .Inputs
+using .Inputs.PWscf
 
-export to_qe
+export asfieldname, to_qe
+
+"""
+    asfieldname()
+
+
+
+# Arguments
+
+# Examples
+
+```jldoctest
+julia>
+```
+"""
+asfieldname(::Type{T}) where {T<:InputEntry} = error("Undefined for entry $(nameof(T))!")
+asfieldname(::Type{<:ControlNamelist}) = :control
+asfieldname(::Type{<:SystemNamelist}) = :system
+asfieldname(::Type{<:ElectronsNamelist}) = :electrons
+asfieldname(::Type{<:IonsNamelist}) = :ions
+asfieldname(::Type{<:CellNamelist}) = :cell
+asfieldname(::Type{<:PHNamelist}) = :inputph
+asfieldname(::Type{<:Q2RNamelist}) = :input
+asfieldname(::Type{<:MatdynNamelist}) = :input
+asfieldname(::Type{<:DynmatNamelist}) = :input
+asfieldname(::Type{<:AtomicSpeciesCard}) = :atomic_species
+asfieldname(::Type{<:AtomicPositionsCard}) = :atomic_positions
+asfieldname(::Type{<:KPointsCard}) = :k_points
+asfieldname(::Type{<:CellParametersCard}) = :cell_parameters
 
 """
     to_qe(x, indent::AbstractString = "    ", sep::AbstractString = " ")
