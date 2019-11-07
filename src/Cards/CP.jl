@@ -12,13 +12,17 @@ using QuantumESPRESSOBase.Cards: Card,
                                  AtomicPositionsCard,
                                  AbstractCellParametersCard,
                                  CellParametersCard,
-                                 pseudo_format
+                                 AtomicForce,
+                                 AtomicForcesCard,
+                                 potential_format
 
 export AtomicSpecies,
        AtomicSpeciesCard,
        AtomicPosition,
        AtomicPositionsCard,
        CellParametersCard,
+       AtomicForce,
+       AtomicForcesCard,
        AtomicVelocity,
        AtomicVelocitiesCard,
        RefCellParametersCard,
@@ -26,13 +30,10 @@ export AtomicSpecies,
        AtomicForcesCard
 
 # ============================== AtomicVelocity ============================== #
-@with_kw struct AtomicVelocity{A<:AbstractString,B<:AbstractVector{<:Real}}
-    atom::A
-    vel::B
-    @assert(
-        length(vel) == 3,
-        "`vel` must be a three-element-vector! However it is of length $(length(vel))!",
-    )
+@with_kw struct AtomicVelocity{A<:AbstractVector{<:Real}}
+    atom::String
+    vel::A
+    @assert(length(vel) == 3, "`vel` is not of length 3, but $(length(vel))!",)
 end
 
 struct AtomicVelocitiesCard{A<:AbstractVector{<:AtomicVelocity}} <: Card
@@ -41,29 +42,11 @@ end
 # ============================================================================ #
 
 # ============================== RefCellParameters ============================== #
-@with_kw struct RefCellParametersCard{
-    A<:AbstractString,
-    B<:AbstractMatrix,
-} <: AbstractCellParametersCard
-    option::A = "bohr"
-    data::B
+@with_kw struct RefCellParametersCard{A<:AbstractMatrix{<:Real}} <: AbstractCellParametersCard
+    option::String = "bohr"
+    data::A
     @assert(option ∈ allowed_options(RefCellParametersCard))
     @assert(size(data) == (3, 3))
-end
-# ============================================================================ #
-
-# ============================== AtomicForce ============================== #
-@with_kw struct AtomicForce{A<:AbstractString,B<:AbstractVector{<:Real}}
-    atom::A
-    force::B
-    @assert(
-        length(force) == 3,
-        "`force` must be a three-element-vector! However it is of length $(length(force))!",
-    )
-end
-
-@with_kw struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
-    data::T
 end
 # ============================================================================ #
 

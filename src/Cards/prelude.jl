@@ -2,14 +2,19 @@ abstract type Card <: InputEntry end
 abstract type AbstractCellParametersCard <: Card end
 
 # =============================== AtomicSpecies ============================== #
-struct AtomicSpecies{A<:AbstractString,B<:Real,C<:AbstractString}
-    atom::A
-    mass::B
-    pseudo::C
+struct AtomicSpecies
+    atom::String
+    mass::Float64
+    potential::String
 end
 
+abstract type PseudopotentialFormat end
+struct VanderbiltUltraSoft <: PseudopotentialFormat end
+struct AndreaDalCorso <: PseudopotentialFormat end
+struct OldNormConserving <: PseudopotentialFormat end
+
 """
-    pseudo_format(data::AtomicSpecies)::String
+    potential_format(data::AtomicSpecies)::String
 
 Return the pseudopotential format.
 
@@ -20,11 +25,11 @@ the file name:
 - "*.RRKJ3": Andrea Dal Corso's code (old format)
 - none of the above: old PWscf norm-conserving format
 """
-function pseudo_format(data::AtomicSpecies)::String
+function potential_format(data::AtomicSpecies)::PseudopotentialFormat
     @match lowercase(splitext(data.pseudo)[2]) begin
-        ".vdb" || ".van" => "Vanderbilt US pseudopotential code"
-        ".rrkj3" => "Andrea Dal Corso's code (old format)"
-        _ => "old PWscf norm-conserving format"
+        ".vdb" || ".van" => VanderbiltUltraSoft()
+        ".rrkj3" => AndreaDalCorso()
+        _ => OldNormConserving()
     end
 end
 
@@ -34,32 +39,19 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{
-    A<:AbstractString,
-    B<:AbstractVector{<:Real},
-    C<:AbstractVector{Int},
-}
-    atom::A
-    pos::B
-    if_pos::C = [1, 1, 1]
-    @assert(
-        length(pos) == 3,
-        "`pos` must be a three-element-vector! However it is of length $(length(pos))!",
-    )
-    @assert(
-        length(if_pos) == 3,
-        "`if_pos` must be a three-element-vector! However it is of length $(length(if_pos))!",
-    )
+@with_kw struct AtomicPosition{A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+    atom::String
+    pos::A
+    if_pos::B = [1, 1, 1]
+    @assert(length(pos) == 3, "`pos` is not of length 3, but $(length(pos))!",)
+    @assert(length(if_pos) == 3, "`if_pos` is not of length 3, but $(length(if_pos))!",)
     @assert(all(x ∈ (0, 1) for x in if_pos), "`if_pos` must be either 0 or 1!")
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
 
-@with_kw struct AtomicPositionsCard{
-    A<:AbstractString,
-    B<:AbstractVector{<:AtomicPosition},
-} <: Card
-    option::A = "alat"
-    data::B
+@with_kw struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
+    option::String = "alat"
+    data::A
     @assert(option ∈ allowed_options(AtomicPositionsCard))
 end
 
@@ -74,14 +66,23 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{
-    A<:AbstractString,
-    B<:AbstractMatrix,
-} <: AbstractCellParametersCard
-    option::A = "alat"
-    data::B
+@with_kw struct CellParametersCard{A<:AbstractMatrix{<:Real}} <: AbstractCellParametersCard
+    option::String = "alat"
+    data::A
     @assert(option ∈ allowed_options(CellParametersCard))
     @assert(size(data) == (3, 3))
+end
+# ============================================================================ #
+
+# ============================== AtomicForce ============================== #
+@with_kw struct AtomicForce{A<:AbstractVector{<:Real}}
+    atom::String
+    force::A
+    @assert(length(force) == 3, "`force` is not of length 3, but $(length(force))!",)
+end
+
+@with_kw struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
+    data::T
 end
 # ============================================================================ #
 

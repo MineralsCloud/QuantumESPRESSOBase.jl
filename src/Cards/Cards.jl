@@ -19,6 +19,10 @@ using QuantumESPRESSOBase: InputEntry
 
 export Card,
        AbstractCellParametersCard,
+       PseudopotentialFormat,
+       VanderbiltUltraSoft,
+       AndreaDalCorso,
+       OldNormConserving,
        optionof,
        allowed_options,
        option_convert,
