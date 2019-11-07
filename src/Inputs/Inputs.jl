@@ -11,10 +11,10 @@ julia>
 """
 module Inputs
 
-using QuantumESPRESSOBase.Namelists
+using QuantumESPRESSOBase.Namelists: Namelist
 using QuantumESPRESSOBase.Cards
 
-export AbstractInput, namelists, cards
+export namelists, cards
 
 abstract type AbstractInput end
 

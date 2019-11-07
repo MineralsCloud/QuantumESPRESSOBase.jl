@@ -1,13 +1,13 @@
 using Compat: isnothing, eachrow
 using Fortran90Namelists.JuliaToFortran: to_fortran
 
-using .Namelists
+using .Namelists: Namelist
 using .Namelists.PWscf
 using .Namelists.PHonon
 using .Cards
 using .Cards.PWscf
 using .Cards.PHonon
-using .Inputs
+using .Inputs: AbstractInput, namelists, cards
 using .Inputs.PWscf
 
 export asfieldname, to_qe

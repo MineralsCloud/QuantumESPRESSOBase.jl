@@ -16,7 +16,7 @@ using Parameters: @with_kw
 using QuantumESPRESSOBase.Namelists
 using QuantumESPRESSOBase.Namelists.PHonon
 using QuantumESPRESSOBase.Cards.PHonon
-using QuantumESPRESSOBase.Inputs
+using QuantumESPRESSOBase.Inputs: AbstractInput
 
 export PHononInput, Q2RInput, MatdynInput, DynmatInput
 

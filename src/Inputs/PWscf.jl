@@ -21,7 +21,7 @@ using QuantumESPRESSOBase: bravais_lattice
 using QuantumESPRESSOBase.Namelists.PWscf
 using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PWscf
-using ..Inputs
+using ..Inputs: AbstractInput
 
 export PWscfInput, autofill_cell_parameters, compulsory_namelists, compulsory_cards
 
