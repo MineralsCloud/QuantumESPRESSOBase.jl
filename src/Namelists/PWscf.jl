@@ -132,8 +132,8 @@ end # struct ControlNamelist
     Hubbard_J0::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
     Hubbard_alpha::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
     Hubbard_beta::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    Hubbard_J::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
-    starting_ns_eigenvalue::Float64 = -1.0
+    Hubbard_J::Vector{Vector{Union{Nothing,Float64}}} = [zeros(ntyp)]  # The default value in QE's source code is just one 0.0
+    starting_ns_eigenvalue::Float64 = -1.0  # It's actually a multidimensional array.
     U_projection_type::String = "atomic"
     edir::Int = 1
     emaxpos::Float64 = 0.5
