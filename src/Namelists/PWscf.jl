@@ -193,7 +193,7 @@ end # struct ControlNamelist
     @assert(length(Hubbard_J0) <= ntyp)
     @assert(length(Hubbard_alpha) <= ntyp)
     @assert(length(Hubbard_beta) <= ntyp)
-    @assert(length(Hubbard_J) <= ntyp)
+    @assert(all(length(x) <= ntyp for x in Hubbard_J))
     @assert(length(angle1) <= ntyp)
     @assert(length(angle2) <= ntyp)
     @assert(length(fixed_magnetization) <= 3)
