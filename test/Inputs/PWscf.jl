@@ -4,7 +4,7 @@ using QuantumESPRESSOBase.Namelists.PWscf
 using QuantumESPRESSOBase.Cards.PWscf
 using QuantumESPRESSOBase.Inputs.PWscf
 
-@testset "Test constructing a `PWscfInput`: silicon" begin
+@testset "Test constructing a `PWInput`: silicon" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(
@@ -35,7 +35,7 @@ using QuantumESPRESSOBase.Inputs.PWscf
                 0.375 0.375 0.625 3.0
             ]
         )
-        object = PWscfInput(
+        object = PWInput(
             control = control,
             system = system,
             electrons = electrons,
@@ -47,7 +47,7 @@ using QuantumESPRESSOBase.Inputs.PWscf
     end
 end # testset
 
-@testset "Test constructing a `PWscfInput`: silicon bands" begin
+@testset "Test constructing a `PWInput`: silicon bands" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(
@@ -100,7 +100,7 @@ end # testset
             0.4 0.4 0.4 1.0
             0.5 0.5 0.5 1.0
         ])
-        object = PWscfInput(
+        object = PWInput(
             control = control,
             system = system,
             electrons = electrons,
@@ -112,7 +112,7 @@ end # testset
     end
 end # testset
 
-@testset "Test constructing a `PWscfInput`: aluminium" begin
+@testset "Test constructing a `PWInput`: aluminium" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(
@@ -202,7 +202,7 @@ end # testset
             0.4375000 0.4375000 0.4375000 1.00
             0.4375000 0.4375000 0.5625000 3.00
         ])
-        object = PWscfInput(
+        object = PWInput(
             control = control,
             system = system,
             electrons = electrons,
