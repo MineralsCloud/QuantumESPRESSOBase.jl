@@ -21,7 +21,7 @@ using QuantumESPRESSOBase.Inputs: QuantumESPRESSOInput
 export PHononInput, Q2RInput, MatdynInput, DynmatInput
 
 @with_kw struct PHononInput <: QuantumESPRESSOInput
-    inputph::PHNamelist = PHNamelist()
+    inputph::PhNamelist = PhNamelist()
     q_points::Union{Nothing,QPointsSpecsCard} = nothing
 end # struct PHononInput
 
