@@ -41,16 +41,24 @@ asfieldname(::Type{<:KPointsCard}) = :k_points
 asfieldname(::Type{<:CellParametersCard}) = :cell_parameters
 
 """
-    titleof()
+    titleof(::Type{<:InputEntry})
 
-# Arguments
+Return the title of the input entry in Quantum ESPRESSO.
+
+The definition `titleof(x) = titleof(typeof(x))` is provided for convenience so that
+instances can be passed instead of types.
 
 # Examples
 
 ```jldoctest
-julia>
+julia> titleof(SystemNamelist())
+"SYSTEM"
+
+julia> titleof(SystemNamelist)
+"SYSTEM"
 ```
 """
+titleof(x::InputEntry) = titleof(typeof(x))
 titleof(::Type{T}) where {T<:InputEntry} = error("Undefined for entry $(nameof(T))!")
 titleof(::Type{<:ControlNamelist}) = "CONTROL"
 titleof(::Type{<:SystemNamelist}) = "SYSTEM"
