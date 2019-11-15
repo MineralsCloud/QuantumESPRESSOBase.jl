@@ -96,7 +96,7 @@ function to_qe(
     sep::AbstractString = " ",
     verbose::Bool = false,
 )
-    namelist_name = (uppercase ∘ string ∘ asfieldname ∘ typeof)(nml)
+    namelist_name = (titleof ∘ typeof)(nml)
     f = verbose ? to_dict : dropdefault
     inner_content = to_qe(f(nml); indent = indent, sep = sep)
     return """
