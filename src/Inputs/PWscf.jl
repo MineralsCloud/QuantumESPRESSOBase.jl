@@ -22,12 +22,12 @@ using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards.PWscf
 using ..Inputs: QuantumESPRESSOInput
 
-export PWscfInput
+export PWInput
 
 """
-    PWscfInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
+    PWInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
 
-Construct a `PWscfInput` which represents the input of program `pw.x`.
+Construct a `PWInput` which represents the input of program `pw.x`.
 
 # Arguments
 - `control::ControlNamelist=ControlNamelist()`: the `CONTROL` namelist of the input. Optional.
@@ -40,7 +40,7 @@ Construct a `PWscfInput` which represents the input of program `pw.x`.
 - `k_points::KPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
 - `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 """
-@with_kw struct PWscfInput <: QuantumESPRESSOInput
+@with_kw struct PWInput <: QuantumESPRESSOInput
     control::ControlNamelist = ControlNamelist()
     system::SystemNamelist = SystemNamelist()
     electrons::ElectronsNamelist = ElectronsNamelist()
@@ -51,6 +51,6 @@ Construct a `PWscfInput` which represents the input of program `pw.x`.
     k_points::KPointsCard
     cell_parameters::Union{Nothing,CellParametersCard}
     @assert !(isnothing(cell_parameters) && system.ibrav == 0) "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
-end # struct PWscfInput
+end # struct PWInput
 
 end

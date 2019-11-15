@@ -36,6 +36,6 @@ export CPInput
     ref_cell_parameters::Union{Nothing,RefCellParametersCard}
     atomic_forces::Union{Nothing,AtomicForcesCard}
     @assert !(isnothing(cell_parameters) && system.ibrav == 0) "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
-end # struct PWscfInput
+end # struct CPInput
 
 end

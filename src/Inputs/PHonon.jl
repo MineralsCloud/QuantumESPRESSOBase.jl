@@ -18,15 +18,15 @@ using QuantumESPRESSOBase.Namelists.PHonon
 using QuantumESPRESSOBase.Cards.PHonon
 using QuantumESPRESSOBase.Inputs: QuantumESPRESSOInput
 
-export PHononInput, Q2RInput, MatdynInput, DynmatInput
+export PhInput, Q2rInput, MatdynInput, DynmatInput
 
-@with_kw struct PHononInput <: QuantumESPRESSOInput
-    inputph::PHNamelist = PHNamelist()
+@with_kw struct PhInput <: QuantumESPRESSOInput
+    inputph::PhNamelist = PhNamelist()
     q_points::Union{Nothing,QPointsSpecsCard} = nothing
-end # struct PHononInput
+end # struct PhInput
 
-@with_kw struct Q2RInput <: QuantumESPRESSOInput
-    input::Q2RNamelist = Q2RNamelist()
+@with_kw struct Q2rInput <: QuantumESPRESSOInput
+    input::Q2rNamelist = Q2rNamelist()
 end
 
 @with_kw struct MatdynInput <: QuantumESPRESSOInput

@@ -15,10 +15,10 @@ using Parameters: @with_kw
 
 using ..Namelists: Namelist
 
-export PHNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
+export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
-@with_kw struct PHNamelist <: Namelist
+@with_kw struct PhNamelist <: Namelist
     amass::Vector{Union{Nothing,Float64}} = [0.0]
     outdir::String = "./"
     prefix::String = "pwscf"
@@ -75,15 +75,15 @@ export PHNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
     last_q::Int = -1000
     # dvscf_star::String = 1
     # drho_star::String = 1
-end # struct PHNamelist
+end # struct PhNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
-@with_kw struct Q2RNamelist <: Namelist
+@with_kw struct Q2rNamelist <: Namelist
     fildyn::String = " "
     flfrc::String = " "
     loto_2d::Bool = false
     zasr::String = "no"
-end # struct Q2RNamelist
+end # struct Q2rNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
 @with_kw struct MatdynNamelist <: Namelist

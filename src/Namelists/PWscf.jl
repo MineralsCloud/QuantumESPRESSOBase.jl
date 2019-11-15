@@ -20,7 +20,7 @@ export ControlNamelist,
        ElectronsNamelist,
        IonsNamelist,
        CellNamelist,
-       DOSNamelist,
+       DosNamelist,
        BandsNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
@@ -348,7 +348,7 @@ end # struct IonsNamelist
 end # struct CellNamelist
 
 # The following default values are picked from `<QE source>/PP/src/dos.f90`
-@with_kw struct DOSNamelist <: Namelist
+@with_kw struct DosNamelist <: Namelist
     prefix::String = "pwscf"
     outdir::String = "./"
     ngauss::Int = 0
@@ -358,7 +358,7 @@ end # struct CellNamelist
     DeltaE::Float64 = 0.01
     fildos::String = "$(prefix).dos"
     @assert(ngauss ∈ (0, 1, -1, -99), "Invalid `ngauss` $(ngauss)!")
-end # struct DOSNamelist
+end # struct DosNamelist
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
 @with_kw struct BandsNamelist <: Namelist
