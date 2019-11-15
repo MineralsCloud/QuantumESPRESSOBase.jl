@@ -15,7 +15,7 @@ using Parameters: @with_kw
 
 using ..Namelists: Namelist
 
-export PhNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
+export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
 @with_kw struct PhNamelist <: Namelist
@@ -78,12 +78,12 @@ export PhNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
 end # struct PhNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
-@with_kw struct Q2RNamelist <: Namelist
+@with_kw struct Q2rNamelist <: Namelist
     fildyn::String = " "
     flfrc::String = " "
     loto_2d::Bool = false
     zasr::String = "no"
-end # struct Q2RNamelist
+end # struct Q2rNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
 @with_kw struct MatdynNamelist <: Namelist

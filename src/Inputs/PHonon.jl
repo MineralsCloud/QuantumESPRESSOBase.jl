@@ -26,7 +26,7 @@ export PhInput, Q2RInput, MatdynInput, DynmatInput
 end # struct PhInput
 
 @with_kw struct Q2RInput <: QuantumESPRESSOInput
-    input::Q2RNamelist = Q2RNamelist()
+    input::Q2rNamelist = Q2rNamelist()
 end
 
 @with_kw struct MatdynInput <: QuantumESPRESSOInput
