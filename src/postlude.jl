@@ -1,7 +1,7 @@
 using Compat: isnothing, eachrow
 using Fortran90Namelists.JuliaToFortran: to_fortran
 
-using .Namelists: Namelist
+using .Namelists: Namelist, to_dict, dropdefault
 using .Namelists.PWscf
 using .Namelists.PHonon
 using .Cards
