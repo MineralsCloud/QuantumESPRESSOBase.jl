@@ -10,7 +10,7 @@ using .Cards.PHonon
 using .Inputs: QuantumESPRESSOInput, namelists, cards
 using .Inputs.PWscf
 
-export asfieldname, to_qe
+export asfieldname, titleof, to_qe
 
 """
     asfieldname()
@@ -39,6 +39,40 @@ asfieldname(::Type{<:AtomicSpeciesCard}) = :atomic_species
 asfieldname(::Type{<:AtomicPositionsCard}) = :atomic_positions
 asfieldname(::Type{<:KPointsCard}) = :k_points
 asfieldname(::Type{<:CellParametersCard}) = :cell_parameters
+
+"""
+    titleof(::Type{<:InputEntry})
+
+Return the title of the input entry in Quantum ESPRESSO.
+
+The definition `titleof(x) = titleof(typeof(x))` is provided for convenience so that
+instances can be passed instead of types.
+
+# Examples
+
+```jldoctest
+julia> titleof(SystemNamelist())
+"SYSTEM"
+
+julia> titleof(SystemNamelist)
+"SYSTEM"
+```
+"""
+titleof(x::InputEntry) = titleof(typeof(x))
+titleof(::Type{T}) where {T<:InputEntry} = error("Undefined for entry $(nameof(T))!")
+titleof(::Type{<:ControlNamelist}) = "CONTROL"
+titleof(::Type{<:SystemNamelist}) = "SYSTEM"
+titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
+titleof(::Type{<:IonsNamelist}) = "IONS"
+titleof(::Type{<:CellNamelist}) = "CELL"
+titleof(::Type{<:PHNamelist}) = "INPUTPH"
+titleof(::Type{<:Q2RNamelist}) = "INPUT"
+titleof(::Type{<:MatdynNamelist}) = "INPUT"
+titleof(::Type{<:DynmatNamelist}) = "INPUT"
+titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+titleof(::Type{<:KPointsCard}) = "K_POINTS"
+titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 
 """
     to_qe(x, indent::AbstractString = "    ", sep::AbstractString = " ")
@@ -70,7 +104,7 @@ function to_qe(
     sep::AbstractString = " ",
     verbose::Bool = false,
 )
-    namelist_name = (uppercase ∘ string ∘ asfieldname ∘ typeof)(nml)
+    namelist_name = (titleof ∘ typeof)(nml)
     f = verbose ? to_dict : dropdefault
     inner_content = to_qe(f(nml); indent = indent, sep = sep)
     return """
