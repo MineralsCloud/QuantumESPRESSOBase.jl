@@ -23,22 +23,21 @@ export namelists, cards, autofill_cell_parameters, compulsory_namelists, compuls
 abstract type QuantumESPRESSOInput end
 
 # A helper function to implement `namelists` and `cards`. It should not be exported.
-_filterfields(obj, ::Type{T}) where {T} =
-    filter(x -> isa(x, T), map(x -> getfield(obj, x), fieldnames(typeof(obj))) |> collect)
+_filterfields(f, obj) = filter(f, [getfield(obj, i) for i in 1:nfields(obj)])
 
 """
     namelists(input::QuantumESPRESSOInput)
 
 Return a vector of `Namelist`s of a `QuantumESPRESSOInput`'s subtypes.
 """
-namelists(input::QuantumESPRESSOInput) = _filterfields(input, Namelist)
+namelists(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Namelist), input)
 
 """
     cards(input::QuantumESPRESSOInput)
 
 Return a vector of `Card`s of a `QuantumESPRESSOInput`'s subtypes.
 """
-cards(input::QuantumESPRESSOInput) = _filterfields(input, Card)
+cards(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Card), input)
 
 # =============================== Modules ============================== #
 include("PWscf.jl")
