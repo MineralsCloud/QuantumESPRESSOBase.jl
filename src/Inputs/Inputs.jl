@@ -15,7 +15,7 @@ using Setfield: @set!
 
 using QuantumESPRESSOBase: bravais_lattice
 using ..Namelists: Namelist
-using ..Cards
+using ..Cards: Card
 
 export namelists, cards, autofill_cell_parameters, compulsory_namelists, compulsory_cards
 
