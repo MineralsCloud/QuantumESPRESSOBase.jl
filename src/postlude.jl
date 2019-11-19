@@ -165,7 +165,7 @@ function to_qe(
 )::String
     content = "K_POINTS$sep{ $(card.option) }\n"
     if card.option in ("gamma", "automatic")
-        content *= indent * to_qe(first(card.data)) * "\n"
+        content *= indent * to_qe(card.data) * "\n"
     else  # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
         content *= "$(length(card.data))\n"
         for x in card.data
