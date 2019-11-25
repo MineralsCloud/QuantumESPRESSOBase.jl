@@ -23,7 +23,7 @@ export namelists, cards, autofill_cell_parameters, compulsory_namelists, compuls
 abstract type QuantumESPRESSOInput end
 
 # A helper function to implement `namelists` and `cards`. It should not be exported.
-_filterfields(f, obj) = filter(f, [getfield(obj, i) for i in 1:nfields(obj)])
+_filterfields(f, obj) = Iterators.filter(f, (getfield(obj, i) for i in 1:nfields(obj)))
 
 """
     namelists(input::QuantumESPRESSOInput)
