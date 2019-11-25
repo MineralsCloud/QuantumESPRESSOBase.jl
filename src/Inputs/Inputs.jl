@@ -70,15 +70,20 @@ end # function autofill_cell_parameters
 
 Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
 It is lazy, you may want to `collect` it.
+
+To get the optional `Namelist`s, use `(!compulsory_namelists)(input)`.
 """
 compulsory_namelists(input::Union{PWInput,CPInput}) =
     (getfield(input, x) for x in (:control, :system, :electrons))
+Base.:!(::typeof(compulsory_namelists)) = input -> setdiff(collect(namelists(input)), collect(compulsory_namelists(input)))
 
 """
     compulsory_cards(input::PWInput)
 
 Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
 It is lazy, you may want to `collect` it.
+
+To get the optional `Card`s, use `(!compulsory_cards)(input)`.
 """
 compulsory_cards(input::PWInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points))
@@ -87,9 +92,12 @@ compulsory_cards(input::PWInput) =
 
 Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
 It is lazy, you may want to `collect` it.
+
+To get the optional `Card`s, use `(!compulsory_cards)(input)`.
 """
 compulsory_cards(input::CPInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions))
+Base.:!(::typeof(compulsory_cards)) = input -> setdiff(collect(cards(input)), collect(compulsory_cards(input)))
 
 function Cards.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
