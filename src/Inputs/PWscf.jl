@@ -17,9 +17,14 @@ using Compat: isnothing
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase: bravais_lattice
-using QuantumESPRESSOBase.Namelists.PWscf
-using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PWscf
+using QuantumESPRESSOBase.Namelists.PWscf:
+    ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist
+using QuantumESPRESSOBase.Cards.PWscf:
+    AtomicSpeciesCard,
+    AtomicPositionsCard,
+    KPointsCard,
+    CellParametersCard,
+    AtomicForcesCard
 using ..Inputs: QuantumESPRESSOInput
 
 export PWInput

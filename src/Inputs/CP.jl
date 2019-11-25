@@ -11,7 +11,6 @@ using ...Namelists.CP:
     CellNamelist,
     PressAiNamelist,
     WannierNamelist
-using ...Cards
 using ...Cards.CP:
     AtomicSpeciesCard,
     AtomicPositionsCard,
