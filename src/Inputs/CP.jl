@@ -33,7 +33,7 @@ export CPInput
     atomic_positions::AtomicPositionsCard
     atomic_velocities::AtomicVelocitiesCard
     cell_parameters::Union{Nothing,CellParametersCard}
-    ref_cell_parameters::Union{Nothing,RefCellParametersCard}
+    ref_cell_parameters::Union{Nothing,RefCellParametersCard} = nothing
     constraints::Union{Nothing,Float64} = nothing
     occupations::Union{Nothing,Float64} = nothing
     atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
