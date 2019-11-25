@@ -28,14 +28,14 @@ _filterfields(f, obj) = Iterators.filter(f, (getfield(obj, i) for i in 1:nfields
 """
     namelists(input::QuantumESPRESSOInput)
 
-Return a vector of `Namelist`s of a `QuantumESPRESSOInput`'s subtypes.
+Return an iterable of `Namelist`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
 """
 namelists(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Namelist), input)
 
 """
     cards(input::QuantumESPRESSOInput)
 
-Return a vector of `Card`s of a `QuantumESPRESSOInput`'s subtypes.
+Return an iterable of `Card`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
 """
 cards(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Card), input)
 
