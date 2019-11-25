@@ -59,7 +59,8 @@ above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` no
 """
 function autofill_cell_parameters(template::Union{PWInput,CPInput})
     system = template.system
-    @set! template.cell_parameters = Cards.CellParametersCard("alat", bravais_lattice(system))
+    @set! template.cell_parameters =
+        Cards.CellParametersCard("alat", bravais_lattice(system))
     @set! template.system.ibrav = 0
     @set! template.system.celldm = [system.celldm[1]]
 end # function autofill_cell_parameters
@@ -67,22 +68,28 @@ end # function autofill_cell_parameters
 """
     compulsory_namelists(input::Union{PWInput,CPInput})
 
-Return a vector of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
+Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
+It is lazy, you may want to `collect` it.
 """
-compulsory_namelists(input::Union{PWInput,CPInput}) = [getfield(input, x) for x in (:control, :system, :electrons)]
+compulsory_namelists(input::Union{PWInput,CPInput}) =
+    (getfield(input, x) for x in (:control, :system, :electrons))
 
 """
     compulsory_cards(input::PWInput)
 
-Return a vector of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
+Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
+It is lazy, you may want to `collect` it.
 """
-compulsory_cards(input::PWInput) = [getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points)]
+compulsory_cards(input::PWInput) =
+    (getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points))
 """
     compulsory_cards(input::CPInput)
 
-Return a vector of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
+Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
+It is lazy, you may want to `collect` it.
 """
-compulsory_cards(input::CPInput) = [getfield(input, x) for x in (:atomic_species, :atomic_positions)]
+compulsory_cards(input::CPInput) =
+    (getfield(input, x) for x in (:atomic_species, :atomic_positions))
 
 function Cards.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
