@@ -34,7 +34,11 @@ export CPInput
     atomic_velocities::AtomicVelocitiesCard
     cell_parameters::Union{Nothing,CellParametersCard}
     ref_cell_parameters::Union{Nothing,RefCellParametersCard}
-    atomic_forces::Union{Nothing,AtomicForcesCard}
+    constraints::Union{Nothing,Float64} = nothing
+    occupations::Union{Nothing,Float64} = nothing
+    atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
+    plot_wannier::Union{Nothing,Float64} = nothing
+    autopilot::Union{Nothing,Float64} = nothing
     @assert !(isnothing(cell_parameters) && system.ibrav == 0) "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
 end # struct CPInput
 
