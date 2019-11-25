@@ -53,7 +53,10 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     constraints::Union{Union{Nothing,Float64}} = nothing
     occupations::Union{Nothing,Float64} = nothing
     atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
-    @assert !(isnothing(cell_parameters) && system.ibrav == 0) "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
+    @assert(
+        !(isnothing(cell_parameters) && system.ibrav == 0),
+        "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
+    )
 end # struct PWInput
 
 end

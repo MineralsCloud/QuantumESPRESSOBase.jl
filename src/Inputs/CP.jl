@@ -3,20 +3,22 @@ module CP
 using Compat: isnothing
 using Parameters: @with_kw
 
-using ...Namelists.CP: ControlNamelist,
-                       SystemNamelist,
-                       ElectronsNamelist,
-                       IonsNamelist,
-                       CellNamelist,
-                       PressAiNamelist,
-                       WannierNamelist
+using ...Namelists.CP:
+    ControlNamelist,
+    SystemNamelist,
+    ElectronsNamelist,
+    IonsNamelist,
+    CellNamelist,
+    PressAiNamelist,
+    WannierNamelist
 using ...Cards
-using ...Cards.CP: AtomicSpeciesCard,
-                   AtomicPositionsCard,
-                   AtomicVelocitiesCard,
-                   CellParametersCard,
-                   RefCellParametersCard,
-                   AtomicForcesCard
+using ...Cards.CP:
+    AtomicSpeciesCard,
+    AtomicPositionsCard,
+    AtomicVelocitiesCard,
+    CellParametersCard,
+    RefCellParametersCard,
+    AtomicForcesCard
 using ..Inputs: QuantumESPRESSOInput
 
 export CPInput
@@ -39,7 +41,10 @@ export CPInput
     atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
     plot_wannier::Union{Nothing,Float64} = nothing
     autopilot::Union{Nothing,Float64} = nothing
-    @assert !(isnothing(cell_parameters) && system.ibrav == 0) "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
+    @assert(
+        !(isnothing(cell_parameters) && system.ibrav == 0),
+        "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
+    )
 end # struct CPInput
 
 end
