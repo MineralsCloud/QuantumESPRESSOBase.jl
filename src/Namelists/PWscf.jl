@@ -174,13 +174,25 @@ end # struct ControlNamelist
     block_2::Float64 = 0.55
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
+    @assert(ibrav ∈ union(0:1:14, (-3, -5, -9, -12)))
     @assert(
         !(ibrav != 0 && all(iszero, (celldm[1], A))),
         "Invalid lattice parameters (`celldm` or `a`)!"
     )
+    @assert(
+        if ibrav == 14
+            length(celldm) == 6
+        elseif ibrav ∈ (5, -5, 12, 13)
+            length(celldm) >= 4
+        elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 10, 11)
+            length(celldm) >= 3
+        end,
+        "`celldm` must be longer than a certain length! See `ibrav`'s doc!"
+    )
     @assert(length(celldm) <= 6)
     @assert(nat >= 0, "`nat` $nat is less than zero!")
     @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
+    @assert(ntyp <= nat, "`ntyp` cannot be larger than `nat`!")
     @assert(nspin ∈ (1, 2, 4), "`nspin` $nspin out of range!")
     @assert(ecutwfc >= 0, "`ecutwfc` $ecutwfc out of range!")
     @assert(ecutrho >= 0, "`ecutrho` $ecutrho out of range!")
