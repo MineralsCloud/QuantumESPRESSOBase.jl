@@ -17,9 +17,14 @@ using Compat: isnothing
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase: bravais_lattice
-using QuantumESPRESSOBase.Namelists.PWscf
-using QuantumESPRESSOBase.Cards
-using QuantumESPRESSOBase.Cards.PWscf
+using QuantumESPRESSOBase.Namelists.PWscf:
+    ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist
+using QuantumESPRESSOBase.Cards.PWscf:
+    AtomicSpeciesCard,
+    AtomicPositionsCard,
+    KPointsCard,
+    CellParametersCard,
+    AtomicForcesCard
 using ..Inputs: QuantumESPRESSOInput
 
 export PWInput
@@ -50,7 +55,13 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     atomic_positions::AtomicPositionsCard
     k_points::KPointsCard
     cell_parameters::Union{Nothing,CellParametersCard}
-    @assert !(isnothing(cell_parameters) && system.ibrav == 0) "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
+    constraints::Union{Union{Nothing,Float64}} = nothing
+    occupations::Union{Nothing,Float64} = nothing
+    atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
+    @assert(
+        !(isnothing(cell_parameters) && system.ibrav == 0),
+        "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
+    )
 end # struct PWInput
 
 end
