@@ -183,13 +183,14 @@ end # struct ControlNamelist
         if ibrav == 14
             length(celldm) == 6
         elseif ibrav ∈ (5, -5, 12, 13)
-            length(celldm) >= 4
+            4 <= length(celldm) <= 6
         elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 10, 11)
-            length(celldm) >= 3
+            3 <= length(celldm) <= 6
+        else
+            1 <= length(celldm) <= 6
         end,
-        "`celldm` must be longer than a certain length! See `ibrav`'s doc!"
+        "`celldm` has length between 1 to 6! See `ibrav`'s doc!"
     )
-    @assert(length(celldm) <= 6)
     @assert(nat >= 0, "`nat` $nat is less than zero!")
     @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
     @assert(ntyp <= nat, "`ntyp` cannot be larger than `nat`!")
