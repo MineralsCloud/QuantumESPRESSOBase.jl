@@ -23,7 +23,7 @@ export ControlNamelist,
     DosNamelist,
     BandsNamelist
 
-# The following default values are picked from `<QE source>/Modules/read_namelists.f90`
+# The default values are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90.
 @with_kw struct ControlNamelist <: Namelist
     calculation::String = "scf"
     title::String = " "
@@ -76,7 +76,7 @@ export ControlNamelist,
 end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
-    ibrav::Int = -1
+    ibrav::Int = 1  # The default value in QE's source code is -1
     celldm::Vector{Union{Nothing,Float64}} = Vector{Float64}(undef, 6)
     A::Float64 = 0.0
     B::Float64 = 0.0
@@ -183,13 +183,14 @@ end # struct ControlNamelist
         if ibrav == 14
             length(celldm) == 6
         elseif ibrav ∈ (5, -5, 12, 13)
-            length(celldm) >= 4
+            4 <= length(celldm) <= 6
         elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 10, 11)
-            length(celldm) >= 3
+            3 <= length(celldm) <= 6
+        else
+            1 <= length(celldm) <= 6
         end,
-        "`celldm` must be longer than a certain length! See `ibrav`'s doc!"
+        "`celldm` has length between 1 to 6! See `ibrav`'s doc!"
     )
-    @assert(length(celldm) <= 6)
     @assert(nat >= 0, "`nat` $nat is less than zero!")
     @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
     @assert(ntyp <= nat, "`ntyp` cannot be larger than `nat`!")
