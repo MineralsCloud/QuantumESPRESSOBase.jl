@@ -54,7 +54,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     atomic_species::AtomicSpeciesCard
     atomic_positions::AtomicPositionsCard
     k_points::KPointsCard
-    cell_parameters::Union{Nothing,CellParametersCard}
+    cell_parameters::Union{Nothing,CellParametersCard} = nothing
     constraints::Union{Union{Nothing,Float64}} = nothing
     occupations::Union{Nothing,Float64} = nothing
     atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
