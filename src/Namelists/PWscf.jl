@@ -23,7 +23,7 @@ export ControlNamelist,
     DosNamelist,
     BandsNamelist
 
-# The following default values are picked from `<QE source>/Modules/read_namelists.f90`
+# The default values are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90.
 @with_kw struct ControlNamelist <: Namelist
     calculation::String = "scf"
     title::String = " "
@@ -76,7 +76,7 @@ export ControlNamelist,
 end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
-    ibrav::Int = -1
+    ibrav::Int = 1  # The default value in QE's source code is -1
     celldm::Vector{Union{Nothing,Float64}} = Vector{Float64}(undef, 6)
     A::Float64 = 0.0
     B::Float64 = 0.0
