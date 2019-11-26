@@ -16,12 +16,12 @@ using Parameters: @with_kw
 using ..Namelists: Namelist
 
 export ControlNamelist,
-       SystemNamelist,
-       ElectronsNamelist,
-       IonsNamelist,
-       CellNamelist,
-       DosNamelist,
-       BandsNamelist
+    SystemNamelist,
+    ElectronsNamelist,
+    IonsNamelist,
+    CellNamelist,
+    DosNamelist,
+    BandsNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -292,7 +292,15 @@ end # struct ElectronsNamelist
     w_2::Float64 = 0.5
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
     @assert(
-        ion_dynamics ∈ ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman"),
+        ion_dynamics ∈ (
+            "none",
+            "bfgs",
+            "damp",
+            "verlet",
+            "langevin",
+            "langevin-smc",
+            "beeman",
+        ),
         "Invalid `ion_dynamics` $(ion_dynamics)!"
     )
     @assert(
