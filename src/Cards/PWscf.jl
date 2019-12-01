@@ -65,14 +65,22 @@ MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid
 
 struct GammaPoint <: KPoint end
 
-@with_kw struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
+struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
     coordinates::A
     weight::B
-    @assert(
-        length(coordinates) == 3,
-        "`coordinates` is not of length 3, but $(length(coordinates))!",
-    )
+    function SpecialKPoint{A,B}(
+        coordinates,
+        weight,
+    ) where {A<:AbstractVector{<:Real},B<:Real}
+        @assert(
+            length(coordinates) == 3,
+            "`coordinates` is not of length 3, but $(length(coordinates))!",
+        )
+        return new(coordinates, weight)
+    end # function SpecialKPoint
 end
+SpecialKPoint(coordinates::A, weight::B) where {A,B} =
+    SpecialKPoint{A,B}(coordinates, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 @with_kw struct KPointsCard{
