@@ -70,8 +70,8 @@ end
     atom::String
     pos::A
     if_pos::B = [1, 1, 1]
-    @assert(length(pos) == 3, "`pos` is not of length 3, but $(length(pos))!",)
-    @assert(length(if_pos) == 3, "`if_pos` is not of length 3, but $(length(if_pos))!",)
+    @assert(length(pos) == 3, "`pos` is not of length 3, but $(length(pos))!")
+    @assert(length(if_pos) == 3, "`if_pos` is not of length 3, but $(length(if_pos))!")
     @assert(all(x ∈ (0, 1) for x in if_pos), "`if_pos` must be either 0 or 1!")
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
@@ -105,10 +105,10 @@ end
 @with_kw struct AtomicForce{A<:AbstractVector{<:Real}}
     atom::String
     force::A
-    @assert(length(force) == 3, "`force` is not of length 3, but $(length(force))!",)
+    @assert(length(force) == 3, "`force` is not of length 3, but $(length(force))!")
 end
 
-@with_kw struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
+struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
     data::T
 end
 # ============================================================================ #
