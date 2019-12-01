@@ -45,13 +45,23 @@ export AtomicSpecies,
 # ================================== KPoint ================================== #
 abstract type KPoint end
 
-@with_kw struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
+struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
     grid::A
     offsets::B
-    @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!",)
-    @assert(length(offsets) == 3, "`offsets` is not of length 3, but $(length(offsets))!",)
-    @assert(all(x ∈ (0, 1) for x in offsets), "`offsets` must be either 0 or 1!")
+    function MonkhorstPackGrid{A,B}(
+        grid,
+        offsets,
+    ) where {A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
+        @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!",)
+        @assert(
+            length(offsets) == 3,
+            "`offsets` is not of length 3, but $(length(offsets))!",
+        )
+        @assert(all(x ∈ (0, 1) for x in offsets), "`offsets` must be either 0 or 1!")
+        return new(grid, offsets)
+    end # function MonkhorstPackGrid
 end
+MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid, offsets)
 
 struct GammaPoint <: KPoint end
 
