@@ -102,11 +102,15 @@ end
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
-@with_kw struct AtomicForce{A<:AbstractVector{<:Real}}
+struct AtomicForce{A<:AbstractVector{<:Real}}
     atom::String
     force::A
-    @assert(length(force) == 3, "`force` is not of length 3, but $(length(force))!")
+    function AtomicForce{A}(atom, force) where {A<:AbstractVector{<:Real}}
+        @assert(length(force) == 3, "`force` is not of length 3, but $(length(force))!")
+        return new(atom, force)
+    end # function AtomicForce
 end
+AtomicForce(atom, force::A) where {A} = AtomicForce{A}(atom, force)
 
 struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
     data::T
