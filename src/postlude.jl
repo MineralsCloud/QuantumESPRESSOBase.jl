@@ -11,18 +11,18 @@ using .Cards.PHonon
 using .Inputs: QuantumESPRESSOInput, namelists, cards
 using .Inputs.PWscf
 
-export PWExecutable
+export PWCommand
 export asfieldname, titleof, to_qe
 
 # The command line args are from https://github.com/QEF/q-e/blob/033aee7/Modules/command_line_options.f90#L84-L154.
 """
-    PWExecutable(path = "pw.x", inp, nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
+    PWCommand(exe = "pw.x", inp, nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
 
 Represent the executable for the PWscf calculation. Query each field for more information.
 """
-@with_kw struct PWExecutable
+@with_kw struct PWCommand
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
-    path::String = "pw.x"
+    exe::String = "pw.x"
     inp::String
     """
     Processors can then be divided into different "images", each corresponding to a
