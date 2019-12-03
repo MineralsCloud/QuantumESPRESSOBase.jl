@@ -1,5 +1,6 @@
 using Compat: isnothing, eachrow
 using Fortran90Namelists.JuliaToFortran: to_fortran
+using Parameters: @with_kw
 
 using .Namelists: Namelist, to_dict, dropdefault
 using .Namelists.PWscf
@@ -10,7 +11,20 @@ using .Cards.PHonon
 using .Inputs: QuantumESPRESSOInput, namelists, cards
 using .Inputs.PWscf
 
+export PWExecutable
 export asfieldname, titleof, to_qe
+
+# The command line args are from https://github.com/QEF/q-e/blob/033aee7/Modules/command_line_options.f90#L84-L154.
+@with_kw struct PWExecutable
+    path::String = "pw.x"
+    inp::String
+    nimage::Int = 0
+    npool::Int = 0
+    ntg::Int = 0
+    nyfft::Int = 0
+    nband::Int = 0
+    ndiag::Int = 0
+end
 
 """
     asfieldname()
