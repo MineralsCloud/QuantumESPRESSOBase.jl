@@ -18,7 +18,7 @@ export asfieldname, titleof, to_qe
 """
     PWCommand(exe = "pw.x", inp, nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
 
-Represent the executable for the PWscf calculation. Query each field for more information.
+Represent the executable for the PW calculation. Query each field for more information.
 """
 @with_kw struct PWCommand
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
@@ -35,7 +35,7 @@ Represent the executable for the PWscf calculation. Query each field for more in
     npool::Int = 0
     """
     In order to allow good parallelization of the 3D FFT when the number of processors
-    exceeds the number of FFT planes, FFTs on Kohn-Sham states are redistributed to ``task''
+    exceeds the number of FFT planes, FFTs on Kohn-Sham states are redistributed to "task"
     groups so that each group can process several wavefunctions at the same time.
     Alternatively, when this is not possible, a further subdivision of FFT planes is
     performed.
