@@ -40,7 +40,7 @@ bravais_lattice(::Val{4}, celldm::AbstractVector{Union{Nothing, Float64}}) = cel
     0  0 celldm[3]
 ]
 function bravais_lattice(::Val{5}, celldm::AbstractVector{Union{Nothing, Float64}})
-    c = cellem[3]
+    c = celldm[3]
     tx = sqrt((1 - c)/2)
     ty = sqrt((1 - c)/6)
     tz = sqrt((1 + 2c)/3)
@@ -52,7 +52,7 @@ function bravais_lattice(::Val{5}, celldm::AbstractVector{Union{Nothing, Float64
 end
 function bravais_lattice(::Val{-5}, celldm::AbstractVector{Union{Nothing, Float64}})
     ap = celldm[1] / sqrt(3)
-    c = cellem[3]
+    c = celldm[3]
     ty = sqrt((1 - c)/6)
     tz = sqrt((1 + 2c)/3)
     u = tz - 2sqrt(2) * ty
