@@ -4,9 +4,11 @@ using Parameters: @with_kw
 
 using .Namelists: Namelist, to_dict, dropdefault
 using .Namelists.PWscf
+using .Namelists.CP
 using .Namelists.PHonon
 using .Cards
 using .Cards.PWscf
+using .Cards.CP
 using .Cards.PHonon
 using .Inputs: QuantumESPRESSOInput, namelists, cards
 using .Inputs.PWscf
@@ -87,19 +89,21 @@ julia>
 ```
 """
 asfieldname(::Type{T}) where {T<:InputEntry} = error("Undefined for entry $(nameof(T))!")
-asfieldname(::Type{<:ControlNamelist}) = :control
-asfieldname(::Type{<:SystemNamelist}) = :system
-asfieldname(::Type{<:ElectronsNamelist}) = :electrons
-asfieldname(::Type{<:IonsNamelist}) = :ions
-asfieldname(::Type{<:CellNamelist}) = :cell
+asfieldname(::Type{<:Union{PWscf.ControlNamelist,CP.ControlNamelist}}) = :control
+asfieldname(::Type{<:Union{PWscf.SystemNamelist,CP.SystemNamelist}}) = :system
+asfieldname(::Type{<:Union{PWscf.ElectronsNamelist,CP.ElectronsNamelist}}) = :electrons
+asfieldname(::Type{<:Union{PWscf.IonsNamelist,CP.IonsNamelist}}) = :ions
+asfieldname(::Type{<:Union{PWscf.CellNamelist,CP.CellNamelist}}) = :cell
 asfieldname(::Type{<:PhNamelist}) = :inputph
 asfieldname(::Type{<:Q2rNamelist}) = :input
 asfieldname(::Type{<:MatdynNamelist}) = :input
 asfieldname(::Type{<:DynmatNamelist}) = :input
-asfieldname(::Type{<:AtomicSpeciesCard}) = :atomic_species
-asfieldname(::Type{<:AtomicPositionsCard}) = :atomic_positions
+asfieldname(::Type{<:Union{PWscf.AtomicSpeciesCard,CP.AtomicSpeciesCard}}) = :atomic_species
+asfieldname(::Type{<:Union{PWscf.AtomicPositionsCard,CP.AtomicPositionsCard}}) =
+    :atomic_positions
 asfieldname(::Type{<:KPointsCard}) = :k_points
-asfieldname(::Type{<:CellParametersCard}) = :cell_parameters
+asfieldname(::Type{<:Union{PWscf.CellParametersCard,CP.CellParametersCard}}) =
+    :cell_parameters
 
 """
     titleof(::Type{<:InputEntry})
@@ -121,19 +125,20 @@ julia> titleof(SystemNamelist)
 """
 titleof(x::InputEntry) = titleof(typeof(x))
 titleof(::Type{T}) where {T<:InputEntry} = error("Undefined for entry $(nameof(T))!")
-titleof(::Type{<:ControlNamelist}) = "CONTROL"
-titleof(::Type{<:SystemNamelist}) = "SYSTEM"
-titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
-titleof(::Type{<:IonsNamelist}) = "IONS"
-titleof(::Type{<:CellNamelist}) = "CELL"
+titleof(::Type{<:Union{PWscf.ControlNamelist,CP.ControlNamelist}}) = "CONTROL"
+titleof(::Type{<:Union{PWscf.SystemNamelist,CP.SystemNamelist}}) = "SYSTEM"
+titleof(::Type{<:Union{PWscf.ElectronsNamelist,CP.ElectronsNamelist}}) = "ELECTRONS"
+titleof(::Type{<:Union{PWscf.IonsNamelist,CP.IonsNamelist}}) = "IONS"
+titleof(::Type{<:Union{PWscf.CellNamelist,CP.CellNamelist}}) = "CELL"
 titleof(::Type{<:PhNamelist}) = "INPUTPH"
 titleof(::Type{<:Q2rNamelist}) = "INPUT"
 titleof(::Type{<:MatdynNamelist}) = "INPUT"
 titleof(::Type{<:DynmatNamelist}) = "INPUT"
-titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+titleof(::Type{<:Union{PWscf.AtomicSpeciesCard,CP.AtomicSpeciesCard}}) = "ATOMIC_SPECIES"
+titleof(::Type{<:Union{PWscf.AtomicPositionsCard,CP.AtomicPositionsCard}}) =
+    "ATOMIC_POSITIONS"
 titleof(::Type{<:KPointsCard}) = "K_POINTS"
-titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
+titleof(::Type{<:Union{PWscf.CellParametersCard,CP.CellParametersCard}}) = "CELL_PARAMETERS"
 
 """
     to_qe(x, indent::AbstractString = "    ", sep::AbstractString = " ")
@@ -186,12 +191,16 @@ function to_qe(
     $(join([indent * to_qe(x, sep = sep) for x in card.data], "\n"))
     """
 end
-function to_qe(data::AtomicPosition; sep::AbstractString = " ", verbose::Bool = false)::String
+function to_qe(
+    data::Union{PWscf.AtomicPosition,CP.AtomicPosition};
+    sep::AbstractString = " ",
+    verbose::Bool = false,
+)::String
     verbose && return join([data.atom; data.pos; data.if_pos], sep)
     return join([data.atom; data.pos], sep)
 end
 function to_qe(
-    card::AtomicPositionsCard;
+    card::Union{PWscf.AtomicPositionsCard,CP.AtomicPositionsCard};
     indent::AbstractString = "    ",
     sep::AbstractString = " ",
 )
@@ -201,7 +210,7 @@ function to_qe(
     """
 end
 function to_qe(
-    card::CellParametersCard;
+    card::Union{PWscf.CellParametersCard,CP.CellParametersCard};
     indent::AbstractString = "    ",
     sep::AbstractString = " ",
 )

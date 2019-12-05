@@ -1,4 +1,5 @@
 using .Namelists.PWscf
+using .Namelists.CP
 
 export bravais_lattice
 
@@ -7,7 +8,8 @@ export bravais_lattice
 
 Return a 3x3 matrix representing the Bravais lattice from `nml`.
 """
-bravais_lattice(nml::SystemNamelist) = bravais_lattice(nml.ibrav, nml.celldm)
+bravais_lattice(nml::Union{PWscf.SystemNamelist,CP.SystemNamelist}) =
+    bravais_lattice(nml.ibrav, nml.celldm)
 """
     bravais_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing, Float64}})
 
