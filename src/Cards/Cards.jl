@@ -11,8 +11,9 @@ julia>
 """
 module Cards
 
+using LinearAlgebra: det
+
 using Compat: eachrow
-using Rematch: @match
 using Parameters: @with_kw
 using Setfield: @lens, get
 
@@ -179,19 +180,27 @@ const BOHR_TO_ANGSTROM = 0.529177210903
 Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
 """
 function cell_volume(card::AbstractCellParametersCard)
-    @match optionof(card) begin
-        "bohr" => det(card.data)
-        "angstrom" => det(card.data) / BOHR_TO_ANGSTROM^3
-        "alat" => error("Information not enough! The `celldm[1]` parameter is unknown!")
+    option = optionof(card)
+    if option == "bohr"
+        det(card.data)
+    elseif option == "angstrom"
+        det(card.data) / BOHR_TO_ANGSTROM^3
+    elseif option == "alat"
+        error("Information not enough! The `celldm[1]` parameter is unknown!")
+    else
+        error("Option $option is unknown!")
     end
 end # function cell_volume
 
 function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
     old_option = optionof(card)
-    factor = @match (old_option => new_option) begin
-        ("bohr" => "angstrom") => BOHR_TO_ANGSTROM
-        ("angstrom" => "bohr") => 1 / BOHR_TO_ANGSTROM
-        _ => error("Unknown option pair ($old_option => $new_option) given!")
+    pair = old_option => new_option
+    factor = if pair == ("bohr" => "angstrom")
+        BOHR_TO_ANGSTROM
+    elseif pair == ("angstrom" => "bohr")
+        1 / BOHR_TO_ANGSTROM
+    else
+        error("Unknown option pair ($pair) given!")
     end
     return typeof(card)(new_option, card.data .* factor)
 end # function option_convert
