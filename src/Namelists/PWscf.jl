@@ -11,6 +11,8 @@ julia>
 """
 module PWscf
 
+using LinearAlgebra: det
+
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase
@@ -412,5 +414,10 @@ QuantumESPRESSOBase.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
 QuantumESPRESSOBase.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
 QuantumESPRESSOBase.titleof(::Type{<:IonsNamelist}) = "IONS"
 QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
+
+function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
+    iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
+    return det(bravais_lattice(nml))
+end # function QuantumESPRESSOBase.cell_volume
 
 end
