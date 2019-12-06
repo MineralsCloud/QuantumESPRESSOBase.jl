@@ -59,25 +59,6 @@ function dropdefault(nml::Namelist)
     return result
 end
 
-"""
-    serialize(path, nml::Namelist)
-
-Serialize a `Namelist` to `path`. Currently, only JSON and YAML formats are supported.
-"""
-function Serialization.serialize(path::AbstractString, nml::Namelist)
-    isfile(path) || touch(path)  # If the file does not exist, create one
-    entries = Dict(key => to_fortran(value) for (key, value) in to_dict(nml))
-    @assert iswritable(path) "File $(path) is not writable!"
-    open(path, "r+") do io
-        @match splitext(path)[2] begin  # If the extension of the file is:
-            ".json" => JSON.print(io, entries)
-            ".yaml" || ".yml" => @warn "Currently not supported!"
-            _ => error("Unknown extension type given!")
-        end
-    end
-end
-
-
 # ============================================================================ #
 #                                    Include                                   #
 # ============================================================================ #
