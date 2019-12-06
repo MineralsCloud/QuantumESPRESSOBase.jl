@@ -11,6 +11,7 @@ abstract type InputEntry end
 
 """
     asfieldname(::Type{<:InputEntry})
+    asfieldname(::InputEntry)
 
 Return the field name of a `Namelist` or a `Card` in a `QuantumESPRESSOInput`.
 
@@ -19,12 +20,16 @@ Return the field name of a `Namelist` or a `Card` in a `QuantumESPRESSOInput`.
 ```jldoctest
 julia> asfieldname(SystemNamelist)
 :system
+
+julia> asfieldname(SystemNamelist())
+:system
 ```
 """
-function asfieldname end
+asfieldname(x::InputEntry) = asfieldname(typeof(x))
 
 """
     titleof(::Type{<:InputEntry})
+    titleof(::InputEntry)
 
 Return the title of the input entry in Quantum ESPRESSO.
 
