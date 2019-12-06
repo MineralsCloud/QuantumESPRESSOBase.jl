@@ -5,7 +5,7 @@ using Fortran90Namelists.JuliaToFortran: to_fortran
 using Parameters: @with_kw
 
 export PWCommand
-export asfieldname, titleof, to_qe
+export asfieldname, titleof, to_qe, cell_volume
 
 abstract type InputEntry end
 
@@ -72,6 +72,8 @@ function to_qe(
     end
     return content
 end
+
+function cell_volume end
 
 """
     PWCommand(exe = "pw.x", inp, nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
