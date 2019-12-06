@@ -193,6 +193,7 @@ end # function QuantumESPRESSOBase.cell_volume
 
 function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
     old_option = optionof(card)
+    new_option == old_option && return card  # No conversion is needed
     pair = old_option => new_option
     factor = if pair == ("bohr" => "angstrom")
         BOHR_TO_ANGSTROM
