@@ -10,16 +10,15 @@ export asfieldname, titleof, to_qe
 abstract type InputEntry end
 
 """
-    asfieldname()
+    asfieldname(::Type{<:InputEntry})
 
-
-
-# Arguments
+Return the field name of a `Namelist` or a `Card` in a `QuantumESPRESSOInput`.
 
 # Examples
 
 ```jldoctest
-julia>
+julia> asfieldname(SystemNamelist)
+:system
 ```
 """
 function asfieldname end
