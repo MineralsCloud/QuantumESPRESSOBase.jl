@@ -1,6 +1,5 @@
 module CP
 
-using Rematch: @match
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase

@@ -11,8 +11,9 @@ julia>
 """
 module Cards
 
+using LinearAlgebra: det
+
 using Compat: eachrow
-using Rematch: @match
 using Parameters: @with_kw
 using Setfield: @lens, get
 
@@ -37,8 +38,23 @@ struct AtomicSpecies
 end
 
 abstract type PseudopotentialFormat end
+"""
+    VanderbiltUltraSoft <: PseudopotentialFormat
+
+A singleton representing the Vanderbilt US pseudopotential code.
+"""
 struct VanderbiltUltraSoft <: PseudopotentialFormat end
+"""
+    AndreaDalCorso <: PseudopotentialFormat
+
+A singleton representing the Andrea Dal Corso's code (old format).
+"""
 struct AndreaDalCorso <: PseudopotentialFormat end
+"""
+    OldNormConserving <: PseudopotentialFormat
+
+A singleton representing the old PWscf norm-conserving format.
+"""
 struct OldNormConserving <: PseudopotentialFormat end
 
 """
@@ -54,10 +70,13 @@ the file name:
 - none of the above: old PWscf norm-conserving format
 """
 function potential_format(data::AtomicSpecies)::PseudopotentialFormat
-    @match lowercase(splitext(data.pseudo)[2]) begin
-        ".vdb" || ".van" => VanderbiltUltraSoft()
-        ".rrkj3" => AndreaDalCorso()
-        _ => OldNormConserving()
+    ext = lowercase(splitext(data.pseudo)[2])
+    return if ext ∈ (".vdb", ".van")
+        VanderbiltUltraSoft()
+    elseif ext == ".rrkj3"
+        AndreaDalCorso()
+    else
+        OldNormConserving()
     end
 end
 
@@ -161,19 +180,27 @@ const BOHR_TO_ANGSTROM = 0.529177210903
 Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
 """
 function cell_volume(card::AbstractCellParametersCard)
-    @match optionof(card) begin
-        "bohr" => det(card.data)
-        "angstrom" => det(card.data) / BOHR_TO_ANGSTROM^3
-        "alat" => error("Information not enough! The `celldm[1]` parameter is unknown!")
+    option = optionof(card)
+    if option == "bohr"
+        det(card.data)
+    elseif option == "angstrom"
+        det(card.data) / BOHR_TO_ANGSTROM^3
+    elseif option == "alat"
+        error("Information not enough! The `celldm[1]` parameter is unknown!")
+    else
+        error("Option $option is unknown!")
     end
 end # function cell_volume
 
 function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
     old_option = optionof(card)
-    factor = @match (old_option => new_option) begin
-        ("bohr" => "angstrom") => BOHR_TO_ANGSTROM
-        ("angstrom" => "bohr") => 1 / BOHR_TO_ANGSTROM
-        _ => error("Unknown option pair ($old_option => $new_option) given!")
+    pair = old_option => new_option
+    factor = if pair == ("bohr" => "angstrom")
+        BOHR_TO_ANGSTROM
+    elseif pair == ("angstrom" => "bohr")
+        1 / BOHR_TO_ANGSTROM
+    else
+        error("Unknown option pair ($pair) given!")
     end
     return typeof(card)(new_option, card.data .* factor)
 end # function option_convert

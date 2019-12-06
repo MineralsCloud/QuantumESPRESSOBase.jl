@@ -12,7 +12,6 @@ julia>
 module PWscf
 
 using Compat: eachrow
-using Rematch: @match
 using Parameters: @with_kw
 using Setfield: @lens, get
 
@@ -89,13 +88,12 @@ SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
     option::String = "tpiba"
     data::A
     @assert(option ∈ allowed_options(KPointsCard))
-    @assert begin
-        @match option begin
-            "automatic" => typeof(data) <: MonkhorstPackGrid
-            "gamma" => typeof(data) <: GammaPoint
-            # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-            _ => eltype(data) <: SpecialKPoint
-        end
+    @assert if option == "automatic"
+        typeof(data) <: MonkhorstPackGrid
+    elseif option == "gamma"
+        typeof(data) <: GammaPoint
+    else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+        eltype(data) <: SpecialKPoint
     end
 end
 function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
@@ -118,7 +116,10 @@ QuantumESPRESSOBase.asfieldname(::Type{<:KPointsCard}) = :k_points
 
 QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
-function QuantumESPRESSOBase.to_qe(data::MonkhorstPackGrid; sep::AbstractString = " ")::String
+function QuantumESPRESSOBase.to_qe(
+    data::MonkhorstPackGrid;
+    sep::AbstractString = " ",
+)::String
     return join([data.grid; data.offsets], sep)
 end
 function QuantumESPRESSOBase.to_qe(data::GammaPoint)
