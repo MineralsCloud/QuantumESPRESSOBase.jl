@@ -19,7 +19,6 @@ import Serialization
 using DataStructures: OrderedDict
 using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
-using Rematch: @match
 
 using QuantumESPRESSOBase
 
