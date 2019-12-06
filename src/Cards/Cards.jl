@@ -24,8 +24,7 @@ export VanderbiltUltraSoft,
        OldNormConserving,
        optionof,
        allowed_options,
-       option_convert,
-       cell_volume
+       option_convert
 
 abstract type Card <: QuantumESPRESSOBase.InputEntry end
 abstract type AbstractCellParametersCard <: Card end
@@ -179,7 +178,7 @@ const BOHR_TO_ANGSTROM = 0.529177210903
 
 Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
 """
-function cell_volume(card::AbstractCellParametersCard)
+function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
     option = optionof(card)
     if option == "bohr"
         det(card.data)
@@ -190,7 +189,7 @@ function cell_volume(card::AbstractCellParametersCard)
     else
         error("Option $option is unknown!")
     end
-end # function cell_volume
+end # function QuantumESPRESSOBase.cell_volume
 
 function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
     old_option = optionof(card)
