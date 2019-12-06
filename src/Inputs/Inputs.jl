@@ -13,6 +13,7 @@ module Inputs
 
 using Setfield: @set!
 
+using QuantumESPRESSOBase
 using QuantumESPRESSOBase: bravais_lattice
 using ..Namelists: Namelist
 using ..Cards
@@ -107,5 +108,21 @@ function Cards.cell_volume(input::PWInput)
         return input.system.celldm[1]^3 * cell_volume(input.cell_parameters)
     end
 end # function cell_volume
+
+function QuantumESPRESSOBase.to_qe(
+    input::QuantumESPRESSOInput;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+    verbose::Bool = false,
+)::String
+    content = ""
+    for namelist in namelists(input)
+        content *= to_qe(namelist, indent = indent, sep = sep, verbose = verbose)
+    end
+    for card in cards(input)
+        content *= to_qe(card, indent = indent, sep = sep)
+    end
+    return content
+end
 
 end

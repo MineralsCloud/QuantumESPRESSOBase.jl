@@ -15,7 +15,7 @@ using Rematch: @match
 using Parameters: @with_kw
 using Setfield: @lens, get
 
-using QuantumESPRESSOBase: InputEntry
+using QuantumESPRESSOBase
 
 export VanderbiltUltraSoft,
        AndreaDalCorso,
@@ -25,7 +25,7 @@ export VanderbiltUltraSoft,
        option_convert,
        cell_volume
 
-abstract type Card <: InputEntry end
+abstract type Card <: QuantumESPRESSOBase.InputEntry end
 abstract type AbstractCellParametersCard <: Card end
 
 # =============================== AtomicSpecies ============================== #
@@ -180,5 +180,55 @@ end # function option_convert
 include("PWscf.jl")
 include("CP.jl")
 include("PHonon.jl")
+
+QuantumESPRESSOBase.asfieldname(::Type{<:AtomicSpeciesCard}) = :atomic_species
+QuantumESPRESSOBase.asfieldname(::Type{<:AtomicPositionsCard}) = :atomic_positions
+QuantumESPRESSOBase.asfieldname(::Type{<:CellParametersCard}) = :cell_parameters
+
+QuantumESPRESSOBase.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+QuantumESPRESSOBase.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+QuantumESPRESSOBase.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
+
+function to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
+    return join([getfield(data, i) for i in 1:nfields(data)], sep)
+end
+function to_qe(
+    card::AtomicSpeciesCard;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+)
+    return """
+    ATOMIC_SPECIES
+    $(join([indent * to_qe(x, sep = sep) for x in card.data], "\n"))
+    """
+end
+function to_qe(
+    data::AtomicPosition;
+    sep::AbstractString = " ",
+    verbose::Bool = false,
+)::String
+    verbose && return join([data.atom; data.pos; data.if_pos], sep)
+    return join([data.atom; data.pos], sep)
+end
+function to_qe(
+    card::AtomicPositionsCard;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+)
+    return """
+    ATOMIC_POSITIONS$sep{ $(card.option) }
+    $(join([indent * to_qe(x, sep = sep) for x in card.data], "\n"))
+    """
+end
+function to_qe(
+    card::CellParametersCard;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+)
+    return """
+    CELL_PARAMETERS$sep{ $(card.option) }
+    $(join([indent * join(row, sep) for row in eachrow(card.data)], "\n"))
+    """
+end
 
 end

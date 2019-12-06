@@ -13,6 +13,7 @@ module CP
 
 using Parameters: @with_kw
 
+using QuantumESPRESSOBase
 using ..Namelists: Namelist
 
 export ControlNamelist,
@@ -327,5 +328,17 @@ end # struct PressAiNamelist
     @assert(1 <= calwf <= 5, "`calwf` $(calwf) out of range!")
     @assert(1 <= wfsd <= 3, "`wfsd` $(wfsd) out of range!")
 end # struct WannierNamelist
+
+QuantumESPRESSOBase.asfieldname(::Type{<:ControlNamelist}) = :control
+QuantumESPRESSOBase.asfieldname(::Type{<:SystemNamelist}) = :system
+QuantumESPRESSOBase.asfieldname(::Type{<:ElectronsNamelist}) = :electrons
+QuantumESPRESSOBase.asfieldname(::Type{<:IonsNamelist}) = :ions
+QuantumESPRESSOBase.asfieldname(::Type{<:CellNamelist}) = :cell
+
+QuantumESPRESSOBase.titleof(::Type{<:ControlNamelist}) = "CONTROL"
+QuantumESPRESSOBase.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
+QuantumESPRESSOBase.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
+QuantumESPRESSOBase.titleof(::Type{<:IonsNamelist}) = "IONS"
+QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
 
 end

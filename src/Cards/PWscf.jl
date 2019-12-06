@@ -114,4 +114,34 @@ Cards.allowed_options(::Type{<:KPointsCard}) = (
     "crystal_c",
 )
 
+QuantumESPRESSOBase.asfieldname(::Type{<:KPointsCard}) = :k_points
+
+QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
+
+function QuantumESPRESSOBase.to_qe(data::MonkhorstPackGrid; sep::AbstractString = " ")::String
+    return join([data.grid; data.offsets], sep)
+end
+function QuantumESPRESSOBase.to_qe(data::GammaPoint)
+    return ""
+end
+function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep::AbstractString = " ")::String
+    return join([data.coordinates; data.weight], sep)
+end
+function QuantumESPRESSOBase.to_qe(
+    card::KPointsCard;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+)::String
+    content = "K_POINTS$sep{ $(card.option) }\n"
+    if card.option in ("gamma", "automatic")
+        content *= indent * QuantumESPRESSOBase.to_qe(card.data) * "\n"
+    else  # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+        content *= "$(length(card.data))\n"
+        for x in card.data
+            content *= indent * QuantumESPRESSOBase.to_qe(x, sep = sep) * "\n"
+        end
+    end
+    return content
+end
+
 end

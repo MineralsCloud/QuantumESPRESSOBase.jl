@@ -30,4 +30,16 @@ struct QPointsSpecsCard{A<:AbstractVector{<:SpecialQPoint}} <: Card
     data::A
 end
 
+function QuantumESPRESSOBase.to_qe(
+    card::QPointsSpecsCard;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+)::String
+    content = "$(length(card.data))\n"
+    for p in card.data
+        content *= indent * join([p.coordinates; p.weight], sep) * "\n"
+    end
+    return content
+end
+
 end

@@ -13,6 +13,7 @@ module PWscf
 
 using Parameters: @with_kw
 
+using QuantumESPRESSOBase
 using ..Namelists: Namelist
 
 export ControlNamelist,
@@ -397,5 +398,17 @@ end # struct DosNamelist
     lastk::Int = 10000000
     @assert(spin_component ∈ 1:2, "Invalid `spin_component` $(spin_component)!")
 end # struct BandsNamelist
+
+QuantumESPRESSOBase.asfieldname(::Type{<:ControlNamelist}) = :control
+QuantumESPRESSOBase.asfieldname(::Type{<:SystemNamelist}) = :system
+QuantumESPRESSOBase.asfieldname(::Type{<:ElectronsNamelist}) = :electrons
+QuantumESPRESSOBase.asfieldname(::Type{<:IonsNamelist}) = :ions
+QuantumESPRESSOBase.asfieldname(::Type{<:CellNamelist}) = :cell
+
+QuantumESPRESSOBase.titleof(::Type{<:ControlNamelist}) = "CONTROL"
+QuantumESPRESSOBase.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
+QuantumESPRESSOBase.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
+QuantumESPRESSOBase.titleof(::Type{<:IonsNamelist}) = "IONS"
+QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
 
 end

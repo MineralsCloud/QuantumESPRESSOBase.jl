@@ -13,6 +13,7 @@ module PHonon
 
 using Parameters: @with_kw
 
+using QuantumESPRESSOBase
 using ..Namelists: Namelist
 
 export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
@@ -131,5 +132,15 @@ end # struct MatdynNamelist
     lperm::Bool = false
     lplasma::Bool = false
 end # struct DynmatNamelist
+
+QuantumESPRESSOBase.asfieldname(::Type{<:PhNamelist}) = :inputph
+QuantumESPRESSOBase.asfieldname(::Type{<:Q2rNamelist}) = :input
+QuantumESPRESSOBase.asfieldname(::Type{<:MatdynNamelist}) = :input
+QuantumESPRESSOBase.asfieldname(::Type{<:DynmatNamelist}) = :input
+
+QuantumESPRESSOBase.titleof(::Type{<:PhNamelist}) = "INPUTPH"
+QuantumESPRESSOBase.titleof(::Type{<:Q2rNamelist}) = "INPUT"
+QuantumESPRESSOBase.titleof(::Type{<:MatdynNamelist}) = "INPUT"
+QuantumESPRESSOBase.titleof(::Type{<:DynmatNamelist}) = "INPUT"
 
 end

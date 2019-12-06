@@ -21,13 +21,13 @@ using Fortran90Namelists.JuliaToFortran: to_fortran
 import JSON
 using Rematch: @match
 
-using QuantumESPRESSOBase: InputEntry
+using QuantumESPRESSOBase
 
 export to_dict, dropdefault
 # ============================================================================ #
 
 
-abstract type Namelist <: InputEntry end
+abstract type Namelist <: QuantumESPRESSOBase.InputEntry end
 
 """
     to_dict(nml; defaultorder = true)
@@ -85,5 +85,20 @@ include("PWscf.jl")
 include("CP.jl")
 include("PHonon.jl")
 # ============================================================================ #
+
+function QuantumESPRESSOBase.to_qe(
+    nml::Namelist;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+    verbose::Bool = false,
+)
+    namelist_name = (titleof ∘ typeof)(nml)
+    f = verbose ? to_dict : dropdefault
+    inner_content = to_qe(f(nml); indent = indent, sep = sep)
+    return """
+    &$namelist_name
+    $inner_content/
+    """
+end
 
 end
