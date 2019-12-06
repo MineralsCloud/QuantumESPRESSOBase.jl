@@ -14,11 +14,9 @@ module Namelists
 # ============================================================================ #
 #                               Import and export                              #
 # ============================================================================ #
-import Serialization
 
 using DataStructures: OrderedDict
 using Fortran90Namelists.JuliaToFortran: to_fortran
-import JSON
 
 using QuantumESPRESSOBase
 
