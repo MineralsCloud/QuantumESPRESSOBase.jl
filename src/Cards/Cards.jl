@@ -37,8 +37,23 @@ struct AtomicSpecies
 end
 
 abstract type PseudopotentialFormat end
+"""
+    VanderbiltUltraSoft <: PseudopotentialFormat
+
+A singleton representing the Vanderbilt US pseudopotential code.
+"""
 struct VanderbiltUltraSoft <: PseudopotentialFormat end
+"""
+    AndreaDalCorso <: PseudopotentialFormat
+
+A singleton representing the Andrea Dal Corso's code (old format).
+"""
 struct AndreaDalCorso <: PseudopotentialFormat end
+"""
+    OldNormConserving <: PseudopotentialFormat
+
+A singleton representing the old PWscf norm-conserving format.
+"""
 struct OldNormConserving <: PseudopotentialFormat end
 
 """
@@ -54,10 +69,13 @@ the file name:
 - none of the above: old PWscf norm-conserving format
 """
 function potential_format(data::AtomicSpecies)::PseudopotentialFormat
-    @match lowercase(splitext(data.pseudo)[2]) begin
-        ".vdb" || ".van" => VanderbiltUltraSoft()
-        ".rrkj3" => AndreaDalCorso()
-        _ => OldNormConserving()
+    ext = lowercase(splitext(data.pseudo)[2])
+    return if ext ∈ (".vdb", ".van")
+        VanderbiltUltraSoft()
+    elseif ext == ".rrkj3"
+        AndreaDalCorso()
+    else
+        OldNormConserving()
     end
 end
 
