@@ -101,14 +101,14 @@ compulsory_cards(input::CPInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions))
 Base.:!(::typeof(compulsory_cards)) = input -> setdiff(collect(cards(input)), collect(compulsory_cards(input)))
 
-function Cards.cell_volume(input::PWInput)
+function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
         return det(bravais_lattice(input.system))
     else
         iszero(input.system.celldm[1]) && return cell_volume(input.cell_parameters)
         return input.system.celldm[1]^3 * cell_volume(input.cell_parameters)
     end
-end # function cell_volume
+end # function QuantumESPRESSOBase.cell_volume
 
 function QuantumESPRESSOBase.to_qe(
     input::QuantumESPRESSOInput;
