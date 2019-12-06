@@ -11,6 +11,7 @@ julia>
 """
 module Cards
 
+using Compat: eachrow
 using Rematch: @match
 using Parameters: @with_kw
 using Setfield: @lens, get

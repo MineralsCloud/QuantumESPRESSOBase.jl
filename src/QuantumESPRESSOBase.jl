@@ -1,6 +1,6 @@
 module QuantumESPRESSOBase
 
-using Compat: isnothing, eachrow
+using Compat: isnothing
 using Fortran90Namelists.JuliaToFortran: to_fortran
 using Parameters: @with_kw
 

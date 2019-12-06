@@ -11,6 +11,7 @@ julia>
 """
 module Inputs
 
+using Compat: isnothing
 using Setfield: @set!
 
 using QuantumESPRESSOBase
