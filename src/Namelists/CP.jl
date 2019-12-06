@@ -112,7 +112,7 @@ end # struct ControlNamelist
     input_dft::String = "none"
     exx_fraction::Float64 = 0.25
     lda_plus_u::Bool = false
-    Hubbard_U::Vector{Union{Nothing,Float64}} = zeros(ntyp)  # The default value in QE's source code is just one 0.0
+    Hubbard_U::Vector{Union{Nothing,Float64}} = []
     vdw_corr::String = "none"
     london_s6::Float64 = 0.75
     london_rcut::Float64 = 200.0
