@@ -4,12 +4,14 @@ using Parameters: @with_kw
 
 export PWCmd
 
+abstract type QuantumESPRESSOCmd end
+
 """
     PWCmd(exe = "pw.x", inp, nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
 
 Represent the executable for the PW calculation. Query each field for more information.
 """
-@with_kw struct PWCmd
+@with_kw struct PWCmd <: QuantumESPRESSOCmd
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
     exe::String = "pw.x"
     inp::String
