@@ -64,4 +64,16 @@ Represent the executable for the PW calculation. Query each field for more infor
     ndiag::Int = 0
 end
 
+function Base.string(cmd::PWCmd)
+    str = "$(cmd.exe)"
+    for f in fieldnames(typeof(cmd))[3:end]  # Join options
+        v = getfield(cmd, f)
+        if !iszero(v)
+            str *= string(" -", f, ' ', v)
+        end
+        continue
+    end
+    return str * " -inp " * cmd.inp
+end # function Base.string
+
 end
