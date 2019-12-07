@@ -11,6 +11,8 @@ julia>
 """
 module Inputs
 
+using LinearAlgebra: det
+
 using Compat: isnothing
 using Setfield: @set!
 
@@ -18,7 +20,7 @@ using QuantumESPRESSOBase
 using QuantumESPRESSOBase: bravais_lattice
 using ..Namelists: Namelist
 using ..Cards
-using ..Cards: Card
+using ..Cards: Card, optionof
 
 export namelists, cards, autofill_cell_parameters, compulsory_namelists, compulsory_cards
 
@@ -105,8 +107,13 @@ function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
         return det(bravais_lattice(input.system))
     else
-        isnothing(input.system.celldm[1]) && return det(input.cell_parameters.data)
-        return input.system.celldm[1]^3 * det(input.cell_parameters.data)
+        if optionof(input.cell_parameters) == "alat"
+            # If no value of `celldm` is changed...
+            isnothing(input.system.celldm[1]) && error("`celldm[1]` is not defined!")
+            return input.system.celldm[1]^3 * det(input.cell_parameters.data)
+        else  # "bohr" or "angstrom"
+            return cell_volume(input.cell_parameters)
+        end
     end
 end # function QuantumESPRESSOBase.cell_volume
 
