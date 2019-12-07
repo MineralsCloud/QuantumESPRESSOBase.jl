@@ -2,14 +2,14 @@ module CLI
 
 using Parameters: @with_kw
 
-export PWCommand
+export PWCmd
 
 """
-    PWCommand(exe = "pw.x", inp, nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
+    PWCmd(exe = "pw.x", inp, nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
 
 Represent the executable for the PW calculation. Query each field for more information.
 """
-@with_kw struct PWCommand
+@with_kw struct PWCmd
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
     exe::String = "pw.x"
     inp::String
