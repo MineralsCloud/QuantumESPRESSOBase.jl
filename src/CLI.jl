@@ -13,7 +13,7 @@ Represent the executable for the PW calculation. Query each field for more infor
 """
 @with_kw struct PWCmd <: QuantumESPRESSOCmd
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
-    exe::String = "pw.x"
+    exec::String = "pw.x"
     inp::String
     """
     Processors can then be divided into different "images", each corresponding to a
@@ -65,7 +65,7 @@ Represent the executable for the PW calculation. Query each field for more infor
 end
 
 function Base.string(cmd::PWCmd)
-    str = "$(cmd.exe)"
+    str = "$(cmd.exec)"
     for f in fieldnames(typeof(cmd))[3:end]  # Join options
         v = getfield(cmd, f)
         if !iszero(v)
