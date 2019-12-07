@@ -105,8 +105,8 @@ function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
         return det(bravais_lattice(input.system))
     else
-        iszero(input.system.celldm[1]) && return cell_volume(input.cell_parameters)
-        return input.system.celldm[1]^3 * cell_volume(input.cell_parameters)
+        isnothing(input.system.celldm[1]) && return det(input.cell_parameters.data)
+        return input.system.celldm[1]^3 * det(input.cell_parameters.data)
     end
 end # function QuantumESPRESSOBase.cell_volume
 
