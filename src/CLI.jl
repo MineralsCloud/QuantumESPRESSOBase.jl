@@ -2,7 +2,7 @@ module CLI
 
 using Parameters: @with_kw
 
-export PWCmd
+export PWCmd, commandify
 
 abstract type QuantumESPRESSOCmd end
 
@@ -64,16 +64,17 @@ Represent the executable for the PW calculation. Query each field for more infor
     ndiag::Int = 0
 end
 
-function Base.string(cmd::PWCmd)
-    str = "$(cmd.exec)"
+function commandify(cmd::PWCmd)
+    options = String[]
     for f in fieldnames(typeof(cmd))[3:end]  # Join options
         v = getfield(cmd, f)
         if !iszero(v)
-            str *= string(" -", f, ' ', v)
+            push!(options, string(" -", f, ' ', v))
+        else
+            push!(options, "")
         end
-        continue
     end
-    return str * " -inp " * cmd.inp
-end # function Base.string
+    return `$(cmd.exec)$(options...) -inp $(cmd.inp)`
+end # function commandify
 
 end
