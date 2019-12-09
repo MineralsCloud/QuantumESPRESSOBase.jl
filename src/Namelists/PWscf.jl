@@ -182,7 +182,7 @@ end # struct ControlNamelist
     @assert(ibrav ∈ union(0:1:14, (-3, -5, -9, -12)))
     @assert(if ibrav != 0
         celldm[1] != 0 || A != 0  # Cannot use `iszero` to compare now!
-    end, "Invalid lattice parameters (`celldm` or `a`)!")
+    end, "Invalid lattice parameters (`celldm` $celldm or `A` $A)!")
     @assert(
         if ibrav == 14
             length(celldm) == 6
