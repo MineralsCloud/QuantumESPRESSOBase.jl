@@ -82,7 +82,7 @@ end # struct ControlNamelist
 
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = 1  # The default value in QE's source code is -1
-    celldm::Vector{Maybe{Float64}} = Vector{Float64}(undef, 6)  # Must specify
+    celldm::Vector{Maybe{Float64}} = [nothing]  # Must specify
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -180,10 +180,9 @@ end # struct ControlNamelist
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
     @assert(ibrav ∈ union(0:1:14, (-3, -5, -9, -12)))
-    @assert(
-        !(ibrav != 0 && all(iszero, (celldm[1], A))),
-        "Invalid lattice parameters (`celldm` or `a`)!"
-    )
+    @assert(if ibrav != 0
+        celldm[1] != 0 || A != 0  # Cannot use `iszero` to compare now!
+    end, "Invalid lattice parameters (`celldm` or `a`)!")
     @assert(
         if ibrav == 14
             length(celldm) == 6
