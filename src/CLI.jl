@@ -86,6 +86,6 @@ QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{2}}) = :npool
 QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{3}}) = :ntg
 QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{4}}) = :nyfft
 QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{5}}) = :nband
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{5}}) = :ndiag
+QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{6}}) = :ndiag
 
 end
