@@ -2,7 +2,11 @@ module CLI
 
 using Parameters: @with_kw
 
+using QuantumESPRESSOBase
+
 export PWCmd
+
+struct ParallelizationLevel{N} end
 
 abstract type QuantumESPRESSOCmd <: Base.AbstractCmd end
 
@@ -76,5 +80,12 @@ function Base.Cmd(cmd::PWCmd)
     end
     return `$(cmd.exec)$(options...) -inp $(cmd.inp)`
 end # function Base.Cmd
+
+QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{1}}) = :nimage
+QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{2}}) = :npool
+QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{3}}) = :ntg
+QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{4}}) = :nyfft
+QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{5}}) = :nband
+QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{5}}) = :ndiag
 
 end
