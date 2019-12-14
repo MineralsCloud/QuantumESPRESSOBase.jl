@@ -4,7 +4,7 @@ using Parameters: @with_kw
 
 export PWCmd
 
-abstract type QuantumESPRESSOCmd end
+abstract type QuantumESPRESSOCmd <: Base.AbstractCmd end
 
 """
     PWCmd(exe = "pw.x", inp, nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
