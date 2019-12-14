@@ -4,7 +4,7 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase
 
-export PWCmd
+export ParallelizationLevel, PWCmd
 
 struct ParallelizationLevel{N} end
 
