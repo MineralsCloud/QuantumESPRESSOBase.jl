@@ -11,6 +11,7 @@ Fortran90Namelists = "8fb689aa-71ff-4044-8071-0cffc910b57d"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [compat]
 Compat = "2.2"
