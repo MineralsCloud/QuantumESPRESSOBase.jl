@@ -15,16 +15,17 @@ using LinearAlgebra: det
 
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase
 using ..Namelists: Namelist
 
+import QuantumESPRESSOBase
+
 export ControlNamelist,
-       SystemNamelist,
-       ElectronsNamelist,
-       IonsNamelist,
-       CellNamelist,
-       PressAiNamelist,
-       WannierNamelist
+    SystemNamelist,
+    ElectronsNamelist,
+    IonsNamelist,
+    CellNamelist,
+    PressAiNamelist,
+    WannierNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 @with_kw struct ControlNamelist <: Namelist
@@ -342,6 +343,14 @@ QuantumESPRESSOBase.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
 QuantumESPRESSOBase.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
 QuantumESPRESSOBase.titleof(::Type{<:IonsNamelist}) = "IONS"
 QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
+
+"""
+    bravais_lattice(nml::SystemNamelist)
+
+Return a 3x3 matrix representing the Bravais lattice from `nml`.
+"""
+QuantumESPRESSOBase.bravais_lattice(nml::SystemNamelist) =
+    bravais_lattice(nml.ibrav, nml.celldm)
 
 function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
