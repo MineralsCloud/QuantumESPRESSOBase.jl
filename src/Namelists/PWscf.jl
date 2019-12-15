@@ -13,9 +13,8 @@ module PWscf
 
 using LinearAlgebra: det
 
-using Kaleido: @batchlens
+using ConstructionBase: setproperties
 using Parameters: @with_kw
-using Setfield: set
 
 using QuantumESPRESSOBase.Setters: VerbositySetter
 using QuantumESPRESSOBase.Namelists: Namelist
@@ -438,26 +437,24 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
 end # function QuantumESPRESSOBase.cell_volume
 
 function Setters.batchset(::VerbositySetter{:high}, template::ControlNamelist)
-    lenses = @batchlens begin
-        _.verbosity
-        _.wf_collect
-        _.tstress
-        _.tprnfor
-        _.disk_io
-    end
-    # Set the `template`'s values with...
-    return set(template, lenses, ("high", true, true, true, "high"))
+    return setproperties(
+        template,
+        verbosity = "high",
+        wf_collect = true,
+        tstress = true,
+        tprnfor = true,
+        disk_io = "high",
+    )
 end # function Setters.batchset
 function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
-    lenses = @batchlens begin
-        _.verbosity
-        _.wf_collect
-        _.tstress
-        _.tprnfor
-        _.disk_io
-    end
-    # Set the `template`'s values with...
-    return set(template, lenses, ("low", false, false, false, "low"))
+    return setproperties(
+        template,
+        verbosity = "low",
+        wf_collect = false,
+        tstress = false,
+        tprnfor = false,
+        disk_io = "low",
+    )
 end # function Setters.batchset
 
 end
