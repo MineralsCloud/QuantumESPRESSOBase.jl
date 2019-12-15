@@ -15,8 +15,10 @@ using LinearAlgebra: det
 
 using ConstructionBase: setproperties
 using Parameters: @with_kw
+using Unitful: AbstractQuantity, ustrip, @u_str
+using UnitfulAtomic
 
-using QuantumESPRESSOBase.Setters: VerbositySetter
+using QuantumESPRESSOBase.Setters: VerbositySetter, FiniteTemperatureSetter
 using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase
@@ -454,6 +456,14 @@ function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
         tstress = false,
         tprnfor = false,
         disk_io = "low",
+    )
+end # function Setters.batchset
+function Setters.batchset(::FiniteTemperatureSetter{N}, template::SystemNamelist) where {N}
+    return setproperties(
+        template,
+        occupations = "smearing",
+        degauss = N isa AbstractQuantity ? ustrip(u"Ry", N) : N,
+        smearing = "fermi-dirac",
     )
 end # function Setters.batchset
 
