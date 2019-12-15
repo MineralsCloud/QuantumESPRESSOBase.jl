@@ -156,3 +156,9 @@ deps = ["ConstructionBase", "LinearAlgebra", "Random"]
 git-tree-sha1 = "c1ba76e3ca74a838e221e69b0ff8429226c5826a"
 uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
 version = "0.18.0"
+
+[[UnitfulAtomic]]
+deps = ["Unitful"]
+git-tree-sha1 = "2edb47dbda92ce8a91f53603041ffe7745427b01"
+uuid = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
+version = "0.3.0"
