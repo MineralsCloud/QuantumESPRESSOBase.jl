@@ -73,6 +73,7 @@ end
 
 function cell_volume end
 
+include("Setters.jl")
 include("Namelists/Namelists.jl")
 include("Cards/Cards.jl")
 include("bravais_lattice.jl")
