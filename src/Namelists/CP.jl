@@ -13,11 +13,14 @@ module CP
 
 using LinearAlgebra: det
 
+using ConstructionBase: setproperties
 using Parameters: @with_kw
 
-using ..Namelists: Namelist
+using QuantumESPRESSOBase.Setters: VerbositySetter
+using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase
+import QuantumESPRESSOBase.Setters
 
 export ControlNamelist,
     SystemNamelist,
@@ -356,5 +359,28 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
     return det(bravais_lattice(nml))
 end # function QuantumESPRESSOBase.cell_volume
+
+function Setters.batchset(::VerbositySetter{:high}, template::ControlNamelist)
+    return setproperties(
+        template,
+        verbosity = "high",
+        wf_collect = true,
+        tstress = true,
+        tprnfor = true,
+        saverho = true,
+        disk_io = "high",
+    )
+end # function Setters.batchset
+function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
+    return setproperties(
+        template,
+        verbosity = "low",
+        wf_collect = false,
+        tstress = false,
+        tprnfor = false,
+        saverho = false,
+        disk_io = "default",
+    )
+end # function Setters.batchset
 
 end
