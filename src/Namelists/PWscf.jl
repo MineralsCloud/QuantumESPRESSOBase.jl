@@ -438,24 +438,24 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
 end # function QuantumESPRESSOBase.cell_volume
 
 function Setters.batchset(::VerbositySetter{:high}, template::ControlNamelist)
-    lenses = @batchlens(begin
+    lenses = @batchlens begin
         _.verbosity
         _.wf_collect
         _.tstress
         _.tprnfor
         _.disk_io
-    end)
+    end
     # Set the `template`'s values with...
     return set(template, lenses, ("high", true, true, true, "high"))
 end # function Setters.batchset
 function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
-    lenses = @batchlens(begin
+    lenses = @batchlens begin
         _.verbosity
         _.wf_collect
         _.tstress
         _.tprnfor
         _.disk_io
-    end)
+    end
     # Set the `template`'s values with...
     return set(template, lenses, ("low", false, false, false, "low"))
 end # function Setters.batchset
