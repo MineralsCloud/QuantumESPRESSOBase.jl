@@ -13,10 +13,16 @@ module PWscf
 
 using LinearAlgebra: det
 
+using Kaleido: @batchlens
 using Parameters: @with_kw
+using Setfield: set
 
-using QuantumESPRESSOBase
-using ..Namelists: Namelist
+using QuantumESPRESSOBase: bravais_lattice
+using QuantumESPRESSOBase.Setters: VerbositySetter
+using QuantumESPRESSOBase.Namelists: Namelist
+
+import QuantumESPRESSOBase
+import QuantumESPRESSOBase.Setters
 
 export ControlNamelist,
     SystemNamelist,
@@ -423,5 +429,28 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
     return det(bravais_lattice(nml))
 end # function QuantumESPRESSOBase.cell_volume
+
+function Setters.batchset(::VerbositySetter{:high}, template::ControlNamelist)
+    lenses = @batchlens(begin
+        _.verbosity
+        _.wf_collect
+        _.tstress
+        _.tprnfor
+        _.disk_io
+    end)
+    # Set the `template`'s values with...
+    return set(template, lenses, ("high", true, true, true, "high"))
+end # function Setters.batchset
+function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
+    lenses = @batchlens(begin
+        _.verbosity
+        _.wf_collect
+        _.tstress
+        _.tprnfor
+        _.disk_io
+    end)
+    # Set the `template`'s values with...
+    return set(template, lenses, ("low", false, false, false, "low"))
+end # function Setters.batchset
 
 end
