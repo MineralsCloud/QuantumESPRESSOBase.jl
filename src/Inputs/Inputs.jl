@@ -16,11 +16,11 @@ using LinearAlgebra: det
 using Compat: isnothing
 using Setfield: @set!
 
-using QuantumESPRESSOBase
 using QuantumESPRESSOBase: bravais_lattice
-using ..Namelists: Namelist
-using ..Cards
-using ..Cards: Card, optionof
+using QuantumESPRESSOBase.Namelists: Namelist
+using QuantumESPRESSOBase.Cards: Card, CellParametersCard, optionof
+
+import QuantumESPRESSOBase
 
 export namelists, cards, autofill_cell_parameters, compulsory_namelists, compulsory_cards
 
@@ -63,8 +63,7 @@ above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` no
 """
 function autofill_cell_parameters(template::Union{PWInput,CPInput})
     system = template.system
-    @set! template.cell_parameters =
-        Cards.CellParametersCard("alat", bravais_lattice(system))
+    @set! template.cell_parameters = CellParametersCard("alat", bravais_lattice(system))
     @set! template.system.ibrav = 0
     @set! template.system.celldm = [system.celldm[1]]
 end # function autofill_cell_parameters

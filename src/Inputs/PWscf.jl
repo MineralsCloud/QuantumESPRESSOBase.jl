@@ -25,7 +25,7 @@ using QuantumESPRESSOBase.Cards.PWscf:
     KPointsCard,
     CellParametersCard,
     AtomicForcesCard
-using ..Inputs: QuantumESPRESSOInput
+using QuantumESPRESSOBase.Inputs: QuantumESPRESSOInput
 
 export PWInput
 

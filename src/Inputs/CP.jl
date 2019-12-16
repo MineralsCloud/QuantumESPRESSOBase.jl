@@ -3,7 +3,7 @@ module CP
 using Compat: isnothing
 using Parameters: @with_kw
 
-using ...Namelists.CP:
+using QuantumESPRESSOBase.Namelists.CP:
     ControlNamelist,
     SystemNamelist,
     ElectronsNamelist,
@@ -11,14 +11,14 @@ using ...Namelists.CP:
     CellNamelist,
     PressAiNamelist,
     WannierNamelist
-using ...Cards.CP:
+using QuantumESPRESSOBase.Cards.CP:
     AtomicSpeciesCard,
     AtomicPositionsCard,
     AtomicVelocitiesCard,
     CellParametersCard,
     RefCellParametersCard,
     AtomicForcesCard
-using ..Inputs: QuantumESPRESSOInput
+using QuantumESPRESSOBase.Inputs: QuantumESPRESSOInput
 
 export CPInput
 

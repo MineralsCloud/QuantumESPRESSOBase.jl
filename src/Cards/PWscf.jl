@@ -15,8 +15,6 @@ using Compat: eachrow
 using Parameters: @with_kw
 using Setfield: @lens, get
 
-using QuantumESPRESSOBase
-using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards:
     Card,
     AtomicSpecies,
@@ -27,6 +25,9 @@ using QuantumESPRESSOBase.Cards:
     AtomicForce,
     AtomicForcesCard,
     potential_format
+
+import QuantumESPRESSOBase
+import QuantumESPRESSOBase.Cards
 
 export AtomicSpecies,
     AtomicSpeciesCard,
