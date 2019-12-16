@@ -21,8 +21,9 @@ using QuantumESPRESSOBase.Namelists: Namelist
 using QuantumESPRESSOBase.Cards: Card, CellParametersCard, optionof
 
 import QuantumESPRESSOBase
+import QuantumESPRESSOBase.Setters
 
-export namelists, cards, autofill_cell_parameters, compulsory_namelists, compulsory_cards
+export namelists, cards, compulsory_namelists, compulsory_cards
 
 abstract type QuantumESPRESSOInput end
 
@@ -51,22 +52,6 @@ include("PHonon.jl")
 
 using .PWscf: PWInput
 using .CP: CPInput
-
-"""
-    autofill_cell_parameters(template::Union{PWInput,CPInput})
-
-Generate automatically a `CellParametersCard` for a `PWInput` or `CPInput` if its `cell_parameters` field is `nothing`.
-
-Sometimes the `ibrav` field of a `PWInput` is not `0`, with its `cell_parameters` field to be empty.
-But there are cases we want to write its `CellParametersCard` explicitly. This function will take a `PWInput` described
-above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` not empty.
-"""
-function autofill_cell_parameters(template::Union{PWInput,CPInput})
-    system = template.system
-    @set! template.cell_parameters = CellParametersCard("alat", bravais_lattice(system))
-    @set! template.system.ibrav = 0
-    @set! template.system.celldm = [system.celldm[1]]
-end # function autofill_cell_parameters
 
 """
     compulsory_namelists(input::Union{PWInput,CPInput})
@@ -131,5 +116,22 @@ function QuantumESPRESSOBase.to_qe(
     end
     return content
 end
+
+"""
+    batchset(::CellParametersSetter, template::Union{PWInput,CPInput})
+
+Generate automatically a `CellParametersCard` for a `PWInput` or `CPInput` if its `cell_parameters` field is `nothing`.
+
+Sometimes the `ibrav` field of a `PWInput` is not `0`, with its `cell_parameters` field to be empty.
+But there are cases we want to write its `CellParametersCard` explicitly. This function will take a `PWInput` described
+above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` not empty.
+"""
+function Setters.batchset(::CellParametersSetter, template::Union{PWInput,CPInput})
+    system = template.system
+    @set! template.cell_parameters = CellParametersCard("alat", bravais_lattice(system))
+    @set! template.system.ibrav = 0
+    @set! template.system.celldm = [system.celldm[1]]
+    return template
+end # function Setters.batchset
 
 end
