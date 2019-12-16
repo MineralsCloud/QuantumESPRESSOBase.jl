@@ -128,6 +128,7 @@ But there are cases we want to write its `CellParametersCard` explicitly. This f
 above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` not empty.
 """
 function Setters.batchset(::CellParametersSetter, template::Union{PWInput,CPInput})
+    !isnothing(template.cell_parameters) && return template
     system = template.system
     @set! template.cell_parameters = CellParametersCard("alat", bravais_lattice(system))
     @set! template.system.ibrav = 0
