@@ -2,7 +2,7 @@ module Setters
 
 using Unitful: AbstractQuantity
 
-export VerbositySetter, FiniteTemperatureSetter
+export VerbositySetter, FiniteTemperatureSetter, CellParametersSetter
 
 export batchset
 
@@ -23,6 +23,8 @@ struct FiniteTemperatureSetter{N} <: BatchSetter
     end # function FiniteTemperatureSetter
 end
 FiniteTemperatureSetter(x) = FiniteTemperatureSetter{x}()
+
+struct CellParametersSetter <: BatchSetter end
 
 function batchset end
 
