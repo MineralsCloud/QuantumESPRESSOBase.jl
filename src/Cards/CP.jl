@@ -2,8 +2,6 @@ module CP
 
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase
-using QuantumESPRESSOBase.Cards
 using QuantumESPRESSOBase.Cards: Card,
                                  AtomicSpecies,
                                  AtomicSpeciesCard,
@@ -13,6 +11,8 @@ using QuantumESPRESSOBase.Cards: Card,
                                  CellParametersCard,
                                  AtomicForce,
                                  AtomicForcesCard
+
+import QuantumESPRESSOBase.Cards
 
 export AtomicSpecies,
        AtomicSpeciesCard,

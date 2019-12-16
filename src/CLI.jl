@@ -2,7 +2,7 @@ module CLI
 
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase
+import QuantumESPRESSOBase
 
 export ParallelizationLevel, PWCmd
 
