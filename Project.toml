@@ -17,6 +17,7 @@ UnitfulAtomic = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
 [compat]
 Compat = "2.2, 3.0"
 ConstructionBase = "1.0"
+OrderedCollections = "1"
 Parameters = "0.10, 0.12"
 Setfield = "0.3, 0.5"
 Unitful = "0.18"
