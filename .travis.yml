@@ -13,6 +13,8 @@ matrix:
   fast_finish: true
 notifications:
   email: false
+  slack:
+    secure: KXHQf0HWGlUXjXRYixzL8YZlHgGPp87mIVxUmo5YMBz0M8JBnJa/blH1U60swfqOsQ8DGF0SdR1ksyKne5IM0oem9KR44WH0tR20IWu5LwqsdsPoJTq1MS3uuaWhu7YK4sKc7VIf6TXDBmfrBzVZK/8sHVc5usksUBSSE2pj18FdOhm72drwpdbXu1MwwkKBK/hj6nzi2mU7u08AyEHUjmTi6wlPlqsKyf0XjdJCSUFpwjK70tmkEfi32xi3NtiwpMTP/J+VsfSUTT9U7Q1V6wUt+BS1AaLGXhWtX964Aj6kVVlWf5caR2OWGB7k/DNKTkkc6nBUN/yJDWTJLlk1MQ9FMYMmku+L+d0z3O9/w29s4OQ7y4KypJGiTLqLSHss8q8O4rrHyEttW8XfZlzQ0BY8phk+lbwfDcTB/n41bjIc6kcLphhoJ428czZN5F4RySZflXt00PoLZEEpDb4iz9V1CDUgyqGeHx9JPNpC//3sKkOGYW3M0HeZAxv7IcfdIpfZM6BNTzdw1n6EnbBik76fFJJPL13qCSlt+ZOJSlqd2fNqfLFtGSNk5Yd8rh67DXKhMHHcJegXIxeYvif6NFFCanHy60yiG6eyZE/XPZ/StDvLuLr9A7vFxtXysfmy6SjbpSzkT0hX0jJIlUbYUCrOZqwj95XjgLnJ0XEd2W8=
 after_success:
   - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
   - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'

@@ -13,18 +13,19 @@ module PHonon
 
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase.Namelists: Namelist
+using QuantumESPRESSOBase
+using ..Namelists: Namelist
 
-export PhononNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
+export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
-@with_kw struct PhononNamelist <: Namelist
-    amass::Vector{Union{Missing,Float64}} = [0.0]
+@with_kw struct PhNamelist <: Namelist
+    amass::Vector{Union{Nothing,Float64}} = [0.0]
     outdir::String = "./"
     prefix::String = "pwscf"
     niter_ph::Int = 100
     tr2_ph::Float64 = 1e-12
-    alpha_mix::Vector{Union{Missing,Float64}} = 0.7 * ones(niter_ph)
+    alpha_mix::Vector{Union{Nothing,Float64}} = 0.7 * ones(niter_ph)
     nmix_ph::Int = 4
     verbosity::String = "default"
     reduce_io::Bool = false
@@ -75,15 +76,15 @@ export PhononNamelist, Q2RNamelist, MatdynNamelist, DynmatNamelist
     last_q::Int = -1000
     # dvscf_star::String = 1
     # drho_star::String = 1
-end # struct PhononNamelist
+end # struct PhNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
-@with_kw struct Q2RNamelist <: Namelist
+@with_kw struct Q2rNamelist <: Namelist
     fildyn::String = " "
     flfrc::String = " "
     loto_2d::Bool = false
     zasr::String = "no"
-end # struct Q2RNamelist
+end # struct Q2rNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
 @with_kw struct MatdynNamelist <: Namelist
@@ -102,8 +103,8 @@ end # struct Q2RNamelist
     fleig::String = "matdyn.eig"
     fldyn::String = " "
     fltau::String = " "
-    amass::Vector{Union{Missing,Float64}} = zeros(1)
-    at::Matrix{Union{Missing,Float64}} = zeros(3, 3)  # FIXME: not very sure
+    amass::Vector{Union{Nothing,Float64}} = zeros(1)
+    at::Matrix{Union{Nothing,Float64}} = zeros(3, 3)  # FIXME: not very sure
     ntyp::Int = 0
     l1::Int = 1
     l2::Int = 1
@@ -126,10 +127,20 @@ end # struct MatdynNamelist
     filmol::String = "dynmat.mold"
     filxsf::String = "dynmat.axsf"
     fileig::String = " "
-    amass::Vector{Union{Missing,Float64}} = zeros(1)
-    q::Vector{Union{Missing,Float64}} = zeros(3)
+    amass::Vector{Union{Nothing,Float64}} = zeros(1)
+    q::Vector{Union{Nothing,Float64}} = zeros(3)
     lperm::Bool = false
     lplasma::Bool = false
 end # struct DynmatNamelist
+
+QuantumESPRESSOBase.asfieldname(::Type{<:PhNamelist}) = :inputph
+QuantumESPRESSOBase.asfieldname(::Type{<:Q2rNamelist}) = :input
+QuantumESPRESSOBase.asfieldname(::Type{<:MatdynNamelist}) = :input
+QuantumESPRESSOBase.asfieldname(::Type{<:DynmatNamelist}) = :input
+
+QuantumESPRESSOBase.titleof(::Type{<:PhNamelist}) = "INPUTPH"
+QuantumESPRESSOBase.titleof(::Type{<:Q2rNamelist}) = "INPUT"
+QuantumESPRESSOBase.titleof(::Type{<:MatdynNamelist}) = "INPUT"
+QuantumESPRESSOBase.titleof(::Type{<:DynmatNamelist}) = "INPUT"
 
 end

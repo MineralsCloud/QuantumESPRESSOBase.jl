@@ -14,7 +14,7 @@ module PHonon
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase
-using QuantumESPRESSOBase.Cards
+using ..Cards: Card
 
 export QPoint, SpecialQPoint, QPointsSpecsCard
 
@@ -26,8 +26,20 @@ abstract type QPoint end
     @assert length(coordinates) == 3
 end
 
-struct QPointsSpecsCard{A<:AbstractVector{SpecialQPoint}} <: Card
-    data::B
+struct QPointsSpecsCard{A<:AbstractVector{<:SpecialQPoint}} <: Card
+    data::A
+end
+
+function QuantumESPRESSOBase.to_qe(
+    card::QPointsSpecsCard;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+)::String
+    content = "$(length(card.data))\n"
+    for p in card.data
+        content *= indent * join([p.coordinates; p.weight], sep) * "\n"
+    end
+    return content
 end
 
 end

@@ -11,125 +11,138 @@ julia>
 """
 module PWscf
 
-using MLStyle: @match
+using Compat: eachrow
 using Parameters: @with_kw
 using Setfield: @lens, get
 
 using QuantumESPRESSOBase
 using QuantumESPRESSOBase.Cards
+using QuantumESPRESSOBase.Cards:
+    Card,
+    AtomicSpecies,
+    AtomicSpeciesCard,
+    AtomicPosition,
+    AtomicPositionsCard,
+    CellParametersCard,
+    AtomicForce,
+    AtomicForcesCard,
+    potential_format
 
 export AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
     CellParametersCard,
+    AtomicForce,
+    AtomicForcesCard,
     KPoint,
     MonkhorstPackGrid,
     GammaPoint,
     SpecialKPoint,
     KPointsCard,
-    pseudopotential_format
+    potential_format
 
-# =============================== AtomicSpecies ============================== #
-struct AtomicSpecies{A<:AbstractString,B<:Real,C<:AbstractString}
-    atom::A
-    mass::B
-    pseudopotential::C
-end
-
-"""
-    pseudopotential_format(data::AtomicSpecies)::String
-
-Return the pseudopotential format.
-
-The pseudopotential file is assumed to be in the new UPF format.
-If it doesn't work, the pseudopotential format is determined by
-the file name:
-- "*.vdb or *.van": Vanderbilt US pseudopotential code
-- "*.RRKJ3": Andrea Dal Corso's code (old format)
-- none of the above: old PWscf norm-conserving format
-"""
-function pseudopotential_format(data::AtomicSpecies)::String
-    @match lowercase(splitext(data.pseudopotential)[2]) begin
-        ".vdb" || ".van" => "Vanderbilt US pseudopotential code"
-        ".rrkj3" => "Andrea Dal Corso's code (old format)"
-        _ => "old PWscf norm-conserving format"
-    end
-end
-
-struct AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
-    data::T
-end
-# ============================================================================ #
-
-# ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{A<:AbstractString,B<:AbstractVector{<:Real},C<:AbstractVector{Int}}
-    atom::A
-    pos::B
-    if_pos::C = [1, 1, 1]
-    @assert length(pos) == 3 "`pos` must be a three-element-vector! However it is of length $(length(pos))!"
-    @assert length(if_pos) == 3 "`if_pos` must be a three-element-vector! However it is of length $(length(if_pos))!"
-    @assert all(x ∈ (0, 1) for x in if_pos) "`if_pos` must be either 0 or 1!"
-end
-
-@with_kw struct AtomicPositionsCard{A<:AbstractString,B<:AbstractVector{<:AtomicPosition}} <: Card
-    option::A = "alat"
-    data::B
-    @assert option in allowed_options(AtomicPositionsCard)
-end
-
-function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
-    lens = @lens _.data.atom
-    @assert isempty(symdiff(map(Base.Fix2(get, lens) ∘ unique, (x, y)))) "labels of the atoms are different in `ATOMIC_SPECIES` and `ATOMIC_POSITIONS` card!"
-end # function validate
-validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
-# ============================================================================ #
-
-# ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{A<:AbstractString,B<:AbstractMatrix} <: Card
-    option::A = "alat"
-    data::B
-    @assert option in allowed_options(CellParametersCard)
-    @assert size(data) == (3, 3)
-end
-# ============================================================================ #
-
-# ================================== KPoint ================================== #
 abstract type KPoint end
 
-@with_kw struct MonkhorstPackGrid{A<:AbstractVector{Int},B<:AbstractVector{Int}} <: KPoint
+struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
     grid::A
     offsets::B
-    @assert length(grid) == 3 "`grid` must be a three-element-vector! However it is of length $(length(grid))!"
-    @assert length(offsets) == 3 "`offsets` must be a three-element-vector! However it is of length $(length(offsets))!"
-    @assert all(x ∈ (0, 1) for x in offsets) "`offsets` must be either 0 or 1!"
+    function MonkhorstPackGrid{A,B}(
+        grid,
+        offsets,
+    ) where {A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
+        @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!",)
+        @assert(
+            length(offsets) == 3,
+            "`offsets` is not of length 3, but $(length(offsets))!",
+        )
+        @assert(all(x ∈ (0, 1) for x in offsets), "`offsets` must be either 0 or 1!")
+        return new(grid, offsets)
+    end # function MonkhorstPackGrid
 end
+MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid, offsets)
 
 struct GammaPoint <: KPoint end
 
-@with_kw struct SpecialKPoint{A<:AbstractVector{Float64},B<:Real} <: KPoint
+struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
     coordinates::A
     weight::B
-    @assert length(coordinates) == 3 "`coordinates` must be a three-element-vector! However it is of length $(length(coordinates))!"
+    function SpecialKPoint{A,B}(
+        coordinates,
+        weight,
+    ) where {A<:AbstractVector{<:Real},B<:Real}
+        @assert(
+            length(coordinates) == 3,
+            "`coordinates` is not of length 3, but $(length(coordinates))!",
+        )
+        return new(coordinates, weight)
+    end # function SpecialKPoint
 end
+SpecialKPoint(coordinates::A, weight::B) where {A,B} =
+    SpecialKPoint{A,B}(coordinates, weight)
+SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
-@with_kw struct KPointsCard{A<:AbstractString,B<:AbstractVector{<:KPoint}} <: Card
-    option::A = "tpiba"
-    data::B
-    @assert option in allowed_options(KPointsCard)
-    @assert begin
-        @match option begin
-            "automatic" => eltype(data) <: MonkhorstPackGrid
-            "gamma" => eltype(data) <: GammaPoint
-            # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-            _ => eltype(data) <: SpecialKPoint
-        end
+@with_kw struct KPointsCard{
+    A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}},
+} <: Card
+    option::String = "tpiba"
+    data::A
+    @assert(option ∈ allowed_options(KPointsCard))
+    @assert if option == "automatic"
+        typeof(data) <: MonkhorstPackGrid
+    elseif option == "gamma"
+        typeof(data) <: GammaPoint
+    else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+        eltype(data) <: SpecialKPoint
     end
 end
-# ============================================================================ #
+function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
+    @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!",)
+    return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
+end
 
-# ================================== Methods ================================= #
-eachrow(A::AbstractVecOrMat) = (view(A, i, :) for i in axes(A, 1))  # Julia 1.0 does not support `eachrow`
-# ============================================================================ #
+Cards.allowed_options(::Type{<:KPointsCard}) = (
+    "tpiba",
+    "automatic",
+    "crystal",
+    "gamma",
+    "tpiba_b",
+    "crystal_b",
+    "tpiba_c",
+    "crystal_c",
+)
+
+QuantumESPRESSOBase.asfieldname(::Type{<:KPointsCard}) = :k_points
+
+QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
+
+function QuantumESPRESSOBase.to_qe(
+    data::MonkhorstPackGrid;
+    sep::AbstractString = " ",
+)::String
+    return join([data.grid; data.offsets], sep)
+end
+function QuantumESPRESSOBase.to_qe(data::GammaPoint)
+    return ""
+end
+function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep::AbstractString = " ")::String
+    return join([data.coordinates; data.weight], sep)
+end
+function QuantumESPRESSOBase.to_qe(
+    card::KPointsCard;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+)::String
+    content = "K_POINTS$sep{ $(card.option) }\n"
+    if card.option in ("gamma", "automatic")
+        content *= indent * QuantumESPRESSOBase.to_qe(card.data) * "\n"
+    else  # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+        content *= "$(length(card.data))\n"
+        for x in card.data
+            content *= indent * QuantumESPRESSOBase.to_qe(x, sep = sep) * "\n"
+        end
+    end
+    return content
+end
 
 end

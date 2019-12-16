@@ -14,20 +14,17 @@ module Namelists
 # ============================================================================ #
 #                               Import and export                              #
 # ============================================================================ #
-import Serialization
 
 using DataStructures: OrderedDict
 using Fortran90Namelists.JuliaToFortran: to_fortran
-import JSON
-using MLStyle: @match
 
-using QuantumESPRESSOBase: InputEntry
+using QuantumESPRESSOBase
 
-export Namelist, to_dict, dropdefault
+export to_dict, dropdefault
 # ============================================================================ #
 
 
-abstract type Namelist <: InputEntry end
+abstract type Namelist <: QuantumESPRESSOBase.InputEntry end
 
 """
     to_dict(nml; defaultorder = true)
@@ -59,25 +56,6 @@ function dropdefault(nml::Namelist)
     return result
 end
 
-"""
-    serialize(path, nml::Namelist)
-
-Serialize a `Namelist` to `path`. Currently, only JSON and YAML formats are supported.
-"""
-function Serialization.serialize(path::AbstractString, nml::Namelist)
-    isfile(path) || touch(path)  # If the file does not exist, create one
-    entries = Dict(key => to_fortran(value) for (key, value) in to_dict(nml))
-    @assert iswritable(path) "File $(path) is not writable!"
-    open(path, "r+") do io
-        @match splitext(path)[2] begin  # If the extension of the file is:
-            ".json" => JSON.print(io, entries)
-            ".yaml" || ".yml" => @warn "Currently not supported!"
-            _ => error("Unknown extension type given!")
-        end
-    end
-end
-
-
 # ============================================================================ #
 #                                    Include                                   #
 # ============================================================================ #
@@ -85,5 +63,20 @@ include("PWscf.jl")
 include("CP.jl")
 include("PHonon.jl")
 # ============================================================================ #
+
+function QuantumESPRESSOBase.to_qe(
+    nml::Namelist;
+    indent::AbstractString = "    ",
+    sep::AbstractString = " ",
+    verbose::Bool = false,
+)
+    namelist_name = titleof(nml)
+    f = verbose ? to_dict : dropdefault
+    inner_content = to_qe(f(nml); indent = indent, sep = sep)
+    return """
+    &$namelist_name
+    $inner_content/
+    """
+end
 
 end
