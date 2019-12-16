@@ -13,10 +13,16 @@ module PWscf
 
 using LinearAlgebra: det
 
+using ConstructionBase: setproperties
 using Parameters: @with_kw
+using Unitful: AbstractQuantity, ustrip, @u_str
+using UnitfulAtomic
 
-using QuantumESPRESSOBase
-using ..Namelists: Namelist
+using QuantumESPRESSOBase.Setters: VerbositySetter, FiniteTemperatureSetter
+using QuantumESPRESSOBase.Namelists: Namelist
+
+import QuantumESPRESSOBase
+import QuantumESPRESSOBase.Setters
 
 export ControlNamelist,
     SystemNamelist,
@@ -419,9 +425,46 @@ QuantumESPRESSOBase.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
 QuantumESPRESSOBase.titleof(::Type{<:IonsNamelist}) = "IONS"
 QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
 
+"""
+    bravais_lattice(nml::SystemNamelist)
+
+Return a 3x3 matrix representing the Bravais lattice from `nml`.
+"""
+QuantumESPRESSOBase.bravais_lattice(nml::SystemNamelist) =
+    bravais_lattice(nml.ibrav, nml.celldm)
+
 function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
     return det(bravais_lattice(nml))
 end # function QuantumESPRESSOBase.cell_volume
+
+function Setters.batchset(::VerbositySetter{:high}, template::ControlNamelist)
+    return setproperties(
+        template,
+        verbosity = "high",
+        wf_collect = true,
+        tstress = true,
+        tprnfor = true,
+        disk_io = "high",
+    )
+end # function Setters.batchset
+function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
+    return setproperties(
+        template,
+        verbosity = "low",
+        wf_collect = false,
+        tstress = false,
+        tprnfor = false,
+        disk_io = "low",
+    )
+end # function Setters.batchset
+function Setters.batchset(::FiniteTemperatureSetter{N}, template::SystemNamelist) where {N}
+    return setproperties(
+        template,
+        occupations = "smearing",
+        degauss = N isa AbstractQuantity ? ustrip(u"Ry", N) : N,
+        smearing = "fermi-dirac",
+    )
+end # function Setters.batchset
 
 end

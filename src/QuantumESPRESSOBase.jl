@@ -3,7 +3,7 @@ module QuantumESPRESSOBase
 using Compat: isnothing
 using Fortran90Namelists.JuliaToFortran: to_fortran
 
-export asfieldname, titleof, to_qe, cell_volume
+export asfieldname, titleof, to_qe, cell_volume, bravais_lattice
 
 abstract type InputEntry end
 
@@ -73,9 +73,10 @@ end
 
 function cell_volume end
 
+include("bravais_lattice.jl")
+include("Setters.jl")
 include("Namelists/Namelists.jl")
 include("Cards/Cards.jl")
-include("bravais_lattice.jl")
 include("Inputs/Inputs.jl")
 include("CLI.jl")
 
