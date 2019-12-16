@@ -19,6 +19,7 @@ using Setfield: @set!
 using QuantumESPRESSOBase: bravais_lattice
 using QuantumESPRESSOBase.Namelists: Namelist
 using QuantumESPRESSOBase.Cards: Card, CellParametersCard, optionof
+using QuantumESPRESSOBase.Setters: CellParametersSetter
 
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
