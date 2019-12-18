@@ -68,7 +68,7 @@ Represent the executable for the PW calculation. Query each field for more infor
     ndiag::Int = 0
 end
 
-function Base.Cmd(cmd::PWCmd)
+function Base.convert(::Type{Cmd}, cmd::PWCmd)
     options = String[]
     for f in fieldnames(typeof(cmd))[3:end]  # Join options
         v = getfield(cmd, f)
@@ -78,8 +78,8 @@ function Base.Cmd(cmd::PWCmd)
             push!(options, "")
         end
     end
-    return `$(cmd.exec)$(options...) -inp $(cmd.inp)`
-end # function Base.Cmd
+    return `$(cmd.which)$(options...) -inp $(cmd.inp)`
+end # function Base.convert
 
 QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{1}}) = :nimage
 QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{2}}) = :npool
