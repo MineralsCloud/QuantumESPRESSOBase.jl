@@ -17,7 +17,7 @@ Represent the executable for the PW calculation. Query each field for more infor
 """
 @with_kw struct PWCmd <: QuantumESPRESSOCmd
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
-    exec::String = "pw.x"
+    which::String = "pw.x"
     inp::String
     """
     Processors can then be divided into different "images", each corresponding to a
