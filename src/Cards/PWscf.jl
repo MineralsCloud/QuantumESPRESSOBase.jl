@@ -63,14 +63,8 @@ struct GammaPoint <: KPoint end
 struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
     coordinates::A
     weight::B
-    function SpecialKPoint{A,B}(
-        coordinates,
-        weight,
-    ) where {A<:AbstractVector{<:Real},B<:Real}
-        @assert(
-            length(coordinates) == 3,
-            "`coordinates` is not of length 3, but $(length(coordinates))!",
-        )
+    function SpecialKPoint{A,B}(coordinates, weight) where {A,B}
+        @assert(length(coordinates) == 3)
         return new(coordinates, weight)
     end # function SpecialKPoint
 end
