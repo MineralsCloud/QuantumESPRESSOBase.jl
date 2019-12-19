@@ -187,11 +187,7 @@ end # struct ControlNamelist
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
     @assert ibrav ∈ union(0:1:14, (-3, -5, -9, -12))
     @assert(
-        if ibrav == 0
-            celldm[1] != 0 || A != 0  # Cannot use `iszero` to compare now!
-        else
-            true
-        end,
+        ibrav != 0 ? true : celldm[1] != 0 || A != 0,  # Cannot use `iszero` to compare now!
         "Invalid lattice parameters (`celldm` $celldm or `A` $A)!"
     )
     @assert(
