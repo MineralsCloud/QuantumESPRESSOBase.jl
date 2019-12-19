@@ -48,16 +48,11 @@ abstract type KPoint end
 struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
     grid::A
     offsets::B
-    function MonkhorstPackGrid{A,B}(
-        grid,
-        offsets,
-    ) where {A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
-        @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!")
-        @assert(
-            length(offsets) == 3,
-            "`offsets` is not of length 3, but $(length(offsets))!",
-        )
-        @assert(all(x ∈ (0, 1) for x in offsets), "`offsets` must be either 0 or 1!")
+    function MonkhorstPackGrid{A,B}(grid, offsets) where {A,B}
+        @assert(length(grid) == length(offsets) == 3)
+        # See https://github.com/aiidateam/aiida-quantumespresso/blob/4aef9f9/aiida_quantumespresso/cli/utils/validate.py#L10-L37
+        @assert(all(grid .> 0), "`grid` must be positive integers!")
+        @assert(all(iszero(x) || isone(x) for x in offsets), "`offsets` must be 0 or 1!")
         return new(grid, offsets)
     end # function MonkhorstPackGrid
 end
