@@ -61,15 +61,14 @@ MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid
 struct GammaPoint <: KPoint end
 
 struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
-    coordinates::A
+    coord::A
     weight::B
-    function SpecialKPoint{A,B}(coordinates, weight) where {A,B}
-        @assert(length(coordinates) == 3)
-        return new(coordinates, weight)
+    function SpecialKPoint{A,B}(coord, weight) where {A,B}
+        @assert(length(coord) == 3)
+        return new(coord, weight)
     end # function SpecialKPoint
 end
-SpecialKPoint(coordinates::A, weight::B) where {A,B} =
-    SpecialKPoint{A,B}(coordinates, weight)
+SpecialKPoint(coord::A, weight::B) where {A,B} = SpecialKPoint{A,B}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 @with_kw struct KPointsCard{
@@ -116,7 +115,7 @@ function QuantumESPRESSOBase.to_qe(data::GammaPoint)
     return ""
 end
 function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep::AbstractString = " ")::String
-    return join([data.coordinates; data.weight], sep)
+    return join([data.coord; data.weight], sep)
 end
 function QuantumESPRESSOBase.to_qe(
     card::KPointsCard;
