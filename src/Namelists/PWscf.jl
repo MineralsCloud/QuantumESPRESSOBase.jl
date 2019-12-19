@@ -209,6 +209,22 @@ end # struct ControlNamelist
     @assert(nat >= 0, "`nat` $nat is less than zero!")
     @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
     @assert(ntyp <= nat, "`ntyp` cannot be larger than `nat`!")
+    @assert(
+        smearing ∈ (
+            "gaussian",
+            "gauss",
+            "methfessel-paxton",
+            "m-p",
+            "mp",
+            "marzari-vanderbilt",
+            "cold",
+            "m-v",
+            "mv",
+            "fermi-dirac",
+            "f-d",
+            "fd",
+        )
+    )
     @assert(nspin ∈ (1, 2, 4), "`nspin` $nspin out of range!")
     @assert(ecutwfc >= 0, "`ecutwfc` $ecutwfc out of range!")
     @assert(ecutrho >= 0, "`ecutrho` $ecutrho out of range!")
