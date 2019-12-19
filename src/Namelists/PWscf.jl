@@ -204,7 +204,7 @@ end # struct ControlNamelist
         else
             1 <= length(celldm) <= 6
         end,
-        "`celldm` has length between 1 to 6! See `ibrav`'s doc!"
+        "`celldm` must have length between 1 to 6! See `ibrav`'s doc!"
     )
     @assert nat >= 0
     @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
