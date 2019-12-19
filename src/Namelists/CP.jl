@@ -127,6 +127,7 @@ end # struct ControlNamelist
     ts_vdw_isolated::Bool = false
     assume_isolated::String = "none"
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
+    @assert ibrav ∈ union(0:1:14, (-3, -5, -9, -12))
     @assert(
         if ibrav == 0
             celldm[1] != 0 || A != 0  # Cannot use `iszero` to compare now!
