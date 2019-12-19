@@ -22,9 +22,9 @@ export QPoint, SpecialQPoint, QPointsSpecsCard
 abstract type QPoint end
 
 @with_kw struct SpecialQPoint{A<:AbstractVector{Float64},B<:Real} <: QPoint
-    coordinates::A
+    coord::A
     weight::B
-    @assert length(coordinates) == 3
+    @assert length(coord) == 3
 end
 
 struct QPointsSpecsCard{A<:AbstractVector{<:SpecialQPoint}} <: Card
@@ -38,7 +38,7 @@ function QuantumESPRESSOBase.to_qe(
 )::String
     content = "$(length(card.data))\n"
     for p in card.data
-        content *= indent * join([p.coordinates; p.weight], sep) * "\n"
+        content *= indent * join([p.coord; p.weight], sep) * "\n"
     end
     return content
 end
