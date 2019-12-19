@@ -52,7 +52,7 @@ struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Intege
         grid,
         offsets,
     ) where {A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
-        @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!",)
+        @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!")
         @assert(
             length(offsets) == 3,
             "`offsets` is not of length 3, but $(length(offsets))!",
@@ -98,7 +98,7 @@ SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
     end
 end
 function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
-    @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!",)
+    @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!")
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 
