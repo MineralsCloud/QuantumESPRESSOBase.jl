@@ -48,16 +48,11 @@ abstract type KPoint end
 struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
     grid::A
     offsets::B
-    function MonkhorstPackGrid{A,B}(
-        grid,
-        offsets,
-    ) where {A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
-        @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!",)
-        @assert(
-            length(offsets) == 3,
-            "`offsets` is not of length 3, but $(length(offsets))!",
-        )
-        @assert(all(x ∈ (0, 1) for x in offsets), "`offsets` must be either 0 or 1!")
+    function MonkhorstPackGrid{A,B}(grid, offsets) where {A,B}
+        @assert(length(grid) == length(offsets) == 3)
+        # See https://github.com/aiidateam/aiida-quantumespresso/blob/4aef9f9/aiida_quantumespresso/cli/utils/validate.py#L10-L37
+        @assert(all(grid .> 0), "`grid` must be positive integers!")
+        @assert(all(iszero(x) || isone(x) for x in offsets), "`offsets` must be 0 or 1!")
         return new(grid, offsets)
     end # function MonkhorstPackGrid
 end
@@ -66,21 +61,14 @@ MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid
 struct GammaPoint <: KPoint end
 
 struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
-    coordinates::A
+    coord::A
     weight::B
-    function SpecialKPoint{A,B}(
-        coordinates,
-        weight,
-    ) where {A<:AbstractVector{<:Real},B<:Real}
-        @assert(
-            length(coordinates) == 3,
-            "`coordinates` is not of length 3, but $(length(coordinates))!",
-        )
-        return new(coordinates, weight)
+    function SpecialKPoint{A,B}(coord, weight) where {A,B}
+        @assert(length(coord) == 3)
+        return new(coord, weight)
     end # function SpecialKPoint
 end
-SpecialKPoint(coordinates::A, weight::B) where {A,B} =
-    SpecialKPoint{A,B}(coordinates, weight)
+SpecialKPoint(coord::A, weight::B) where {A,B} = SpecialKPoint{A,B}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 @with_kw struct KPointsCard{
@@ -98,7 +86,7 @@ SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
     end
 end
 function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
-    @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!",)
+    @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!")
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 
@@ -127,7 +115,7 @@ function QuantumESPRESSOBase.to_qe(data::GammaPoint)
     return ""
 end
 function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep::AbstractString = " ")::String
-    return join([data.coordinates; data.weight], sep)
+    return join([data.coord; data.weight], sep)
 end
 function QuantumESPRESSOBase.to_qe(
     card::KPointsCard;

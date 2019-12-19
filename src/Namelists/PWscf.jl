@@ -66,16 +66,16 @@ const Maybe{T} = Union{T,Nothing}
     lfcpopt::Bool = false
     gate::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
-    @assert(calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md"))
-    @assert(verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal"))
-    @assert(restart_mode ∈ ("from_scratch", "restart"))
-    @assert(nstep >= 0, "`nstep` $nstep out of range!")
-    @assert(iprint >= 1, "`iprint` $iprint out of range!")
-    @assert(disk_io ∈ ("high", "medium", "low", "none", "default"))
-    @assert(dt >= 0, "`dt` $dt out of range!")
-    @assert(max_seconds >= 0, "`max_seconds` $max_seconds out of range!")
-    @assert(etot_conv_thr >= 0, "`etot_conv_thr` $etot_conv_thr out of range!")
-    @assert(forc_conv_thr >= 0, "`forc_conv_thr` $forc_conv_thr out of range!")
+    @assert calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
+    @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
+    @assert restart_mode ∈ ("from_scratch", "restart")
+    @assert nstep >= 0
+    @assert iprint >= 1
+    @assert disk_io ∈ ("high", "medium", "low", "none", "default")
+    @assert dt >= 0
+    @assert max_seconds >= 0
+    @assert etot_conv_thr >= 0
+    @assert forc_conv_thr >= 0
     @assert(
         !all((gate, tefield, !dipfield)),
         "`gate` cannot be used with `tefield` if dipole correction is not active!"
@@ -185,7 +185,7 @@ end # struct ControlNamelist
     block_2::Float64 = 0.55
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @assert(ibrav ∈ union(0:1:14, (-3, -5, -9, -12)))
+    @assert ibrav ∈ union(0:1:14, (-3, -5, -9, -12))
     @assert(
         if ibrav == 0
             celldm[1] != 0 || A != 0  # Cannot use `iszero` to compare now!
@@ -206,27 +206,43 @@ end # struct ControlNamelist
         end,
         "`celldm` has length between 1 to 6! See `ibrav`'s doc!"
     )
-    @assert(nat >= 0, "`nat` $nat is less than zero!")
+    @assert nat >= 0
     @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
-    @assert(ntyp <= nat, "`ntyp` cannot be larger than `nat`!")
-    @assert(nspin ∈ (1, 2, 4), "`nspin` $nspin out of range!")
-    @assert(ecutwfc >= 0, "`ecutwfc` $ecutwfc out of range!")
-    @assert(ecutrho >= 0, "`ecutrho` $ecutrho out of range!")
-    @assert(ecfixed >= 0, "`ecfixed` $ecfixed out of range!")
-    @assert(qcutz >= 0, "`qcutz` $qcutz out of range!")
-    @assert(q2sigma >= 0, "`q2sigma` $q2sigma out of range!")
-    @assert(length(starting_charge) <= ntyp)
-    @assert(length(starting_magnetization) <= ntyp)
-    @assert(length(Hubbard_U) <= ntyp)
-    @assert(length(Hubbard_J0) <= ntyp)
-    @assert(length(Hubbard_alpha) <= ntyp)
-    @assert(length(Hubbard_beta) <= ntyp)
-    # @assert(all(length(x) <= ntyp for x in Hubbard_J))
-    @assert(length(angle1) <= ntyp)
-    @assert(length(angle2) <= ntyp)
-    @assert(length(fixed_magnetization) <= 3)
-    @assert(length(london_c6) <= ntyp)
-    @assert(length(london_rvdw) <= ntyp)
+    @assert ntyp <= nat
+    @assert(
+        smearing ∈ (
+            "gaussian",
+            "gauss",
+            "methfessel-paxton",
+            "m-p",
+            "mp",
+            "marzari-vanderbilt",
+            "cold",
+            "m-v",
+            "mv",
+            "fermi-dirac",
+            "f-d",
+            "fd",
+        )
+    )
+    @assert nspin ∈ (1, 2, 4)
+    @assert ecutwfc >= 0
+    @assert ecutrho >= 0
+    @assert ecfixed >= 0
+    @assert qcutz >= 0
+    @assert q2sigma >= 0
+    @assert length(starting_charge) <= ntyp
+    @assert length(starting_magnetization) <= ntyp
+    @assert length(Hubbard_U) <= ntyp
+    @assert length(Hubbard_J0) <= ntyp
+    @assert length(Hubbard_alpha) <= ntyp
+    @assert length(Hubbard_beta) <= ntyp
+    # @assert all(length(x) <= ntyp for x in Hubbard_J)
+    @assert length(angle1) <= ntyp
+    @assert length(angle2) <= ntyp
+    @assert length(fixed_magnetization) <= 3
+    @assert length(london_c6) <= ntyp
+    @assert length(london_rvdw) <= ntyp
     @assert(
         exxdiv_treatment ∈ (
             "gygi-baldereschi",
@@ -235,8 +251,7 @@ end # struct ControlNamelist
             "vcut_ws",
             "vcut_spherical",
             "none",
-        ),
-        "Invalid `exxdiv_treatment` $(exxdiv_treatment)!"
+        )
     )
     @assert(
         !(x_gamma_extrapolation && exxdiv_treatment ∈ ("vcut_ws", "vcut_spherical")),
@@ -268,23 +283,11 @@ end # struct SystemNamelist
     startingwfc::String = "atomic+random"  # This depends on `calculation`
     tqr::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
-    @assert(
-        mixing_mode ∈ ("plain", "TF", "local-TF"),
-        "Invalid `mixing_mode` $(mixing_mode)!"
-    )
-    @assert(
-        diagonalization ∈ ("david", "cg", "cg-serial", "david-serial"),
-        "Invalid `diagonalization` $(diagonalization)!"
-    )
-    @assert(
-        efield_phase ∈ ("read", "write", "none"),
-        "Invalid `efield_phase` $(efield_phase)!"
-    )
-    @assert(startingpot ∈ ("atomic", "file"), "Invalid `startingpot` $(startingpot)!")
-    @assert(
-        startingwfc ∈ ("atomic", "atomic+random", "random", "file"),
-        "Invalid `startingwfc` $(startingwfc)!"
-    )
+    @assert mixing_mode ∈ ("plain", "TF", "local-TF")
+    @assert diagonalization ∈ ("david", "cg", "cg-serial", "david-serial")
+    @assert efield_phase ∈ ("read", "write", "none")
+    @assert startingpot ∈ ("atomic", "file")
+    @assert startingwfc ∈ ("atomic", "atomic+random", "random", "file")
 end # struct ElectronsNamelist
 
 @with_kw struct IonsNamelist <: Namelist
@@ -316,21 +319,11 @@ end # struct ElectronsNamelist
             "langevin",
             "langevin-smc",
             "beeman",
-        ),
-        "Invalid `ion_dynamics` $(ion_dynamics)!"
+        )
     )
-    @assert(
-        ion_positions ∈ ("default", "from_input"),
-        "Invalid `ion_position` $(ion_positions)!"
-    )
-    @assert(
-        pot_extrapolation ∈ ("none", "atomic", "first_order", "second_order"),
-        "Invalid `pot_extrapolation` $(pot_extrapolation)!"
-    )
-    @assert(
-        wfc_extrapolation ∈ ("none", "first_order", "second_order"),
-        "Invalid `wfc_extrapolation` $(wfc_extrapolation)!"
-    )
+    @assert ion_positions ∈ ("default", "from_input")
+    @assert pot_extrapolation ∈ ("none", "atomic", "first_order", "second_order")
+    @assert wfc_extrapolation ∈ ("none", "first_order", "second_order")
     @assert(
         ion_temperature ∈ (
             "rescaling",
@@ -341,10 +334,9 @@ end # struct ElectronsNamelist
             "andersen",
             "initial",
             "not_controlled",
-        ),
-        "Invalid `ion_temperature` $(ion_temperature)!"
+        )
     )
-    @assert(tempw > 0, "`tempw` $tempw out of range!")
+    @assert tempw > 0
 end # struct IonsNamelist
 
 @with_kw struct CellNamelist <: Namelist
@@ -355,11 +347,8 @@ end # struct IonsNamelist
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
-    @assert(
-        cell_dynamics ∈ ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w"),
-        "Invalid `cell_dynamics` $(cell_dynamics)!"
-    )
-    @assert(wmass >= 0, "`wmass` $wmass out of range!")
+    @assert cell_dynamics ∈ ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w")
+    @assert wmass >= 0
     @assert(
         cell_dofree ∈ (
             "all",
@@ -378,8 +367,7 @@ end # struct IonsNamelist
             "epitaxial_ab",  # New in 6.4
             "epitaxial_ac",  # New in 6.4
             "epitaxial_bc",  # New in 6.4
-        ),
-        "Invalid `cell_dofree` $(cell_dofree)!"
+        )
     )
 end # struct CellNamelist
 
@@ -393,7 +381,7 @@ end # struct CellNamelist
     Emax::Float64 = 1000000.0
     DeltaE::Float64 = 0.01
     fildos::String = "$(prefix).dos"
-    @assert(ngauss ∈ (0, 1, -1, -99), "Invalid `ngauss` $(ngauss)!")
+    @assert ngauss ∈ (0, 1, -1, -99)
 end # struct DosNamelist
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
@@ -410,7 +398,7 @@ end # struct DosNamelist
     plot_2d::Bool = false
     firstk::Int = 0
     lastk::Int = 10000000
-    @assert(spin_component ∈ 1:2, "Invalid `spin_component` $(spin_component)!")
+    @assert spin_component ∈ 1:2
 end # struct BandsNamelist
 
 QuantumESPRESSOBase.asfieldname(::Type{<:ControlNamelist}) = :control
