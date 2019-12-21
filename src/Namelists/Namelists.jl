@@ -18,7 +18,7 @@ module Namelists
 using OrderedCollections: OrderedDict
 using Fortran90Namelists.JuliaToFortran: to_fortran
 
-using QuantumESPRESSOBase: titleof
+using QuantumESPRESSOBase: titleof, to_qe
 
 import QuantumESPRESSOBase
 

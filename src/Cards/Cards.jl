@@ -17,6 +17,8 @@ using Compat: eachrow
 using Parameters: @with_kw
 using Setfield: @lens, get
 
+using QuantumESPRESSOBase: to_qe
+
 import QuantumESPRESSOBase
 
 export VanderbiltUltraSoft,
