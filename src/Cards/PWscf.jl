@@ -24,7 +24,8 @@ using QuantumESPRESSOBase.Cards:
     CellParametersCard,
     AtomicForce,
     AtomicForcesCard,
-    potential_format
+    potential_format,
+    allowed_options
 
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
