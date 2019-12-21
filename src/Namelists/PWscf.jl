@@ -18,6 +18,7 @@ using Parameters: @with_kw
 using Unitful: AbstractQuantity, ustrip, @u_str
 using UnitfulAtomic
 
+using QuantumESPRESSOBase: bravais_lattice
 using QuantumESPRESSOBase.Setters: VerbositySetter, FiniteTemperatureSetter
 using QuantumESPRESSOBase.Namelists: Namelist
 
