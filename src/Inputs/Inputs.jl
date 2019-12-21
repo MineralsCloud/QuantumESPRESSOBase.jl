@@ -16,7 +16,7 @@ using LinearAlgebra: det
 using Compat: isnothing
 using Setfield: @set!
 
-using QuantumESPRESSOBase: bravais_lattice
+using QuantumESPRESSOBase: bravais_lattice, to_qe
 using QuantumESPRESSOBase.Namelists: Namelist
 using QuantumESPRESSOBase.Cards: Card, CellParametersCard, optionof
 using QuantumESPRESSOBase.Setters: CellParametersSetter
