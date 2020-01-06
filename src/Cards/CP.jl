@@ -30,13 +30,13 @@ export AtomicSpecies,
 # ============================== AtomicVelocity ============================== #
 struct AtomicVelocity{A<:AbstractVector{<:Real}}
     atom::String
-    v::A
-    function AtomicVelocity{A}(atom, v) where {A<:AbstractVector{<:Real}}
-        @assert length(v) == 3
-        return new(atom, v)
+    velocity::A
+    function AtomicVelocity{A}(atom, velocity) where {A<:AbstractVector{<:Real}}
+        @assert length(velocity) == 3
+        return new(atom, velocity)
     end # function AtomicVelocity
 end
-AtomicVelocity(atom, v::A) where {A} = AtomicVelocity{A}(atom, v)
+AtomicVelocity(atom, velocity::A) where {A} = AtomicVelocity{A}(atom, velocity)
 
 struct AtomicVelocitiesCard{A<:AbstractVector{<:AtomicVelocity}} <: Card
     data::A
