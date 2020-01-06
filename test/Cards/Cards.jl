@@ -19,4 +19,7 @@ using QuantumESPRESSOBase.Cards.PWscf
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
     ]
+    @testset "Test `pseudopot_format`" begin
+        unique(pseudopot_format.(init.data)) == UnifiedPseudopotentialFormat()
+    end # testset
 end # testset

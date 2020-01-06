@@ -2,30 +2,41 @@ module CP
 
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase.Cards: Card,
-                                 AtomicSpecies,
-                                 AtomicSpeciesCard,
-                                 AtomicPosition,
-                                 AtomicPositionsCard,
-                                 AbstractCellParametersCard,
-                                 CellParametersCard,
-                                 AtomicForce,
-                                 AtomicForcesCard
+using QuantumESPRESSOBase.Cards:
+    Card,
+    AtomicSpecies,
+    AtomicSpeciesCard,
+    AtomicPosition,
+    AtomicPositionsCard,
+    AbstractCellParametersCard,
+    CellParametersCard,
+    AtomicForce,
+    AtomicForcesCard,
+    UnifiedPseudopotentialFormat,
+    VanderbiltUltraSoft,
+    AndreaDalCorso,
+    OldNormConserving,
+    pseudopot_format
 
 import QuantumESPRESSOBase.Cards
 
 export AtomicSpecies,
-       AtomicSpeciesCard,
-       AtomicPosition,
-       AtomicPositionsCard,
-       CellParametersCard,
-       AtomicForce,
-       AtomicForcesCard,
-       AtomicVelocity,
-       AtomicVelocitiesCard,
-       RefCellParametersCard,
-       AtomicForce,
-       AtomicForcesCard
+    AtomicSpeciesCard,
+    AtomicPosition,
+    AtomicPositionsCard,
+    CellParametersCard,
+    AtomicForce,
+    AtomicForcesCard,
+    AtomicVelocity,
+    AtomicVelocitiesCard,
+    RefCellParametersCard,
+    AtomicForce,
+    AtomicForcesCard,
+    UnifiedPseudopotentialFormat,
+    VanderbiltUltraSoft,
+    AndreaDalCorso,
+    OldNormConserving,
+    pseudopot_format
 
 # ============================== AtomicVelocity ============================== #
 struct AtomicVelocity{A<:AbstractVector{<:Real}}
@@ -44,7 +55,8 @@ end
 # ============================================================================ #
 
 # ============================== RefCellParameters ============================== #
-@with_kw struct RefCellParametersCard{A<:AbstractMatrix{<:Real}} <: AbstractCellParametersCard
+@with_kw struct RefCellParametersCard{A<:AbstractMatrix{<:Real}} <:
+                AbstractCellParametersCard
     option::String = "bohr"
     data::A
     @assert(option ∈ allowed_options(RefCellParametersCard))

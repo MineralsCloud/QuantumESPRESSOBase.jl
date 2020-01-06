@@ -21,12 +21,13 @@ using QuantumESPRESSOBase: to_qe
 
 import QuantumESPRESSOBase
 
-export VanderbiltUltraSoft,
-       AndreaDalCorso,
-       OldNormConserving,
-       optionof,
-       allowed_options,
-       option_convert
+export UnifiedPseudopotentialFormat,
+    VanderbiltUltraSoft,
+    AndreaDalCorso,
+    OldNormConserving,
+    optionof,
+    allowed_options,
+    option_convert
 
 abstract type Card <: QuantumESPRESSOBase.InputEntry end
 abstract type AbstractCellParametersCard <: Card end
@@ -39,6 +40,15 @@ struct AtomicSpecies
 end
 
 abstract type PseudopotentialFormat end
+"""
+    UnifiedPseudopotentialFormat <: PseudopotentialFormat
+
+A singleton representing the new UPF format.
+
+If it doesn't work, the pseudopotential format is determined by
+the file name.
+"""
+struct UnifiedPseudopotentialFormat <: PseudopotentialFormat end
 """
     VanderbiltUltraSoft <: PseudopotentialFormat
 
@@ -71,10 +81,12 @@ the file name:
 - none of the above: old PWscf norm-conserving format
 """
 function pseudopot_format(data::AtomicSpecies)::PseudopotentialFormat
-    ext = lowercase(splitext(data.pseudo)[2])
-    return if ext ∈ (".vdb", ".van")
+    ext = uppercase(splitext(data.pseudopot)[2])
+    return if ext == ".UPF"
+        UnifiedPseudopotentialFormat()
+    elseif ext ∈ (".VDB", ".VAN")
         VanderbiltUltraSoft()
-    elseif ext == ".rrkj3"
+    elseif ext == ".RRKJ3"
         AndreaDalCorso()
     else
         OldNormConserving()
