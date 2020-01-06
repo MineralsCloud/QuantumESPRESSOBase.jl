@@ -281,7 +281,7 @@ end # struct SystemNamelist
     tqr::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
     @assert mixing_mode ∈ ("plain", "TF", "local-TF")
-    @assert diagonalization ∈ ("david", "cg", "cg-serial", "david-serial")
+    @assert diagonalization ∈ ("david", "cg", "cg-serial", "david-serial", "ppcg")  # Different from docs
     @assert efield_phase ∈ ("read", "write", "none")
     @assert startingpot ∈ ("atomic", "file")
     @assert startingwfc ∈ ("atomic", "atomic+random", "random", "file")

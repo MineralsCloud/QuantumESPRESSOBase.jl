@@ -35,7 +35,7 @@ abstract type AbstractCellParametersCard <: Card end
 struct AtomicSpecies
     atom::String
     mass::Float64
-    potential::String
+    pseudopot::String
 end
 
 abstract type PseudopotentialFormat end
@@ -59,7 +59,7 @@ A singleton representing the old PWscf norm-conserving format.
 struct OldNormConserving <: PseudopotentialFormat end
 
 """
-    potential_format(data::AtomicSpecies)::String
+    pseudopot_format(data::AtomicSpecies)::String
 
 Return the pseudopotential format.
 
@@ -70,7 +70,7 @@ the file name:
 - "*.RRKJ3": Andrea Dal Corso's code (old format)
 - none of the above: old PWscf norm-conserving format
 """
-function potential_format(data::AtomicSpecies)::PseudopotentialFormat
+function pseudopot_format(data::AtomicSpecies)::PseudopotentialFormat
     ext = lowercase(splitext(data.pseudo)[2])
     return if ext ∈ (".vdb", ".van")
         VanderbiltUltraSoft()
@@ -96,6 +96,7 @@ end
     @assert(all(x ∈ (0, 1) for x in if_pos), "`if_pos` must be either 0 or 1!")
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
+AtomicPosition(x::AtomicSpecies, args...) = AtomicPosition(x.atom, args...)
 
 @with_kw struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
     option::String = "alat"
@@ -127,7 +128,7 @@ struct AtomicForce{A<:AbstractVector{<:Real}}
     atom::String
     force::A
     function AtomicForce{A}(atom, force) where {A<:AbstractVector{<:Real}}
-        @assert(length(force) == 3, "`force` is not of length 3, but $(length(force))!")
+        @assert length(force) == 3
         return new(atom, force)
     end # function AtomicForce
 end
