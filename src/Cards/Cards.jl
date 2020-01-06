@@ -128,7 +128,7 @@ struct AtomicForce{A<:AbstractVector{<:Real}}
     atom::String
     force::A
     function AtomicForce{A}(atom, force) where {A<:AbstractVector{<:Real}}
-        @assert(length(force) == 3, "`force` is not of length 3, but $(length(force))!")
+        @assert length(force) == 3
         return new(atom, force)
     end # function AtomicForce
 end
