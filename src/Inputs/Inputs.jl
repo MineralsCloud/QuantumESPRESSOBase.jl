@@ -64,7 +64,15 @@ To get the optional `Namelist`s, use `(!compulsory_namelists)(input)`.
 """
 compulsory_namelists(input::Union{PWInput,CPInput}) =
     (getfield(input, x) for x in (:control, :system, :electrons))
-Base.:!(::typeof(compulsory_namelists)) = input -> (getfield(input, y) for y in Iterators.filter(x -> x ∉ (:control, :system, :electrons) && fieldtype(typeof(input), x) <: Namelist, fieldnames(input)))
+Base.:!(::typeof(compulsory_namelists)) =
+    input -> (
+        getfield(input, y) for y in Iterators.filter(
+            x ->
+                x ∉ (:control, :system, :electrons) &&
+                fieldtype(typeof(input), x) <: Namelist,
+            fieldnames(input),
+        )
+    )
 
 """
     compulsory_cards(input::PWInput)
@@ -86,7 +94,15 @@ To get the optional `Card`s, use `(!compulsory_cards)(input)`.
 """
 compulsory_cards(input::CPInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions))
-Base.:!(::typeof(compulsory_cards)) = input -> setdiff(collect(cards(input)), collect(compulsory_cards(input)))
+Base.:!(::typeof(compulsory_cards)) =
+    input -> (
+        getfield(input, y) for y in Iterators.filter(
+            x ->
+                x ∉ (:atomic_species, :atomic_positions) &&
+                fieldtype(typeof(input), x) <: Card,
+            fieldnames(input),
+        )
+    )
 
 function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
