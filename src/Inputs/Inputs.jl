@@ -64,7 +64,7 @@ To get the optional `Namelist`s, use `(!compulsory_namelists)(input)`.
 """
 compulsory_namelists(input::Union{PWInput,CPInput}) =
     (getfield(input, x) for x in (:control, :system, :electrons))
-Base.:!(::typeof(compulsory_namelists)) = input -> setdiff(collect(namelists(input)), collect(compulsory_namelists(input)))
+Base.:!(::typeof(compulsory_namelists)) = input -> (getfield(input, y) for y in Iterators.filter(x -> x ∉ (:control, :system, :electrons) && fieldtype(typeof(input), x) <: Namelist, fieldnames(input)))
 
 """
     compulsory_cards(input::PWInput)
