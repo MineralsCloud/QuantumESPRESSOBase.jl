@@ -96,6 +96,7 @@ end
     @assert(all(x ∈ (0, 1) for x in if_pos), "`if_pos` must be either 0 or 1!")
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
+AtomicPosition(x::AtomicSpecies, args...) = AtomicPosition(x.atom, args...)
 
 @with_kw struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
     option::String = "alat"
