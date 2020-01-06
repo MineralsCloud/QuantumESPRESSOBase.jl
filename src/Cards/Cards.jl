@@ -81,12 +81,12 @@ the file name:
 - none of the above: old PWscf norm-conserving format
 """
 function pseudopot_format(data::AtomicSpecies)::PseudopotentialFormat
-    ext = lowercase(splitext(data.pseudo)[2])
-    return if ext == ".upf"
+    ext = uppercase(splitext(data.pseudopot)[2])
+    return if ext == ".UPF"
         UnifiedPseudopotentialFormat()
-    elseif ext ∈ (".vdb", ".van")
+    elseif ext ∈ (".VDB", ".VAN")
         VanderbiltUltraSoft()
-    elseif ext == ".rrkj3"
+    elseif ext == ".RRKJ3"
         AndreaDalCorso()
     else
         OldNormConserving()
