@@ -65,14 +65,14 @@ To get the optional `Namelist`s, use `(!compulsory_namelists)(input)`.
 compulsory_namelists(input::Union{PWInput,CPInput}) =
     (getfield(input, x) for x in (:control, :system, :electrons))
 Base.:!(::typeof(compulsory_namelists)) =
-    input -> (
-        getfield(input, y) for y in Iterators.filter(
-            x ->
-                x ∉ (:control, :system, :electrons) &&
-                fieldtype(typeof(input), x) <: Namelist,
-            fieldnames(typeof(input)),
+    function (input::T) where {T<:Union{PWInput,CPInput}}
+        (
+            getfield(input, y) for y in Iterators.filter(
+                x -> x ∉ (:control, :system, :electrons) && fieldtype(T, x) <: Namelist,
+                fieldnames(T),
+            )
         )
-    )
+    end
 
 """
     compulsory_cards(input::PWInput)
@@ -94,15 +94,14 @@ To get the optional `Card`s, use `(!compulsory_cards)(input)`.
 """
 compulsory_cards(input::CPInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions))
-Base.:!(::typeof(compulsory_cards)) =
-    input -> (
+Base.:!(::typeof(compulsory_cards)) = function (input::T) where {T<:Union{PWInput,CPInput}}
+    (
         getfield(input, y) for y in Iterators.filter(
-            x ->
-                x ∉ (:atomic_species, :atomic_positions) &&
-                fieldtype(typeof(input), x) <: Card,
-            fieldnames(typeof(input)),
+            x -> x ∉ (:atomic_species, :atomic_positions) && fieldtype(T, x) <: Card,
+            fieldnames(T),
         )
     )
+end
 
 function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
