@@ -40,6 +40,14 @@ struct AtomicSpecies
 end
 
 abstract type PseudopotentialFormat end
+"""
+    UnifiedPseudopotentialFormat <: PseudopotentialFormat
+
+A singleton representing the new UPF format.
+
+If it doesn't work, the pseudopotential format is determined by
+the file name.
+"""
 struct UnifiedPseudopotentialFormat <: PseudopotentialFormat end
 """
     VanderbiltUltraSoft <: PseudopotentialFormat
