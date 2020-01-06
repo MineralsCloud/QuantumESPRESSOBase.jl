@@ -21,12 +21,13 @@ using QuantumESPRESSOBase: to_qe
 
 import QuantumESPRESSOBase
 
-export VanderbiltUltraSoft,
-       AndreaDalCorso,
-       OldNormConserving,
-       optionof,
-       allowed_options,
-       option_convert
+export UnifiedPseudopotentialFormat,
+    VanderbiltUltraSoft,
+    AndreaDalCorso,
+    OldNormConserving,
+    optionof,
+    allowed_options,
+    option_convert
 
 abstract type Card <: QuantumESPRESSOBase.InputEntry end
 abstract type AbstractCellParametersCard <: Card end
@@ -39,6 +40,7 @@ struct AtomicSpecies
 end
 
 abstract type PseudopotentialFormat end
+struct UnifiedPseudopotentialFormat <: PseudopotentialFormat end
 """
     VanderbiltUltraSoft <: PseudopotentialFormat
 
