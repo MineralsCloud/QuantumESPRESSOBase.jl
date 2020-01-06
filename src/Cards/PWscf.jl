@@ -25,6 +25,10 @@ using QuantumESPRESSOBase.Cards:
     CellParametersCard,
     AtomicForce,
     AtomicForcesCard,
+    UnifiedPseudopotentialFormat,
+    VanderbiltUltraSoft,
+    AndreaDalCorso,
+    OldNormConserving,
     pseudopot_format,
     allowed_options
 
@@ -43,6 +47,10 @@ export AtomicSpecies,
     GammaPoint,
     SpecialKPoint,
     KPointsCard,
+    UnifiedPseudopotentialFormat,
+    VanderbiltUltraSoft,
+    AndreaDalCorso,
+    OldNormConserving,
     pseudopot_format
 
 abstract type KPoint end
