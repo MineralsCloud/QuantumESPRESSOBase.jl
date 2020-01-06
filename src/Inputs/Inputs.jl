@@ -70,7 +70,7 @@ Base.:!(::typeof(compulsory_namelists)) =
             x ->
                 x ∉ (:control, :system, :electrons) &&
                 fieldtype(typeof(input), x) <: Namelist,
-            fieldnames(input),
+            fieldnames(typeof(input)),
         )
     )
 
@@ -100,7 +100,7 @@ Base.:!(::typeof(compulsory_cards)) =
             x ->
                 x ∉ (:atomic_species, :atomic_positions) &&
                 fieldtype(typeof(input), x) <: Card,
-            fieldnames(input),
+            fieldnames(typeof(input)),
         )
     )
 
