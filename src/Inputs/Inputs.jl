@@ -67,10 +67,11 @@ compulsory_namelists(input::Union{PWInput,CPInput}) =
 Base.:!(::typeof(compulsory_namelists)) =
     function (input::T) where {T<:Union{PWInput,CPInput}}
         (
-            getfield(input, y) for y in Iterators.filter(
-                x -> x ∉ (:control, :system, :electrons) && fieldtype(T, x) <: Namelist,
-                fieldnames(T),
-            )
+            getfield(input, x) for x in fieldnames(T) if x ∉ (
+                :control,
+                :system,
+                :electrons,
+            ) && fieldtype(T, x) <: Namelist
         )
     end
 
@@ -96,10 +97,10 @@ compulsory_cards(input::CPInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions))
 Base.:!(::typeof(compulsory_cards)) = function (input::T) where {T<:Union{PWInput,CPInput}}
     (
-        getfield(input, y) for y in Iterators.filter(
-            x -> x ∉ (:atomic_species, :atomic_positions) && fieldtype(T, x) <: Card,
-            fieldnames(T),
-        )
+        getfield(input, x) for x in fieldnames(T) if x ∉ (
+            :atomic_species,
+            :atomic_positions,
+        ) && fieldtype(T, x) <: Card
     )
 end
 
