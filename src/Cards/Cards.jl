@@ -74,7 +74,9 @@ the file name:
 """
 function pseudopot_format(data::AtomicSpecies)::PseudopotentialFormat
     ext = lowercase(splitext(data.pseudo)[2])
-    return if ext ∈ (".vdb", ".van")
+    return if ext == ".upf"
+        UnifiedPseudopotentialFormat()
+    elseif ext ∈ (".vdb", ".van")
         VanderbiltUltraSoft()
     elseif ext == ".rrkj3"
         AndreaDalCorso()
