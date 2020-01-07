@@ -274,4 +274,8 @@ function QuantumESPRESSOBase.to_qe(
     """
 end
 
+function Base.:(==)(x::T, y::T) where {T<:Union{AtomicSpecies,AtomicPosition}}
+    return all(getfield(x, i) == getfield(y, i) for i in 1:fieldcount(T))
+end
+
 end
