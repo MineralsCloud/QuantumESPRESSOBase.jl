@@ -73,10 +73,6 @@ end
 
 function cell_volume end
 
-function Base.:(==)(x::T, y::T) where {T<:InputEntry}
-    return all(getfield(x, i) == getfield(y, i) for i in 1:fieldcount(T))
-end
-
 include("bravais_lattice.jl")
 include("Setters.jl")
 include("Namelists/Namelists.jl")
