@@ -42,6 +42,13 @@ end # testset
     ]
 end # testset
 
+@testset "Construct `MonkhorstPackGrid` incorrectly" begin
+    @test_throws AssertionError MonkhorstPackGrid([4, 4, 4, 4], [1, 1, 1])
+    @test_throws AssertionError MonkhorstPackGrid([4, 4, 0], [1, 1, 1])
+    @test_throws AssertionError MonkhorstPackGrid([4, 4, 4], [1, 1, 1, 1])
+    @test_throws AssertionError MonkhorstPackGrid([4, 4, 0], [1, 1, 2])
+end # testset
+
 @testset "Construct `KPointsCard` incorrectly" begin
     @test_throws AssertionError KPointsCard("automatic", GammaPoint())
     @test_throws AssertionError KPointsCard(
@@ -66,8 +73,5 @@ end # testset
         "tpiba",
         MonkhorstPackGrid([4, 4, 4], [1, 1, 1]),
     )
-    @test_throws AssertionError KPointsCard(
-        "tpiba",
-        GammaPoint(),
-    )
+    @test_throws AssertionError KPointsCard("tpiba", GammaPoint())
 end # testset
