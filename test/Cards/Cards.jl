@@ -32,13 +32,42 @@ end # testset
         [0.000000000, 0.577350270, 2.462038339],
         [0.000000000, -0.577350270, 2.950837559],
     ]
-    @test AtomicPositionsCard("alat", StructArray{AtomicPosition}((
-        atoms,
-        positions,
-        [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
-    ))).data == [
+    @test AtomicPositionsCard(
+        "alat",
+        StructArray{AtomicPosition}((atoms, positions, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
+    ).data == [
         AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
         AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
         AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
     ]
+end # testset
+
+@testset "Construct `KPointsCard` incorrectly" begin
+    @test_throws AssertionError KPointsCard("automatic", GammaPoint())
+    @test_throws AssertionError KPointsCard(
+        "automatic",
+        [
+            SpecialKPoint([3 / 4, 1 / 4, 1 / 4], 1 / 2),
+            SpecialKPoint([1 / 4, 1 / 4, 1 / 4], 1 / 2),
+        ],
+    )
+    @test_throws AssertionError KPointsCard(
+        "gamma",
+        MonkhorstPackGrid([4, 4, 4], [1, 1, 1]),
+    )
+    @test_throws AssertionError KPointsCard(
+        "gamma",
+        [
+            SpecialKPoint([3 / 4, 1 / 4, 1 / 4], 1 / 2),
+            SpecialKPoint([1 / 4, 1 / 4, 1 / 4], 1 / 2),
+        ],
+    )
+    @test_throws AssertionError KPointsCard(
+        "tpiba",
+        MonkhorstPackGrid([4, 4, 4], [1, 1, 1]),
+    )
+    @test_throws AssertionError KPointsCard(
+        "tpiba",
+        GammaPoint(),
+    )
 end # testset
