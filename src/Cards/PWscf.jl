@@ -11,6 +11,7 @@ julia>
 """
 module PWscf
 
+using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Parameters: @with_kw
 using Setfield: @lens, get
@@ -55,7 +56,7 @@ export AtomicSpecies,
 
 abstract type KPoint end
 
-struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
+@auto_hash_equals struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
     grid::A
     offsets::B
     function MonkhorstPackGrid{A,B}(grid, offsets) where {A,B}
@@ -70,7 +71,7 @@ MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid
 
 struct GammaPoint <: KPoint end
 
-struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
+@auto_hash_equals struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
     coord::A
     weight::B
     function SpecialKPoint{A,B}(coord, weight) where {A,B}

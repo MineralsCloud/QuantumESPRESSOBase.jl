@@ -13,6 +13,7 @@ module Cards
 
 using LinearAlgebra: det
 
+using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Parameters: @with_kw
 using Setfield: @lens, get
@@ -33,7 +34,7 @@ abstract type Card <: QuantumESPRESSOBase.InputEntry end
 abstract type AbstractCellParametersCard <: Card end
 
 # =============================== AtomicSpecies ============================== #
-struct AtomicSpecies
+@auto_hash_equals struct AtomicSpecies
     atom::String
     mass::Float64
     pseudopot::String
@@ -99,7 +100,10 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+@with_kw struct AtomicPosition{
+    A<:AbstractVector{<:Real},
+    B<:AbstractVector{<:Integer},
+}
     atom::String
     pos::A
     if_pos::B = [1, 1, 1]
@@ -272,6 +276,10 @@ function QuantumESPRESSOBase.to_qe(
     CELL_PARAMETERS$sep{ $(card.option) }
     $(join([indent * join(row, sep) for row in eachrow(card.data)], "\n"))
     """
+end
+
+function Base.:(==)(x::T, y::T) where {T<:Union{AtomicSpecies,AtomicPosition}}
+    return all(getfield(x, i) == getfield(y, i) for i in 1:fieldcount(T))
 end
 
 end

@@ -1,6 +1,6 @@
 using Test
 
-using StructArrays
+using StructArrays: StructArray
 
 using QuantumESPRESSOBase.Cards.PWscf
 
@@ -22,4 +22,62 @@ using QuantumESPRESSOBase.Cards.PWscf
     @testset "Test `pseudopot_format`" begin
         @test unique(pseudopot_format.(init.data)) == [UnifiedPseudopotentialFormat()]
     end # testset
+end # testset
+
+@testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
+    # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
+    atoms = ["S", "Mo", "S"]
+    positions = [
+        [0.500000000, 0.288675130, 1.974192764],
+        [0.000000000, 0.577350270, 2.462038339],
+        [0.000000000, -0.577350270, 2.950837559],
+    ]
+    @test AtomicPositionsCard(
+        "alat",
+        StructArray{AtomicPosition}((atoms, positions, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
+    ).data == [
+        AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
+        AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
+        AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
+    ]
+end # testset
+
+@testset "Construct `MonkhorstPackGrid` incorrectly" begin
+    @test_throws AssertionError MonkhorstPackGrid([4, 4, 4, 4], [1, 1, 1])
+    @test_throws AssertionError MonkhorstPackGrid([4, 4, 0], [1, 1, 1])
+    @test_throws AssertionError MonkhorstPackGrid([4, 4, 4], [1, 1, 1, 1])
+    @test_throws AssertionError MonkhorstPackGrid([4, 4, 0], [1, 1, 2])
+end # testset
+
+@testset "Construct `SpecialKPoint`" begin
+    @test_throws AssertionError SpecialKPoint([1 / 4, 1 / 4], 1 / 2)
+    @test SpecialKPoint([3 / 4, 1 / 4, 1 / 4], 1 / 2) ==
+          SpecialKPoint(3 / 4, 1 / 4, 1 / 4, 1 / 2)
+end # testset
+
+@testset "Construct `KPointsCard` incorrectly" begin
+    @test_throws AssertionError KPointsCard("automatic", GammaPoint())
+    @test_throws AssertionError KPointsCard(
+        "automatic",
+        [
+            SpecialKPoint([3 / 4, 1 / 4, 1 / 4], 1 / 2),
+            SpecialKPoint([1 / 4, 1 / 4, 1 / 4], 1 / 2),
+        ],
+    )
+    @test_throws AssertionError KPointsCard(
+        "gamma",
+        MonkhorstPackGrid([4, 4, 4], [1, 1, 1]),
+    )
+    @test_throws AssertionError KPointsCard(
+        "gamma",
+        [
+            SpecialKPoint([3 / 4, 1 / 4, 1 / 4], 1 / 2),
+            SpecialKPoint([1 / 4, 1 / 4, 1 / 4], 1 / 2),
+        ],
+    )
+    @test_throws AssertionError KPointsCard(
+        "tpiba",
+        MonkhorstPackGrid([4, 4, 4], [1, 1, 1]),
+    )
+    @test_throws AssertionError KPointsCard("tpiba", GammaPoint())
 end # testset
