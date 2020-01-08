@@ -241,14 +241,8 @@ end # struct ControlNamelist
     @assert length(london_c6) <= ntyp
     @assert length(london_rvdw) <= ntyp
     @assert(
-        exxdiv_treatment ∈ (
-            "gygi-baldereschi",
-            "gygi-bald",
-            "g-b",
-            "vcut_ws",
-            "vcut_spherical",
-            "none",
-        )
+        exxdiv_treatment ∈
+        ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none")
     )
     @assert(
         !(x_gamma_extrapolation && exxdiv_treatment ∈ ("vcut_ws", "vcut_spherical")),
@@ -308,15 +302,8 @@ end # struct ElectronsNamelist
     w_2::Float64 = 0.5
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
     @assert(
-        ion_dynamics ∈ (
-            "none",
-            "bfgs",
-            "damp",
-            "verlet",
-            "langevin",
-            "langevin-smc",
-            "beeman",
-        )
+        ion_dynamics ∈
+        ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman")
     )
     @assert ion_positions ∈ ("default", "from_input")
     @assert pot_extrapolation ∈ ("none", "atomic", "first_order", "second_order")

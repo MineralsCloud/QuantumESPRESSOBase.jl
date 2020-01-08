@@ -13,6 +13,7 @@ module PWscf
 
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
+using Formatting: sprintf1
 using Parameters: @with_kw
 using Setfield: @lens, get
 
@@ -56,7 +57,10 @@ export AtomicSpecies,
 
 abstract type KPoint end
 
-@auto_hash_equals struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
+@auto_hash_equals struct MonkhorstPackGrid{
+    A<:AbstractVector{<:Integer},
+    B<:AbstractVector{<:Integer},
+}
     grid::A
     offsets::B
     function MonkhorstPackGrid{A,B}(grid, offsets) where {A,B}
@@ -116,30 +120,30 @@ QuantumESPRESSOBase.asfieldname(::Type{<:KPointsCard}) = :k_points
 
 QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
+QuantumESPRESSOBase.to_qe(data::GammaPoint) = ""
 function QuantumESPRESSOBase.to_qe(
-    data::MonkhorstPackGrid;
-    sep::AbstractString = " ",
-)::String
-    return join([data.grid; data.offsets], sep)
-end
-function QuantumESPRESSOBase.to_qe(data::GammaPoint)
-    return ""
-end
-function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep::AbstractString = " ")::String
-    return join([data.coord; data.weight], sep)
+    data::Union{MonkhorstPackGrid,SpecialKPoint};
+    delim = ' ',
+    numfmt = "%14.9f",
+)
+    return join(
+        map(x -> sprintf1(numfmt, x), [getfield(data, 1); getfield(data, 2)]),
+        delim,
+    )
 end
 function QuantumESPRESSOBase.to_qe(
     card::KPointsCard;
-    indent::AbstractString = ' '^4,
-    sep::AbstractString = " ",
-)::String
-    content = "K_POINTS$sep{ $(card.option) }\n"
-    if card.option in ("gamma", "automatic")
+    indent = ' '^4,
+    delim = ' ',
+    numfmt = "%14.9f",
+)
+    content = "K_POINTS { $(card.option) }\n"
+    if optionof(card) in ("gamma", "automatic")
         content *= indent * to_qe(card.data) * "\n"
-    else  # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+    else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
         content *= "$(length(card.data))\n"
         for x in card.data
-            content *= indent * to_qe(x, sep = sep) * "\n"
+            content *= indent * to_qe(x; delim = delim, numfmt = numfmt) * "\n"
         end
     end
     return content

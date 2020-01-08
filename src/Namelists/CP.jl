@@ -58,16 +58,8 @@ export ControlNamelist,
     tefield::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
     @assert(
-        calculation ∈ (
-            "cp",
-            "scf",
-            "nscf",
-            "relax",
-            "vc-relax",
-            "vc-cp",
-            "cp-wf",
-            "vc-cp-wf",
-        )
+        calculation ∈
+        ("cp", "scf", "nscf", "relax", "vc-relax", "vc-cp", "cp-wf", "vc-cp-wf")
     )
     @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
     @assert isave >= 1

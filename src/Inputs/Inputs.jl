@@ -120,16 +120,16 @@ end # function QuantumESPRESSOBase.cell_volume
 
 function QuantumESPRESSOBase.to_qe(
     input::QuantumESPRESSOInput;
-    indent::AbstractString = ' '^4,
-    sep::AbstractString = " ",
+    indent = ' '^4,
+    delim = ' ',
     verbose::Bool = false,
 )::String
     content = ""
     for namelist in namelists(input)
-        content *= to_qe(namelist, indent = indent, sep = sep, verbose = verbose)
+        content *= to_qe(namelist, indent = indent, delim = delim)
     end
     for card in cards(input)
-        content *= to_qe(card, indent = indent, sep = sep)
+        content *= to_qe(card, indent = indent, delim = delim)
     end
     return content
 end

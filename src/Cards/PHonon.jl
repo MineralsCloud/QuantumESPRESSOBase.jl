@@ -33,12 +33,12 @@ end
 
 function QuantumESPRESSOBase.to_qe(
     card::QPointsSpecsCard;
-    indent::AbstractString = ' '^4,
-    sep::AbstractString = " ",
+    indent = ' '^4,
+    delim = ' ',
 )::String
     content = "$(length(card.data))\n"
     for p in card.data
-        content *= indent * join([p.coord; p.weight], sep) * "\n"
+        content *= indent * join([p.coord; p.weight], delim) * "\n"
     end
     return content
 end
