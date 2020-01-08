@@ -1,5 +1,6 @@
 module CP
 
+using AutoHashEquals: @auto_hash_equals
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Cards:
@@ -39,17 +40,17 @@ export AtomicSpecies,
     pseudopot_format
 
 # ============================== AtomicVelocity ============================== #
-struct AtomicVelocity{A<:AbstractVector{<:Real}}
+@auto_hash_equals struct AtomicVelocity{A<:AbstractVector{<:Real}}
     atom::String
     velocity::A
     function AtomicVelocity{A}(atom, velocity) where {A<:AbstractVector{<:Real}}
         @assert length(velocity) == 3
         return new(atom, velocity)
-    end # function AtomicVelocity
+    end
 end
 AtomicVelocity(atom, velocity::A) where {A} = AtomicVelocity{A}(atom, velocity)
 
-struct AtomicVelocitiesCard{A<:AbstractVector{<:AtomicVelocity}} <: Card
+@auto_hash_equals struct AtomicVelocitiesCard{A<:AbstractVector{<:AtomicVelocity}} <: Card
     data::A
 end
 # ============================================================================ #
