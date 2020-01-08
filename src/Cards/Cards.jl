@@ -16,7 +16,6 @@ using LinearAlgebra: det
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Formatting: sprintf1
-using Parameters: @with_kw
 using Setfield: @lens, get
 
 using QuantumESPRESSOBase: to_qe
