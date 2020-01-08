@@ -215,20 +215,28 @@ end
 SpecialKPoint(coord::A, weight::B) where {A,B} = SpecialKPoint{A,B}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
-@with_kw struct KPointsCard{
+@auto_hash_equals struct KPointsCard{
     A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}},
 } <: Card
-    option::String = "tpiba"
+    option::String
     data::A
-    @assert(option ∈ allowed_options(KPointsCard))
-    @assert if option == "automatic"
-        typeof(data) <: MonkhorstPackGrid
-    elseif option == "gamma"
-        typeof(data) <: GammaPoint
-    else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-        eltype(data) <: SpecialKPoint
+    function KPointsCard{A}(
+        option,
+        data,
+    ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}}
+        @assert option ∈ allowed_options(KPointsCard)
+        @assert if option == "automatic"
+            typeof(data) <: MonkhorstPackGrid
+        elseif option == "gamma"
+            typeof(data) <: GammaPoint
+        else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+            eltype(data) <: SpecialKPoint
+        end
+        return new(option, data)
     end
 end
+KPointsCard(option, data::A) where {A} = KPointsCard{A}(option, data)
+KPointsCard(data) = KPointsCard("tpiba", data)
 function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!")
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
