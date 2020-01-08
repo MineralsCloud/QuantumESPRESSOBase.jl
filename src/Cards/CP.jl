@@ -1,7 +1,6 @@
 module CP
 
 using AutoHashEquals: @auto_hash_equals
-using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Cards:
     Card,
