@@ -25,17 +25,19 @@ export PhInput, Q2rInput, MatdynInput, DynmatInput
     q_points::Union{Nothing,KPointsCard} = nothing
 end # struct PhInput
 
-@with_kw struct Q2rInput <: QuantumESPRESSOInput
-    input::Q2rNamelist = Q2rNamelist()
-end
+struct Q2rInput <: QuantumESPRESSOInput
+    input::Q2rNamelist
+end # struct Q2rInput
+Q2rInput() = Q2rInput(Q2rNamelist())
 
 @with_kw struct MatdynInput <: QuantumESPRESSOInput
     input::MatdynNamelist = MatdynNamelist()
     q_points::KPointsCard
-end
+end # struct MatdynInput
 
-@with_kw struct DynmatInput <: QuantumESPRESSOInput
-    input::DynmatNamelist = DynmatNamelist()
-end
+struct DynmatInput <: QuantumESPRESSOInput
+    input::DynmatNamelist
+end # struct DynmatInput
+DynmatInput() = DynmatInput(DynmatNamelist())
 
 end
