@@ -190,12 +190,15 @@ abstract type KPoint end
     grid::A
     offsets::B
     function MonkhorstPackGrid{A,B}(grid, offsets) where {A,B}
-        @assert(length(grid) == length(offsets) == 3)
+        @assert length(grid) == length(offsets) == 3
         # See https://github.com/aiidateam/aiida-quantumespresso/blob/4aef9f9/aiida_quantumespresso/cli/utils/validate.py#L10-L37
         @assert(all(grid .> 0), "`grid` must be positive integers!")
-        @assert(all(iszero(x) || isone(x) for x in offsets), "`offsets` must be 0 or 1!")
+        @assert(
+            all(iszero(x) || isone(x) for x in offsets),
+            "`offsets` elements must be 0 or 1!"
+        )
         return new(grid, offsets)
-    end # function MonkhorstPackGrid
+    end
 end
 MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid, offsets)
 
