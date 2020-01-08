@@ -47,7 +47,7 @@ julia> titleof(SystemNamelist)
 titleof(x::InputEntry) = titleof(typeof(x))
 
 """
-    to_qe(x, indent = ' '^4, sep = ' ')
+    to_qe(x; indent = ' '^4, delim = ' ')
 
 Return a string representing the object, valid form Quantum ESPRESSO's input.
 """
