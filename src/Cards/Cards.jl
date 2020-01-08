@@ -125,11 +125,19 @@ AtomicPosition(atom, pos::A, if_pos::B) where {A,B} = AtomicPosition{A,B}(atom, 
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 
-@with_kw struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
-    option::String = "alat"
+@auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
+    option::String
     data::A
-    @assert(option ∈ allowed_options(AtomicPositionsCard))
+    function AtomicPositionsCard{A}(
+        option,
+        data,
+    ) where {A<:AbstractVector{<:AtomicPosition}}
+        @assert option ∈ allowed_options(AtomicPositionsCard)
+        return new(option, data)
+    end
 end
+AtomicPositionsCard(option, data::A) where {A} = AtomicPositionsCard{A}(option, data)
+AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     lens = @lens _.data.atom
