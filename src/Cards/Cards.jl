@@ -245,13 +245,13 @@ function QuantumESPRESSOBase.to_qe(
 )
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES\n" *
-           join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), "\n")
+           join((indent * to_qe(x; delim, numfmt) for x in card.data), "\n")
 end
 function QuantumESPRESSOBase.to_qe(
     data::AtomicPosition;
     delim = ' ',
-    verbose::Bool = false,
     numfmt = "%14.9f",
+    verbose::Bool = false,
 )
     v = verbose ? [data.pos; data.if_pos] : data.pos
     return data.atom * delim * join(map(x -> sprintf1(numfmt, x), v), delim)
@@ -261,9 +261,10 @@ function QuantumESPRESSOBase.to_qe(
     indent = ' '^4,
     delim = ' ',
     numfmt = "%14.9f",
+    verbose::Bool = false,
 )
-    return "ATOMIC_POSITIONS$delim{ $(optionof(card)) }\n" *
-           join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), "\n")
+    return "ATOMIC_POSITIONS { $(optionof(card)) }\n" *
+           join((indent * to_qe(x; delim, numfmt, verbose) for x in card.data), "\n")
 end
 function QuantumESPRESSOBase.to_qe(
     card::CellParametersCard;
@@ -271,7 +272,7 @@ function QuantumESPRESSOBase.to_qe(
     delim = ' ',
     numfmt = "%14.9f",
 )
-    return "CELL_PARAMETERS$delim{ $(optionof(card)) }\n" * join(
+    return "CELL_PARAMETERS { $(optionof(card)) }\n" * join(
         (
             indent * join(map(x -> sprintf1(numfmt, x), row), delim)
             for row in eachrow(card.data)
