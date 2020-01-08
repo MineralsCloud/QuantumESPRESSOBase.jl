@@ -2,6 +2,7 @@ using Test
 
 using StructArrays: StructArray
 
+using QuantumESPRESSOBase
 using QuantumESPRESSOBase.Cards.PWscf
 
 @testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
@@ -22,6 +23,10 @@ using QuantumESPRESSOBase.Cards.PWscf
     @testset "Test `pseudopot_format`" begin
         @test unique(pseudopot_format.(init.data)) == [UnifiedPseudopotentialFormat()]
     end # testset
+    @testset "Test `to_qe`" begin
+        @test to_qe(init) ==
+              "ATOMIC_SPECIES\n    Al 24590.765593049 Al.pbe-n-kjpaw_psl.1.0.0.UPF\n    As 68285.402454827 As.pbe-n-kjpaw_psl.1.0.0.UPF\n    Si 25591.192491355 Si.pbe-n-kjpaw_psl.1.0.0.UPF"
+    end # testset
 end # testset
 
 @testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
@@ -32,14 +37,19 @@ end # testset
         [0.000000000, 0.577350270, 2.462038339],
         [0.000000000, -0.577350270, 2.950837559],
     ]
-    @test AtomicPositionsCard(
+    init = AtomicPositionsCard(
         "alat",
         StructArray{AtomicPosition}((atoms, positions, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
-    ).data == [
+    )
+    @test init.data == [
         AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
         AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
         AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
     ]
+    @testset "Test `to_qe`" begin
+        @test to_qe(init) ==
+            "ATOMIC_POSITIONS { alat }\n    S    0.500000000    0.288675130    1.974192764\n    Mo    0.000000000    0.577350270    2.462038339\n    S    0.000000000   -0.577350270    2.950837559"
+    end # testset
 end # testset
 
 @testset "Construct `MonkhorstPackGrid` incorrectly" begin
