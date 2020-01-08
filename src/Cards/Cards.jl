@@ -16,7 +16,6 @@ using LinearAlgebra: det
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Formatting: sprintf1
-using Parameters: @with_kw
 using Setfield: @lens, get
 
 using QuantumESPRESSOBase: to_qe
@@ -101,22 +100,43 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+@auto_hash_equals struct AtomicPosition{
+    A<:AbstractVector{<:Real},
+    B<:AbstractVector{<:Integer},
+}
     atom::String
     pos::A
-    if_pos::B = [1, 1, 1]
-    @assert(length(pos) == 3, "`pos` is not of length 3, but $(length(pos))!")
-    @assert(length(if_pos) == 3, "`if_pos` is not of length 3, but $(length(if_pos))!")
-    @assert(all(x ∈ (0, 1) for x in if_pos), "`if_pos` must be either 0 or 1!")
+    if_pos::B
+    function AtomicPosition{A,B}(
+        atom,
+        pos,
+        if_pos,
+    ) where {A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+        @assert length(pos) == length(if_pos) == 3
+        @assert(
+            all(iszero(x) || isone(x) for x in if_pos),
+            "`if_pos` elements must be 0 or 1!"
+        )
+        return new(atom, pos, if_pos)
+    end
 end
-AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
-AtomicPosition(x::AtomicSpecies, args...) = AtomicPosition(x.atom, args...)
+AtomicPosition(atom, pos::A, if_pos::B) where {A,B} = AtomicPosition{A,B}(atom, pos, if_pos)
+AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
+AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 
-@with_kw struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
-    option::String = "alat"
+@auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
+    option::String
     data::A
-    @assert(option ∈ allowed_options(AtomicPositionsCard))
+    function AtomicPositionsCard{A}(
+        option,
+        data,
+    ) where {A<:AbstractVector{<:AtomicPosition}}
+        @assert option ∈ allowed_options(AtomicPositionsCard)
+        return new(option, data)
+    end
 end
+AtomicPositionsCard(option, data::A) where {A} = AtomicPositionsCard{A}(option, data)
+AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     lens = @lens _.data.atom
@@ -129,22 +149,28 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{A<:AbstractMatrix{<:Real}} <: AbstractCellParametersCard
-    option::String = "alat"
+@auto_hash_equals struct CellParametersCard{A<:AbstractMatrix{<:Real}} <:
+                         AbstractCellParametersCard
+    option::String
     data::A
-    @assert(option ∈ allowed_options(CellParametersCard))
-    @assert(size(data) == (3, 3))
+    function CellParametersCard{A}(option, data) where {A<:AbstractMatrix{<:Real}}
+        @assert option ∈ allowed_options(CellParametersCard)
+        @assert size(data) == (3, 3)
+        return new(option, data)
+    end
 end
+CellParametersCard(option, data::A) where {A} = CellParametersCard{A}(option, data)
+CellParametersCard(data) = CellParametersCard("alat", data)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
-struct AtomicForce{A<:AbstractVector{<:Real}}
+@auto_hash_equals struct AtomicForce{A<:AbstractVector{<:Real}}
     atom::String
     force::A
     function AtomicForce{A}(atom, force) where {A<:AbstractVector{<:Real}}
         @assert length(force) == 3
         return new(atom, force)
-    end # function AtomicForce
+    end
 end
 AtomicForce(atom, force::A) where {A} = AtomicForce{A}(atom, force)
 
@@ -163,12 +189,15 @@ abstract type KPoint end
     grid::A
     offsets::B
     function MonkhorstPackGrid{A,B}(grid, offsets) where {A,B}
-        @assert(length(grid) == length(offsets) == 3)
+        @assert length(grid) == length(offsets) == 3
         # See https://github.com/aiidateam/aiida-quantumespresso/blob/4aef9f9/aiida_quantumespresso/cli/utils/validate.py#L10-L37
         @assert(all(grid .> 0), "`grid` must be positive integers!")
-        @assert(all(iszero(x) || isone(x) for x in offsets), "`offsets` must be 0 or 1!")
+        @assert(
+            all(iszero(x) || isone(x) for x in offsets),
+            "`offsets` elements must be 0 or 1!"
+        )
         return new(grid, offsets)
-    end # function MonkhorstPackGrid
+    end
 end
 MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid, offsets)
 
@@ -177,28 +206,36 @@ struct GammaPoint <: KPoint end
 @auto_hash_equals struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
     coord::A
     weight::B
-    function SpecialKPoint{A,B}(coord, weight) where {A,B}
-        @assert(length(coord) == 3)
+    function SpecialKPoint{A,B}(coord, weight) where {A<:AbstractVector{<:Real},B<:Real}
+        @assert length(coord) == 3
         return new(coord, weight)
-    end # function SpecialKPoint
+    end
 end
 SpecialKPoint(coord::A, weight::B) where {A,B} = SpecialKPoint{A,B}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
-@with_kw struct KPointsCard{
+@auto_hash_equals struct KPointsCard{
     A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}},
 } <: Card
-    option::String = "tpiba"
+    option::String
     data::A
-    @assert(option ∈ allowed_options(KPointsCard))
-    @assert if option == "automatic"
-        typeof(data) <: MonkhorstPackGrid
-    elseif option == "gamma"
-        typeof(data) <: GammaPoint
-    else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-        eltype(data) <: SpecialKPoint
+    function KPointsCard{A}(
+        option,
+        data,
+    ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}}
+        @assert option ∈ allowed_options(KPointsCard)
+        @assert if option == "automatic"
+            typeof(data) <: MonkhorstPackGrid
+        elseif option == "gamma"
+            typeof(data) <: GammaPoint
+        else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+            eltype(data) <: SpecialKPoint
+        end
+        return new(option, data)
     end
 end
+KPointsCard(option, data::A) where {A} = KPointsCard{A}(option, data)
+KPointsCard(data) = KPointsCard("tpiba", data)
 function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!")
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
@@ -378,10 +415,6 @@ function QuantumESPRESSOBase.to_qe(
         end
     end
     return content
-end
-
-function Base.:(==)(x::T, y::T) where {T<:Union{AtomicSpecies,AtomicPosition}}
-    return all(getfield(x, i) == getfield(y, i) for i in 1:fieldcount(T))
 end
 
 end
