@@ -234,46 +234,46 @@ QuantumESPRESSOBase.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 QuantumESPRESSOBase.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 QuantumESPRESSOBase.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 
-function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; sep = ' ', numfmt = "%14.9f")
-    return join((data.atom, sprintf1(numfmt, data.mass), data.pseudopot), sep)
+function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f")
+    return join((data.atom, sprintf1(numfmt, data.mass), data.pseudopot), delim)
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicSpeciesCard;
     indent = ' '^4,
-    sep = ' ',
+    delim = ' ',
     numfmt = "%14.9f",
 )
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES\n" *
-           join((indent * to_qe(x; sep = sep, numfmt = numfmt) for x in card.data), "\n")
+           join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), "\n")
 end
 function QuantumESPRESSOBase.to_qe(
     data::AtomicPosition;
-    sep = ' ',
+    delim = ' ',
     verbose::Bool = false,
     numfmt = "%14.9f",
 )
     v = verbose ? [data.pos; data.if_pos] : data.pos
-    return data.atom * sep * join(map(x -> sprintf1(numfmt, x), v), sep)
+    return data.atom * delim * join(map(x -> sprintf1(numfmt, x), v), delim)
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicPositionsCard;
     indent = ' '^4,
-    sep = ' ',
+    delim = ' ',
     numfmt = "%14.9f",
 )
-    return "ATOMIC_POSITIONS$sep{ $(optionof(card)) }\n" *
-           join((indent * to_qe(x; sep = sep, numfmt = numfmt) for x in card.data), "\n")
+    return "ATOMIC_POSITIONS$delim{ $(optionof(card)) }\n" *
+           join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), "\n")
 end
 function QuantumESPRESSOBase.to_qe(
     card::CellParametersCard;
     indent = ' '^4,
-    sep = ' ',
+    delim = ' ',
     numfmt = "%14.9f",
 )
-    return "CELL_PARAMETERS$sep{ $(optionof(card)) }\n" * join(
+    return "CELL_PARAMETERS$delim{ $(optionof(card)) }\n" * join(
         (
-            indent * join(map(x -> sprintf1(numfmt, x), row), sep)
+            indent * join(map(x -> sprintf1(numfmt, x), row), delim)
             for row in eachrow(card.data)
         ),
         "\n",
