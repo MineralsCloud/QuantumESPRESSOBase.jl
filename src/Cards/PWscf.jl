@@ -118,20 +118,20 @@ QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 function QuantumESPRESSOBase.to_qe(
     data::MonkhorstPackGrid;
-    sep::AbstractString = " ",
+    sep = ' ',
 )::String
     return join([data.grid; data.offsets], sep)
 end
 function QuantumESPRESSOBase.to_qe(data::GammaPoint)
     return ""
 end
-function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep::AbstractString = " ")::String
+function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep = ' ')::String
     return join([data.coord; data.weight], sep)
 end
 function QuantumESPRESSOBase.to_qe(
     card::KPointsCard;
     indent = ' '^4,
-    sep::AbstractString = " ",
+    sep = ' ',
 )::String
     content = "K_POINTS$sep{ $(card.option) }\n"
     if card.option in ("gamma", "automatic")

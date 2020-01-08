@@ -236,13 +236,13 @@ QuantumESPRESSOBase.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 QuantumESPRESSOBase.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 QuantumESPRESSOBase.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 
-function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; sep::AbstractString = " ")::String
+function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; sep = ' ')::String
     return join([getfield(data, i) for i in 1:nfields(data)], sep)
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicSpeciesCard;
     indent = ' '^4,
-    sep::AbstractString = " ",
+    sep = ' ',
 )
     return """
     ATOMIC_SPECIES
@@ -251,7 +251,7 @@ function QuantumESPRESSOBase.to_qe(
 end
 function QuantumESPRESSOBase.to_qe(
     data::AtomicPosition;
-    sep::AbstractString = " ",
+    sep = ' ',
     verbose::Bool = false,
 )::String
     verbose && return join([data.atom; data.pos; data.if_pos], sep)
@@ -260,7 +260,7 @@ end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicPositionsCard;
     indent = ' '^4,
-    sep::AbstractString = " ",
+    sep = ' ',
 )
     return """
     ATOMIC_POSITIONS$sep{ $(card.option) }
@@ -270,7 +270,7 @@ end
 function QuantumESPRESSOBase.to_qe(
     card::CellParametersCard;
     indent = ' '^4,
-    sep::AbstractString = " ",
+    sep = ' ',
 )
     return """
     CELL_PARAMETERS$sep{ $(card.option) }

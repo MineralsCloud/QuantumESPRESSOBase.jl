@@ -121,7 +121,7 @@ end # function QuantumESPRESSOBase.cell_volume
 function QuantumESPRESSOBase.to_qe(
     input::QuantumESPRESSOInput;
     indent = ' '^4,
-    sep::AbstractString = " ",
+    sep = ' ',
     verbose::Bool = false,
 )::String
     content = ""
