@@ -150,12 +150,18 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
-@with_kw struct CellParametersCard{A<:AbstractMatrix{<:Real}} <: AbstractCellParametersCard
-    option::String = "alat"
+@auto_hash_equals struct CellParametersCard{A<:AbstractMatrix{<:Real}} <:
+                         AbstractCellParametersCard
+    option::String
     data::A
-    @assert(option ∈ allowed_options(CellParametersCard))
-    @assert(size(data) == (3, 3))
+    function CellParametersCard{A}(option, data) where {A<:AbstractMatrix{<:Real}}
+        @assert option ∈ allowed_options(CellParametersCard)
+        @assert size(data) == (3, 3)
+        return new(option, data)
+    end
 end
+CellParametersCard(option, data::A) where {A} = CellParametersCard{A}(option, data)
+CellParametersCard(data) = CellParametersCard("alat", data)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
