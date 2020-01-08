@@ -69,16 +69,13 @@ include("PHonon.jl")
 function QuantumESPRESSOBase.to_qe(
     nml::Namelist;
     indent = ' '^4,
-    sep = ' ',
+    delim = ' ',
     verbose::Bool = false,
 )
     namelist_name = titleof(nml)
     f = verbose ? to_dict : dropdefault
-    inner_content = to_qe(f(nml); indent = indent, sep = sep)
-    return """
-    &$namelist_name
-    $inner_content/
-    """
+    content = to_qe(f(nml); indent = indent, delim = delim)
+    return "&$namelist_name\n" * content * "/\n"
 end
 
 end
