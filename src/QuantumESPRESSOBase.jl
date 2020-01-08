@@ -51,11 +51,7 @@ titleof(x::InputEntry) = titleof(typeof(x))
 
 Return a string representing the object, valid form Quantum ESPRESSO's input.
 """
-function to_qe(
-    dict::AbstractDict;
-    indent = ' '^4,
-    sep = ' ',
-)::String
+function to_qe(dict::AbstractDict; indent = ' '^4, sep = ' ')::String
     content = ""
     f = string ∘ to_fortran
     for (key, value) in dict

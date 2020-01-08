@@ -100,10 +100,7 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{
-    A<:AbstractVector{<:Real},
-    B<:AbstractVector{<:Integer},
-}
+@with_kw struct AtomicPosition{A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
     atom::String
     pos::A
     if_pos::B = [1, 1, 1]
@@ -239,11 +236,7 @@ QuantumESPRESSOBase.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; sep = ' ')::String
     return join([getfield(data, i) for i in 1:nfields(data)], sep)
 end
-function QuantumESPRESSOBase.to_qe(
-    card::AtomicSpeciesCard;
-    indent = ' '^4,
-    sep = ' ',
-)
+function QuantumESPRESSOBase.to_qe(card::AtomicSpeciesCard; indent = ' '^4, sep = ' ')
     return """
     ATOMIC_SPECIES
     $(join([indent * to_qe(x, sep = sep) for x in card.data], "\n"))
@@ -257,21 +250,13 @@ function QuantumESPRESSOBase.to_qe(
     verbose && return join([data.atom; data.pos; data.if_pos], sep)
     return join([data.atom; data.pos], sep)
 end
-function QuantumESPRESSOBase.to_qe(
-    card::AtomicPositionsCard;
-    indent = ' '^4,
-    sep = ' ',
-)
+function QuantumESPRESSOBase.to_qe(card::AtomicPositionsCard; indent = ' '^4, sep = ' ')
     return """
     ATOMIC_POSITIONS$sep{ $(card.option) }
     $(join([indent * to_qe(x, sep = sep) for x in card.data], "\n"))
     """
 end
-function QuantumESPRESSOBase.to_qe(
-    card::CellParametersCard;
-    indent = ' '^4,
-    sep = ' ',
-)
+function QuantumESPRESSOBase.to_qe(card::CellParametersCard; indent = ' '^4, sep = ' ')
     return """
     CELL_PARAMETERS$sep{ $(card.option) }
     $(join([indent * join(row, sep) for row in eachrow(card.data)], "\n"))

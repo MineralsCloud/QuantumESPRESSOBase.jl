@@ -56,7 +56,10 @@ export AtomicSpecies,
 
 abstract type KPoint end
 
-@auto_hash_equals struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
+@auto_hash_equals struct MonkhorstPackGrid{
+    A<:AbstractVector{<:Integer},
+    B<:AbstractVector{<:Integer},
+}
     grid::A
     offsets::B
     function MonkhorstPackGrid{A,B}(grid, offsets) where {A,B}
@@ -116,10 +119,7 @@ QuantumESPRESSOBase.asfieldname(::Type{<:KPointsCard}) = :k_points
 
 QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
-function QuantumESPRESSOBase.to_qe(
-    data::MonkhorstPackGrid;
-    sep = ' ',
-)::String
+function QuantumESPRESSOBase.to_qe(data::MonkhorstPackGrid; sep = ' ')::String
     return join([data.grid; data.offsets], sep)
 end
 function QuantumESPRESSOBase.to_qe(data::GammaPoint)
@@ -128,11 +128,7 @@ end
 function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep = ' ')::String
     return join([data.coord; data.weight], sep)
 end
-function QuantumESPRESSOBase.to_qe(
-    card::KPointsCard;
-    indent = ' '^4,
-    sep = ' ',
-)::String
+function QuantumESPRESSOBase.to_qe(card::KPointsCard; indent = ' '^4, sep = ' ')::String
     content = "K_POINTS$sep{ $(card.option) }\n"
     if card.option in ("gamma", "automatic")
         content *= indent * to_qe(card.data) * "\n"
