@@ -101,16 +101,29 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@with_kw struct AtomicPosition{A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+@auto_hash_equals struct AtomicPosition{
+    A<:AbstractVector{<:Real},
+    B<:AbstractVector{<:Integer},
+}
     atom::String
     pos::A
-    if_pos::B = [1, 1, 1]
-    @assert(length(pos) == 3, "`pos` is not of length 3, but $(length(pos))!")
-    @assert(length(if_pos) == 3, "`if_pos` is not of length 3, but $(length(if_pos))!")
-    @assert(all(x ∈ (0, 1) for x in if_pos), "`if_pos` must be either 0 or 1!")
+    if_pos::B
+    function AtomicPosition{A,B}(
+        atom,
+        pos,
+        if_pos,
+    ) where {A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+        @assert length(pos) == length(if_pos) == 3
+        @assert(
+            all(iszero(x) || isone(x) for x in if_pos),
+            "`if_pos` elements must be 0 or 1!"
+        )
+        return new(atom, pos, if_pos)
+    end
 end
-AtomicPosition(atom, pos) = AtomicPosition(atom, pos, [1, 1, 1])
-AtomicPosition(x::AtomicSpecies, args...) = AtomicPosition(x.atom, args...)
+AtomicPosition(atom, pos::A, if_pos::B) where {A,B} = AtomicPosition{A,B}(atom, pos, if_pos)
+AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
+AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 
 @with_kw struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
     option::String = "alat"
