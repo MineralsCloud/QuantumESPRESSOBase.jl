@@ -15,6 +15,7 @@ using LinearAlgebra: det
 
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
+using Formatting: sprintf1
 using Parameters: @with_kw
 using Setfield: @lens, get
 
@@ -233,34 +234,50 @@ QuantumESPRESSOBase.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 QuantumESPRESSOBase.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 QuantumESPRESSOBase.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 
-function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; sep = ' ')::String
-    return join([getfield(data, i) for i in 1:nfields(data)], sep)
+function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; sep = ' ', numfmt = "%14.9f")
+    return join((data.atom, sprintf1(numfmt, data.mass), data.pseudopot), sep)
 end
-function QuantumESPRESSOBase.to_qe(card::AtomicSpeciesCard; indent = ' '^4, sep = ' ')
-    return """
-    ATOMIC_SPECIES
-    $(join([indent * to_qe(x, sep = sep) for x in card.data], "\n"))
-    """
+function QuantumESPRESSOBase.to_qe(
+    card::AtomicSpeciesCard;
+    indent = ' '^4,
+    sep = ' ',
+    numfmt = "%14.9f",
+)
+    # Using generator expressions in `join` is faster than using `Vector`s.
+    return "ATOMIC_SPECIES\n" *
+           join((indent * to_qe(x; sep = sep, numfmt = numfmt) for x in card.data), "\n")
 end
 function QuantumESPRESSOBase.to_qe(
     data::AtomicPosition;
     sep = ' ',
     verbose::Bool = false,
-)::String
-    verbose && return join([data.atom; data.pos; data.if_pos], sep)
-    return join([data.atom; data.pos], sep)
+    numfmt = "%14.9f",
+)
+    v = verbose ? [data.pos; data.if_pos] : data.pos
+    return data.atom * sep * join(map(x -> sprintf1(numfmt, x), v), sep)
 end
-function QuantumESPRESSOBase.to_qe(card::AtomicPositionsCard; indent = ' '^4, sep = ' ')
-    return """
-    ATOMIC_POSITIONS$sep{ $(card.option) }
-    $(join([indent * to_qe(x, sep = sep) for x in card.data], "\n"))
-    """
+function QuantumESPRESSOBase.to_qe(
+    card::AtomicPositionsCard;
+    indent = ' '^4,
+    sep = ' ',
+    numfmt = "%14.9f",
+)
+    return "ATOMIC_POSITIONS$sep{ $(optionof(card)) }\n" *
+           join((indent * to_qe(x; sep = sep, numfmt = numfmt) for x in card.data), "\n")
 end
-function QuantumESPRESSOBase.to_qe(card::CellParametersCard; indent = ' '^4, sep = ' ')
-    return """
-    CELL_PARAMETERS$sep{ $(card.option) }
-    $(join([indent * join(row, sep) for row in eachrow(card.data)], "\n"))
-    """
+function QuantumESPRESSOBase.to_qe(
+    card::CellParametersCard;
+    indent = ' '^4,
+    sep = ' ',
+    numfmt = "%14.9f",
+)
+    return "CELL_PARAMETERS$sep{ $(optionof(card)) }\n" * join(
+        (
+            indent * join(map(x -> sprintf1(numfmt, x), row), sep)
+            for row in eachrow(card.data)
+        ),
+        "\n",
+    )
 end
 
 function Base.:(==)(x::T, y::T) where {T<:Union{AtomicSpecies,AtomicPosition}}
