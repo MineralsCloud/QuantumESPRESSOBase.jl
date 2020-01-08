@@ -130,7 +130,7 @@ function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep::AbstractString = " 
 end
 function QuantumESPRESSOBase.to_qe(
     card::KPointsCard;
-    indent::AbstractString = ' '^4,
+    indent = ' '^4,
     sep::AbstractString = " ",
 )::String
     content = "K_POINTS$sep{ $(card.option) }\n"

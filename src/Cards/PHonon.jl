@@ -33,7 +33,7 @@ end
 
 function QuantumESPRESSOBase.to_qe(
     card::QPointsSpecsCard;
-    indent::AbstractString = ' '^4,
+    indent = ' '^4,
     sep::AbstractString = " ",
 )::String
     content = "$(length(card.data))\n"

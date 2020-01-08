@@ -241,7 +241,7 @@ function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; sep::AbstractString = " 
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicSpeciesCard;
-    indent::AbstractString = ' '^4,
+    indent = ' '^4,
     sep::AbstractString = " ",
 )
     return """
@@ -259,7 +259,7 @@ function QuantumESPRESSOBase.to_qe(
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicPositionsCard;
-    indent::AbstractString = ' '^4,
+    indent = ' '^4,
     sep::AbstractString = " ",
 )
     return """
@@ -269,7 +269,7 @@ function QuantumESPRESSOBase.to_qe(
 end
 function QuantumESPRESSOBase.to_qe(
     card::CellParametersCard;
-    indent::AbstractString = ' '^4,
+    indent = ' '^4,
     sep::AbstractString = " ",
 )
     return """

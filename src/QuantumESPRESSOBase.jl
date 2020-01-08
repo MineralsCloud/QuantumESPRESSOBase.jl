@@ -47,13 +47,13 @@ julia> titleof(SystemNamelist)
 titleof(x::InputEntry) = titleof(typeof(x))
 
 """
-    to_qe(x, indent::AbstractString = ' '^4, sep::AbstractString = " ")
+    to_qe(x, indent = ' '^4, sep::AbstractString = " ")
 
 Return a string representing the object, valid form Quantum ESPRESSO's input.
 """
 function to_qe(
     dict::AbstractDict;
-    indent::AbstractString = ' '^4,
+    indent = ' '^4,
     sep::AbstractString = " ",
 )::String
     content = ""

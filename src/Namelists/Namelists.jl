@@ -68,7 +68,7 @@ include("PHonon.jl")
 
 function QuantumESPRESSOBase.to_qe(
     nml::Namelist;
-    indent::AbstractString = ' '^4,
+    indent = ' '^4,
     sep::AbstractString = " ",
     verbose::Bool = false,
 )
