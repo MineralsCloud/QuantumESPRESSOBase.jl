@@ -305,7 +305,7 @@ function QuantumESPRESSOBase.to_qe(
     card::AtomicSpeciesCard;
     indent = ' '^4,
     delim = ' ',
-    numfmt = "%14.9f",
+    numfmt = "%20.10f",
 )
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES\n" * join(

@@ -15,14 +15,14 @@ using Parameters: @with_kw
 
 using QuantumESPRESSOBase.Namelists.PHonon:
     PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
-using QuantumESPRESSOBase.Cards.PHonon: QPointsSpecsCard
+using QuantumESPRESSOBase.Cards.PHonon: KPointsCard
 using QuantumESPRESSOBase.Inputs: QuantumESPRESSOInput
 
 export PhInput, Q2rInput, MatdynInput, DynmatInput
 
 @with_kw struct PhInput <: QuantumESPRESSOInput
     inputph::PhNamelist = PhNamelist()
-    q_points::Union{Nothing,QPointsSpecsCard} = nothing
+    q_points::Union{Nothing,KPointsCard} = nothing
 end # struct PhInput
 
 @with_kw struct Q2rInput <: QuantumESPRESSOInput
@@ -31,7 +31,7 @@ end
 
 @with_kw struct MatdynInput <: QuantumESPRESSOInput
     input::MatdynNamelist = MatdynNamelist()
-    q_points::QPointsSpecsCard
+    q_points::KPointsCard
 end
 
 @with_kw struct DynmatInput <: QuantumESPRESSOInput
