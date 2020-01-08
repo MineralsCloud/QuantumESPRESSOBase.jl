@@ -56,13 +56,18 @@ end
 # ============================================================================ #
 
 # ============================== RefCellParameters ============================== #
-@with_kw struct RefCellParametersCard{A<:AbstractMatrix{<:Real}} <:
-                AbstractCellParametersCard
-    option::String = "bohr"
+@auto_hash_equals struct RefCellParametersCard{A<:AbstractMatrix{<:Real}} <:
+                         AbstractCellParametersCard
+    option::String
     data::A
-    @assert(option ∈ allowed_options(RefCellParametersCard))
-    @assert(size(data) == (3, 3))
+    function RefCellParametersCard{A}(option, data) where {A<:AbstractMatrix{<:Real}}
+        @assert option ∈ allowed_options(RefCellParametersCard)
+        @assert size(data) == (3, 3)
+        return new(option, data)
+    end
 end
+RefCellParametersCard(option, data::A) where {A} = RefCellParametersCard{A}(option, data)
+RefCellParametersCard(data) = RefCellParametersCard("bohr", data)
 # ============================================================================ #
 
 Cards.optionof(::AtomicVelocitiesCard) = "a.u"
