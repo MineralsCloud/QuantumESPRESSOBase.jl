@@ -407,6 +407,7 @@ function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
     elseif name == :pos
         @assert length(x) == 3
     else
+        @assert length(x) == 3
         @assert(all(iszero(y) || isone(y) for y in x), "`if_pos` elements must be 0 or 1!")
     end
     setfield!(value, name, x)
