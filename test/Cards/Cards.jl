@@ -63,6 +63,9 @@ end # testset
     x = AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764])
     @test_throws AssertionError @set x.atom = "sulfur"
     @test_throws InexactError @set x.pos = [1im, 2im, 3im]
+    @test_throws AssertionError x.pos = [1, 2, 3, 4]
+    @test_throws AssertionError x.if_pos = [1, 2, 3]
+    @test_throws AssertionError x.if_pos = [1, 0, 1, 1]
     @test x.if_pos == [1, 1, 1]
     @test x == AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764])
     y = AtomicPosition('S')  # Incomplete initialization
