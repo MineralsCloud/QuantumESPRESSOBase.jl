@@ -109,6 +109,10 @@ end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
 AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
+AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
+# Introudce mutual constructors since they share the same atoms.
+AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
+AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 
 @auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
     option::String
