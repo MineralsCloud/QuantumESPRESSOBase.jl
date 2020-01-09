@@ -237,14 +237,13 @@ Cards.allowed_options(::Type{<:KPointsCard}) = (
     "crystal_c",
 )
 
-const BOHR_TO_ANGSTROM = 0.529177210903
-
 """
     cell_volume(card)
 
 Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
 """
 function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
+    BOHR_TO_ANGSTROM = 0.529177210903
     option = optionof(card)
     if option == "bohr"
         det(card.data)
@@ -258,6 +257,7 @@ function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
 end # function QuantumESPRESSOBase.cell_volume
 
 function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
+    BOHR_TO_ANGSTROM = 0.529177210903
     old_option = optionof(card)
     new_option == old_option && return card  # No conversion is needed
     pair = old_option => new_option
