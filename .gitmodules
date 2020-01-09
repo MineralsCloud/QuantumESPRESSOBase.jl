@@ -1,0 +1,4 @@
+[submodule "Fortran90Namelists.jl"]
+	path = Fortran90Namelists.jl
+	url = git@github.com:singularitti/Fortran90Namelists.jl.git
+	branch = develop
