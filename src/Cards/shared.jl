@@ -12,13 +12,17 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
 
 # =============================== AtomicSpecies ============================== #
-@auto_hash_equals struct AtomicSpecies
+@auto_hash_equals mutable struct AtomicSpecies
     atom::String
     mass::Float64
     pseudopot::String
     function AtomicSpecies(atom, mass, pseudopot)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         return new(atom, mass, pseudopot)
+    end
+    function AtomicSpecies(atom::Union{AbstractChar,AbstractString})
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        return new(string(atom))
     end
 end
 AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
@@ -382,3 +386,10 @@ function QuantumESPRESSOBase.to_qe(
     end
     return content
 end
+
+function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
+    if name == :atom
+        @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+    end
+    setfield!(value, name, x)
+end # function Base.setproperty!
