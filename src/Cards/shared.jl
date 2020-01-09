@@ -304,8 +304,7 @@ function QuantumESPRESSOBase.to_qe(
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES" *
     newline *
-    join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), newline) *
-    newline
+    join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), newline)
 end
 function QuantumESPRESSOBase.to_qe(
     data::AtomicPosition;
@@ -332,8 +331,7 @@ function QuantumESPRESSOBase.to_qe(
             for x in card.data
         ),
         newline,
-    ) *
-    newline
+    )
 end
 function QuantumESPRESSOBase.to_qe(
     card::CellParametersCard;
@@ -350,8 +348,7 @@ function QuantumESPRESSOBase.to_qe(
             for row in eachrow(card.data)
         ),
         newline,
-    ) *
-    newline
+    )
 end
 QuantumESPRESSOBase.to_qe(data::GammaPoint) = ""
 function QuantumESPRESSOBase.to_qe(
@@ -373,14 +370,13 @@ function QuantumESPRESSOBase.to_qe(
 )
     content = "K_POINTS { $(card.option) }" * newline
     if optionof(card) in ("gamma", "automatic")
-        content *= indent * to_qe(card.data) * newline
+        content *= indent * to_qe(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
         content *= string(length(card.data), newline)
-        content *=
-            join(
-                (indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data),
-                newline,
-            ) * newline
+        content *= join(
+            (indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data),
+            newline,
+        )
     end
     return content
 end
