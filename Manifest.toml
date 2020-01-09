@@ -45,8 +45,8 @@ version = "0.4.1"
 
 [[Fortran90Namelists]]
 deps = ["Compat", "IterTools", "Parameters"]
-git-tree-sha1 = "31b65b20e68f1d09c9c05e641711720e3b991b39"
-repo-rev = "develop"
+git-tree-sha1 = "97cccb295fd1e3f676cb1663793ecc4c6eff8781"
+repo-rev = "master"
 repo-url = "https://github.com/singularitti/Fortran90Namelists.jl.git"
 uuid = "8fb689aa-71ff-4044-8071-0cffc910b57d"
 version = "0.1.0"
