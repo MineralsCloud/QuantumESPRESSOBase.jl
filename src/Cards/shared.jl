@@ -16,7 +16,13 @@ import QuantumESPRESSOBase.Cards
     atom::String
     mass::Float64
     pseudopot::String
+    function AtomicSpecies(atom, mass, pseudopot)
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        return new(atom, mass, pseudopot)
+    end
 end
+AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
+    AtomicSpecies(string(atom), mass, pseudopot)
 
 abstract type PseudopotentialFormat end
 """
