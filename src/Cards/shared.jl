@@ -100,6 +100,7 @@ end
         pos,
         if_pos,
     ) where {A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         @assert length(pos) == length(if_pos) == 3
         @assert(
             all(iszero(x) || isone(x) for x in if_pos),
@@ -107,6 +108,9 @@ end
         )
         return new(atom, pos, if_pos)
     end
+    # function AtomicPosition(atom::Union{AbstractChar,AbstractString})
+    #     return new(string(atom))
+    # end
 end
 AtomicPosition(atom, pos::A, if_pos::B) where {A,B} = AtomicPosition{A,B}(atom, pos, if_pos)
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
