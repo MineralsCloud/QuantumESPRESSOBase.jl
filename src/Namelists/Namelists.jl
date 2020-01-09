@@ -66,10 +66,15 @@ include("CP.jl")
 include("PHonon.jl")
 # ============================================================================ #
 
-function QuantumESPRESSOBase.to_qe(nml::Namelist; indent = ' '^4, delim = ' ')
+function QuantumESPRESSOBase.to_qe(
+    nml::Namelist;
+    indent = ' '^4,
+    delim = ' ',
+    newline = '\n',
+)
     namelist_name = titleof(nml)
     content = to_qe(dropdefault(nml); indent = indent, delim = delim)
-    return "&$namelist_name\n" * content * "/\n"
+    return "&$namelist_name" * newline * content * '/'
 end
 
 end

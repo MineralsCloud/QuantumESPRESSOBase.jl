@@ -299,12 +299,12 @@ function QuantumESPRESSOBase.to_qe(
     indent = ' '^4,
     delim = ' ',
     numfmt = "%20.10f",
+    newline = '\n',
 )
     # Using generator expressions in `join` is faster than using `Vector`s.
-    return "ATOMIC_SPECIES\n" * join(
-        (indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data),
-        "\n",
-    )
+    return "ATOMIC_SPECIES" *
+    newline *
+    join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), newline)
 end
 function QuantumESPRESSOBase.to_qe(
     data::AtomicPosition;
@@ -320,14 +320,17 @@ function QuantumESPRESSOBase.to_qe(
     indent = ' '^4,
     delim = ' ',
     numfmt = "%14.9f",
+    newline = '\n',
     verbose::Bool = false,
 )
-    return "ATOMIC_POSITIONS { $(optionof(card)) }\n" * join(
+    return "ATOMIC_POSITIONS { $(optionof(card)) }" *
+    newline *
+    join(
         (
             indent * to_qe(x; delim = delim, numfmt = numfmt, verbose = verbose)
             for x in card.data
         ),
-        "\n",
+        newline,
     )
 end
 function QuantumESPRESSOBase.to_qe(
@@ -335,13 +338,16 @@ function QuantumESPRESSOBase.to_qe(
     indent = ' '^4,
     delim = ' ',
     numfmt = "%14.9f",
+    newline = '\n',
 )
-    return "CELL_PARAMETERS { $(optionof(card)) }\n" * join(
+    return "CELL_PARAMETERS { $(optionof(card)) }" *
+    newline *
+    join(
         (
             indent * join(map(x -> sprintf1(numfmt, x), row), delim)
             for row in eachrow(card.data)
         ),
-        "\n",
+        newline,
     )
 end
 QuantumESPRESSOBase.to_qe(data::GammaPoint) = ""
@@ -360,15 +366,17 @@ function QuantumESPRESSOBase.to_qe(
     indent = ' '^4,
     delim = ' ',
     numfmt = "%14.9f",
+    newline = '\n',
 )
-    content = "K_POINTS { $(card.option) }\n"
+    content = "K_POINTS { $(card.option) }" * newline
     if optionof(card) in ("gamma", "automatic")
-        content *= indent * to_qe(card.data) * "\n"
+        content *= indent * to_qe(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-        content *= "$(length(card.data))\n"
-        for x in card.data
-            content *= indent * to_qe(x; delim = delim, numfmt = numfmt) * "\n"
-        end
+        content *= string(length(card.data), newline)
+        content *= join(
+            (indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data),
+            newline,
+        )
     end
     return content
 end
