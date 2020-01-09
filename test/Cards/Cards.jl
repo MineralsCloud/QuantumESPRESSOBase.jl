@@ -12,6 +12,12 @@ using QuantumESPRESSOBase.Cards.PWscf
     @test_throws AssertionError @set x.atom = "sulfur"
     @test_throws InexactError @set x.mass = 1im
     @test x == AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
+    y = AtomicSpecies('S')  # Incomplete initialization
+    @test_throws UndefRefError y == AtomicSpecies("S")
+    @test_throws UndefRefError y.pseudopot
+    @test_throws AssertionError y.atom = "sulfur"
+    y.mass, y.pseudopot = 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"
+    @test x == y  # Constructing `AtomicSpecies` in 3 steps is equivalent to a one-time construction
 end # testset
 
 @testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
