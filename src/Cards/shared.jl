@@ -11,8 +11,6 @@ using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
 
-abstract type AbstractCellParametersCard <: Card end
-
 # =============================== AtomicSpecies ============================== #
 @auto_hash_equals struct AtomicSpecies
     atom::String
@@ -129,6 +127,7 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
+abstract type AbstractCellParametersCard <: Card end
 @auto_hash_equals struct CellParametersCard{A<:AbstractMatrix{<:Real}} <:
                          AbstractCellParametersCard
     option::String
