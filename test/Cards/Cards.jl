@@ -46,7 +46,7 @@ end # testset
     end # testset
 end # testset
 
-@testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
+@testset "Test constructing `AtomicPositionsCard` from `StructArray`s" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
     atoms = ["S", "Mo", "S"]
     positions = [
