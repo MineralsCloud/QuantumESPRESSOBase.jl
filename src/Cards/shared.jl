@@ -289,7 +289,10 @@ QuantumESPRESSOBase.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f")
-    return join((data.atom, sprintf1(numfmt, data.mass), data.pseudopot), delim)
+    return join(
+        (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
+        delim,
+    )
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicSpeciesCard;
@@ -310,7 +313,7 @@ function QuantumESPRESSOBase.to_qe(
     verbose::Bool = false,
 )
     v = verbose ? [data.pos; data.if_pos] : data.pos
-    return data.atom * delim * join(map(x -> sprintf1(numfmt, x), v), delim)
+    return join([sprintf1("%3s", data.atom); map(x -> sprintf1(numfmt, x), v)], delim)
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicPositionsCard;
