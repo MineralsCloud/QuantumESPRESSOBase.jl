@@ -127,6 +127,13 @@ AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 end
 AtomicPositionsCard(option, data::A) where {A} = AtomicPositionsCard{A}(option, data)
 AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
+function AtomicPositionsCard(option, card::AtomicSpeciesCard)
+    return AtomicPositionsCard(option, map(AtomicPosition, card.data))
+end # function AtomicPositionsCard
+# Introudce mutual constructors since they share the same atoms.
+function AtomicSpeciesCard(card::AtomicPositionsCard)
+    return AtomicSpeciesCard(map(AtomicSpecies, card.data))
+end # function AtomicSpeciesCard
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     lens = @lens _.data.atom
