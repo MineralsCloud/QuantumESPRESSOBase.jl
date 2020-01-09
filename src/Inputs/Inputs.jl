@@ -128,10 +128,11 @@ function QuantumESPRESSOBase.to_qe(
 )::String
     content = ""
     for namelist in namelists(input)
-        content *= to_qe(namelist, indent = indent, delim = delim) * newline
+        content *=
+            to_qe(namelist, indent = indent, delim = delim, newline = newline) * newline
     end
     for card in cards(input)
-        content *= to_qe(card, indent = indent, delim = delim) * newline
+        content *= to_qe(card, indent = indent, delim = delim, newline = newline) * newline
     end
     return content
 end
