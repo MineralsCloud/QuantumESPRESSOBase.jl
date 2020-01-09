@@ -18,6 +18,15 @@ using QuantumESPRESSOBase.Cards.PWscf
     @test_throws AssertionError y.atom = "sulfur"
     y.mass, y.pseudopot = 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"
     @test x == y  # Constructing `AtomicSpecies` in 3 steps is equivalent to a one-time construction
+    @test AtomicSpecies(AtomicPosition(
+        'S',
+        [0.500000000, 0.288675130, 1.974192764],
+    )).atom == "S"
+    @test AtomicSpecies(
+        AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764]),
+        32.066,
+        "S.pz-n-rrkjus_psl.0.1.UPF",
+    ) == x
 end # testset
 
 @testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
@@ -60,6 +69,12 @@ end # testset
     @test_throws AssertionError y.atom = "sulfur"
     y.pos, y.if_pos = [0.500000000, 0.288675130, 1.974192764], [1, 1, 1]
     @test x == y  # Constructing `AtomicSpecies` in 3 steps is equivalent to a one-time construction
+    @test AtomicPosition(AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")).atom ==
+          "S"
+    @test AtomicPosition(
+        AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
+        [0.500000000, 0.288675130, 1.974192764],
+    ) == x
 end # testset
 
 @testset "Test constructing `AtomicPositionsCard` from `StructArray`s" begin
