@@ -16,13 +16,16 @@ using LinearAlgebra: det
 using Compat: isnothing
 using Setfield: @set!
 
-using QuantumESPRESSOBase: bravais_lattice
+using QuantumESPRESSOBase: bravais_lattice, to_qe
 using QuantumESPRESSOBase.Namelists: Namelist
-using QuantumESPRESSOBase.Cards: Card, CellParametersCard, optionof
+using QuantumESPRESSOBase.Cards: Card, optionof
+using QuantumESPRESSOBase.Cards.PWscf: CellParametersCard
+using QuantumESPRESSOBase.Setters: CellParametersSetter
 
 import QuantumESPRESSOBase
+import QuantumESPRESSOBase.Setters
 
-export namelists, cards, autofill_cell_parameters, compulsory_namelists, compulsory_cards
+export namelists, cards, compulsory_namelists, compulsory_cards
 
 abstract type QuantumESPRESSOInput end
 
@@ -53,22 +56,6 @@ using .PWscf: PWInput
 using .CP: CPInput
 
 """
-    autofill_cell_parameters(template::Union{PWInput,CPInput})
-
-Generate automatically a `CellParametersCard` for a `PWInput` or `CPInput` if its `cell_parameters` field is `nothing`.
-
-Sometimes the `ibrav` field of a `PWInput` is not `0`, with its `cell_parameters` field to be empty.
-But there are cases we want to write its `CellParametersCard` explicitly. This function will take a `PWInput` described
-above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` not empty.
-"""
-function autofill_cell_parameters(template::Union{PWInput,CPInput})
-    system = template.system
-    @set! template.cell_parameters = CellParametersCard("alat", bravais_lattice(system))
-    @set! template.system.ibrav = 0
-    @set! template.system.celldm = [system.celldm[1]]
-end # function autofill_cell_parameters
-
-"""
     compulsory_namelists(input::Union{PWInput,CPInput})
 
 Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
@@ -78,7 +65,16 @@ To get the optional `Namelist`s, use `(!compulsory_namelists)(input)`.
 """
 compulsory_namelists(input::Union{PWInput,CPInput}) =
     (getfield(input, x) for x in (:control, :system, :electrons))
-Base.:!(::typeof(compulsory_namelists)) = input -> setdiff(collect(namelists(input)), collect(compulsory_namelists(input)))
+Base.:!(::typeof(compulsory_namelists)) =
+    function (input::T) where {T<:Union{PWInput,CPInput}}
+        (
+            getfield(input, x) for x in fieldnames(T) if x ∉ (
+                :control,
+                :system,
+                :electrons,
+            ) && fieldtype(T, x) <: Namelist
+        )
+    end
 
 """
     compulsory_cards(input::PWInput)
@@ -100,7 +96,14 @@ To get the optional `Card`s, use `(!compulsory_cards)(input)`.
 """
 compulsory_cards(input::CPInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions))
-Base.:!(::typeof(compulsory_cards)) = input -> setdiff(collect(cards(input)), collect(compulsory_cards(input)))
+Base.:!(::typeof(compulsory_cards)) = function (input::T) where {T<:Union{PWInput,CPInput}}
+    (
+        getfield(input, x) for x in fieldnames(T) if x ∉ (
+            :atomic_species,
+            :atomic_positions,
+        ) && fieldtype(T, x) <: Card
+    )
+end
 
 function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
@@ -118,18 +121,36 @@ end # function QuantumESPRESSOBase.cell_volume
 
 function QuantumESPRESSOBase.to_qe(
     input::QuantumESPRESSOInput;
-    indent::AbstractString = "    ",
-    sep::AbstractString = " ",
+    indent = ' '^4,
+    delim = ' ',
     verbose::Bool = false,
 )::String
     content = ""
     for namelist in namelists(input)
-        content *= to_qe(namelist, indent = indent, sep = sep, verbose = verbose)
+        content *= to_qe(namelist, indent = indent, delim = delim)
     end
     for card in cards(input)
-        content *= to_qe(card, indent = indent, sep = sep)
+        content *= to_qe(card, indent = indent, delim = delim)
     end
     return content
 end
+
+"""
+    batchset(::CellParametersSetter, template::Union{PWInput,CPInput})
+
+Generate automatically a `CellParametersCard` for a `PWInput` or `CPInput` if its `cell_parameters` field is `nothing`.
+
+Sometimes the `ibrav` field of a `PWInput` is not `0`, with its `cell_parameters` field to be empty.
+But there are cases we want to write its `CellParametersCard` explicitly. This function will take a `PWInput` described
+above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` not empty.
+"""
+function Setters.batchset(::CellParametersSetter, template::Union{PWInput,CPInput})
+    !isnothing(template.cell_parameters) && return template
+    system = template.system
+    @set! template.cell_parameters = CellParametersCard("alat", bravais_lattice(system))
+    @set! template.system.ibrav = 0
+    @set! template.system.celldm = [system.celldm[1]]
+    return template
+end # function Setters.batchset
 
 end

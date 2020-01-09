@@ -1,4 +1,8 @@
-# QuantumESPRESSOBase.jl
+```@meta
+CurrentModule = QuantumESPRESSOBase
+```
+
+# QuantumESPRESSOBase
 
 ```@index
 ```

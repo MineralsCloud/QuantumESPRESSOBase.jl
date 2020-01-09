@@ -11,12 +11,10 @@ julia>
 """
 module PWscf
 
-using Compat: eachrow
-using Parameters: @with_kw
-using Setfield: @lens, get
-
-using QuantumESPRESSOBase.Cards:
-    Card,
+export UnifiedPseudopotentialFormat,
+    VanderbiltUltraSoft,
+    AndreaDalCorso,
+    OldNormConserving,
     AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
@@ -24,126 +22,12 @@ using QuantumESPRESSOBase.Cards:
     CellParametersCard,
     AtomicForce,
     AtomicForcesCard,
-    potential_format
-
-import QuantumESPRESSOBase
-import QuantumESPRESSOBase.Cards
-
-export AtomicSpecies,
-    AtomicSpeciesCard,
-    AtomicPosition,
-    AtomicPositionsCard,
-    CellParametersCard,
-    AtomicForce,
-    AtomicForcesCard,
-    KPoint,
     MonkhorstPackGrid,
     GammaPoint,
     SpecialKPoint,
-    KPointsCard,
-    potential_format
+    KPointsCard
+export pseudopot_format, option_convert
 
-abstract type KPoint end
-
-struct MonkhorstPackGrid{A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
-    grid::A
-    offsets::B
-    function MonkhorstPackGrid{A,B}(
-        grid,
-        offsets,
-    ) where {A<:AbstractVector{<:Integer},B<:AbstractVector{<:Integer}}
-        @assert(length(grid) == 3, "`grid` is not of length 3, but $(length(grid))!",)
-        @assert(
-            length(offsets) == 3,
-            "`offsets` is not of length 3, but $(length(offsets))!",
-        )
-        @assert(all(x ∈ (0, 1) for x in offsets), "`offsets` must be either 0 or 1!")
-        return new(grid, offsets)
-    end # function MonkhorstPackGrid
-end
-MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid, offsets)
-
-struct GammaPoint <: KPoint end
-
-struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
-    coordinates::A
-    weight::B
-    function SpecialKPoint{A,B}(
-        coordinates,
-        weight,
-    ) where {A<:AbstractVector{<:Real},B<:Real}
-        @assert(
-            length(coordinates) == 3,
-            "`coordinates` is not of length 3, but $(length(coordinates))!",
-        )
-        return new(coordinates, weight)
-    end # function SpecialKPoint
-end
-SpecialKPoint(coordinates::A, weight::B) where {A,B} =
-    SpecialKPoint{A,B}(coordinates, weight)
-SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
-
-@with_kw struct KPointsCard{
-    A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}},
-} <: Card
-    option::String = "tpiba"
-    data::A
-    @assert(option ∈ allowed_options(KPointsCard))
-    @assert if option == "automatic"
-        typeof(data) <: MonkhorstPackGrid
-    elseif option == "gamma"
-        typeof(data) <: GammaPoint
-    else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-        eltype(data) <: SpecialKPoint
-    end
-end
-function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
-    @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!",)
-    return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
-end
-
-Cards.allowed_options(::Type{<:KPointsCard}) = (
-    "tpiba",
-    "automatic",
-    "crystal",
-    "gamma",
-    "tpiba_b",
-    "crystal_b",
-    "tpiba_c",
-    "crystal_c",
-)
-
-QuantumESPRESSOBase.asfieldname(::Type{<:KPointsCard}) = :k_points
-
-QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
-
-function QuantumESPRESSOBase.to_qe(
-    data::MonkhorstPackGrid;
-    sep::AbstractString = " ",
-)::String
-    return join([data.grid; data.offsets], sep)
-end
-function QuantumESPRESSOBase.to_qe(data::GammaPoint)
-    return ""
-end
-function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; sep::AbstractString = " ")::String
-    return join([data.coordinates; data.weight], sep)
-end
-function QuantumESPRESSOBase.to_qe(
-    card::KPointsCard;
-    indent::AbstractString = "    ",
-    sep::AbstractString = " ",
-)::String
-    content = "K_POINTS$sep{ $(card.option) }\n"
-    if card.option in ("gamma", "automatic")
-        content *= indent * QuantumESPRESSOBase.to_qe(card.data) * "\n"
-    else  # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-        content *= "$(length(card.data))\n"
-        for x in card.data
-            content *= indent * QuantumESPRESSOBase.to_qe(x, sep = sep) * "\n"
-        end
-    end
-    return content
-end
+include("shared.jl")
 
 end

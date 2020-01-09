@@ -17,7 +17,7 @@ using QuantumESPRESSOBase.Inputs.PWscf
         system = SystemNamelist(ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
         electrons = ElectronsNamelist(conv_thr = 1.0e-8, diagonalization = "$diago")
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
-        atomic_positions = AtomicPositionsCard(data = [
+        atomic_positions = AtomicPositionsCard([
             AtomicPosition("Si", [0.0, 0.0, 0.0]),
             AtomicPosition("Si", [0.25, 0.25, 0.25])
         ])
@@ -66,11 +66,11 @@ end # testset
         )
         electrons = ElectronsNamelist(diagonalization = "$diago")
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
-        atomic_positions = AtomicPositionsCard(data = [
+        atomic_positions = AtomicPositionsCard([
             AtomicPosition("Si", [0.0, 0.0, 0.0]),
             AtomicPosition("Si", [0.25, 0.25, 0.25]),
         ])
-        k_points = KPointsCard(data = [
+        k_points = KPointsCard([
             0.0 0.0 0.0 1.0
             0.0 0.0 0.1 1.0
             0.0 0.0 0.2 1.0
@@ -136,11 +136,11 @@ end # testset
         )
         electrons = ElectronsNamelist(diagonalization = "$diago", mixing_beta = 0.7)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Al", 26.98, "Al.pz-vbc.UPF")])
-        atomic_positions = AtomicPositionsCard(data = [AtomicPosition(
+        atomic_positions = AtomicPositionsCard([AtomicPosition(
             "Al",
             [0.0, 0.0, 0.0],
         )])
-        k_points = KPointsCard(data = [
+        k_points = KPointsCard([
             0.0625000 0.0625000 0.0625000 1.00
             0.0625000 0.0625000 0.1875000 3.00
             0.0625000 0.0625000 0.3125000 3.00

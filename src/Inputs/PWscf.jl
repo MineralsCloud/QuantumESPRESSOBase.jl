@@ -60,7 +60,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
     @assert(
         !(isnothing(cell_parameters) && system.ibrav == 0),
-        "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
+        "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
     )
 end # struct PWInput
 

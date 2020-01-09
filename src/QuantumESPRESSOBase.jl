@@ -47,25 +47,21 @@ julia> titleof(SystemNamelist)
 titleof(x::InputEntry) = titleof(typeof(x))
 
 """
-    to_qe(x, indent::AbstractString = "    ", sep::AbstractString = " ")
+    to_qe(x; indent = ' '^4, delim = ' ')
 
 Return a string representing the object, valid form Quantum ESPRESSO's input.
 """
-function to_qe(
-    dict::AbstractDict;
-    indent::AbstractString = "    ",
-    sep::AbstractString = " ",
-)::String
+function to_qe(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
     content = ""
     f = string ∘ to_fortran
     for (key, value) in dict
         if value isa Vector
             for (i, x) in enumerate(value)
                 isnothing(x) && continue
-                content *= indent * join(["$key($i)", "=", "$(f(x))\n"], sep)
+                content *= indent * join(["$key($i)", "=", "$(f(x))\n"], delim)
             end
         else
-            content *= indent * join(["$key", "=", "$(f(value))\n"], sep)
+            content *= indent * join(["$key", "=", "$(f(value))\n"], delim)
         end
     end
     return content
