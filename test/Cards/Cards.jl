@@ -44,6 +44,9 @@ end # testset
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
     ]
+    @testset "Mutual construction" begin
+        @test map(x -> x.atom, AtomicPositionsCard("alat", init).data) == ["Al", "As", "Si"]
+    end # testset
     @testset "Test `pseudopot_format`" begin
         @test unique(pseudopot_format.(init.data)) == [UnifiedPseudopotentialFormat()]
     end # testset
@@ -94,6 +97,9 @@ end # testset
         AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
         AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
     ]
+    @testset "Mutual construction" begin
+        @test map(x -> x.atom, AtomicSpeciesCard(init).data) == ["S", "Mo", "S"]
+    end # testset
     @testset "Test `to_qe`" begin
         @test to_qe(init) ==
               "ATOMIC_POSITIONS { alat }\n      S    0.500000000    0.288675130    1.974192764\n     Mo    0.000000000    0.577350270    2.462038339\n      S    0.000000000   -0.577350270    2.950837559"
