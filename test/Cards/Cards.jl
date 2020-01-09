@@ -1,9 +1,18 @@
 using Test
 
+using Setfield
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase
 using QuantumESPRESSOBase.Cards.PWscf
+
+@testset "Constructing `AtomicSpecies`" begin
+    # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L128.
+    x = AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
+    @test_throws AssertionError @set x.atom = "sulfur"
+    @test_throws InexactError @set x.mass = 1im
+    @test x == AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
+end # testset
 
 @testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
     atoms = ["Al", "As"]
