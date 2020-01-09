@@ -101,9 +101,10 @@ end
         )
         return new(atom, pos, if_pos)
     end
-    # function AtomicPosition(atom::Union{AbstractChar,AbstractString})
-    #     return new(string(atom))
-    # end
+    function AtomicPosition(atom::Union{AbstractChar,AbstractString})
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        return new(string(atom))
+    end
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
 AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
@@ -386,6 +387,16 @@ end
 function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
     if name == :atom
         @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+    end
+    setfield!(value, name, x)
+end # function Base.setproperty!
+function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
+    if name == :atom
+        @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+    elseif name == :pos
+        @assert length(x) == 3
+    else
+        @assert(all(iszero(y) || isone(y) for y in x), "`if_pos` elements must be 0 or 1!")
     end
     setfield!(value, name, x)
 end # function Base.setproperty!
