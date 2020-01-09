@@ -106,6 +106,7 @@ end
 end
 AtomicPosition(atom, pos::A, if_pos::B) where {A,B} = AtomicPosition{A,B}(atom, pos, if_pos)
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
+AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 
 @auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
