@@ -88,18 +88,11 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@auto_hash_equals struct AtomicPosition{
-    A<:AbstractVector{<:Real},
-    B<:AbstractVector{<:Integer},
-}
+@auto_hash_equals mutable struct AtomicPosition
     atom::String
-    pos::A
-    if_pos::B
-    function AtomicPosition{A,B}(
-        atom,
-        pos,
-        if_pos,
-    ) where {A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+    pos::Vector{Float64}
+    if_pos::Vector{Int}
+    function AtomicPosition(atom, pos, if_pos)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         @assert length(pos) == length(if_pos) == 3
         @assert(
@@ -112,7 +105,6 @@ end
     #     return new(string(atom))
     # end
 end
-AtomicPosition(atom, pos::A, if_pos::B) where {A,B} = AtomicPosition{A,B}(atom, pos, if_pos)
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
 AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
