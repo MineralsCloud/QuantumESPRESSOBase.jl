@@ -12,13 +12,17 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
 
 # =============================== AtomicSpecies ============================== #
-@auto_hash_equals struct AtomicSpecies
+@auto_hash_equals mutable struct AtomicSpecies
     atom::String
     mass::Float64
     pseudopot::String
     function AtomicSpecies(atom, mass, pseudopot)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         return new(atom, mass, pseudopot)
+    end
+    function AtomicSpecies(atom::Union{AbstractChar,AbstractString})
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        return new(string(atom))
     end
 end
 AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
@@ -84,18 +88,12 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@auto_hash_equals struct AtomicPosition{
-    A<:AbstractVector{<:Real},
-    B<:AbstractVector{<:Integer},
-}
+@auto_hash_equals mutable struct AtomicPosition
     atom::String
-    pos::A
-    if_pos::B
-    function AtomicPosition{A,B}(
-        atom,
-        pos,
-        if_pos,
-    ) where {A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+    pos::Vector{Float64}
+    if_pos::Vector{Int}
+    function AtomicPosition(atom, pos, if_pos)
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         @assert length(pos) == length(if_pos) == 3
         @assert(
             all(iszero(x) || isone(x) for x in if_pos),
@@ -103,11 +101,18 @@ end
         )
         return new(atom, pos, if_pos)
     end
+    function AtomicPosition(atom::Union{AbstractChar,AbstractString})
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        return new(string(atom))
+    end
 end
-AtomicPosition(atom, pos::A, if_pos::B) where {A,B} = AtomicPosition{A,B}(atom, pos, if_pos)
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
 AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
+AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
+# Introudce mutual constructors since they share the same atoms.
+AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
+AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 
 @auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
     option::String
@@ -122,6 +127,13 @@ AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_p
 end
 AtomicPositionsCard(option, data::A) where {A} = AtomicPositionsCard{A}(option, data)
 AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
+function AtomicPositionsCard(option, card::AtomicSpeciesCard)
+    return AtomicPositionsCard(option, map(AtomicPosition, card.data))
+end # function AtomicPositionsCard
+# Introudce mutual constructors since they share the same atoms.
+function AtomicSpeciesCard(card::AtomicPositionsCard)
+    return AtomicSpeciesCard(map(AtomicSpecies, card.data))
+end # function AtomicSpeciesCard
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     lens = @lens _.data.atom
@@ -382,3 +394,20 @@ function QuantumESPRESSOBase.to_qe(
     end
     return content
 end
+
+function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
+    if name == :atom
+        @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+    end
+    setfield!(value, name, x)
+end # function Base.setproperty!
+function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
+    if name == :atom
+        @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+    elseif name == :pos
+        @assert length(x) == 3
+    else
+        @assert(all(iszero(y) || isone(y) for y in x), "`if_pos` elements must be 0 or 1!")
+    end
+    setfield!(value, name, x)
+end # function Base.setproperty!
