@@ -2,42 +2,25 @@ module CP
 
 using AutoHashEquals: @auto_hash_equals
 
-using QuantumESPRESSOBase.Cards:
-    Card,
+import QuantumESPRESSOBase.Cards
+
+export UnifiedPseudopotentialFormat,
+    VanderbiltUltraSoft,
+    AndreaDalCorso,
+    OldNormConserving,
     AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
-    AbstractCellParametersCard,
     CellParametersCard,
-    AtomicForce,
-    AtomicForcesCard,
-    UnifiedPseudopotentialFormat,
-    VanderbiltUltraSoft,
-    AndreaDalCorso,
-    OldNormConserving,
-    pseudopot_format
-
-import QuantumESPRESSOBase.Cards
-
-export AtomicSpecies,
-    AtomicSpeciesCard,
-    AtomicPosition,
-    AtomicPositionsCard,
-    CellParametersCard,
-    AtomicForce,
-    AtomicForcesCard,
+    RefCellParametersCard,
     AtomicVelocity,
     AtomicVelocitiesCard,
-    RefCellParametersCard,
     AtomicForce,
-    AtomicForcesCard,
-    UnifiedPseudopotentialFormat,
-    VanderbiltUltraSoft,
-    AndreaDalCorso,
-    OldNormConserving,
-    pseudopot_format
+    AtomicForcesCard
+export pseudopot_format, option_convert
 
+include("shared.jl")
 # ============================== AtomicVelocity ============================== #
 @auto_hash_equals struct AtomicVelocity{A<:AbstractVector{<:Real}}
     atom::String
