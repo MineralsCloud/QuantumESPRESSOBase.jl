@@ -16,7 +16,13 @@ import QuantumESPRESSOBase.Cards
     atom::String
     mass::Float64
     pseudopot::String
+    function AtomicSpecies(atom, mass, pseudopot)
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        return new(atom, mass, pseudopot)
+    end
 end
+AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
+    AtomicSpecies(string(atom), mass, pseudopot)
 
 abstract type PseudopotentialFormat end
 """
@@ -100,6 +106,7 @@ end
 end
 AtomicPosition(atom, pos::A, if_pos::B) where {A,B} = AtomicPosition{A,B}(atom, pos, if_pos)
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
+AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 
 @auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
@@ -282,7 +289,10 @@ QuantumESPRESSOBase.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f")
-    return join((data.atom, sprintf1(numfmt, data.mass), data.pseudopot), delim)
+    return join(
+        (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
+        delim,
+    )
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicSpeciesCard;
@@ -303,7 +313,7 @@ function QuantumESPRESSOBase.to_qe(
     verbose::Bool = false,
 )
     v = verbose ? [data.pos; data.if_pos] : data.pos
-    return data.atom * delim * join(map(x -> sprintf1(numfmt, x), v), delim)
+    return join([sprintf1("%3s", data.atom); map(x -> sprintf1(numfmt, x), v)], delim)
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicPositionsCard;
