@@ -11,7 +11,10 @@ julia>
 """
 module PWscf
 
-using QuantumESPRESSOBase.Cards:
+export UnifiedPseudopotentialFormat,
+    VanderbiltUltraSoft,
+    AndreaDalCorso,
+    OldNormConserving,
     AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
@@ -19,35 +22,12 @@ using QuantumESPRESSOBase.Cards:
     CellParametersCard,
     AtomicForce,
     AtomicForcesCard,
-    KPoint,
     MonkhorstPackGrid,
     GammaPoint,
     SpecialKPoint,
-    KPointsCard,
-    PseudopotentialFormat,
-    UnifiedPseudopotentialFormat,
-    VanderbiltUltraSoft,
-    AndreaDalCorso,
-    OldNormConserving,
-    pseudopot_format,
-    allowed_options
+    KPointsCard
+export pseudopot_format, option_convert
 
-export AtomicSpecies,
-    AtomicSpeciesCard,
-    AtomicPosition,
-    AtomicPositionsCard,
-    CellParametersCard,
-    AtomicForce,
-    AtomicForcesCard,
-    MonkhorstPackGrid,
-    GammaPoint,
-    SpecialKPoint,
-    KPointsCard,
-    UnifiedPseudopotentialFormat,
-    VanderbiltUltraSoft,
-    AndreaDalCorso,
-    OldNormConserving,
-    pseudopot_format,
-    allowed_options
+include("shared.jl")
 
 end

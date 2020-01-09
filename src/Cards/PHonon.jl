@@ -11,7 +11,6 @@ julia>
 """
 module PHonon
 
-using QuantumESPRESSOBase.Cards:
-    KPoint, MonkhorstPackGrid, GammaPoint, SpecialKPoint, KPointsCard
+include("shared.jl")
 
 end
