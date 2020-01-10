@@ -2,6 +2,8 @@ module Setters
 
 using Unitful: AbstractQuantity
 
+import Setfield
+
 export VerbositySetter, FiniteTemperatureSetter, CellParametersSetter
 
 export batchset, makelens, preset_values
@@ -32,8 +34,6 @@ function makelens end
 
 function preset_values end
 
-function batchset(T::BatchSetter, template)
-    return set(template, makelens(T), preset_values(T))
-end # function batchset
+Setfield.set(template, T::BatchSetter) = set(template, makelens(T), preset_values(T))
 
 end
