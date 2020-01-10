@@ -11,22 +11,16 @@ julia>
 """
 module Namelists
 
-# ============================================================================ #
-#                               Import and export                              #
-# ============================================================================ #
-
 using OrderedCollections: OrderedDict
 using Fortran90Namelists.JuliaToFortran: to_fortran
 
-using QuantumESPRESSOBase: titleof, to_qe
+using QuantumESPRESSOBase: InputEntry, titleof, to_qe
 
 import QuantumESPRESSOBase
 
 export to_dict, dropdefault
-# ============================================================================ #
 
-
-abstract type Namelist <: QuantumESPRESSOBase.InputEntry end
+abstract type Namelist <: InputEntry end
 
 """
     to_dict(nml; defaultorder = true)
@@ -58,13 +52,9 @@ function dropdefault(nml::Namelist)
     return result
 end
 
-# ============================================================================ #
-#                                    Include                                   #
-# ============================================================================ #
 include("PWscf.jl")
 include("CP.jl")
 include("PHonon.jl")
-# ============================================================================ #
 
 function QuantumESPRESSOBase.to_qe(
     nml::Namelist;
