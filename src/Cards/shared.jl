@@ -398,15 +398,21 @@ end
 function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
     if name == :atom
         @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        if x isa AbstractChar
+            x = string(x)
+        end
     end
     setfield!(value, name, x)
 end # function Base.setproperty!
 function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
     if name == :atom
         @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-    elseif name == :pos
+        if x isa AbstractChar
+            x = string(x)
+        end
+    elseif name == :pos && x isa AbstractVector
         @assert length(x) == 3
-    else
+    elseif name == :if_pos && x isa AbstractVector  # It cannot be an `else` here, since it will capture invalid `name`s.
         @assert length(x) == 3
         @assert(all(iszero(y) || isone(y) for y in x), "`if_pos` elements must be 0 or 1!")
     end
