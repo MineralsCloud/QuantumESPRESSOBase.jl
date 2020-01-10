@@ -4,7 +4,7 @@ using Unitful: AbstractQuantity
 
 export VerbositySetter, FiniteTemperatureSetter, CellParametersSetter
 
-export batchset, makelens
+export batchset, makelens, preset_values
 
 abstract type BatchSetter end
 
@@ -30,6 +30,10 @@ struct CellParametersSetter <: BatchSetter end
 
 function makelens end
 
-function batchset end
+function preset_values end
+
+function batchset(T::BatchSetter, template)
+    return set(template, makelens(T), preset_values(T))
+end # function batchset
 
 end
