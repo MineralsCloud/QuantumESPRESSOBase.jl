@@ -1,9 +1,5 @@
 module CP
 
-using AutoHashEquals: @auto_hash_equals
-
-import QuantumESPRESSOBase.Cards
-
 export UnifiedPseudopotentialFormat,
     VanderbiltUltraSoft,
     AndreaDalCorso,
