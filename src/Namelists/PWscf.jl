@@ -14,7 +14,9 @@ module PWscf
 using LinearAlgebra: det
 
 using ConstructionBase: setproperties
+using Kaleido: @batchlens
 using Parameters: @with_kw
+using Setfield: set
 using Unitful: AbstractQuantity, ustrip, @u_str
 using UnitfulAtomic
 
@@ -410,32 +412,37 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     return det(bravais_lattice(nml))
 end # function QuantumESPRESSOBase.cell_volume
 
-function Setters.batchset(::VerbositySetter{:high}, template::ControlNamelist)
-    return setproperties(
-        template,
-        verbosity = "high",
-        wf_collect = true,
-        tstress = true,
-        tprnfor = true,
-        disk_io = "high",
-    )
+function Setters.makelens(::VerbositySetter)
+    return @batchlens begin
+        _.verbosity
+        _.wf_collect
+        _.tstress
+        _.tprnfor
+        _.disk_io
+    end
+end # function Setters.makelens
+function Setters.makelens(::FiniteTemperatureSetter)
+    return @batchlens begin
+        _.occupations
+        _.degauss
+        _.smearing
+    end
+end # function Setters.makelens
+
+function Setters.batchset(T::VerbositySetter{:high}, template::ControlNamelist)
+    lens = makelens(T)
+    return set(template, lens, ("high", true, true, true, "high"))
 end # function Setters.batchset
 function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
-    return setproperties(
-        template,
-        verbosity = "low",
-        wf_collect = false,
-        tstress = false,
-        tprnfor = false,
-        disk_io = "low",
-    )
+    lens = makelens(T)
+    return set(template, lens, ("low", false, false, false, "low"))
 end # function Setters.batchset
-function Setters.batchset(::FiniteTemperatureSetter{N}, template::SystemNamelist) where {N}
-    return setproperties(
+function Setters.batchset(T::FiniteTemperatureSetter{N}, template::SystemNamelist) where {N}
+    lens = makelens(T)
+    return set(
         template,
-        occupations = "smearing",
-        degauss = N isa AbstractQuantity ? ustrip(u"Ry", N) : N,
-        smearing = "fermi-dirac",
+        lens,
+        ("smearing", N isa AbstractQuantity ? ustrip(u"Ry", N) : N, "fermi-dirac"),
     )
 end # function Setters.batchset
 
