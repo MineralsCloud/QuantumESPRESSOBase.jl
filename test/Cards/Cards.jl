@@ -16,7 +16,9 @@ using QuantumESPRESSOBase.Cards.PWscf
     @test_throws UndefRefError y == AtomicSpecies("S")
     @test_throws UndefRefError y.pseudopot
     @test_throws AssertionError y.atom = "sulfur"
-    @test_throws ErrorException y.mss = 12.0
+    x.atom = 'S'  # Setting `atom` with a `Char` still works
+    @test x.atom == "S"
+    @test_throws ErrorException y.mss = 12.0  # Given a wrong field name
     y.mass, y.pseudopot = 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"
     @test x == y  # Constructing `AtomicSpecies` in 3 steps is equivalent to a one-time construction
     @test AtomicSpecies(AtomicPosition(
@@ -67,6 +69,8 @@ end # testset
     @test_throws AssertionError x.pos = [1, 2, 3, 4]
     @test_throws AssertionError x.if_pos = [1, 2, 3]
     @test_throws AssertionError x.if_pos = [1, 0, 1, 1]
+    x.atom = 'S'  # Setting `atom` with a `Char` still works
+    @test x.atom == "S"
     @test_throws ErrorException x.posi = [0.1, 0.2, 0.3]  # Given a wrong field name
     @test x.if_pos == [1, 1, 1]
     @test x == AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764])
