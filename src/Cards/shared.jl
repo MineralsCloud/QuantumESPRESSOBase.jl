@@ -406,7 +406,7 @@ function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
         @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
     elseif name == :pos
         @assert length(x) == 3
-    else
+    elseif name == :if_pos  # It cannot be an `else` here, since it will capture invalid `name`s.
         @assert length(x) == 3
         @assert(all(iszero(y) || isone(y) for y in x), "`if_pos` elements must be 0 or 1!")
     end
