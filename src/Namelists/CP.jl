@@ -13,10 +13,10 @@ module CP
 
 using LinearAlgebra: det
 
-using ConstructionBase: setproperties
+using Kaleido: @batchlens
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase.Setters: VerbositySetter
+using QuantumESPRESSOBase.Setters: VerbositySetter, makelens, preset_values
 using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase

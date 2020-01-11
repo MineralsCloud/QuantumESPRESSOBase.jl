@@ -13,7 +13,6 @@ module PWscf
 
 using LinearAlgebra: det
 
-using ConstructionBase: setproperties
 using Kaleido: @batchlens
 using Parameters: @with_kw
 using Setfield: set
@@ -21,7 +20,8 @@ using Unitful: AbstractQuantity, ustrip, @u_str
 using UnitfulAtomic
 
 using QuantumESPRESSOBase: bravais_lattice
-using QuantumESPRESSOBase.Setters: VerbositySetter, FiniteTemperatureSetter
+using QuantumESPRESSOBase.Setters:
+    VerbositySetter, FiniteTemperatureSetter, makelens, preset_values
 using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase
