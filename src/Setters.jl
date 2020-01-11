@@ -1,6 +1,6 @@
 module Setters
 
-using Setfield: compose
+using Setfield: set
 using Unitful: AbstractQuantity
 
 import Setfield
