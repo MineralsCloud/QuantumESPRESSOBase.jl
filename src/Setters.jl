@@ -1,12 +1,13 @@
 module Setters
 
+using Setfield: compose
 using Unitful: AbstractQuantity
 
 import Setfield
 
-export VerbositySetter, FiniteTemperatureSetter, CellParametersSetter, AlatPressSetter
-
-export makelens, preset_values
+export VerbositySetter,
+    FiniteTemperatureSetter, CellParametersSetter, AlatPressSetter, LensMaker
+export make, preset_values
 
 abstract type BatchSetter end
 
@@ -41,13 +42,18 @@ struct CellParametersSetter <: BatchSetter end
 
 struct AlatPressSetter <: BatchSetter end
 
-function makelens(template, setter::BatchSetter, setters::BatchSetter...)
-    return makelens(template, setter) ∘ makelens(template, setters...)
-end # function makelens
+struct LensMaker{S<:BatchSetter,T} end
+LensMaker{S}(::T) where {S<:BatchSetter,T} = LensMaker{S,T}()
+LensMaker(S::BatchSetter) = T -> LensMaker{S,T}()
+LensMaker(::S, ::T) where {S<:BatchSetter,T} = LensMaker{S,T}()
+
+make(l::LensMaker) = error("`make` is not defined for `$l`!")
+make(maker::LensMaker{<:BatchSetter,T}, makers::LensMaker{<:BatchSetter,T}...) where {T} =
+    make(maker) ∘ make(makers...)
 
 function preset_values end
 
 Setfield.set(template, T::BatchSetter) =
-    set(template, makelens(template, T), preset_values(template, T))
+    set(template, make(LensMaker(T, template)), preset_values(T, template))
 
 end
