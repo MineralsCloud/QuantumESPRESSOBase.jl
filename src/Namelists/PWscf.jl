@@ -412,7 +412,7 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     return det(bravais_lattice(nml))
 end # function QuantumESPRESSOBase.cell_volume
 
-function Setters.makelens(::VerbositySetter)
+function Setters.makelens(::ControlNamelist, ::VerbositySetter)
     return @batchlens begin
         _.verbosity
         _.wf_collect
@@ -421,7 +421,7 @@ function Setters.makelens(::VerbositySetter)
         _.disk_io
     end
 end # function Setters.makelens
-function Setters.makelens(::FiniteTemperatureSetter)
+function Setters.makelens(::SystemNamelist, ::FiniteTemperatureSetter)
     return @batchlens begin
         _.occupations
         _.degauss
@@ -429,21 +429,11 @@ function Setters.makelens(::FiniteTemperatureSetter)
     end
 end # function Setters.makelens
 
-function Setters.batchset(T::VerbositySetter{:high}, template::ControlNamelist)
-    lens = makelens(T)
-    return set(template, lens, ("high", true, true, true, "high"))
-end # function Setters.batchset
-function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
-    lens = makelens(T)
-    return set(template, lens, ("low", false, false, false, "low"))
-end # function Setters.batchset
-function Setters.batchset(T::FiniteTemperatureSetter{N}, template::SystemNamelist) where {N}
-    lens = makelens(T)
-    return set(
-        template,
-        lens,
-        ("smearing", N isa AbstractQuantity ? ustrip(u"Ry", N) : N, "fermi-dirac"),
-    )
-end # function Setters.batchset
+Setters.preset_values(::ControlNamelist, ::VerbositySetter{:high}) =
+    ("high", true, true, true, "high")
+Setters.preset_values(::ControlNamelist, ::VerbositySetter{:low}) =
+    ("low", false, false, false, "low")
+Setters.preset_values(::SystemNamelist, ::FiniteTemperatureSetter{N}) where {N} =
+    ("smearing", N isa AbstractQuantity ? ustrip(u"Ry", N) : N, "fermi-dirac")
 
 end
