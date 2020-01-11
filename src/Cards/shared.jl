@@ -12,13 +12,17 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
 
 # =============================== AtomicSpecies ============================== #
-@auto_hash_equals struct AtomicSpecies
+@auto_hash_equals mutable struct AtomicSpecies
     atom::String
     mass::Float64
     pseudopot::String
     function AtomicSpecies(atom, mass, pseudopot)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         return new(atom, mass, pseudopot)
+    end
+    function AtomicSpecies(atom::Union{AbstractChar,AbstractString})
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        return new(string(atom))
     end
 end
 AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
@@ -84,18 +88,12 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
-@auto_hash_equals struct AtomicPosition{
-    A<:AbstractVector{<:Real},
-    B<:AbstractVector{<:Integer},
-}
+@auto_hash_equals mutable struct AtomicPosition
     atom::String
-    pos::A
-    if_pos::B
-    function AtomicPosition{A,B}(
-        atom,
-        pos,
-        if_pos,
-    ) where {A<:AbstractVector{<:Real},B<:AbstractVector{<:Integer}}
+    pos::Vector{Float64}
+    if_pos::Vector{Int}
+    function AtomicPosition(atom, pos, if_pos)
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         @assert length(pos) == length(if_pos) == 3
         @assert(
             all(iszero(x) || isone(x) for x in if_pos),
@@ -103,11 +101,18 @@ end
         )
         return new(atom, pos, if_pos)
     end
+    function AtomicPosition(atom::Union{AbstractChar,AbstractString})
+        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        return new(string(atom))
+    end
 end
-AtomicPosition(atom, pos::A, if_pos::B) where {A,B} = AtomicPosition{A,B}(atom, pos, if_pos)
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
 AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
+AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
+# Introudce mutual constructors since they share the same atoms.
+AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
+AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 
 @auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
     option::String
@@ -122,6 +127,13 @@ AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_p
 end
 AtomicPositionsCard(option, data::A) where {A} = AtomicPositionsCard{A}(option, data)
 AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
+function AtomicPositionsCard(option, card::AtomicSpeciesCard)
+    return AtomicPositionsCard(option, map(AtomicPosition, card.data))
+end # function AtomicPositionsCard
+# Introudce mutual constructors since they share the same atoms.
+function AtomicSpeciesCard(card::AtomicPositionsCard)
+    return AtomicSpeciesCard(map(AtomicSpecies, card.data))
+end # function AtomicSpeciesCard
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     lens = @lens _.data.atom
@@ -299,12 +311,12 @@ function QuantumESPRESSOBase.to_qe(
     indent = ' '^4,
     delim = ' ',
     numfmt = "%20.10f",
+    newline = '\n',
 )
     # Using generator expressions in `join` is faster than using `Vector`s.
-    return "ATOMIC_SPECIES\n" * join(
-        (indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data),
-        "\n",
-    )
+    return "ATOMIC_SPECIES" *
+    newline *
+    join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), newline)
 end
 function QuantumESPRESSOBase.to_qe(
     data::AtomicPosition;
@@ -320,14 +332,17 @@ function QuantumESPRESSOBase.to_qe(
     indent = ' '^4,
     delim = ' ',
     numfmt = "%14.9f",
+    newline = '\n',
     verbose::Bool = false,
 )
-    return "ATOMIC_POSITIONS { $(optionof(card)) }\n" * join(
+    return "ATOMIC_POSITIONS { $(optionof(card)) }" *
+    newline *
+    join(
         (
             indent * to_qe(x; delim = delim, numfmt = numfmt, verbose = verbose)
             for x in card.data
         ),
-        "\n",
+        newline,
     )
 end
 function QuantumESPRESSOBase.to_qe(
@@ -335,21 +350,26 @@ function QuantumESPRESSOBase.to_qe(
     indent = ' '^4,
     delim = ' ',
     numfmt = "%14.9f",
+    newline = '\n',
 )
-    return "CELL_PARAMETERS { $(optionof(card)) }\n" * join(
+    return "CELL_PARAMETERS { $(optionof(card)) }" *
+    newline *
+    join(
         (
             indent * join(map(x -> sprintf1(numfmt, x), row), delim)
             for row in eachrow(card.data)
         ),
-        "\n",
+        newline,
     )
 end
 QuantumESPRESSOBase.to_qe(data::GammaPoint) = ""
-function QuantumESPRESSOBase.to_qe(
-    data::Union{MonkhorstPackGrid,SpecialKPoint};
-    delim = ' ',
-    numfmt = "%14.9f",
-)
+function QuantumESPRESSOBase.to_qe(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d")
+    return join(
+        map(x -> sprintf1(numfmt, x), [getfield(data, 1); getfield(data, 2)]),
+        delim,
+    )
+end
+function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f")
     return join(
         map(x -> sprintf1(numfmt, x), [getfield(data, 1); getfield(data, 2)]),
         delim,
@@ -360,15 +380,41 @@ function QuantumESPRESSOBase.to_qe(
     indent = ' '^4,
     delim = ' ',
     numfmt = "%14.9f",
+    newline = '\n',
 )
-    content = "K_POINTS { $(card.option) }\n"
+    content = "K_POINTS { $(card.option) }" * newline
     if optionof(card) in ("gamma", "automatic")
-        content *= indent * to_qe(card.data) * "\n"
+        content *= indent * to_qe(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-        content *= "$(length(card.data))\n"
-        for x in card.data
-            content *= indent * to_qe(x; delim = delim, numfmt = numfmt) * "\n"
-        end
+        content *= string(length(card.data), newline)
+        content *= join(
+            (indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data),
+            newline,
+        )
     end
     return content
 end
+
+function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
+    if name == :atom
+        @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        if x isa AbstractChar
+            x = string(x)
+        end
+    end
+    setfield!(value, name, x)
+end # function Base.setproperty!
+function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
+    if name == :atom
+        @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        if x isa AbstractChar
+            x = string(x)
+        end
+    elseif name == :pos && x isa AbstractVector
+        @assert length(x) == 3
+    elseif name == :if_pos && x isa AbstractVector  # It cannot be an `else` here, since it will capture invalid `name`s.
+        @assert length(x) == 3
+        @assert(all(iszero(y) || isone(y) for y in x), "`if_pos` elements must be 0 or 1!")
+    end
+    setfield!(value, name, x)
+end # function Base.setproperty!

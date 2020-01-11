@@ -1,9 +1,36 @@
 using Test
 
+using Setfield
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase
 using QuantumESPRESSOBase.Cards.PWscf
+
+@testset "Constructing `AtomicSpecies`" begin
+    # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L128.
+    x = AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
+    @test_throws AssertionError @set x.atom = "sulfur"
+    @test_throws InexactError @set x.mass = 1im
+    @test x == AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
+    y = AtomicSpecies('S')  # Incomplete initialization
+    @test_throws UndefRefError y == AtomicSpecies("S")
+    @test_throws UndefRefError y.pseudopot
+    @test_throws AssertionError y.atom = "sulfur"
+    x.atom = 'S'  # Setting `atom` with a `Char` still works
+    @test x.atom == "S"
+    @test_throws ErrorException y.mss = 12.0  # Given a wrong field name
+    y.mass, y.pseudopot = 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"
+    @test x == y  # Constructing `AtomicSpecies` in 3 steps is equivalent to a one-time construction
+    @test AtomicSpecies(AtomicPosition(
+        'S',
+        [0.500000000, 0.288675130, 1.974192764],
+    )).atom == "S"
+    @test AtomicSpecies(
+        AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764]),
+        32.066,
+        "S.pz-n-rrkjus_psl.0.1.UPF",
+    ) == x
+end # testset
 
 @testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
     atoms = ["Al", "As"]
@@ -20,6 +47,9 @@ using QuantumESPRESSOBase.Cards.PWscf
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
     ]
+    @testset "Mutual construction" begin
+        @test map(x -> x.atom, AtomicPositionsCard("alat", init).data) == ["Al", "As", "Si"]
+    end # testset
     @testset "Test `pseudopot_format`" begin
         @test unique(pseudopot_format.(init.data)) == [UnifiedPseudopotentialFormat()]
     end # testset
@@ -31,7 +61,35 @@ using QuantumESPRESSOBase.Cards.PWscf
     end # testset
 end # testset
 
-@testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
+@testset "Constructing `AtomicPosition`" begin
+    # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
+    x = AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764])
+    @test_throws AssertionError @set x.atom = "sulfur"
+    @test_throws InexactError @set x.pos = [1im, 2im, 3im]
+    @test_throws AssertionError x.pos = [1, 2, 3, 4]
+    @test_throws AssertionError x.if_pos = [1, 2, 3]
+    @test_throws AssertionError x.if_pos = [1, 0, 1, 1]
+    x.atom = 'S'  # Setting `atom` with a `Char` still works
+    @test x.atom == "S"
+    @test_throws ErrorException x.posi = [0.1, 0.2, 0.3]  # Given a wrong field name
+    @test x.if_pos == [1, 1, 1]
+    @test x == AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764])
+    y = AtomicPosition('S')  # Incomplete initialization
+    @test_throws UndefRefError y == AtomicPosition("S")
+    @test_throws UndefRefError y.pos
+    @test_throws UndefRefError y.if_pos
+    @test_throws AssertionError y.atom = "sulfur"
+    y.pos, y.if_pos = [0.500000000, 0.288675130, 1.974192764], [1, 1, 1]
+    @test x == y  # Constructing `AtomicSpecies` in 3 steps is equivalent to a one-time construction
+    @test AtomicPosition(AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")).atom ==
+          "S"
+    @test AtomicPosition(
+        AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
+        [0.500000000, 0.288675130, 1.974192764],
+    ) == x
+end # testset
+
+@testset "Test constructing `AtomicPositionsCard` from `StructArray`s" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
     atoms = ["S", "Mo", "S"]
     positions = [
@@ -48,6 +106,9 @@ end # testset
         AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
         AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
     ]
+    @testset "Mutual construction" begin
+        @test map(x -> x.atom, AtomicSpeciesCard(init).data) == ["S", "Mo", "S"]
+    end # testset
     @testset "Test `to_qe`" begin
         @test to_qe(init) ==
               "ATOMIC_POSITIONS { alat }\n      S    0.500000000    0.288675130    1.974192764\n     Mo    0.000000000    0.577350270    2.462038339\n      S    0.000000000   -0.577350270    2.950837559"
