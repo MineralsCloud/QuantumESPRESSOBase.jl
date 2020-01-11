@@ -15,7 +15,7 @@ struct VerbositySetter{T} <: BatchSetter
         T ∈ (:high, :low) ||
         throw(ArgumentError("the type parameter must be either `:high` or `:low`!"))
         return new()
-    end # function VerbositySetter{T}
+    end
 end
 VerbositySetter(x) = VerbositySetter{x}()
 
@@ -24,7 +24,7 @@ struct FiniteTemperatureSetter{N} <: BatchSetter
         N isa Union{Real,AbstractQuantity} ||
         throw(ArgumentError("the type parameter must be a real or a quantity!"))
         return new()
-    end # function FiniteTemperatureSetter
+    end
 end
 FiniteTemperatureSetter(x) = FiniteTemperatureSetter{x}()
 
