@@ -17,7 +17,7 @@ export UnifiedPseudopotentialFormat,
 export pseudopot_format, option_convert
 
 include("shared.jl")
-# ============================== AtomicVelocity ============================== #
+
 @auto_hash_equals mutable struct AtomicVelocity
     atom::String
     velocity::Vector{Float64}
@@ -44,9 +44,7 @@ AtomicPosition(x::AtomicVelocity) = AtomicPosition(x.atom)
 @auto_hash_equals struct AtomicVelocitiesCard{A<:AbstractVector{<:AtomicVelocity}} <: Card
     data::A
 end
-# ============================================================================ #
 
-# ============================== RefCellParameters ============================== #
 @auto_hash_equals struct RefCellParametersCard{A<:AbstractMatrix{<:Real}} <:
                          AbstractCellParametersCard
     option::String
@@ -59,7 +57,6 @@ end
 end
 RefCellParametersCard(option, data::A) where {A} = RefCellParametersCard{A}(option, data)
 RefCellParametersCard(data) = RefCellParametersCard("bohr", data)
-# ============================================================================ #
 
 Cards.optionof(::AtomicVelocitiesCard) = "a.u"
 Cards.optionof(::AtomicForcesCard) = nothing

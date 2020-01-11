@@ -13,13 +13,15 @@ module PWscf
 
 using LinearAlgebra: det
 
-using ConstructionBase: setproperties
+using Kaleido: @batchlens
 using Parameters: @with_kw
+using Setfield: set
 using Unitful: AbstractQuantity, ustrip, @u_str
 using UnitfulAtomic
 
 using QuantumESPRESSOBase: bravais_lattice
-using QuantumESPRESSOBase.Setters: VerbositySetter, FiniteTemperatureSetter
+using QuantumESPRESSOBase.Setters:
+    VerbositySetter, FiniteTemperatureSetter, makelens, preset_values
 using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase
@@ -410,33 +412,28 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     return det(bravais_lattice(nml))
 end # function QuantumESPRESSOBase.cell_volume
 
-function Setters.batchset(::VerbositySetter{:high}, template::ControlNamelist)
-    return setproperties(
-        template,
-        verbosity = "high",
-        wf_collect = true,
-        tstress = true,
-        tprnfor = true,
-        disk_io = "high",
-    )
-end # function Setters.batchset
-function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
-    return setproperties(
-        template,
-        verbosity = "low",
-        wf_collect = false,
-        tstress = false,
-        tprnfor = false,
-        disk_io = "low",
-    )
-end # function Setters.batchset
-function Setters.batchset(::FiniteTemperatureSetter{N}, template::SystemNamelist) where {N}
-    return setproperties(
-        template,
-        occupations = "smearing",
-        degauss = N isa AbstractQuantity ? ustrip(u"Ry", N) : N,
-        smearing = "fermi-dirac",
-    )
-end # function Setters.batchset
+function Setters.makelens(::ControlNamelist, ::VerbositySetter)
+    return @batchlens begin
+        _.verbosity
+        _.wf_collect
+        _.tstress
+        _.tprnfor
+        _.disk_io
+    end
+end # function Setters.makelens
+function Setters.makelens(::SystemNamelist, ::FiniteTemperatureSetter)
+    return @batchlens begin
+        _.occupations
+        _.degauss
+        _.smearing
+    end
+end # function Setters.makelens
+
+Setters.preset_values(::ControlNamelist, ::VerbositySetter{:high}) =
+    ("high", true, true, true, "high")
+Setters.preset_values(::ControlNamelist, ::VerbositySetter{:low}) =
+    ("low", false, false, false, "low")
+Setters.preset_values(::SystemNamelist, ::FiniteTemperatureSetter{N}) where {N} =
+    ("smearing", N isa AbstractQuantity ? ustrip(u"Ry", N) : N, "fermi-dirac")
 
 end
