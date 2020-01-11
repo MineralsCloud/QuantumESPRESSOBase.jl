@@ -28,6 +28,15 @@ struct FiniteTemperatureSetter{N} <: BatchSetter
 end
 FiniteTemperatureSetter(x) = FiniteTemperatureSetter{x}()
 
+"""
+    CellParametersSetter <: BatchSetter
+
+Generate automatically a `CellParametersCard` for a `PWInput` or `CPInput` if its `cell_parameters` field is `nothing`.
+
+Sometimes the `ibrav` field of a `PWInput` is not `0`, with its `cell_parameters` field to be empty.
+But there are cases we want to write its `CellParametersCard` explicitly. This function will take a `PWInput` described
+above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` not empty.
+"""
 struct CellParametersSetter <: BatchSetter end
 
 function makelens end
