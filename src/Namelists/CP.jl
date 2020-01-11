@@ -331,27 +331,20 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     return det(bravais_lattice(nml))
 end # function QuantumESPRESSOBase.cell_volume
 
-function Setters.batchset(::VerbositySetter{:high}, template::ControlNamelist)
-    return setproperties(
-        template,
-        verbosity = "high",
-        wf_collect = true,
-        tstress = true,
-        tprnfor = true,
-        saverho = true,
-        disk_io = "high",
-    )
-end # function Setters.batchset
-function Setters.batchset(::VerbositySetter{:low}, template::ControlNamelist)
-    return setproperties(
-        template,
-        verbosity = "low",
-        wf_collect = false,
-        tstress = false,
-        tprnfor = false,
-        saverho = false,
-        disk_io = "default",
-    )
-end # function Setters.batchset
+function Setters.makelens(::ControlNamelist, ::VerbositySetter)
+    return @batchlens begin
+        _.verbosity
+        _.wf_collect
+        _.tstress
+        _.tprnfor
+        _.saverho
+        _.disk_io
+    end
+end # function Setters.makelens
+
+Setters.preset_values(::ControlNamelist, ::VerbositySetter{:high}) =
+    ("high", true, true, true, true, "high")
+Setters.preset_values(::ControlNamelist, ::VerbositySetter{:low}) =
+    ("low", false, false, false, false, "default")
 
 end
