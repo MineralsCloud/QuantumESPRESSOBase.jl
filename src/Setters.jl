@@ -41,7 +41,9 @@ struct CellParametersSetter <: BatchSetter end
 
 struct AlatPressSetter <: BatchSetter end
 
-function makelens end
+function makelens(template, setter::BatchSetter, setters::BatchSetter...)
+    return makelens(template, setter) ∘ makelens(template, setters...)
+end # function makelens
 
 function preset_values end
 
