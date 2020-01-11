@@ -41,7 +41,7 @@ end # testset
     system = set(system, FiniteTemperatureSetter(0.0019000869380733452))
     @test (system.occupations, system.degauss, system.smearing) ==
           ("smearing", 0.0019000869380733452, "fermi-dirac")
-    system = set(system, FiniteTemperatureSetter(300 * u"K"))
+    system = set(system, FiniteTemperatureSetter(3e8 * u"μK"))  # 300K
     @test (system.occupations, system.degauss, system.smearing) ==
           ("smearing", 0.0019000869380733452, "fermi-dirac")
     system = set(system, FiniteTemperatureSetter(2.5851999786e-8 * u"MeV"))  # 300K
