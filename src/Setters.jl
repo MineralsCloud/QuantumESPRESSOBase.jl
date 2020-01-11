@@ -4,7 +4,7 @@ using Unitful: AbstractQuantity
 
 import Setfield
 
-export VerbositySetter, FiniteTemperatureSetter, CellParametersSetter
+export VerbositySetter, FiniteTemperatureSetter, CellParametersSetter, AlatPressSetter
 
 export makelens, preset_values
 
@@ -38,6 +38,8 @@ But there are cases we want to write its `CellParametersCard` explicitly. This f
 above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` not empty.
 """
 struct CellParametersSetter <: BatchSetter end
+
+struct AlatPressSetter <: BatchSetter end
 
 function makelens end
 
