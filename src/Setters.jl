@@ -6,7 +6,7 @@ import Setfield
 
 export VerbositySetter, FiniteTemperatureSetter, CellParametersSetter
 
-export batchset, makelens, preset_values
+export makelens, preset_values
 
 abstract type BatchSetter end
 
