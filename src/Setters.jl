@@ -34,6 +34,7 @@ function makelens end
 
 function preset_values end
 
-Setfield.set(template, T::BatchSetter) = set(template, makelens(T), preset_values(T))
+Setfield.set(template, T::BatchSetter) =
+    set(template, makelens(template, T), preset_values(template, T))
 
 end
