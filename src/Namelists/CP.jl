@@ -16,7 +16,7 @@ using LinearAlgebra: det
 using Kaleido: @batchlens
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase.Setters: VerbositySetter, makelens, preset_values
+using QuantumESPRESSOBase.Setters: VerbositySetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase
@@ -331,7 +331,7 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     return det(bravais_lattice(nml))
 end # function QuantumESPRESSOBase.cell_volume
 
-function Setters.makelens(::ControlNamelist, ::VerbositySetter)
+function Setters.make(::LensMaker{VerbositySetter,ControlNamelist})
     return @batchlens begin
         _.verbosity
         _.wf_collect
@@ -340,11 +340,11 @@ function Setters.makelens(::ControlNamelist, ::VerbositySetter)
         _.saverho
         _.disk_io
     end
-end # function Setters.makelens
+end # function Setters.make
 
-Setters.preset_values(::ControlNamelist, ::VerbositySetter{:high}) =
+Setters.preset_values(::VerbositySetter{:high}, ::ControlNamelist) =
     ("high", true, true, true, true, "high")
-Setters.preset_values(::ControlNamelist, ::VerbositySetter{:low}) =
+Setters.preset_values(::VerbositySetter{:low}, ::ControlNamelist) =
     ("low", false, false, false, false, "default")
 
 end

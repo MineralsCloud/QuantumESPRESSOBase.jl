@@ -21,7 +21,7 @@ using UnitfulAtomic
 
 using QuantumESPRESSOBase: bravais_lattice
 using QuantumESPRESSOBase.Setters:
-    VerbositySetter, FiniteTemperatureSetter, makelens, preset_values
+    VerbositySetter, FiniteTemperatureSetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase
@@ -412,7 +412,7 @@ function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     return det(bravais_lattice(nml))
 end # function QuantumESPRESSOBase.cell_volume
 
-function Setters.makelens(::ControlNamelist, ::VerbositySetter)
+function Setters.make(::LensMaker{<:VerbositySetter,ControlNamelist})
     return @batchlens begin
         _.verbosity
         _.wf_collect
@@ -420,20 +420,20 @@ function Setters.makelens(::ControlNamelist, ::VerbositySetter)
         _.tprnfor
         _.disk_io
     end
-end # function Setters.makelens
-function Setters.makelens(::SystemNamelist, ::FiniteTemperatureSetter)
+end # function Setters.make
+function Setters.make(::LensMaker{<:FiniteTemperatureSetter,SystemNamelist})
     return @batchlens begin
         _.occupations
         _.degauss
         _.smearing
     end
-end # function Setters.makelens
+end # function Setters.make
 
-Setters.preset_values(::ControlNamelist, ::VerbositySetter{:high}) =
+Setters.preset_values(::VerbositySetter{:high}, ::ControlNamelist) =
     ("high", true, true, true, "high")
-Setters.preset_values(::ControlNamelist, ::VerbositySetter{:low}) =
+Setters.preset_values(::VerbositySetter{:low}, ::ControlNamelist) =
     ("low", false, false, false, "low")
-Setters.preset_values(::SystemNamelist, ::FiniteTemperatureSetter{N}) where {N} =
+Setters.preset_values(::FiniteTemperatureSetter{N}, ::SystemNamelist) where {N} =
     ("smearing", N isa AbstractQuantity ? ustrip(u"Ry", N) : N, "fermi-dirac")
 
 end

@@ -27,7 +27,7 @@ using QuantumESPRESSOBase.Cards.PWscf:
     CellParametersCard,
     AtomicForcesCard
 using QuantumESPRESSOBase.Inputs: QuantumESPRESSOInput
-using QuantumESPRESSOBase.Setters: AlatPressSetter, makelens, preset_values
+using QuantumESPRESSOBase.Setters: AlatPressSetter, LensMaker
 
 import QuantumESPRESSOBase.Setters
 
@@ -68,12 +68,12 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     )
 end # struct PWInput
 
-function Setters.makelens(::PWInput, ::AlatPressSetter)
+function Setters.make(::LensMaker{AlatPressSetter,PWInput})
     return @batchlens begin
         _.system.celldm  # Get the `template`'s `system.celldm` value
         _.cell.press     # Get the `template`'s `cell.press` value
         _.cell_parameters.option
     end
-end # function Setters.makelens
+end # function Setters.make
 
 end
