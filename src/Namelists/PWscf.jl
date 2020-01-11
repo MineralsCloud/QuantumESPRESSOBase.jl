@@ -16,12 +16,11 @@ using LinearAlgebra: det
 using Kaleido: @batchlens
 using Parameters: @with_kw
 using Setfield: set
-using Unitful: AbstractQuantity, ustrip, @u_str
+using Unitful
 using UnitfulAtomic
 
 using QuantumESPRESSOBase: bravais_lattice
-using QuantumESPRESSOBase.Setters:
-    VerbositySetter, FiniteTemperatureSetter, LensMaker
+using QuantumESPRESSOBase.Setters: VerbositySetter, FiniteTemperatureSetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase
@@ -433,7 +432,31 @@ Setters.preset_values(::VerbositySetter{:high}, ::ControlNamelist) =
     ("high", true, true, true, "high")
 Setters.preset_values(::VerbositySetter{:low}, ::ControlNamelist) =
     ("low", false, false, false, "low")
-Setters.preset_values(::FiniteTemperatureSetter{N}, ::SystemNamelist) where {N} =
-    ("smearing", N isa AbstractQuantity ? ustrip(u"Ry", N) : N, "fermi-dirac")
+function Setters.preset_values(::FiniteTemperatureSetter{N}, ::SystemNamelist) where {N}
+    return (
+        "smearing",
+        if N isa Real
+            N
+        else  # A quantity
+            u = unit(N) |> upreferred
+            if u == u"Ry"
+                N
+            elseif u == u"kg*m^2*s^-2"  # u"hartree", u"J", u"eV", etc..
+                uconvert(u"Ry", N)
+            elseif u == u"s^-1"  # u"Hz", u"THz", ...
+                uconvert(u"Hz", N) / 6579683920502000.0 * 2
+            elseif u == u"K"
+                N / 315775.02480407 * 2
+            elseif u == u"m^-1"  # u"m^-1", u"cm^-1", ...
+                uconvert(u"m^-1", N) / 21947463.13632 * 2
+            elseif u == u"kg"  # u"kg", u"g", ...
+                uconvert(u"kg", N) / 4.8508702095432e-35 * 2
+            else
+                error("unknown unit given!")
+            end |> ustrip
+        end,
+        "fermi-dirac",
+    )
+end # function Setters.preset_values
 
 end
