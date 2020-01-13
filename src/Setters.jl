@@ -1,12 +1,13 @@
 module Setters
 
+using Setfield: set
 using Unitful: AbstractQuantity
 
 import Setfield
 
-export VerbositySetter, FiniteTemperatureSetter, CellParametersSetter
-
-export makelens, preset_values
+export VerbositySetter,
+    FiniteTemperatureSetter, CellParametersSetter, AlatPressSetter, LensMaker
+export make, preset_values
 
 abstract type BatchSetter end
 
@@ -39,11 +40,20 @@ above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` no
 """
 struct CellParametersSetter <: BatchSetter end
 
-function makelens end
+struct AlatPressSetter <: BatchSetter end
+
+struct LensMaker{S<:BatchSetter,T} end
+LensMaker{S}(::T) where {S<:BatchSetter,T} = LensMaker{S,T}()
+LensMaker(S::BatchSetter) = T -> LensMaker{S,T}()
+LensMaker(::S, ::T) where {S<:BatchSetter,T} = LensMaker{S,T}()
+
+make(l::LensMaker) = error("`make` is not defined for `$l`!")
+make(maker::LensMaker{<:BatchSetter,T}, makers::LensMaker{<:BatchSetter,T}...) where {T} =
+    make(maker) ∘ make(makers...)
 
 function preset_values end
 
 Setfield.set(template, T::BatchSetter) =
-    set(template, makelens(template, T), preset_values(template, T))
+    set(template, make(LensMaker(T, template)), preset_values(T, template))
 
 end

@@ -14,6 +14,7 @@ module PWscf
 using LinearAlgebra: det
 
 using Compat: isnothing
+using Kaleido: @batchlens
 using Parameters: @with_kw
 
 using QuantumESPRESSOBase: bravais_lattice
@@ -26,6 +27,9 @@ using QuantumESPRESSOBase.Cards.PWscf:
     CellParametersCard,
     AtomicForcesCard
 using QuantumESPRESSOBase.Inputs: QuantumESPRESSOInput
+using QuantumESPRESSOBase.Setters: AlatPressSetter, LensMaker
+
+import QuantumESPRESSOBase.Setters
 
 export PWInput
 
@@ -63,5 +67,13 @@ Construct a `PWInput` which represents the input of program `pw.x`.
         "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
     )
 end # struct PWInput
+
+function Setters.make(::LensMaker{AlatPressSetter,PWInput})
+    return @batchlens begin
+        _.system.celldm  # Get the `template`'s `system.celldm` value
+        _.cell.press     # Get the `template`'s `cell.press` value
+        _.cell_parameters.option
+    end
+end # function Setters.make
 
 end

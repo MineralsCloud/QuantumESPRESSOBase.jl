@@ -20,7 +20,7 @@ using QuantumESPRESSOBase: bravais_lattice, to_qe
 using QuantumESPRESSOBase.Namelists: Namelist
 using QuantumESPRESSOBase.Cards: Card, optionof
 using QuantumESPRESSOBase.Cards.PWscf: CellParametersCard
-using QuantumESPRESSOBase.Setters: CellParametersSetter, makelens, preset_values
+using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
 
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
@@ -137,15 +137,15 @@ function QuantumESPRESSOBase.to_qe(
     return content
 end
 
-function Setters.makelens(template::Union{PWInput,CPInput}, ::CellParametersSetter)
+function Setters.make(::LensMaker{CellParametersSetter,<:Union{PWInput,CPInput}})
     return @batchlens begin
         _.cell_parameters
         _.system.ibrav
         _.system.celldm
     end
-end # function Setters.makelens
+end # function Setters.make
 
-function Setters.preset_values(template::Union{PWInput,CPInput}, ::CellParametersSetter)
+function Setters.preset_values(::CellParametersSetter, template::Union{PWInput,CPInput})
     # !isnothing(template.cell_parameters) && return template
     system = template.system
     return (
