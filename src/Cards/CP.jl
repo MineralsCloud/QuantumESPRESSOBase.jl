@@ -44,6 +44,12 @@ Construct an incomplete `AtomicSpecies` from an `AtomicVelocity` instance.
 """
 AtomicSpecies(x::AtomicVelocity, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
 AtomicSpecies(x::AtomicVelocity) = AtomicSpecies(x.atom)
+"""
+    AtomicPosition(x::AtomicVelocity, pos, if_pos)
+    AtomicPosition(x::AtomicVelocity)
+
+Construct an incomplete `AtomicPosition` from an `AtomicVelocity` instance.
+"""
 AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 AtomicPosition(x::AtomicVelocity) = AtomicPosition(x.atom)
 

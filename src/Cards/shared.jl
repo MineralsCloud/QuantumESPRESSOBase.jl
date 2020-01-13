@@ -156,9 +156,75 @@ end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
+"""
+    AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
+    AtomicPosition(atom::Union{AbstractChar,AbstractString})
+    AtomicPosition(x::AtomicSpecies, pos, if_pos)
+    AtomicPosition(x::AtomicSpecies)
+
+Represent each line of the `ATOMIC_POSITIONS` card in QE.
+
+It is a `mutable struct` and supports _incomplete Initialization_ as in the second and
+fourth constructors. See the examples below. The `atom` field accepts at most 3 characters
+as claimed in QE's documentation.
+
+# Examples
+```jldoctest
+julia> using QuantumESPRESSOBase.Cards.PWscf
+
+julia> AtomicPosition('O', [0, 0, 0])
+AtomicPosition("O", [0.0, 0.0, 0.0], [1, 1, 1])
+
+julia> x = AtomicPosition('O')
+AtomicPosition("O", #undef, #undef)
+
+julia> x.pos
+ERROR: UndefRefError: access to undefined reference
+[...]
+
+julia> x.pos = [0, 0, 0]
+ERROR: TypeError: in setfield!, expected Array{Float64,1}, got Array{Int64,1}
+[...]
+
+julia> x.pos = Float64[0, 0, 0]
+3-element Array{Float64,1}:
+ 0.0
+ 0.0
+ 0.0
+
+julia> x.if_pos = [1, 0, 2]
+ ERROR: AssertionError: `if_pos` elements must be 0 or 1!
+[...]
+
+julia> x.if_pos = [1, 0, 1]
+3-element Array{Int64,1}:
+ 1
+ 0
+ 1
+
+julia> x
+AtomicPosition("O", [0.0, 0.0, 0.0], [1, 0, 1])
+
+julia> AtomicPosition(
+            AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
+            [0.500000000, 0.288675130, 1.974192764],
+       )
+AtomicPosition("S", [0.5, 0.28867513, 1.974192764], [1, 1, 1])
+```
+"""
 @auto_hash_equals mutable struct AtomicPosition
+    "Label of the atom as specified in `AtomicSpecies`."
     atom::String
+    "Atomic positions. A three-element vector of floats."
     pos::Vector{Float64}
+    """
+    Component `i` of the force for this atom is multiplied by `if_pos(i)`,
+    which must be either `0` or `1`.  Used to keep selected atoms and/or
+    selected components fixed in MD dynamics or structural optimization run.
+
+    With `crystal_sg` atomic coordinates the constraints are copied in all equivalent
+    atoms.
+    """
     if_pos::Vector{Int}
     function AtomicPosition(atom, pos, if_pos)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
