@@ -60,7 +60,7 @@ end
 """
     push_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractString...)
 
-Push an atom or multiple atoms to a vector of `AtomicVelocity`.
+Push an atom or multiple atoms to a vector of `AtomicVelocity`s.
 
 **Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
 
@@ -83,12 +83,30 @@ function push_atom!(card::AtomicVelocitiesCard, atoms::AbstractString...)
     return card
 end # function push_atom!
 
+"""
+    append_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractVector{<:AbstractString})
+
+Append a vector of atoms to a vector of `AtomicVelocity`s.
+
+**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
+
+See also: [`append!`](@ref), [`push_atom!`](@ref)
+"""
 function append_atom!(
     v::AbstractVector{AtomicVelocity},
     atoms::AbstractVector{<:AbstractString},
 )
     return append!(v, map(AtomicVelocity, atoms))
 end # function append_atom!
+"""
+    append_atom!(card::AtomicVelocitiesCard, atoms::AbstractVector{<:AbstractString})
+
+Append a vector of atoms to a `AtomicVelocitiesCard`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
+
+See also: [`append!`](@ref), [`push_atom!`](@ref)
+"""
 function append_atom!(card::AtomicVelocitiesCard, atoms::AbstractVector{<:AbstractString})
     append!(card.data, map(AtomicVelocity, atoms))
     return card

@@ -293,7 +293,7 @@ const AtomicSpeciesOrPosition = Union{AtomicSpecies,AtomicPosition}
     push_atom!(v::AbstractVector{AtomicSpecies}, atoms::AbstractString...)
     push_atom!(v::AbstractVector{AtomicPosition}, atoms::AbstractString...)
 
-Push an atom or multiple atoms to a vector of `AtomicSpecies` or `AtomicPosition`.
+Push an atom or multiple atoms to a vector of `AtomicSpecies` or `AtomicPosition`s.
 
 **Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
 
@@ -323,12 +323,31 @@ function push_atom!(
     return card
 end # function push_atom!
 
+"""
+    append_atom!(v::AbstractVector{AtomicSpecies}, atoms::AbstractVector{<:AbstractString})
+    append_atom!(v::AbstractVector{AtomicPosition}, atoms::AbstractVector{<:AbstractString})
+
+Append a vector of atoms to a vector of `AtomicSpecies` or `AtomicPosition`s.
+
+**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
+
+See also: [`append!`](@ref), [`push_atom!`](@ref)
+"""
 function append_atom!(
     v::AbstractVector{T},
     atoms::AbstractVector{<:AbstractString},
 ) where {T<:AtomicSpeciesOrPosition}
     return append!(v, map(T, atoms))
 end # function append_atom!
+"""
+    append_atom!(card::Union{AtomicSpeciesCard,AtomicPositionsCard}, atoms::AbstractVector{<:AbstractString})
+
+Append a vector of atoms to a `AtomicSpeciesCard` or `AtomicPositionsCard`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
+
+See also: [`append!`](@ref), [`push_atom!`](@ref)
+"""
 function append_atom!(
     card::Union{AtomicSpeciesCard,AtomicPositionsCard},
     atoms::AbstractVector{<:AbstractString},
