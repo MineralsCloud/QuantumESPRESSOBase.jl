@@ -289,12 +289,31 @@ validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 
 const AtomicSpeciesOrPosition = Union{AtomicSpecies,AtomicPosition}
 
+"""
+    push_atom!(v::AbstractVector{AtomicSpecies}, atoms::AbstractString...)
+    push_atom!(v::AbstractVector{AtomicPosition}, atoms::AbstractString...)
+
+Push an atom or multiple atoms to a vector of `AtomicSpecies` or `AtomicPosition`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
+
+See also: [`push!`](@ref), [`append_atom!`](@ref)
+"""
 function push_atom!(
     v::AbstractVector{T},
     atoms::AbstractString...,
 ) where {T<:AtomicSpeciesOrPosition}
     return push!(v, map(T, atoms)...)
 end # function push_atom!
+"""
+    push_atom!(card::Union{AtomicSpeciesCard,AtomicPositionsCard}, atoms::AbstractString...)
+
+Push an atom or multiple atoms to a `AtomicSpeciesCard` or `AtomicPositionsCard`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
+
+See also: [`push!`](@ref), [`append_atom!`](@ref)
+"""
 function push_atom!(
     card::Union{AtomicSpeciesCard,AtomicPositionsCard},
     atoms::AbstractString...,

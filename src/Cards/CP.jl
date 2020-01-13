@@ -57,9 +57,27 @@ AtomicPosition(x::AtomicVelocity) = AtomicPosition(x.atom)
     data::A
 end
 
+"""
+    push_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractString...)
+
+Push an atom or multiple atoms to a vector of `AtomicVelocity`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
+
+See also: [`push!`](@ref), [`append_atom!`](@ref)
+"""
 function push_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractString...)
     return push!(v, map(AtomicVelocity, atoms)...)
 end # function push_atom!
+"""
+    push_atom!(card::AtomicVelocitiesCard, atoms::AbstractString...)
+
+Push an atom or multiple atoms to a `AtomicVelocitiesCard`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
+
+See also: [`push!`](@ref), [`append_atom!`](@ref)
+"""
 function push_atom!(card::AtomicVelocitiesCard, atoms::AbstractString...)
     push!(card.data, map(AtomicVelocity, atoms)...)
     return card
