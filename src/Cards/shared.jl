@@ -157,7 +157,8 @@ function push_atom!(
     atoms::AbstractString...,
 )
     T = eltype(card.data)
-    return @set card.data = push!(card, map(T, atoms)...)
+    push!(card.data, map(T, atoms)...)
+    return card
 end # function push_atom!
 
 function append_atom!(
@@ -171,7 +172,8 @@ function append_atom!(
     atoms::AbstractVector{<:AbstractString},
 )
     T = eltype(card.data)
-    return @set card.data = append!(card, map(T, atoms))
+    append!(card.data, map(T, atoms))
+    return card
 end # function append_atom!
 # ============================================================================ #
 

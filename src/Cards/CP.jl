@@ -49,7 +49,8 @@ function push_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractString...)
     return push!(v, map(AtomicVelocity, atoms)...)
 end # function push_atom!
 function push_atom!(card::AtomicVelocitiesCard, atoms::AbstractString...)
-    return @set card.data = push!(card, map(AtomicVelocity, atoms)...)
+    push!(card.data, map(AtomicVelocity, atoms)...)
+    return card
 end # function push_atom!
 
 function append_atom!(
@@ -59,7 +60,8 @@ function append_atom!(
     return append!(v, map(AtomicVelocity, atoms))
 end # function append_atom!
 function append_atom!(card::AtomicVelocitiesCard, atoms::AbstractVector{<:AbstractString})
-    return @set card.data = append!(card, map(AtomicVelocity, atoms))
+    append!(card.data, map(AtomicVelocity, atoms))
+    return card
 end # function append_atom!
 
 @auto_hash_equals struct RefCellParametersCard{A<:AbstractMatrix{<:Real}} <:
