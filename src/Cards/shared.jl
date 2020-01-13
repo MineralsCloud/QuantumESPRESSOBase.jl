@@ -145,6 +145,11 @@ function pseudopot_format(data::AtomicSpecies)::PseudopotentialFormat
     end
 end
 
+"""
+    AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
+
+Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
+"""
 struct AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
     data::T
 end
