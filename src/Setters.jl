@@ -13,9 +13,9 @@ export VerbositySetter,
     LensMaker
 export make, preset_values
 
-abstract type BatchSetter end
+abstract type Setter end
 
-struct VerbositySetter{T} <: BatchSetter
+struct VerbositySetter{T} <: Setter
     function VerbositySetter{T}() where {T}
         T ∈ (:high, :low) ||
         throw(ArgumentError("the type parameter must be either `:high` or `:low`!"))
@@ -24,7 +24,7 @@ struct VerbositySetter{T} <: BatchSetter
 end
 VerbositySetter(x) = VerbositySetter{x}()
 
-struct FiniteTemperatureSetter{N} <: BatchSetter
+struct FiniteTemperatureSetter{N} <: Setter
     function FiniteTemperatureSetter{N}() where {N}
         N isa Union{Real,AbstractQuantity} ||
         throw(ArgumentError("the type parameter must be a real or a quantity!"))
@@ -34,7 +34,7 @@ end
 FiniteTemperatureSetter(x) = FiniteTemperatureSetter{x}()
 
 """
-    CellParametersSetter <: BatchSetter
+    CellParametersSetter <: Setter
 
 Generate automatically a `CellParametersCard` for a `PWInput` or `CPInput` if its `cell_parameters` field is `nothing`.
 
@@ -42,11 +42,11 @@ Sometimes the `ibrav` field of a `PWInput` is not `0`, with its `cell_parameters
 But there are cases we want to write its `CellParametersCard` explicitly. This function will take a `PWInput` described
 above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` not empty.
 """
-struct CellParametersSetter <: BatchSetter end
+struct CellParametersSetter <: Setter end
 
-struct AlatPressSetter <: BatchSetter end
+struct AlatPressSetter <: Setter end
 
-struct CalculationSetter{T} <: BatchSetter
+struct CalculationSetter{T} <: Setter
     function CalculationSetter{T}() where {T}
         @assert T ∈ (
             :scf,
@@ -66,18 +66,18 @@ struct CalculationSetter{T} <: BatchSetter
 end
 CalculationSetter(x) = CalculationSetter{x}()
 
-struct LensMaker{S<:BatchSetter,T} end
-LensMaker{S}(::T) where {S<:BatchSetter,T} = LensMaker{S,T}()
-LensMaker(S::BatchSetter) = T -> LensMaker{S,T}()
-LensMaker(::S, ::T) where {S<:BatchSetter,T} = LensMaker{S,T}()
+struct LensMaker{S<:Setter,T} end
+LensMaker{S}(::T) where {S<:Setter,T} = LensMaker{S,T}()
+LensMaker(S::Setter) = T -> LensMaker{S,T}()
+LensMaker(::S, ::T) where {S<:Setter,T} = LensMaker{S,T}()
 
 make(l::LensMaker) = error("`make` is not defined for `$l`!")
-make(maker::LensMaker{<:BatchSetter,T}, makers::LensMaker{<:BatchSetter,T}...) where {T} =
+make(maker::LensMaker{<:Setter,T}, makers::LensMaker{<:Setter,T}...) where {T} =
     make(maker) ∘ make(makers...)
 
 function preset_values end
 
-Setfield.set(template, T::BatchSetter) =
+Setfield.set(template, T::Setter) =
     set(template, make(LensMaker(T, template)), preset_values(T, template))
 
 end
