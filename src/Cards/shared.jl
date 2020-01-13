@@ -86,6 +86,11 @@ end
 AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
     AtomicSpecies(string(atom), mass, pseudopot)
 
+"""
+    PseudopotentialFormat
+
+Represent all possible pseudopotential file formats.
+"""
 abstract type PseudopotentialFormat end
 """
     UnifiedPseudopotentialFormat <: PseudopotentialFormat
