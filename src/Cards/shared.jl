@@ -248,6 +248,15 @@ AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
 AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
 AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 
+"""
+    AtomicPositionsCard{A<:AbstractVector{AtomicPosition}} <: Card
+
+Represent the `ATOMIC_POSITIONS` card in QE.
+
+# Arguments
+- `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
+- `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
+"""
 @auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
     option::String
     data::A
