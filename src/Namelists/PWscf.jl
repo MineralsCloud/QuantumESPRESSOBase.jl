@@ -15,12 +15,13 @@ using LinearAlgebra: det
 
 using Kaleido: @batchlens
 using Parameters: @with_kw
-using Setfield: set
+using Setfield: set, @lens
 using Unitful
 using UnitfulAtomic
 
 using QuantumESPRESSOBase: bravais_lattice
-using QuantumESPRESSOBase.Setters: VerbositySetter, FiniteTemperatureSetter, LensMaker
+using QuantumESPRESSOBase.Setters:
+    VerbositySetter, FiniteTemperatureSetter, CalculationSetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase
@@ -427,6 +428,9 @@ function Setters.make(::LensMaker{<:FiniteTemperatureSetter,SystemNamelist})
         _.smearing
     end
 end # function Setters.make
+function Setters.make(::LensMaker{<:CalculationSetter,ControlNamelist})
+    return @lens _.calculation
+end # function Setters.make
 
 Setters.preset_values(::VerbositySetter{:high}, ::ControlNamelist) =
     ("high", true, true, true, "high")
@@ -458,5 +462,7 @@ function Setters.preset_values(::FiniteTemperatureSetter{N}, ::SystemNamelist) w
         "fermi-dirac",
     )
 end # function Setters.preset_values
+Setters.preset_values(::CalculationSetter{T}, ::ControlNamelist) where {T} =
+    replace(string(T), "_" => "-")
 
 end
