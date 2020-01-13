@@ -6,7 +6,11 @@ using Unitful: AbstractQuantity
 import Setfield
 
 export VerbositySetter,
-    FiniteTemperatureSetter, CellParametersSetter, AlatPressSetter, LensMaker
+    FiniteTemperatureSetter,
+    CellParametersSetter,
+    AlatPressSetter,
+    CalculationSetter,
+    LensMaker
 export make, preset_values
 
 abstract type BatchSetter end
@@ -41,6 +45,26 @@ above and generate a new `PWInput` with its `ibrav = 0` and `cell_parameters` no
 struct CellParametersSetter <: BatchSetter end
 
 struct AlatPressSetter <: BatchSetter end
+
+struct CalculationSetter{T} <: BatchSetter
+    function CalculationSetter{T}() where {T}
+        @assert T ∈ (
+            :scf,
+            :cp,
+            :nscf,
+            :bands,
+            :relax,
+            :md,
+            :vc_relax,
+            :vc_md,
+            :vc_cp,
+            :cp_wf,
+            :vc_cp_wf,
+        )
+        return new()
+    end
+end
+CalculationSetter(x) = CalculationSetter{x}()
 
 struct LensMaker{S<:BatchSetter,T} end
 LensMaker{S}(::T) where {S<:BatchSetter,T} = LensMaker{S,T}()
