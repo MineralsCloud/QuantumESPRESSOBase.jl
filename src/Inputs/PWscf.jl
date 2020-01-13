@@ -16,8 +16,9 @@ using LinearAlgebra: det
 using Compat: isnothing
 using Kaleido: @batchlens
 using Parameters: @with_kw
+using Setfield: PropertyLens
 
-using QuantumESPRESSOBase: bravais_lattice
+using QuantumESPRESSOBase: InputEntry, bravais_lattice
 using QuantumESPRESSOBase.Namelists.PWscf:
     ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist
 using QuantumESPRESSOBase.Cards.PWscf:
@@ -75,5 +76,8 @@ function Setters.make(::LensMaker{AlatPressSetter,PWInput})
         _.cell_parameters.option
     end
 end # function Setters.make
+function Setters.upgrade(lm::LensMaker{S,T}, ::Type{PWInput}) where {S,T<:InputEntry}
+    return PropertyLens{asfieldname(T)}() ∘ make(lm)
+end # function Setters.upgrade
 
 end
