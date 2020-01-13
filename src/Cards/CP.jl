@@ -36,6 +36,12 @@ AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicSpecies) = AtomicVelocity(x.atom)
 AtomicVelocity(x::AtomicPosition) = AtomicVelocity(x.atom)
 # Introudce mutual constructors since they share the same atoms.
+"""
+    AtomicSpecies(x::AtomicVelocity, mass, pseudopot)
+    AtomicSpecies(x::AtomicVelocity)
+
+Construct an incomplete `AtomicSpecies` from an `AtomicVelocity` instance.
+"""
 AtomicSpecies(x::AtomicVelocity, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
 AtomicSpecies(x::AtomicVelocity) = AtomicSpecies(x.atom)
 AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)

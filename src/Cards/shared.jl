@@ -12,9 +12,67 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
 
 # =============================== AtomicSpecies ============================== #
+"""
+    AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
+    AtomicSpecies(atom::Union{AbstractChar,AbstractString})
+    AtomicSpecies(x::AtomicPosition, mass, pseudopot)
+    AtomicSpecies(x::AtomicPosition)
+
+Represent each line of the `ATOMIC_SPECIES` card in QE.
+
+It is a `mutable struct` and supports _incomplete Initialization_ as in the second and
+fourth constructors. See the examples below. The `atom` field accepts at most 3 characters
+as claimed in QE's documentation.
+
+# Examples
+```jldoctest
+julia> using QuantumESPRESSOBase.Cards.PWscf
+
+julia> AtomicSpecies("C1", 12, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
+AtomicSpecies("C1", 12.0, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
+
+julia> x = AtomicSpecies('S')
+AtomicSpecies("S", 1.0e-323, #undef)
+
+julia> x.atom
+"S"
+
+julia> x.mass = 32.066; x.mass
+32.066
+
+julia> x.pseudopot
+ERROR: UndefRefError: access to undefined reference
+[...]
+
+julia> x.pseudopot = "S.pz-n-rrkjus_psl.0.1.UPF"; x.pseudopot
+"S.pz-n-rrkjus_psl.0.1.UPF"
+
+julia> AtomicSpecies(
+           AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764]),
+           32.066,
+           "S.pz-n-rrkjus_psl.0.1.UPF",
+       )
+AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
+```
+"""
 @auto_hash_equals mutable struct AtomicSpecies
+    "Label of the atom. Max total length cannot exceed 3 characters."
     atom::String
+    """
+    Mass of the atomic species in atomic unit.
+
+    Used only when performing molecular dynamics (MD) run
+    or structural optimization runs using damped MD.
+    Not actually used in all other cases (but stored
+    in data files, so phonon calculations will use
+    these values unless other values are provided).
+    """
     mass::Float64
+    """
+    File containing pseudopotential for this species.
+
+    See also: [`pseudopot_format`](@ref)
+    """
     pseudopot::String
     function AtomicSpecies(atom, mass, pseudopot)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
