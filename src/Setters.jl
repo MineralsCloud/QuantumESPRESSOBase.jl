@@ -77,6 +77,8 @@ make(maker::LensMaker{<:Setter,T}, makers::LensMaker{<:Setter,T}...) where {T} =
 
 function preset_values end
 
+function upgrade end
+
 Setfield.set(template, T::Setter) =
     set(template, make(LensMaker(T, template)), preset_values(T, template))
 
