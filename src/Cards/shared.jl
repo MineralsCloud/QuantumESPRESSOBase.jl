@@ -3,7 +3,7 @@ using LinearAlgebra: det
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Formatting: sprintf1
-using Setfield: @lens, get
+using Setfield: get, set, @lens, @set
 
 using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
@@ -143,6 +143,36 @@ function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     )
 end # function validate
 validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
+
+const AtomicSpeciesOrPosition = Union{AtomicSpecies,AtomicPosition}
+
+function push_atom!(
+    v::AbstractVector{T},
+    atoms::AbstractString...,
+) where {T<:AtomicSpeciesOrPosition}
+    return push!(v, map(T, atoms)...)
+end # function push_atom!
+function push_atom!(
+    card::Union{AtomicSpeciesCard,AtomicPositionsCard},
+    atoms::AbstractString...,
+)
+    T = eltype(card.data)
+    return @set card.data = push!(card, map(T, atoms)...)
+end # function push_atom!
+
+function append_atom!(
+    v::AbstractVector{T},
+    atoms::AbstractVector{<:AbstractString},
+) where {T<:AtomicSpeciesOrPosition}
+    return append!(v, map(T, atoms))
+end # function append_atom!
+function append_atom!(
+    card::Union{AtomicSpeciesCard,AtomicPositionsCard},
+    atoms::AbstractVector{<:AbstractString},
+)
+    T = eltype(card.data)
+    return @set card.data = append!(card, map(T, atoms))
+end # function append_atom!
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
