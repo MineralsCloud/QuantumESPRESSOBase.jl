@@ -15,8 +15,9 @@ using LinearAlgebra: det
 
 using Kaleido: @batchlens
 using Parameters: @with_kw
+using Setfield: @lens
 
-using QuantumESPRESSOBase.Setters: VerbositySetter, LensMaker
+using QuantumESPRESSOBase.Setters: VerbositySetter, CalculationSetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
 
 import QuantumESPRESSOBase
@@ -341,10 +342,15 @@ function Setters.make(::LensMaker{VerbositySetter,ControlNamelist})
         _.disk_io
     end
 end # function Setters.make
+function Setters.make(::LensMaker{<:CalculationSetter,ControlNamelist})
+    return @lens _.calculation
+end # function Setters.make
 
 Setters.preset_values(::VerbositySetter{:high}, ::ControlNamelist) =
     ("high", true, true, true, true, "high")
 Setters.preset_values(::VerbositySetter{:low}, ::ControlNamelist) =
     ("low", false, false, false, false, "default")
+Setters.preset_values(::CalculationSetter{T}, ::ControlNamelist) where {T} =
+    replace(string(T), "_" => "-")
 
 end
