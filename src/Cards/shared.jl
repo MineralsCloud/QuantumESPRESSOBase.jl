@@ -380,7 +380,7 @@ end
 AtomicForce(atom, force::AbstractVector{T}) where {T} = AtomicForce{T}(atom, force)
 
 struct AtomicForcesCard <: Card
-    data::Vector{<:AtomicForce}
+    data::Vector{AtomicForce}
 end
 # ============================================================================ #
 
