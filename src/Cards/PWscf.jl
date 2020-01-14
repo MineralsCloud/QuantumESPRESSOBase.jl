@@ -26,7 +26,7 @@ export UnifiedPseudopotentialFormat,
     GammaPoint,
     SpecialKPoint,
     KPointsCard
-export pseudopot_format, option_convert
+export pseudopot_format, option_convert, push_atom!, append_atom!
 
 include("shared.jl")
 

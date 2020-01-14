@@ -3,7 +3,7 @@ using LinearAlgebra: det
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Formatting: sprintf1
-using Setfield: @lens, get
+using Setfield: get, set, @lens, @set
 
 using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
@@ -12,9 +12,67 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
 
 # =============================== AtomicSpecies ============================== #
+"""
+    AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
+    AtomicSpecies(atom::Union{AbstractChar,AbstractString})
+    AtomicSpecies(x::AtomicPosition, mass, pseudopot)
+    AtomicSpecies(x::AtomicPosition)
+
+Represent each line of the `ATOMIC_SPECIES` card in QE.
+
+It is a `mutable struct` and supports _incomplete Initialization_ as in the second and
+fourth constructors. See the examples below. The `atom` field accepts at most 3 characters
+as claimed in QE's documentation.
+
+# Examples
+```jldoctest
+julia> using QuantumESPRESSOBase.Cards.PWscf
+
+julia> AtomicSpecies("C1", 12, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
+AtomicSpecies("C1", 12.0, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
+
+julia> x = AtomicSpecies('S')
+AtomicSpecies("S", 1.0e-323, #undef)
+
+julia> x.atom
+"S"
+
+julia> x.mass = 32.066; x.mass
+32.066
+
+julia> x.pseudopot
+ERROR: UndefRefError: access to undefined reference
+[...]
+
+julia> x.pseudopot = "S.pz-n-rrkjus_psl.0.1.UPF"; x.pseudopot
+"S.pz-n-rrkjus_psl.0.1.UPF"
+
+julia> AtomicSpecies(
+           AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764]),
+           32.066,
+           "S.pz-n-rrkjus_psl.0.1.UPF",
+       )
+AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
+```
+"""
 @auto_hash_equals mutable struct AtomicSpecies
+    "Label of the atom. Max total length cannot exceed 3 characters."
     atom::String
+    """
+    Mass of the atomic species in atomic unit.
+
+    Used only when performing molecular dynamics (MD) run
+    or structural optimization runs using damped MD.
+    Not actually used in all other cases (but stored
+    in data files, so phonon calculations will use
+    these values unless other values are provided).
+    """
     mass::Float64
+    """
+    File containing pseudopotential for this species.
+
+    See also: [`pseudopot_format`](@ref)
+    """
     pseudopot::String
     function AtomicSpecies(atom, mass, pseudopot)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
@@ -28,6 +86,11 @@ end
 AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
     AtomicSpecies(string(atom), mass, pseudopot)
 
+"""
+    PseudopotentialFormat
+
+Represent all possible pseudopotential file formats.
+"""
 abstract type PseudopotentialFormat end
 """
     UnifiedPseudopotentialFormat <: PseudopotentialFormat
@@ -82,15 +145,86 @@ function pseudopot_format(data::AtomicSpecies)::PseudopotentialFormat
     end
 end
 
+"""
+    AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
+
+Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
+"""
 struct AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
     data::T
 end
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
+"""
+    AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
+    AtomicPosition(atom::Union{AbstractChar,AbstractString})
+    AtomicPosition(x::AtomicSpecies, pos, if_pos)
+    AtomicPosition(x::AtomicSpecies)
+
+Represent each line of the `ATOMIC_POSITIONS` card in QE.
+
+It is a `mutable struct` and supports _incomplete Initialization_ as in the second and
+fourth constructors. See the examples below. The `atom` field accepts at most 3 characters
+as claimed in QE's documentation.
+
+# Examples
+```jldoctest
+julia> using QuantumESPRESSOBase.Cards.PWscf
+
+julia> AtomicPosition('O', [0, 0, 0])
+AtomicPosition("O", [0.0, 0.0, 0.0], [1, 1, 1])
+
+julia> x = AtomicPosition('O')
+AtomicPosition("O", #undef, #undef)
+
+julia> x.pos
+ERROR: UndefRefError: access to undefined reference
+[...]
+
+julia> x.pos = [0, 0, 0]
+ERROR: TypeError: in setfield!, expected Array{Float64,1}, got Array{Int64,1}
+[...]
+
+julia> x.pos = Float64[0, 0, 0]
+3-element Array{Float64,1}:
+ 0.0
+ 0.0
+ 0.0
+
+julia> x.if_pos = [1, 0, 2]
+ ERROR: AssertionError: `if_pos` elements must be 0 or 1!
+[...]
+
+julia> x.if_pos = [1, 0, 1]
+3-element Array{Int64,1}:
+ 1
+ 0
+ 1
+
+julia> x
+AtomicPosition("O", [0.0, 0.0, 0.0], [1, 0, 1])
+
+julia> AtomicPosition(
+            AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
+            [0.500000000, 0.288675130, 1.974192764],
+       )
+AtomicPosition("S", [0.5, 0.28867513, 1.974192764], [1, 1, 1])
+```
+"""
 @auto_hash_equals mutable struct AtomicPosition
+    "Label of the atom as specified in `AtomicSpecies`."
     atom::String
+    "Atomic positions. A three-element vector of floats."
     pos::Vector{Float64}
+    """
+    Component `i` of the force for this atom is multiplied by `if_pos(i)`,
+    which must be either `0` or `1`.  Used to keep selected atoms and/or
+    selected components fixed in MD dynamics or structural optimization run.
+
+    With `crystal_sg` atomic coordinates the constraints are copied in all equivalent
+    atoms.
+    """
     if_pos::Vector{Int}
     function AtomicPosition(atom, pos, if_pos)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
@@ -114,6 +248,15 @@ AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
 AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
 AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 
+"""
+    AtomicPositionsCard{A<:AbstractVector{AtomicPosition}} <: Card
+
+Represent the `ATOMIC_POSITIONS` card in QE.
+
+# Arguments
+- `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
+- `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
+"""
 @auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
     option::String
     data::A
@@ -143,6 +286,76 @@ function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     )
 end # function validate
 validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
+
+const AtomicSpeciesOrPosition = Union{AtomicSpecies,AtomicPosition}
+
+"""
+    push_atom!(v::AbstractVector{AtomicSpecies}, atoms::AbstractString...)
+    push_atom!(v::AbstractVector{AtomicPosition}, atoms::AbstractString...)
+
+Push an atom or multiple atoms to a vector of `AtomicSpecies` or `AtomicPosition`s.
+
+**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
+
+See also: [`push!`](@ref), [`append_atom!`](@ref)
+"""
+function push_atom!(
+    v::AbstractVector{T},
+    atoms::AbstractString...,
+) where {T<:AtomicSpeciesOrPosition}
+    return push!(v, map(T, atoms)...)
+end # function push_atom!
+"""
+    push_atom!(card::Union{AtomicSpeciesCard,AtomicPositionsCard}, atoms::AbstractString...)
+
+Push an atom or multiple atoms to a `AtomicSpeciesCard` or `AtomicPositionsCard`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
+
+See also: [`push!`](@ref), [`append_atom!`](@ref)
+"""
+function push_atom!(
+    card::Union{AtomicSpeciesCard,AtomicPositionsCard},
+    atoms::AbstractString...,
+)
+    T = eltype(card.data)
+    push!(card.data, map(T, atoms)...)
+    return card
+end # function push_atom!
+
+"""
+    append_atom!(v::AbstractVector{AtomicSpecies}, atoms::AbstractVector{<:AbstractString})
+    append_atom!(v::AbstractVector{AtomicPosition}, atoms::AbstractVector{<:AbstractString})
+
+Append a vector of atoms to a vector of `AtomicSpecies` or `AtomicPosition`s.
+
+**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
+
+See also: [`append!`](@ref), [`push_atom!`](@ref)
+"""
+function append_atom!(
+    v::AbstractVector{T},
+    atoms::AbstractVector{<:AbstractString},
+) where {T<:AtomicSpeciesOrPosition}
+    return append!(v, map(T, atoms))
+end # function append_atom!
+"""
+    append_atom!(card::Union{AtomicSpeciesCard,AtomicPositionsCard}, atoms::AbstractVector{<:AbstractString})
+
+Append a vector of atoms to a `AtomicSpeciesCard` or `AtomicPositionsCard`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
+
+See also: [`append!`](@ref), [`push_atom!`](@ref)
+"""
+function append_atom!(
+    card::Union{AtomicSpeciesCard,AtomicPositionsCard},
+    atoms::AbstractVector{<:AbstractString},
+)
+    T = eltype(card.data)
+    append!(card.data, map(T, atoms))
+    return card
+end # function append_atom!
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #

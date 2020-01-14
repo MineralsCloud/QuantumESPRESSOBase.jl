@@ -14,7 +14,7 @@ export UnifiedPseudopotentialFormat,
     AtomicVelocitiesCard,
     AtomicForce,
     AtomicForcesCard
-export pseudopot_format, option_convert
+export pseudopot_format, option_convert, push_atom!, append_atom!
 
 include("shared.jl")
 
@@ -36,14 +36,81 @@ AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicSpecies) = AtomicVelocity(x.atom)
 AtomicVelocity(x::AtomicPosition) = AtomicVelocity(x.atom)
 # Introudce mutual constructors since they share the same atoms.
+"""
+    AtomicSpecies(x::AtomicVelocity, mass, pseudopot)
+    AtomicSpecies(x::AtomicVelocity)
+
+Construct an incomplete `AtomicSpecies` from an `AtomicVelocity` instance.
+"""
 AtomicSpecies(x::AtomicVelocity, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
 AtomicSpecies(x::AtomicVelocity) = AtomicSpecies(x.atom)
+"""
+    AtomicPosition(x::AtomicVelocity, pos, if_pos)
+    AtomicPosition(x::AtomicVelocity)
+
+Construct an incomplete `AtomicPosition` from an `AtomicVelocity` instance.
+"""
 AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 AtomicPosition(x::AtomicVelocity) = AtomicPosition(x.atom)
 
 @auto_hash_equals struct AtomicVelocitiesCard{A<:AbstractVector{<:AtomicVelocity}} <: Card
     data::A
 end
+
+"""
+    push_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractString...)
+
+Push an atom or multiple atoms to a vector of `AtomicVelocity`s.
+
+**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
+
+See also: [`push!`](@ref), [`append_atom!`](@ref)
+"""
+function push_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractString...)
+    return push!(v, map(AtomicVelocity, atoms)...)
+end # function push_atom!
+"""
+    push_atom!(card::AtomicVelocitiesCard, atoms::AbstractString...)
+
+Push an atom or multiple atoms to a `AtomicVelocitiesCard`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
+
+See also: [`push!`](@ref), [`append_atom!`](@ref)
+"""
+function push_atom!(card::AtomicVelocitiesCard, atoms::AbstractString...)
+    push!(card.data, map(AtomicVelocity, atoms)...)
+    return card
+end # function push_atom!
+
+"""
+    append_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractVector{<:AbstractString})
+
+Append a vector of atoms to a vector of `AtomicVelocity`s.
+
+**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
+
+See also: [`append!`](@ref), [`push_atom!`](@ref)
+"""
+function append_atom!(
+    v::AbstractVector{AtomicVelocity},
+    atoms::AbstractVector{<:AbstractString},
+)
+    return append!(v, map(AtomicVelocity, atoms))
+end # function append_atom!
+"""
+    append_atom!(card::AtomicVelocitiesCard, atoms::AbstractVector{<:AbstractString})
+
+Append a vector of atoms to a `AtomicVelocitiesCard`.
+
+**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
+
+See also: [`append!`](@ref), [`push_atom!`](@ref)
+"""
+function append_atom!(card::AtomicVelocitiesCard, atoms::AbstractVector{<:AbstractString})
+    append!(card.data, map(AtomicVelocity, atoms))
+    return card
+end # function append_atom!
 
 @auto_hash_equals struct RefCellParametersCard{A<:AbstractMatrix{<:Real}} <:
                          AbstractCellParametersCard
