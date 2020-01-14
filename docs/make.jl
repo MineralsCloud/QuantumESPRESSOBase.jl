@@ -16,9 +16,11 @@ makedocs(;
         "Manual" => Any[
             "Installation" => "install.md",
         ],
-        "API" => Any[
-            "API" => "api/api.md",
+        "Modules" => Any[
+            "`QuantumESPRESSOBase` module" => "api/api.md",
+            "`Namelists` module" => "api/Namelists.md",
             "`Cards` module" => "api/Cards.md",
+            "`Inputs` module" => "api/Inputs.md",
         ],
     ],
 )
