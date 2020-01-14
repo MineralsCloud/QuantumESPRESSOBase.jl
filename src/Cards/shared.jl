@@ -387,13 +387,10 @@ end
 # ============================== KPointsCard ============================== #
 abstract type KPoint end
 
-@auto_hash_equals struct MonkhorstPackGrid{
-    A<:AbstractVector{<:Integer},
-    B<:AbstractVector{<:Integer},
-}
-    grid::A
-    offsets::B
-    function MonkhorstPackGrid{A,B}(grid, offsets) where {A,B}
+@auto_hash_equals struct MonkhorstPackGrid
+    grid::Vector{Int}
+    offsets::Vector{Int}
+    function MonkhorstPackGrid(grid, offsets)
         @assert length(grid) == length(offsets) == 3
         # See https://github.com/aiidateam/aiida-quantumespresso/blob/4aef9f9/aiida_quantumespresso/cli/utils/validate.py#L10-L37
         @assert(all(grid .> 0), "`grid` must be positive integers!")
@@ -404,7 +401,6 @@ abstract type KPoint end
         return new(grid, offsets)
     end
 end
-MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid, offsets)
 
 struct GammaPoint <: KPoint end
 
