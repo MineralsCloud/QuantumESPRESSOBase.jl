@@ -154,39 +154,38 @@ end # testset
 end # testset
 
 @testset "Test `append_atom!`" begin
-    x = PWscf.AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
-    v = [x]
-    @test PWscf.append_atom!(v, ["H", "O"])[1].atom == "S"
-    @test PWscf.append_atom!(v, ["H", "O"])[2].atom == "H"
-    @test PWscf.append_atom!(v, ["H", "O"])[3].atom == "O"
-    atoms = ["Al", "As"]
-    masses = [24590.7655930491, 68285.4024548272]
-    pseudopotentials = ["Al.pbe-n-kjpaw_psl.1.0.0.UPF", "As.pbe-n-kjpaw_psl.1.0.0.UPF"]
-    init = PWscf.AtomicSpeciesCard(StructArray{PWscf.AtomicSpecies}((atoms, masses, pseudopotentials)))
-    @test PWscf.append_atom!(init, ["S", "N"]).data[1].atom == "Al"
-    @test PWscf.append_atom!(init, ["S", "N"]).data[2].atom == "As"
-    @test PWscf.append_atom!(init, ["S", "N"]).data[3].atom == "S"
-    @test PWscf.append_atom!(init, ["S", "N"]).data[4].atom == "N"
-    x = PWscf.AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764])
-    v = [x]
-    @test PWscf.append_atom!(v, ["H", "O"])[1].atom == "S"
-    @test PWscf.append_atom!(v, ["H", "O"])[2].atom == "H"
-    @test PWscf.append_atom!(v, ["H", "O"])[3].atom == "O"
-    atoms = ["S", "Mo", "S"]
-    positions = [
-        [0.500000000, 0.288675130, 1.974192764],
-        [0.000000000, 0.577350270, 2.462038339],
-        [0.000000000, -0.577350270, 2.950837559],
-    ]
-    init = PWscf.AtomicPositionsCard(
-        "alat",
-        StructArray{PWscf.AtomicPosition}((atoms, positions, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
-    )
-    @test PWscf.append_atom!(init, ["H", "O"]).data[1].atom == "S"
-    @test PWscf.append_atom!(init, ["H", "O"]).data[2].atom == "Mo"
-    @test PWscf.append_atom!(init, ["H", "O"]).data[3].atom == "S"
-    @test PWscf.append_atom!(init, ["H", "O"]).data[4].atom == "H"
-    @test PWscf.append_atom!(init, ["H", "O"]).data[5].atom == "O"
+    @testset "`append_atom!` to `AtomicSpecies`" begin
+        v = [PWscf.AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")]
+        PWscf.append_atom!(v, ["H", "O"])
+        @test [x.atom for x in v] == ["S", "H", "O"]
+    end # testset
+    @testset "`append_atom!` to `AtomicSpeciesCard`" begin
+        a = ["Al", "As"]
+        m = [24590.7655930491, 68285.4024548272]
+        pp = ["Al.pbe-n-kjpaw_psl.1.0.0.UPF", "As.pbe-n-kjpaw_psl.1.0.0.UPF"]
+        init = PWscf.AtomicSpeciesCard(StructArray{PWscf.AtomicSpecies}((a, m, pp)))
+        PWscf.append_atom!(init, ["S", "N"])
+        @test [x.atom for x in init.data] == ["Al", "As", "S", "N"]
+    end # testset
+    @testset "`append_atom!` to `AtomicPosition`" begin
+        v = [PWscf.AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764])]
+        PWscf.append_atom!(v, ["H", "O"])
+        @test [x.atom for x in v] == ["S", "H", "O"]
+    end # testset
+    @testset "`append_atom!` to `AtomicPositionsCard`" begin
+        atoms = ["S", "Mo", "S"]
+        positions = [
+            [0.500000000, 0.288675130, 1.974192764],
+            [0.000000000, 0.577350270, 2.462038339],
+            [0.000000000, -0.577350270, 2.950837559],
+        ]
+        init = PWscf.AtomicPositionsCard(
+            "alat",
+            StructArray{PWscf.AtomicPosition}((atoms, positions, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
+        )
+        PWscf.append_atom!(init, ["H", "O"])
+        @test [x.atom for x in init.data] == ["S", "Mo", "S", "H", "O"]
+    end # testset
 end # testset
 
 @testset "Constructing `CellParametersCard`" begin
