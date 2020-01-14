@@ -21,6 +21,7 @@ makedocs(;
             "`Namelists` module" => "api/Namelists.md",
             "`Cards` module" => "api/Cards.md",
             "`Inputs` module" => "api/Inputs.md",
+            "`CLI` module" => "api/CLI.md",
         ],
     ],
 )
