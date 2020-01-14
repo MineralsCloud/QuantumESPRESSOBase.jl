@@ -369,15 +369,15 @@ CellParametersCard(data) = CellParametersCard("alat", data)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
-@auto_hash_equals struct AtomicForce{A<:AbstractVector{<:Real}}
+@auto_hash_equals struct AtomicForce{T<:Real}
     atom::String
-    force::A
-    function AtomicForce{A}(atom, force) where {A<:AbstractVector{<:Real}}
+    force::Vector{T}
+    function AtomicForce{T}(atom, force) where {T<:Real}
         @assert length(force) == 3
         return new(atom, force)
     end
 end
-AtomicForce(atom, force::A) where {A} = AtomicForce{A}(atom, force)
+AtomicForce(atom, force::AbstractVector{T}) where {T} = AtomicForce{T}(atom, force)
 
 struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
     data::T
