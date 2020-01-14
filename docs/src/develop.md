@@ -2,7 +2,7 @@
 
 ## Download the project
 
-Similar to what we have mentioned in [Installation](@ref), instead of running
+Similar to what we have mentioned in section "[Installation](@ref)", instead of running
 
 ```julia
 julia> Pkg.add(PackageSpec(url="https://github.com/MineralsCloud/QuantumESPRESSOBase.jl.git"))
