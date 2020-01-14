@@ -145,7 +145,7 @@ function pseudopot_format(data::AtomicSpecies)::PseudopotentialFormat
 end
 
 """
-    AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
+    AtomicSpeciesCard <: Card
 
 Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 """
@@ -247,7 +247,7 @@ AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, 
 AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 
 """
-    AtomicPositionsCard{A<:AbstractVector{AtomicPosition}} <: Card
+    AtomicPositionsCard <: Card
 
 Represent the `ATOMIC_POSITIONS` card in QE.
 
@@ -258,10 +258,7 @@ Represent the `ATOMIC_POSITIONS` card in QE.
 @auto_hash_equals struct AtomicPositionsCard <: Card
     option::String
     data::Vector{AtomicPosition}
-    function AtomicPositionsCard(
-        option,
-        data,
-    )
+    function AtomicPositionsCard(option, data)
         @assert option ∈ allowed_options(AtomicPositionsCard)
         return new(option, data)
     end
