@@ -412,6 +412,8 @@ struct GammaPoint <: KPoint end
         return new(coord, weight)
     end
 end
+SpecialKPoint(coord::AbstractVector, weight) =
+    SpecialKPoint{promote_type(eltype(coord), typeof(weight))}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 @auto_hash_equals struct KPointsCard{
