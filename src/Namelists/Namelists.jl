@@ -12,7 +12,6 @@ julia>
 module Namelists
 
 using OrderedCollections: OrderedDict
-using Fortran90Namelists.JuliaToFortran: to_fortran
 
 using QuantumESPRESSOBase: InputEntry, titleof, to_qe
 

@@ -1,7 +1,6 @@
 module QuantumESPRESSOBase
 
 using Compat: isnothing
-using Fortran90Namelists.JuliaToFortran: to_fortran
 
 export asfieldname, titleof, to_qe, cell_volume, bravais_lattice
 
