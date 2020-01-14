@@ -149,8 +149,8 @@ end
 
 Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 """
-struct AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
-    data::T
+struct AtomicSpeciesCard <: Card
+    data::Vector{AtomicSpecies}
 end
 # ============================================================================ #
 
@@ -255,18 +255,17 @@ Represent the `ATOMIC_POSITIONS` card in QE.
 - `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 - `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
 """
-@auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
+@auto_hash_equals struct AtomicPositionsCard <: Card
     option::String
-    data::A
-    function AtomicPositionsCard{A}(
+    data::Vector{AtomicPosition}
+    function AtomicPositionsCard(
         option,
         data,
-    ) where {A<:AbstractVector{<:AtomicPosition}}
+    )
         @assert option ∈ allowed_options(AtomicPositionsCard)
         return new(option, data)
     end
 end
-AtomicPositionsCard(option, data::A) where {A} = AtomicPositionsCard{A}(option, data)
 AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
 function AtomicPositionsCard(option, card::AtomicSpeciesCard)
     return AtomicPositionsCard(option, map(AtomicPosition, card.data))
