@@ -53,8 +53,8 @@ Construct an incomplete `AtomicPosition` from an `AtomicVelocity` instance.
 AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 AtomicPosition(x::AtomicVelocity) = AtomicPosition(x.atom)
 
-@auto_hash_equals struct AtomicVelocitiesCard{A<:AbstractVector{<:AtomicVelocity}} <: Card
-    data::A
+@auto_hash_equals struct AtomicVelocitiesCard <: Card
+    data::Vector{AtomicVelocity}
 end
 
 """
