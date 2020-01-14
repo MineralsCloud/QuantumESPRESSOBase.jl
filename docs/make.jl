@@ -16,6 +16,10 @@ makedocs(;
         "Manual" => Any[
             "Installation" => "install.md",
         ],
+        "API" => Any[
+            "API" => "api/api.md",
+            "`Cards` module" => "api/Cards.md",
+        ],
     ],
 )
 
