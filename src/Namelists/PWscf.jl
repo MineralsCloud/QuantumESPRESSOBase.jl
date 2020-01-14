@@ -38,6 +38,11 @@ export ControlNamelist,
 const Maybe{T} = Union{T,Nothing}
 
 # The default values are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90.
+"""
+    ControlNamelist <: Namelist
+
+Represent the `CONTROL` namelist of `pw.x`.
+"""
 @with_kw struct ControlNamelist <: Namelist
     calculation::String = "scf"
     title::String = " "
@@ -89,6 +94,11 @@ const Maybe{T} = Union{T,Nothing}
     )
 end # struct ControlNamelist
 
+"""
+    SystemNamelist <: Namelist
+
+Represent the `SYSTEM` namelist of `pw.x`.
+"""
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = 1  # The default value in QE's source code is -1
     celldm::Vector{Maybe{Float64}} = [nothing]  # Must specify
@@ -252,6 +262,11 @@ end # struct ControlNamelist
     )
 end # struct SystemNamelist
 
+"""
+    ElectronsNamelist <: Namelist
+
+Represent the `ELECTRONS` namelist of `pw.x`.
+"""
 @with_kw struct ElectronsNamelist <: Namelist
     electron_maxstep::Int = 100
     scf_must_converge::Bool = true
@@ -283,6 +298,13 @@ end # struct SystemNamelist
     @assert startingwfc ∈ ("atomic", "atomic+random", "random", "file")
 end # struct ElectronsNamelist
 
+"""
+    IonsNamelist <: Namelist
+
+Represent the `IONS` namelist of `pw.x`.
+
+Input this namelist only if `calculation` is `"relax"`, `"md"`, `"vc-relax"`, or `"vc-md"`.
+"""
 @with_kw struct IonsNamelist <: Namelist
     ion_dynamics::String = "none"
     ion_positions::String = "default"
@@ -325,6 +347,13 @@ end # struct ElectronsNamelist
     @assert tempw > 0
 end # struct IonsNamelist
 
+"""
+    CellNamelist <: Namelist
+
+Represent the `CELL` namelist of `pw.x`.
+
+Input this namelist only if `calculation` is `"vc-relax"` or `"vc-md"`.
+"""
 @with_kw struct CellNamelist <: Namelist
     cell_dynamics::String = "none"
     press::Float64 = 0.0
@@ -358,6 +387,11 @@ end # struct IonsNamelist
 end # struct CellNamelist
 
 # The following default values are picked from `<QE source>/PP/src/dos.f90`
+"""
+    DosNamelist <: Namelist
+
+Represent the `DOS` namelist of `dos.x`.
+"""
 @with_kw struct DosNamelist <: Namelist
     prefix::String = "pwscf"
     outdir::String = "./"
@@ -371,6 +405,11 @@ end # struct CellNamelist
 end # struct DosNamelist
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
+"""
+    BandsNamelist <: Namelist
+
+Represent the `BANDS` namelist of `bands.x`.
+"""
 @with_kw struct BandsNamelist <: Namelist
     prefix::String = "pwscf"
     outdir::String = "./"
