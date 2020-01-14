@@ -274,6 +274,7 @@ end # testset
 end # testset
 
 @testset "Constructing `AtomicVelocity`" begin
+    # Data from https://gitlab.com/QEF/q-e/blob/master/CPV/examples/autopilot-example/reference/water.autopilot.out
     x = AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])
     @test_throws AssertionError @set x.atom = "hydrogen"
     @test_throws InexactError @set x.velocity = [1im, 2im, 3im]
@@ -314,43 +315,43 @@ end # testset
 end # testset
 
 @testset "Test `push_atom!`" begin
-    x = AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])
-    v = [x]
-    @test CP.push_atom!(v, "S", "N")[1].atom == "H"
-    @test CP.push_atom!(v, "S", "N")[2].atom == "S"
-    @test CP.push_atom!(v, "S", "N")[3].atom == "N"
-    atoms = ["H", "O"]
-    velocities = [
-        [0.140374E-04, -0.333683E-04, 0.231834E-04],
-        [-0.111125E-05, -0.466724E-04, 0.972745E-05],
-    ]
-    init = AtomicVelocitiesCard(
-        StructArray{AtomicVelocity}((atoms, velocities))
-    )
-    @test CP.push_atom!(init, "S", "N").data[1].atom == "H"
-    @test CP.push_atom!(init, "S", "N").data[2].atom == "O"
-    @test CP.push_atom!(init, "S", "N").data[3].atom == "S"
-    @test CP.push_atom!(init, "S", "N").data[4].atom == "N"
+    @testset "`push_atom!` for `AtomicVelocity`" begin
+        v = [AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])]
+        CP.push_atom!(v, "S", "N")
+        @test [x.atom for x in v] == ["H", "S", "N"]
+    end # testset
+    @testset "" begin
+        atoms = ["H", "O"]
+        velocities = [
+            [0.140374E-04, -0.333683E-04, 0.231834E-04],
+            [-0.111125E-05, -0.466724E-04, 0.972745E-05],
+        ]
+        init = AtomicVelocitiesCard(
+            StructArray{AtomicVelocity}((atoms, velocities))
+        )
+        CP.push_atom!(init, "S", "N")
+        @test [x.atom for x in init.data] == ["H", "O", "S", "N"]
+    end # testset
 end # testset
 
 @testset "Test `append_atom!`" begin
-    x = AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])
-    v = [x]
-    @test CP.append_atom!(v, ["S", "N"])[1].atom == "H"
-    @test CP.append_atom!(v, ["S", "N"])[2].atom == "S"
-    @test CP.append_atom!(v, ["S", "N"])[3].atom == "N"
-    atoms = ["H", "O"]
-    velocities = [
-        [0.140374E-04, -0.333683E-04, 0.231834E-04],
-        [-0.111125E-05, -0.466724E-04, 0.972745E-05],
-    ]
-    init = AtomicVelocitiesCard(
-        StructArray{AtomicVelocity}((atoms, velocities))
-    )
-    @test CP.append_atom!(init, ["S", "N"]).data[1].atom == "H"
-    @test CP.append_atom!(init, ["S", "N"]).data[2].atom == "O"
-    @test CP.append_atom!(init, ["S", "N"]).data[3].atom == "S"
-    @test CP.append_atom!(init, ["S", "N"]).data[4].atom == "N"
+    @testset "`append_atom!` to `AtomicVelocity`" begin
+        v = [AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])]
+        CP.append_atom!(v, ["S", "N"])
+        @test [x.atom for x in v] == ["H", "S", "N"]
+    end # testset
+    @testset "`append_atom!` to `AtomicVelocitiesCard`" begin
+        atoms = ["H", "O"]
+        velocities = [
+            [0.140374E-04, -0.333683E-04, 0.231834E-04],
+            [-0.111125E-05, -0.466724E-04, 0.972745E-05],
+        ]
+        init = AtomicVelocitiesCard(
+            StructArray{AtomicVelocity}((atoms, velocities))
+        )
+        CP.append_atom!(init, ["S", "N"])
+        @test [x.atom for x in init.data] == ["H", "O", "S", "N"]
+    end # testset
 end # testset
 
 @testset "Constructing `RefCellParametersCard`"  begin
