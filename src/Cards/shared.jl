@@ -379,8 +379,8 @@ CellParametersCard(data) = CellParametersCard("alat", data)
 end
 AtomicForce(atom, force::AbstractVector{T}) where {T} = AtomicForce{T}(atom, force)
 
-struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
-    data::T
+struct AtomicForcesCard <: Card
+    data::Vector{<:AtomicForce}
 end
 # ============================================================================ #
 
