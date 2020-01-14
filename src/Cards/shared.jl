@@ -404,15 +404,14 @@ end
 
 struct GammaPoint <: KPoint end
 
-@auto_hash_equals struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
-    coord::A
-    weight::B
-    function SpecialKPoint{A,B}(coord, weight) where {A<:AbstractVector{<:Real},B<:Real}
+@auto_hash_equals struct SpecialKPoint{T<:Real} <: KPoint
+    coord::Vector{T}
+    weight::T
+    function SpecialKPoint{T}(coord, weight) where {T<:Real}
         @assert length(coord) == 3
         return new(coord, weight)
     end
 end
-SpecialKPoint(coord::A, weight::B) where {A,B} = SpecialKPoint{A,B}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 @auto_hash_equals struct KPointsCard{
