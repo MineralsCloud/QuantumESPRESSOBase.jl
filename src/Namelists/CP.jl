@@ -32,6 +32,11 @@ export ControlNamelist,
     WannierNamelist
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
+"""
+    ControlNamelist <: Namelist
+
+Represent the `CONTROL` namelist of `cp.x`.
+"""
 @with_kw struct ControlNamelist <: Namelist
     calculation::String = "cp"
     title::String = "MD Simulation"
@@ -76,6 +81,11 @@ export ControlNamelist,
     @assert memory ∈ ("small", "default", "large")
 end # struct ControlNamelist
 
+"""
+    SystemNamelist <: Namelist
+
+Represent the `SYSTEM` namelist of `cp.x`.
+"""
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
     celldm::Vector{Union{Nothing,Float64}} = Vector{Float64}(undef, 6)
@@ -148,6 +158,11 @@ end # struct ControlNamelist
     @assert q2sigma >= 0
 end # struct SystemNamelist
 
+"""
+    ElectronsNamelist <: Namelist
+
+Represent the `ELECTRONS` namelist of `cp.x`.
+"""
 @with_kw struct ElectronsNamelist <: Namelist
     electron_maxstep::Int = 100
     electron_dynamics::String = "none"
@@ -189,6 +204,13 @@ end # struct SystemNamelist
     @assert startingwfc ∈ ("atomic", "random")
 end # struct ElectronsNamelist
 
+"""
+    IonsNamelist <: Namelist
+
+Represent the `IONS` namelist of `cp.x`.
+
+Input this namelist only if `calculation` is `"cp"`, `"relax"`, `"vc-relax"`, `"vc-cp"`, `"cp-wf"`, or `"vc-cp-wf"`.
+"""
 @with_kw struct IonsNamelist <: Namelist
     ion_dynamics::String = "none"
     ion_positions::String = "default"
@@ -222,6 +244,13 @@ end # struct ElectronsNamelist
 
 end # struct IonsNamelist
 
+"""
+    CellNamelist <: Namelist
+
+Represent the `CELL` namelist of `cp.x`.
+
+Input this namelist only if `calculation` is `"vc-relax"`, `"vc-cp"`, or `"vc-cp-wf"`.
+"""
 @with_kw struct CellNamelist <: Namelist
     cell_parameters::String = "default"
     cell_dynamics::String = "none"
@@ -259,6 +288,13 @@ end # struct IonsNamelist
     )
 end # struct CellNamelist
 
+"""
+    PressAiNamelist <: Namelist
+
+Represent the `PRESS_AI` namelist of `cp.x`.
+
+Input this namelist only when `tabps` is `true`.
+"""
 @with_kw struct PressAiNamelist <: Namelist
     abivol::Bool = false
     abisur::Bool = false
@@ -271,6 +307,13 @@ end # struct CellNamelist
     dthr::Float64 = 0.0
 end # struct PressAiNamelist
 
+"""
+    WannierNamelist <: Namelist
+
+Represent the `WANNIER` namelist of `cp.x`.
+
+Input this namelist only if `calculation` is `"cp-wf"` or `"vc-cp-wf"`.
+"""
 @with_kw struct WannierNamelist <: Namelist
     wf_efield::Bool = false
     wf_switch::Bool = false
