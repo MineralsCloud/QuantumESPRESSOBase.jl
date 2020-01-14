@@ -1,7 +1,6 @@
 module QuantumESPRESSOBase
 
 using Compat: isnothing
-using Fortran90Namelists.JuliaToFortran: to_fortran
 
 export asfieldname, titleof, to_qe, cell_volume, bravais_lattice
 
@@ -45,6 +44,24 @@ julia> titleof(SystemNamelist)
 ```
 """
 titleof(x::InputEntry) = titleof(typeof(x))
+
+to_fortran(v::Int) = string(v)
+function to_fortran(v::Float32; scientific::Bool = false)
+    str = string(v)
+    scientific && return replace(str, r"f"i => "e")
+    return str
+end
+function to_fortran(v::Float64; scientific::Bool = false)
+    str = string(v)
+    scientific && return replace(str, r"e"i => "d")
+    return string(v)
+end
+function to_fortran(v::Bool)
+    v ? ".true." : ".false."
+end
+function to_fortran(v::AbstractString)
+    return "'$v'"
+end
 
 """
     to_qe(x; indent = ' '^4, delim = ' ')
