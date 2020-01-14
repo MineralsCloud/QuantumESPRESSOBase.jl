@@ -1,5 +1,5 @@
 """
-    bravais_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing, Float64}})
+    bravais_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
 
 Return a 3x3 matrix representing the Bravais lattice from `ibrav` and `celldm`.
 """
