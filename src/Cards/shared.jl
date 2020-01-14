@@ -145,12 +145,12 @@ function pseudopot_format(data::AtomicSpecies)::PseudopotentialFormat
 end
 
 """
-    AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
+    AtomicSpeciesCard <: Card
 
 Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 """
-struct AtomicSpeciesCard{T<:AbstractVector{<:AtomicSpecies}} <: Card
-    data::T
+struct AtomicSpeciesCard <: Card
+    data::Vector{AtomicSpecies}
 end
 # ============================================================================ #
 
@@ -247,7 +247,7 @@ AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, 
 AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 
 """
-    AtomicPositionsCard{A<:AbstractVector{AtomicPosition}} <: Card
+    AtomicPositionsCard <: Card
 
 Represent the `ATOMIC_POSITIONS` card in QE.
 
@@ -255,18 +255,14 @@ Represent the `ATOMIC_POSITIONS` card in QE.
 - `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 - `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
 """
-@auto_hash_equals struct AtomicPositionsCard{A<:AbstractVector{<:AtomicPosition}} <: Card
+@auto_hash_equals struct AtomicPositionsCard <: Card
     option::String
-    data::A
-    function AtomicPositionsCard{A}(
-        option,
-        data,
-    ) where {A<:AbstractVector{<:AtomicPosition}}
+    data::Vector{AtomicPosition}
+    function AtomicPositionsCard(option, data)
         @assert option ∈ allowed_options(AtomicPositionsCard)
         return new(option, data)
     end
 end
-AtomicPositionsCard(option, data::A) where {A} = AtomicPositionsCard{A}(option, data)
 AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
 function AtomicPositionsCard(option, card::AtomicSpeciesCard)
     return AtomicPositionsCard(option, map(AtomicPosition, card.data))
@@ -358,46 +354,43 @@ end # function append_atom!
 
 # ============================== CellParameters ============================== #
 abstract type AbstractCellParametersCard <: Card end
-@auto_hash_equals struct CellParametersCard{A<:AbstractMatrix{<:Real}} <:
-                         AbstractCellParametersCard
+@auto_hash_equals struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
-    data::A
-    function CellParametersCard{A}(option, data) where {A<:AbstractMatrix{<:Real}}
+    data::Matrix{T}
+    function CellParametersCard{T}(option, data) where {T<:Real}
         @assert option ∈ allowed_options(CellParametersCard)
         @assert size(data) == (3, 3)
         return new(option, data)
     end
 end
-CellParametersCard(option, data::A) where {A} = CellParametersCard{A}(option, data)
+CellParametersCard(option, data::AbstractMatrix{T}) where {T} =
+    CellParametersCard{T}(option, data)
 CellParametersCard(data) = CellParametersCard("alat", data)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
-@auto_hash_equals struct AtomicForce{A<:AbstractVector{<:Real}}
+@auto_hash_equals struct AtomicForce{T<:Real}
     atom::String
-    force::A
-    function AtomicForce{A}(atom, force) where {A<:AbstractVector{<:Real}}
+    force::Vector{T}
+    function AtomicForce{T}(atom, force) where {T<:Real}
         @assert length(force) == 3
         return new(atom, force)
     end
 end
-AtomicForce(atom, force::A) where {A} = AtomicForce{A}(atom, force)
+AtomicForce(atom, force::AbstractVector{T}) where {T} = AtomicForce{T}(atom, force)
 
-struct AtomicForcesCard{T<:AbstractVector{<:AtomicForce}} <: Card
-    data::T
+struct AtomicForcesCard <: Card
+    data::Vector{<:AtomicForce}
 end
 # ============================================================================ #
 
 # ============================== KPointsCard ============================== #
 abstract type KPoint end
 
-@auto_hash_equals struct MonkhorstPackGrid{
-    A<:AbstractVector{<:Integer},
-    B<:AbstractVector{<:Integer},
-}
-    grid::A
-    offsets::B
-    function MonkhorstPackGrid{A,B}(grid, offsets) where {A,B}
+@auto_hash_equals struct MonkhorstPackGrid
+    grid::Vector{Int}
+    offsets::Vector{Int}
+    function MonkhorstPackGrid(grid, offsets)
         @assert length(grid) == length(offsets) == 3
         # See https://github.com/aiidateam/aiida-quantumespresso/blob/4aef9f9/aiida_quantumespresso/cli/utils/validate.py#L10-L37
         @assert(all(grid .> 0), "`grid` must be positive integers!")
@@ -408,19 +401,19 @@ abstract type KPoint end
         return new(grid, offsets)
     end
 end
-MonkhorstPackGrid(grid::A, offsets::B) where {A,B} = MonkhorstPackGrid{A,B}(grid, offsets)
 
 struct GammaPoint <: KPoint end
 
-@auto_hash_equals struct SpecialKPoint{A<:AbstractVector{<:Real},B<:Real} <: KPoint
-    coord::A
-    weight::B
-    function SpecialKPoint{A,B}(coord, weight) where {A<:AbstractVector{<:Real},B<:Real}
+@auto_hash_equals struct SpecialKPoint{T<:Real} <: KPoint
+    coord::Vector{T}
+    weight::T
+    function SpecialKPoint{T}(coord, weight) where {T<:Real}
         @assert length(coord) == 3
         return new(coord, weight)
     end
 end
-SpecialKPoint(coord::A, weight::B) where {A,B} = SpecialKPoint{A,B}(coord, weight)
+SpecialKPoint(coord::AbstractVector, weight) =
+    SpecialKPoint{promote_type(eltype(coord), typeof(weight))}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 @auto_hash_equals struct KPointsCard{

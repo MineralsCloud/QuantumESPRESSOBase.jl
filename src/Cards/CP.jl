@@ -53,8 +53,8 @@ Construct an incomplete `AtomicPosition` from an `AtomicVelocity` instance.
 AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 AtomicPosition(x::AtomicVelocity) = AtomicPosition(x.atom)
 
-@auto_hash_equals struct AtomicVelocitiesCard{A<:AbstractVector{<:AtomicVelocity}} <: Card
-    data::A
+@auto_hash_equals struct AtomicVelocitiesCard <: Card
+    data::Vector{AtomicVelocity}
 end
 
 """
@@ -112,17 +112,17 @@ function append_atom!(card::AtomicVelocitiesCard, atoms::AbstractVector{<:Abstra
     return card
 end # function append_atom!
 
-@auto_hash_equals struct RefCellParametersCard{A<:AbstractMatrix{<:Real}} <:
-                         AbstractCellParametersCard
+@auto_hash_equals struct RefCellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
-    data::A
-    function RefCellParametersCard{A}(option, data) where {A<:AbstractMatrix{<:Real}}
+    data::Matrix{T}
+    function RefCellParametersCard{T}(option, data) where {T<:Real}
         @assert option ∈ allowed_options(RefCellParametersCard)
         @assert size(data) == (3, 3)
         return new(option, data)
     end
 end
-RefCellParametersCard(option, data::A) where {A} = RefCellParametersCard{A}(option, data)
+RefCellParametersCard(option, data::AbstractMatrix{T}) where {T} =
+    RefCellParametersCard{T}(option, data)
 RefCellParametersCard(data) = RefCellParametersCard("bohr", data)
 
 Cards.optionof(::AtomicVelocitiesCard) = "a.u"
