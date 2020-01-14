@@ -354,17 +354,17 @@ end # function append_atom!
 
 # ============================== CellParameters ============================== #
 abstract type AbstractCellParametersCard <: Card end
-@auto_hash_equals struct CellParametersCard{A<:AbstractMatrix{<:Real}} <:
-                         AbstractCellParametersCard
+@auto_hash_equals struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
-    data::A
-    function CellParametersCard{A}(option, data) where {A<:AbstractMatrix{<:Real}}
+    data::Matrix{T}
+    function CellParametersCard{T}(option, data) where {T<:Real}
         @assert option ∈ allowed_options(CellParametersCard)
         @assert size(data) == (3, 3)
         return new(option, data)
     end
 end
-CellParametersCard(option, data::A) where {A} = CellParametersCard{A}(option, data)
+CellParametersCard(option, data::AbstractMatrix{T}) where {T} =
+    CellParametersCard{T}(option, data)
 CellParametersCard(data) = CellParametersCard("alat", data)
 # ============================================================================ #
 
