@@ -31,8 +31,7 @@ julia> using QuantumESPRESSOBase.Cards.PWscf
 julia> AtomicSpecies("C1", 12, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
 AtomicSpecies("C1", 12.0, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
 
-julia> x = AtomicSpecies('S')
-AtomicSpecies("S", 1.0e-323, #undef)
+julia> x = AtomicSpecies('S');
 
 julia> x.atom
 "S"
@@ -175,8 +174,7 @@ julia> using QuantumESPRESSOBase.Cards.PWscf
 julia> AtomicPosition('O', [0, 0, 0])
 AtomicPosition("O", [0.0, 0.0, 0.0], [1, 1, 1])
 
-julia> x = AtomicPosition('O')
-AtomicPosition("O", #undef, #undef)
+julia> x = AtomicPosition('O');
 
 julia> x.pos
 ERROR: UndefRefError: access to undefined reference
@@ -193,7 +191,7 @@ julia> x.pos = Float64[0, 0, 0]
  0.0
 
 julia> x.if_pos = [1, 0, 2]
- ERROR: AssertionError: `if_pos` elements must be 0 or 1!
+ERROR: AssertionError: `if_pos` elements must be 0 or 1!
 [...]
 
 julia> x.if_pos = [1, 0, 1]

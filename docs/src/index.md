@@ -1,5 +1,6 @@
 ```@meta
 CurrentModule = QuantumESPRESSOBase
+DocTestSetup = :(using QuantumESPRESSOBase)
 ```
 
 # QuantumESPRESSOBase

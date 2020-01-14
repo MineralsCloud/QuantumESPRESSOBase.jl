@@ -15,11 +15,10 @@ Return the field name of a `Namelist` or a `Card` in a `QuantumESPRESSOInput`.
 # Examples
 
 ```jldoctest
-julia> asfieldname(SystemNamelist)
-:system
+julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Namelists.PWscf: SystemNamelist
 
-julia> asfieldname(SystemNamelist())
-:system
+julia> asfieldname(SystemNamelist) == asfieldname(SystemNamelist()) == :system
+true
 ```
 """
 asfieldname(x::InputEntry) = asfieldname(typeof(x))
@@ -36,11 +35,10 @@ instances can be passed instead of types.
 # Examples
 
 ```jldoctest
-julia> titleof(SystemNamelist())
-"SYSTEM"
+julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Namelists.PWscf: SystemNamelist
 
-julia> titleof(SystemNamelist)
-"SYSTEM"
+julia> titleof(SystemNamelist()) == titleof(SystemNamelist) == "SYSTEM"
+true
 ```
 """
 titleof(x::InputEntry) = titleof(typeof(x))
