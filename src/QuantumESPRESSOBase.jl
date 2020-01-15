@@ -4,6 +4,7 @@ using Compat: isnothing
 
 export asfieldname, titleof, to_qe, cell_volume, bravais_lattice
 
+"Represent any component of a `QuantumESPRESSOInput`."
 abstract type InputEntry end
 
 """
