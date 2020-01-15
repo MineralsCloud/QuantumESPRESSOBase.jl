@@ -37,30 +37,30 @@ using QuantumESPRESSOBase.Cards.PWscf
 end # testset
 
 @testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
-    atoms = ["Al", "As"]
-    masses = [24590.7655930491, 68285.4024548272]
-    pseudopotentials = ["Al.pbe-n-kjpaw_psl.1.0.0.UPF", "As.pbe-n-kjpaw_psl.1.0.0.UPF"]
-    init = AtomicSpeciesCard(StructArray{AtomicSpecies}((atoms, masses, pseudopotentials)))
-    @test init.data == [
+    a = ["Al", "As"]
+    m = [24590.7655930491, 68285.4024548272]
+    pp = ["Al.pbe-n-kjpaw_psl.1.0.0.UPF", "As.pbe-n-kjpaw_psl.1.0.0.UPF"]
+    card = AtomicSpeciesCard(StructArray{AtomicSpecies}((a, m, pp)))
+    @test card.data == [
         AtomicSpecies("Al", 24590.7655930491, "Al.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
     ]
-    push!(init.data, AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"))
-    @test init.data == [
+    push!(card.data, AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"))
+    @test card.data == [
         AtomicSpecies("Al", 24590.7655930491, "Al.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
     ]
     @testset "Mutual construction" begin
-        @test map(x -> x.atom, AtomicPositionsCard("alat", init).data) == ["Al", "As", "Si"]
+        @test map(x -> x.atom, AtomicPositionsCard("alat", card).data) == ["Al", "As", "Si"]
     end # testset
     @testset "Test `pseudopot_format`" begin
-        @test unique(pseudopot_format.(init.data)) == [UnifiedPseudopotentialFormat()]
+        @test unique(pseudopot_format.(card.data)) == [UnifiedPseudopotentialFormat()]
     end # testset
     @testset "Test `to_qe`" begin
-        @test to_qe(init) ==
+        @test to_qe(card) ==
               "ATOMIC_SPECIES\n     Al     24590.7655930491 Al.pbe-n-kjpaw_psl.1.0.0.UPF\n     As     68285.4024548272 As.pbe-n-kjpaw_psl.1.0.0.UPF\n     Si     25591.1924913552 Si.pbe-n-kjpaw_psl.1.0.0.UPF"
-        @test to_qe(init; delim = "", indent = "") ==
+        @test to_qe(card; delim = "", indent = "") ==
               "ATOMIC_SPECIES\n Al    24590.7655930491Al.pbe-n-kjpaw_psl.1.0.0.UPF\n As    68285.4024548272As.pbe-n-kjpaw_psl.1.0.0.UPF\n Si    25591.1924913552Si.pbe-n-kjpaw_psl.1.0.0.UPF"
     end # testset
 end # testset
