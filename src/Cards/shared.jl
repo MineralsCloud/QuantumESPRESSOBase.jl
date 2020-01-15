@@ -464,6 +464,8 @@ Cards.allowed_options(::Type{<:KPointsCard}) = (
     cell_volume(card)
 
 Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
+
+It will throw an error if the information is not enough to calculate the volume.
 """
 function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903

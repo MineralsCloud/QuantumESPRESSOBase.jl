@@ -93,7 +93,7 @@ compulsory_cards(input::PWInput) =
 Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
 It is lazy, you may want to `collect` it.
 
-To get the optional `Card`s, use `(!compulsory_cards)(input)`.
+To get the optional `Card`s, use `(!compulsory_cards)(input)` (Note the parenthesis!).
 """
 compulsory_cards(input::CPInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions))
@@ -106,6 +106,11 @@ Base.:!(::typeof(compulsory_cards)) = function (input::T) where {T<:Union{PWInpu
     )
 end
 
+"""
+    cell_volume(input::PWInput)
+
+Calculate the volume of the cell based on the information given in a `PWInput`.
+"""
 function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
         return det(bravais_lattice(input.system))
