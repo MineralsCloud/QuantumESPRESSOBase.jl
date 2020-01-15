@@ -109,7 +109,7 @@ end
 """
     cell_volume(input::PWInput)
 
-Calculate the volume of the cell based on the information given in a `PWInput`.
+Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
 """
 function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)

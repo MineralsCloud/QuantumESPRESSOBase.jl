@@ -446,6 +446,11 @@ Return a 3x3 matrix representing the Bravais lattice from `nml`.
 QuantumESPRESSOBase.bravais_lattice(nml::SystemNamelist) =
     bravais_lattice(nml.ibrav, nml.celldm)
 
+"""
+    cell_volume(nml::SystemNamelist)
+
+Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
+"""
 function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
     return det(bravais_lattice(nml))

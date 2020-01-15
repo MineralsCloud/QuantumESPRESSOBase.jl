@@ -1,5 +1,10 @@
 ## `QuantumESPRESSOBase.Namelists` module
 
+```@contents
+Pages = ["Namelists.md"]
+Depth = 3
+```
+
 ```@autodocs
 Modules = [QuantumESPRESSOBase.Namelists]
 ```
