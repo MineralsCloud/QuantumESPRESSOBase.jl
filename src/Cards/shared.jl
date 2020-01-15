@@ -385,8 +385,18 @@ end
 # ============================================================================ #
 
 # ============================== KPointsCard ============================== #
+"Represent a general point in the 3D reciprocal space."
 abstract type KPoint end
 
+"""
+    MonkhorstPackGrid
+
+Represent the Monkhorst--Pack grid.
+
+# Arguments
+- `grid::Vector{Int}`: These parameters specify the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst-Pack grids.
+- `offsets::Vector{Int}`: The grid offsets ``sk_1``, ``sk_2`` and ``sk_3`` must be `0` (no offset) or `1` (grid displaced by half a grid step in the corresponding direction).
+"""
 @auto_hash_equals struct MonkhorstPackGrid
     grid::Vector{Int}
     offsets::Vector{Int}
@@ -402,8 +412,10 @@ abstract type KPoint end
     end
 end
 
+"Represent the centre of the Brillouin zone (commonly marked as the Γ point)."
 struct GammaPoint <: KPoint end
 
+"Represent a special point of the 3D Brillouin zone. Each of it has a weight."
 @auto_hash_equals struct SpecialKPoint{T<:Real} <: KPoint
     coord::Vector{T}
     weight::T
@@ -416,6 +428,15 @@ SpecialKPoint(coord::AbstractVector, weight) =
     SpecialKPoint{promote_type(eltype(coord), typeof(weight))}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
+"""
+    struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}} <: Card
+
+Represent the `K_POINTS` card in QE.
+
+# Arguments
+- `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
+- `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
+"""
 @auto_hash_equals struct KPointsCard{
     A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}},
 } <: Card
