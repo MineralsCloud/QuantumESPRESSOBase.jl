@@ -389,7 +389,7 @@ end
 abstract type KPoint end
 
 """
-    MonkhorstPackGrid
+    MonkhorstPackGrid(grid, offsets)
 
 Represent the Monkhorst--Pack grid.
 
@@ -415,7 +415,11 @@ end
 "Represent the centre of the Brillouin zone (commonly marked as the Γ point)."
 struct GammaPoint <: KPoint end
 
-"Represent a special point of the 3D Brillouin zone. Each of it has a weight."
+"""
+    SpecialKPoint(coord, weight)
+
+Represent a special point of the 3D Brillouin zone. Each of them has a weight.
+"""
 @auto_hash_equals struct SpecialKPoint{T<:Real} <: KPoint
     coord::Vector{T}
     weight::T
