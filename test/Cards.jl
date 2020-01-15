@@ -1,3 +1,5 @@
+module Cards
+
 module PWscf
 
 using Test
@@ -379,5 +381,7 @@ end # testset
     ]
     @test RefCellParametersCard(data).option == "bohr"
 end # testset
+
+end
 
 end

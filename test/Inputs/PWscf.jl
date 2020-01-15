@@ -1,3 +1,5 @@
+module Inputs
+
 module PWscf
 
 using Test
@@ -214,5 +216,7 @@ end # testset
         )
     end
 end # testset
+
+end
 
 end
