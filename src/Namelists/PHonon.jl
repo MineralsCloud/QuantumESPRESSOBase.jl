@@ -20,6 +20,11 @@ import QuantumESPRESSOBase
 export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
+"""
+    PhNamelist <: Namelist
+
+Represent the `INPUTPH` namelist of `ph.x`.
+"""
 @with_kw struct PhNamelist <: Namelist
     amass::Vector{Union{Nothing,Float64}} = [0.0]
     outdir::String = "./"
@@ -80,6 +85,11 @@ export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 end # struct PhNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
+"""
+    Q2rNamelist <: Namelist
+
+Represent the `INPUT` namelist of `q2r.x`.
+"""
 @with_kw struct Q2rNamelist <: Namelist
     fildyn::String = " "
     flfrc::String = " "
@@ -88,6 +98,11 @@ end # struct PhNamelist
 end # struct Q2rNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
+"""
+    MatdynNamelist <: Namelist
+
+Represent the `INPUT` namelist of `matdyn.x`.
+"""
 @with_kw struct MatdynNamelist <: Namelist
     dos::Bool = false
     deltaE::Float64 = 1.0
@@ -120,6 +135,11 @@ end # struct Q2rNamelist
     loto_2d::Bool = false
 end # struct MatdynNamelist
 
+"""
+    DynmatNamelist <: Namelist
+
+Represent the `INPUT` namelist of `dynmat.x`.
+"""
 @with_kw struct DynmatNamelist <: Namelist
     asr::String = "no"
     axis::Int = 3
