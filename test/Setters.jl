@@ -1,3 +1,5 @@
+module Setters
+
 using Test
 
 using Setfield: set
@@ -55,17 +57,19 @@ end # testset
           ("smearing", 0.0019000869377698247, "fermi-dirac")
     system = set(system, FiniteTemperatureSetter(20851.044012 * u"m^-1"))  # 300K
     @test (system.occupations, system.degauss, system.smearing) ==
-        ("smearing", 0.001900086937837879, "fermi-dirac")
+          ("smearing", 0.001900086937837879, "fermi-dirac")
     system = set(system, FiniteTemperatureSetter(208.51044012 * u"cm^-1"))  # 300K
     @test (system.occupations, system.degauss, system.smearing) ==
-        ("smearing", 0.001900086937837879, "fermi-dirac")
+          ("smearing", 0.001900086937837879, "fermi-dirac")
     system = set(system, FiniteTemperatureSetter(4.141947e-24 * u"kJ"))  # 300K
     @test (system.occupations, system.degauss, system.smearing) ==
           ("smearing", 0.0019000869380663146, "fermi-dirac")
     system = set(system, FiniteTemperatureSetter(4.6085375610000005e-35 * u"g"))  # 300K
     @test (system.occupations, system.degauss, system.smearing) ==
-        ("smearing", 0.0019000869377760491, "fermi-dirac")
+          ("smearing", 0.0019000869377760491, "fermi-dirac")
     system = set(system, FiniteTemperatureSetter(4.6085375610000005e-32 * u"mg"))  # 300K
     @test (system.occupations, system.degauss, system.smearing) ==
-        ("smearing", 0.001900086937776049, "fermi-dirac")
+          ("smearing", 0.001900086937776049, "fermi-dirac")
 end # testset
+
+end
