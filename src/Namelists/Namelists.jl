@@ -19,6 +19,11 @@ import QuantumESPRESSOBase
 
 export to_dict, dropdefault
 
+"""
+    Namelist <: InputEntry
+
+The abstraction of an component of a `QuantumESPRESSOInput`, a basic Fortran data structure.
+"""
 abstract type Namelist <: InputEntry end
 
 """
