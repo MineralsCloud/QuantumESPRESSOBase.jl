@@ -1,7 +1,7 @@
 using Compat: isnothing
 using LinearAlgebra: det, cross
 
-export asfieldname, titleof, to_qe, cell_volume, direct_lattice, reciprocal_lattice
+export asfieldname, titleof, to_qe, cell_volume, direct_lattice, reciprocal_lattice, supercell
 
 """
     InputEntry
@@ -283,3 +283,9 @@ function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing
     a1, a2, a3 = bravais[1, :], bravais[2, :], bravais[3, :]
     return 2π / volume * [cross(a2, a3) cross(a3, a1) cross(a1, a2)]
 end # function reciprocal_lattice
+function supercell(cell::AbstractMatrix, expansion::AbstractVector{<:Integer})
+    @assert length(expansion) == 3
+    a1, a2, a3 = cell[1, :], cell[2, :], cell[3, :]
+    s1, s2, s3 = expansion
+    return [a1 .* s1 a2 .* s2 a3 .* s3]
+end # function supercell
