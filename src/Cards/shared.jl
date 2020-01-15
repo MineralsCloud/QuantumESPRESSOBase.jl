@@ -353,7 +353,15 @@ end # function append_atom!
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
+"Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
 abstract type AbstractCellParametersCard <: Card end
+
+"""
+    CellParametersCard{T<:Real} <: AbstractCellParametersCard
+    CellParametersCard(option::String, data::Matrix)
+
+Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
+"""
 @auto_hash_equals struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
     data::Matrix{T}
@@ -506,6 +514,13 @@ function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
     end
 end # function QuantumESPRESSOBase.cell_volume
 
+"""
+    option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
+
+Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom", or its reverse.
+
+It does not support conversion between "alat" and the rests.
+"""
 function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
     old_option = optionof(card)

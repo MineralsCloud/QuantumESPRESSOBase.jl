@@ -35,6 +35,7 @@ import QuantumESPRESSOBase.Setters
 export PWInput
 
 """
+    PWInput <: QuantumESPRESSOInput
     PWInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
 
 Construct a `PWInput` which represents the input of program `pw.x`.

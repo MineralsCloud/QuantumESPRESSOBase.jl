@@ -18,6 +18,42 @@ export pseudopot_format, option_convert, push_atom!, append_atom!
 
 include("shared.jl")
 
+"""
+    AtomicVelocity(atom::Union{AbstractChar,String}, velocity::Vector{Float64})
+    AtomicVelocity(x::AtomicSpecies, velocity)
+    AtomicVelocity(x::AtomicPosition, velocity)
+    AtomicVelocity(atom::Union{AbstractChar,AbstractString})
+    AtomicVelocity(x::AtomicSpecies)
+    AtomicVelocity(x::AtomicPosition)
+
+Represent each line of the `ATOMIC_VELOCITIES` card in QE's `CP` package.
+
+It is a `mutable struct` and supports _incomplete Initialization_ as in the fourth to
+sixth constructors. See the examples below. The `atom` field accepts at most 3 characters
+as claimed in QE's documentation.
+
+# Examples
+```jldoctest
+julia> using QuantumESPRESSOBase.Cards.CP
+
+julia> AtomicVelocity("H", [0.140374e-04, -0.333683e-04, 0.231834e-04])
+AtomicVelocity("H", [1.40374e-5, -3.33683e-5, 2.31834e-5])
+
+julia> x = AtomicVelocity('H');
+
+julia> x.atom
+"H"
+
+julia> x.velocity = [0.140374e-04, -0.333683e-04, 0.231834e-04]; x.velocity
+3-element Array{Float64,1}:
+  1.40374e-5
+ -3.33683e-5
+  2.31834e-5
+
+julia> AtomicVelocity(AtomicSpecies("H", 1.00794000, "H.pbe-rrkjus_psl.1.0.0.UPF"))
+AtomicVelocity("H", #undef)
+```
+"""
 @auto_hash_equals mutable struct AtomicVelocity
     atom::String
     velocity::Vector{Float64}
@@ -31,6 +67,7 @@ include("shared.jl")
         return new(string(atom))
     end
 end
+AtomicVelocity(atom::AbstractChar, velocity) = AtomicVelocity(string(atom), velocity)
 AtomicVelocity(x::AtomicSpecies, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicSpecies) = AtomicVelocity(x.atom)
@@ -53,6 +90,11 @@ Construct an incomplete `AtomicPosition` from an `AtomicVelocity` instance.
 AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 AtomicPosition(x::AtomicVelocity) = AtomicPosition(x.atom)
 
+"""
+    AtomicVelocitiesCard <: Card
+
+Represent the `ATOMIC_VELOCITIES` card in QE's `CP` package. It does not have an "option".
+"""
 @auto_hash_equals struct AtomicVelocitiesCard <: Card
     data::Vector{AtomicVelocity}
 end

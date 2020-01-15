@@ -22,6 +22,26 @@ using QuantumESPRESSOBase.Inputs: QuantumESPRESSOInput
 
 export CPInput
 
+"""
+    CPInput <: QuantumESPRESSOInput
+    CPInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
+
+Construct a `PWInput` which represents the input of program `pw.x`.
+
+# Arguments
+- `control::ControlNamelist=ControlNamelist()`: the `CONTROL` namelist of the input. Optional.
+- `system::SystemNamelist=SystemNamelist()`: the `SYSTEM` namelist of the input. Optional.
+- `electrons::ElectronsNamelist=ElectronsNamelist()`: the `ELECTRONS` namelist of the input. Optional.
+- `ions::IonsNamelist=IonsNamelist()`: the `IONS` namelist of the input. Optional.
+- `cell::CellNamelist=CellNamelist()`: the `CELL` namelist of the input. Optional.
+- `press_ai::PressAiNamelist=PressAiNamelist()`: the `PRESS_AI` namelist of the input. Optional.
+- `wannier::WannierNamelist=WannierNamelist()`: the `WANNIER` namelist of the input. Optional.
+- `atomic_species::AtomicSpeciesCard`: the `ATOMIC_SPECIES` card of the input. Must be provided explicitly.
+- `atomic_positions::AtomicPositionsCard`: the `ATOMIC_POSITIONS` card of the input. Must be provided explicitly.
+- `atomic_velocities::AtomicVelocitiesCard`: the `ATOMIC_VELOCITIES` card of the input. Must be provided explicitly.
+- `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
+- `ref_cell_parameters::Union{Nothing,RefCellParametersCard}`: the `REF_CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
+"""
 @with_kw struct CPInput <: QuantumESPRESSOInput
     control::ControlNamelist = ControlNamelist()
     system::SystemNamelist = SystemNamelist()
