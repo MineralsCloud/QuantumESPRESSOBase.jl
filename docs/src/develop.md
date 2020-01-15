@@ -22,7 +22,7 @@ on how to do this.) In the following text, we will call it `PKGROOT`.
 
 ## [Instantiate the project](@id instantiating)
 
-Go to `PKGROOT/docs`, run
+Go to `PKGROOT`, start a new Julia session and run
 
 ```julia
 julia> using Pkg; Pkg.instantiate()
@@ -30,11 +30,21 @@ julia> using Pkg; Pkg.instantiate()
 
 ## How to build docs
 
-After [instantiating](@ref) the project, go to `PKGROOT/docs`, run
+After [instantiating](@ref) the project, go to `PKGROOT`, run (without the `$` prompt)
 
 ```bash
-julia docs/make.jl
+$ julia --color=yes docs/make.jl
 ```
 
-in your terminal. After a while a folder `PKGROOT/docs/build` will appear. Open
-`PKGROOT/docs/build/index.html` in your favorite browser and have fun!
+in your terminal. In a while a folder `PKGROOT/docs/build` will appear. Open
+`PKGROOT/docs/build/index.html` with your favorite browser and have fun!
+
+## How to run tests
+
+After [instantiating](@ref) the project, go to `PKGROOT`, run (without the `$` prompt)
+
+```bash
+$ julia --color=yes test/runtests.jl
+```
+
+in your terminal.
