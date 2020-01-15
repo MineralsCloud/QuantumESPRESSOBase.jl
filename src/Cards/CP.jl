@@ -67,6 +67,7 @@ AtomicVelocity("H", #undef)
         return new(string(atom))
     end
 end
+AtomicVelocity(atom::AbstractChar, velocity) = AtomicVelocity(string(atom), velocity)
 AtomicVelocity(x::AtomicSpecies, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicSpecies) = AtomicVelocity(x.atom)
