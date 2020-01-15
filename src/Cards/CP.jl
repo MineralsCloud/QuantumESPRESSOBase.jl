@@ -90,6 +90,11 @@ Construct an incomplete `AtomicPosition` from an `AtomicVelocity` instance.
 AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 AtomicPosition(x::AtomicVelocity) = AtomicPosition(x.atom)
 
+"""
+    AtomicVelocitiesCard <: Card
+
+Represent the `ATOMIC_VELOCITIES` card in QE's `CP` package. It does not have an "option".
+"""
 @auto_hash_equals struct AtomicVelocitiesCard <: Card
     data::Vector{AtomicVelocity}
 end
