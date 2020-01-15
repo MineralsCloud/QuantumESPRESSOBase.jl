@@ -38,31 +38,22 @@ end # testset
     atoms = ["Al", "As"]
     masses = [24590.7655930491, 68285.4024548272]
     pseudopotentials = ["Al.pbe-n-kjpaw_psl.1.0.0.UPF", "As.pbe-n-kjpaw_psl.1.0.0.UPF"]
-    init = AtomicSpeciesCard(StructArray{AtomicSpecies}((
-        atoms,
-        masses,
-        pseudopotentials,
-    )))
+    init = AtomicSpeciesCard(StructArray{AtomicSpecies}((atoms, masses, pseudopotentials)))
     @test init.data == [
         AtomicSpecies("Al", 24590.7655930491, "Al.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
     ]
-    push!(
-        init.data,
-        AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
-    )
+    push!(init.data, AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"))
     @test init.data == [
         AtomicSpecies("Al", 24590.7655930491, "Al.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
     ]
     @testset "Mutual construction" begin
-        @test map(x -> x.atom, AtomicPositionsCard("alat", init).data) ==
-              ["Al", "As", "Si"]
+        @test map(x -> x.atom, AtomicPositionsCard("alat", init).data) == ["Al", "As", "Si"]
     end # testset
     @testset "Test `pseudopot_format`" begin
-        @test unique(pseudopot_format.(init.data)) ==
-              [UnifiedPseudopotentialFormat()]
+        @test unique(pseudopot_format.(init.data)) == [UnifiedPseudopotentialFormat()]
     end # testset
     @testset "Test `to_qe`" begin
         @test to_qe(init) ==
@@ -92,11 +83,8 @@ end # testset
     @test_throws AssertionError y.atom = "sulfur"
     y.pos, y.if_pos = [0.500000000, 0.288675130, 1.974192764], [1, 1, 1]
     @test x == y  # Constructing `AtomicSpecies` in 3 steps is equivalent to a one-time construction
-    @test AtomicPosition(AtomicSpecies(
-        'S',
-        32.066,
-        "S.pz-n-rrkjus_psl.0.1.UPF",
-    )).atom == "S"
+    @test AtomicPosition(AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")).atom ==
+          "S"
     @test AtomicPosition(
         AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
         [0.500000000, 0.288675130, 1.974192764],
@@ -113,11 +101,7 @@ end # testset
     ]
     init = AtomicPositionsCard(
         "alat",
-        StructArray{AtomicPosition}((
-            atoms,
-            positions,
-            [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
-        )),
+        StructArray{AtomicPosition}((atoms, positions, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
     )
     @test init.data == [
         AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
