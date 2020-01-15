@@ -2,7 +2,7 @@ module QuantumESPRESSOBase
 
 using Compat: isnothing
 
-export asfieldname, titleof, to_qe, cell_volume, bravais_lattice
+export asfieldname, titleof, to_qe, cell_volume, bravais_lattice, reciprocal_lattice
 
 """
     InputEntry

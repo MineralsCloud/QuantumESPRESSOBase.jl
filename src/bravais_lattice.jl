@@ -1,7 +1,9 @@
+using LinearAlgebra: det, cross
+
 """
     bravais_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
 
-Return a 3x3 matrix representing the Bravais lattice from `ibrav` and `celldm`.
+Return a ``3 × 3`` matrix representing the Bravais lattice from `ibrav` and `celldm`.
 """
 bravais_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}}) =
     _bravais_lattice(Val(ibrav), celldm)
@@ -136,3 +138,10 @@ _bravais_lattice(::Val{14}, celldm::AbstractVector{Union{Nothing,Float64}}) =
             celldm[6]^2,
         ) / sqrt(1 - celldm[6]^2)
     ]
+
+function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
+    bravais = bravais_lattice(ibrav, celldm)
+    volume = det(bravais)
+    a1, a2, a3 = bravais[1, :], bravais[2, :], bravais[3, :]
+    return 2π / volume * [cross(a2, a3) cross(a3, a1) cross(a1, a2)]
+end # function reciprocal_lattice
