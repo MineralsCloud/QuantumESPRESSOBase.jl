@@ -514,6 +514,13 @@ function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
     end
 end # function QuantumESPRESSOBase.cell_volume
 
+"""
+    option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
+
+Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom", or its reverse.
+
+It does not support conversion between "alat" and the rests.
+"""
 function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
     old_option = optionof(card)
