@@ -4,7 +4,56 @@ using Compat: isnothing
 
 export asfieldname, titleof, to_qe, cell_volume, bravais_lattice
 
-"Represent any component of a `QuantumESPRESSOInput`."
+"""
+    InputEntry
+
+Represent any component of a `QuantumESPRESSOInput`.
+
+Hierachy of `InputEntry`:
+```
+QuantumESPRESSOBase.InputEntry
+├─ QuantumESPRESSOBase.Cards.Card
+│  ├─ CP.AbstractCellParametersCard
+│  │  ├─ CP.CellParametersCard
+│  │  └─ CP.RefCellParametersCard
+│  ├─ CP.AtomicForcesCard
+│  ├─ CP.AtomicPositionsCard
+│  ├─ CP.AtomicSpeciesCard
+│  ├─ CP.AtomicVelocitiesCard
+│  ├─ CP.KPointsCard
+│  ├─ PHonon.AbstractCellParametersCard
+│  │  └─ PHonon.CellParametersCard
+│  ├─ PHonon.AtomicForcesCard
+│  ├─ PHonon.AtomicPositionsCard
+│  ├─ PHonon.AtomicSpeciesCard
+│  ├─ PHonon.KPointsCard
+│  ├─ PWscf.AbstractCellParametersCard
+│  │  └─ PWscf.CellParametersCard
+│  ├─ PWscf.AtomicForcesCard
+│  ├─ PWscf.AtomicPositionsCard
+│  ├─ PWscf.AtomicSpeciesCard
+│  └─ PWscf.KPointsCard
+└─ QuantumESPRESSOBase.Namelists.Namelist
+   ├─ CP.CellNamelist
+   ├─ CP.ControlNamelist
+   ├─ CP.ElectronsNamelist
+   ├─ CP.IonsNamelist
+   ├─ CP.PressAiNamelist
+   ├─ CP.SystemNamelist
+   ├─ CP.WannierNamelist
+   ├─ PHonon.DynmatNamelist
+   ├─ PHonon.MatdynNamelist
+   ├─ PHonon.PhNamelist
+   ├─ PHonon.Q2rNamelist
+   ├─ PWscf.BandsNamelist
+   ├─ PWscf.CellNamelist
+   ├─ PWscf.ControlNamelist
+   ├─ PWscf.DosNamelist
+   ├─ PWscf.ElectronsNamelist
+   ├─ PWscf.IonsNamelist
+   └─ PWscf.SystemNamelist
+```
+"""
 abstract type InputEntry end
 
 """
@@ -65,7 +114,7 @@ end
 """
     to_qe(x; indent = ' '^4, delim = ' ')
 
-Return a string representing the object, valid form Quantum ESPRESSO's input.
+Return a `String` representing the object, which is valid for Quantum ESPRESSO's input.
 """
 function to_qe(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
     content = ""
