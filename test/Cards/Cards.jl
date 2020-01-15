@@ -1,10 +1,11 @@
+module PWscf
+
 using Test
 
 using Setfield
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase
-using QuantumESPRESSOBase.Cards.CP
 using QuantumESPRESSOBase.Cards.PWscf
 
 @testset "Constructing `AtomicSpecies`" begin
@@ -289,6 +290,18 @@ end # testset
     @test_throws AssertionError KPointsCard("tpiba", GammaPoint())
 end # testset
 
+end
+
+module CP
+
+using Test
+
+using Setfield
+using StructArrays: StructArray
+
+using QuantumESPRESSOBase
+using QuantumESPRESSOBase.Cards.CP
+
 @testset "Constructing `AtomicVelocity`" begin
     # Data from https://gitlab.com/QEF/q-e/blob/master/CPV/examples/autopilot-example/reference/water.autopilot.out
     x = AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])
@@ -382,3 +395,5 @@ end # testset
     ]
     @test RefCellParametersCard(data).option == "bohr"
 end # testset
+
+end
