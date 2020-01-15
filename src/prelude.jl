@@ -283,6 +283,12 @@ function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing
     a1, a2, a3 = bravais[1, :], bravais[2, :], bravais[3, :]
     return 2π / volume * [cross(a2, a3) cross(a3, a1) cross(a1, a2)]
 end # function reciprocal_lattice
+
+"""
+    supercell(cell::AbstractMatrix, expansion::AbstractVector{<:Integer})
+
+Return a supercell based on `cell` and expansion coefficients.
+"""
 function supercell(cell::AbstractMatrix, expansion::AbstractVector{<:Integer})
     @assert length(expansion) == 3
     a1, a2, a3 = cell[1, :], cell[2, :], cell[3, :]
