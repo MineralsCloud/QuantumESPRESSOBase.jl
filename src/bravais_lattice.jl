@@ -90,12 +90,6 @@ _bravais_lattice(::Val{-9}, celldm::AbstractVector{Union{Nothing,Float64}}) =
         1 / 2 celldm[2] / 2 0
         0 0 celldm[3]
     ]
-_bravais_lattice(::Val{91}, celldm::AbstractVector{Union{Nothing,Float64}}) =
-    celldm[1] * [
-        1 0 0
-        0 celldm[2] / 2 -celldm[3] / 2
-        0 celldm[2] / 2 celldm[3] / 2
-    ]
 _bravais_lattice(::Val{10}, celldm::AbstractVector{Union{Nothing,Float64}}) =
     celldm[1] * [
         1 / 2 0 celldm[3] / 2
