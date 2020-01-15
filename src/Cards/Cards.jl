@@ -15,6 +15,11 @@ using QuantumESPRESSOBase: InputEntry
 
 export Card, optionof, allowed_options
 
+"""
+    Card <: InputEntry
+
+The abstraction of all components of a `QuantumESPRESSOInput` that is not a `Namelist`.
+"""
 abstract type Card <: InputEntry end
 
 """

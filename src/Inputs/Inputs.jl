@@ -27,6 +27,7 @@ import QuantumESPRESSOBase.Setters
 
 export namelists, cards, compulsory_namelists, compulsory_cards
 
+"Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput end
 
 # A helper function to implement `namelists` and `cards`. It should not be exported.
