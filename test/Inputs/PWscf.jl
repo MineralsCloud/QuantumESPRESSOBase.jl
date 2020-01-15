@@ -1,3 +1,5 @@
+module PWscf
+
 using Test
 
 using QuantumESPRESSOBase.Namelists.PWscf
@@ -12,17 +14,19 @@ using QuantumESPRESSOBase.Inputs.PWscf
             tprnfor = true,
             outdir = raw"$TMP_DIR/",
             prefix = "silicon",
-            pseudo_dir = raw"$PSEUDO_DIR/"
+            pseudo_dir = raw"$PSEUDO_DIR/",
         )
-        system = SystemNamelist(ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
+        system =
+            SystemNamelist(ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
         electrons = ElectronsNamelist(conv_thr = 1.0e-8, diagonalization = "$diago")
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([
             AtomicPosition("Si", [0.0, 0.0, 0.0]),
-            AtomicPosition("Si", [0.25, 0.25, 0.25])
+            AtomicPosition("Si", [0.25, 0.25, 0.25]),
         ])
         k_points = KPointsCard(
-            "tpiba", [
+            "tpiba",
+            [
                 0.125 0.125 0.125 1.0
                 0.125 0.125 0.375 3.0
                 0.125 0.125 0.625 3.0
@@ -33,7 +37,7 @@ using QuantumESPRESSOBase.Inputs.PWscf
                 0.125 0.625 0.625 3.0
                 0.375 0.375 0.375 1.0
                 0.375 0.375 0.625 3.0
-            ]
+            ],
         )
         object = PWInput(
             control = control,
@@ -42,7 +46,7 @@ using QuantumESPRESSOBase.Inputs.PWscf
             atomic_species = atomic_species,
             atomic_positions = atomic_positions,
             k_points = k_points,
-            cell_parameters = nothing
+            cell_parameters = nothing,
         )
     end
 end # testset
@@ -54,7 +58,7 @@ end # testset
             calculation = "bands",
             pseudo_dir = raw"$PSEUDO_DIR/",
             outdir = raw"$TMP_DIR/",
-            prefix = "silicon"
+            prefix = "silicon",
         )
         system = SystemNamelist(
             ibrav = 2,
@@ -62,7 +66,7 @@ end # testset
             nat = 2,
             ntyp = 1,
             ecutwfc = 18.0,
-            nbnd = 8
+            nbnd = 8,
         )
         electrons = ElectronsNamelist(diagonalization = "$diago")
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
@@ -122,7 +126,7 @@ end # testset
             outdir = raw"$TMP_DIR/",
             prefix = "al",
             tprnfor = true,
-            tstress = true
+            tstress = true,
         )
         system = SystemNamelist(
             ibrav = 2,
@@ -132,14 +136,11 @@ end # testset
             ecutwfc = 15.0,
             occupations = "smearing",
             smearing = "marzari-vanderbilt",
-            degauss = 0.05
+            degauss = 0.05,
         )
         electrons = ElectronsNamelist(diagonalization = "$diago", mixing_beta = 0.7)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Al", 26.98, "Al.pz-vbc.UPF")])
-        atomic_positions = AtomicPositionsCard([AtomicPosition(
-            "Al",
-            [0.0, 0.0, 0.0],
-        )])
+        atomic_positions = AtomicPositionsCard([AtomicPosition("Al", [0.0, 0.0, 0.0])])
         k_points = KPointsCard([
             0.0625000 0.0625000 0.0625000 1.00
             0.0625000 0.0625000 0.1875000 3.00
@@ -213,3 +214,5 @@ end # testset
         )
     end
 end # testset
+
+end
