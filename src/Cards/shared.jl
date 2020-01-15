@@ -353,7 +353,15 @@ end # function append_atom!
 # ============================================================================ #
 
 # ============================== CellParameters ============================== #
+"Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
 abstract type AbstractCellParametersCard <: Card end
+
+"""
+    CellParametersCard{T<:Real} <: AbstractCellParametersCard
+    CellParametersCard(option::String, data::Matrix)
+
+Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
+"""
 @auto_hash_equals struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
     data::Matrix{T}
