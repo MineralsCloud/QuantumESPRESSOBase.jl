@@ -136,7 +136,7 @@ function cell_volume end
 """
     direct_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
 
-Return a ``3 × 3`` matrix representing the Bravais lattice from `ibrav` and `celldm`.
+Return a ``3 × 3`` matrix representing the Bravais lattice (in real space) from `ibrav` and `celldm`.
 """
 direct_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}}) =
     _direct_lattice(Val(ibrav), celldm)
@@ -272,6 +272,11 @@ _direct_lattice(::Val{14}, celldm::AbstractVector{Union{Nothing,Float64}}) =
         ) / sqrt(1 - celldm[6]^2)
     ]
 
+"""
+    reciprocal_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
+
+Return a ``3 × 3`` matrix representing the reciprocal lattice from `ibrav` and `celldm`.
+"""
 function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
     bravais = direct_lattice(ibrav, celldm)
     volume = det(bravais)
