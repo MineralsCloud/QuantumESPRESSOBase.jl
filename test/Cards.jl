@@ -95,28 +95,28 @@ end # testset
 
 @testset "Test constructing `AtomicPositionsCard` from `StructArray`s" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
-    atoms = ["S", "Mo", "S"]
-    positions = [
+    a = ["S", "Mo", "S"]
+    pos = [
         [0.500000000, 0.288675130, 1.974192764],
         [0.000000000, 0.577350270, 2.462038339],
         [0.000000000, -0.577350270, 2.950837559],
     ]
-    init = AtomicPositionsCard(
+    card = AtomicPositionsCard(
         "alat",
-        StructArray{AtomicPosition}((atoms, positions, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
+        StructArray{AtomicPosition}((a, pos, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
     )
-    @test init.data == [
+    @test card.data == [
         AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
         AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
         AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
     ]
     @testset "Mutual construction" begin
-        @test map(x -> x.atom, AtomicSpeciesCard(init).data) == ["S", "Mo", "S"]
+        @test map(x -> x.atom, AtomicSpeciesCard(card).data) == ["S", "Mo", "S"]
     end # testset
     @testset "Test `to_qe`" begin
-        @test to_qe(init) ==
+        @test to_qe(card) ==
               "ATOMIC_POSITIONS { alat }\n      S    0.500000000    0.288675130    1.974192764\n     Mo    0.000000000    0.577350270    2.462038339\n      S    0.000000000   -0.577350270    2.950837559"
-        @test to_qe(init; delim = "", indent = "") ==
+        @test to_qe(card; delim = "", indent = "") ==
               "ATOMIC_POSITIONS { alat }\n  S   0.500000000   0.288675130   1.974192764\n Mo   0.000000000   0.577350270   2.462038339\n  S   0.000000000  -0.577350270   2.950837559"
     end # testset
 end # testset
