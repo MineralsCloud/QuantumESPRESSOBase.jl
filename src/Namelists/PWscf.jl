@@ -198,7 +198,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
     block_2::Float64 = 0.55
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @assert ibrav ∈ union(0:1:14, (-3, -5, -9, -12))
+    @assert ibrav ∈ union(0:1:14, (-3, -5, -9, 91, -12))
     @assert(
         ibrav != 0 ? true : celldm[1] != 0 || A != 0,  # Cannot use `iszero` to compare now!
         "Invalid lattice parameters (`celldm` $celldm or `A` $A)!"
@@ -208,7 +208,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
             length(celldm) == 6
         elseif ibrav ∈ (5, -5, 12, 13)
             4 <= length(celldm) <= 6
-        elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 10, 11)
+        elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 91, 10, 11)  # `91` is new from 6.4
             3 <= length(celldm) <= 6
         else
             1 <= length(celldm) <= 6
