@@ -295,3 +295,7 @@ function supercell(cell::AbstractMatrix, expansion::AbstractVector{<:Integer})
     s1, s2, s3 = expansion
     return [a1 .* s1 a2 .* s2 a3 .* s3]
 end # function supercell
+function supercell(cell::AbstractMatrix, expansion::AbstractMatrix{<:Integer})
+    @assert(det(expansion) != 0, "matrix `expansion` cannot be a singular integer matrix!")
+    return expansion * cell
+end # function supercell
