@@ -25,7 +25,7 @@ using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
-export namelists, cards, compulsory_namelists, compulsory_cards
+export namelistsof, cardsof, compulsory_namelists, compulsory_cards
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput end
@@ -34,18 +34,18 @@ abstract type QuantumESPRESSOInput end
 _filterfields(f, obj) = Iterators.filter(f, (getfield(obj, i) for i in 1:nfields(obj)))
 
 """
-    namelists(input::QuantumESPRESSOInput)
+    namelistsof(input::QuantumESPRESSOInput)
 
 Return an iterable of `Namelist`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
 """
-namelists(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Namelist), input)
+namelistsof(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Namelist), input)
 
 """
-    cards(input::QuantumESPRESSOInput)
+    cardsof(input::QuantumESPRESSOInput)
 
 Return an iterable of `Card`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
 """
-cards(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Card), input)
+cardsof(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Card), input)
 
 # =============================== Modules ============================== #
 include("PWscf.jl")
@@ -62,7 +62,7 @@ using .CP: CPInput
 Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
 It is lazy, you may want to `collect` it.
 
-To get the optional `Namelist`s, use `(!compulsory_namelists)(input)`.
+To get the optional `Namelist`s, use `(!compulsory_namelists)(input)` (Note the parenthesis!).
 """
 compulsory_namelists(input::Union{PWInput,CPInput}) =
     (getfield(input, x) for x in (:control, :system, :electrons))
@@ -83,7 +83,7 @@ Base.:!(::typeof(compulsory_namelists)) =
 Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
 It is lazy, you may want to `collect` it.
 
-To get the optional `Card`s, use `(!compulsory_cards)(input)`.
+To get the optional `Card`s, use `(!compulsory_cards)(input)` (Note the parenthesis!).
 """
 compulsory_cards(input::PWInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points))
@@ -133,11 +133,11 @@ function QuantumESPRESSOBase.to_qe(
     verbose::Bool = false,
 )::String
     content = ""
-    for namelist in namelists(input)
+    for namelist in namelistsof(input)
         content *=
             to_qe(namelist, indent = indent, delim = delim, newline = newline) * newline
     end
-    for card in cards(input)
+    for card in cardsof(input)
         content *= to_qe(card, indent = indent, delim = delim, newline = newline) * newline
     end
     return content

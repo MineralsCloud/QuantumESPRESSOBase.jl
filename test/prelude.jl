@@ -6,7 +6,7 @@ using QuantumESPRESSOBase
 @testset "Test `reciprocal lattice` " begin
     @testset "`ibrav = 1` simple cubic" begin
         ibrav = 1
-        celldm = [1.0, nothing]
+        celldm = [1.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 0.0 0.0
             0.0 6.28319 0.0
@@ -15,7 +15,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 2` face centered cubic" begin
         ibrav = 2
-        celldm = [1.0, nothing]
+        celldm = [1.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             -6.28319 6.28319 -6.28319
             -6.28319 6.28319 6.28319
@@ -24,7 +24,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 3` body centered cubic" begin
         ibrav = 3
-        celldm = [1.0, nothing]
+        celldm = [1.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 -6.28319 0.0
             0.0 6.28319 -6.28319
@@ -33,7 +33,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = -3` body centered cubic, more symmetry axis" begin
         ibrav = -3
-        celldm = [1.0, nothing]
+        celldm = [1.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             0.0 6.28319 6.28319
             6.28319 0.0 6.28319
@@ -87,7 +87,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 8` Orthorhombic P" begin
         ibrav = 8
-        celldm = [1.0, 2.0, 3.0, nothing]
+        celldm = [1.0, 2.0, 3.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 0.0 0.0
             0.0 3.14159 0.0
@@ -96,7 +96,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 9` Orthorhombic base-centered" begin
         ibrav = 9
-        celldm = [1.0, 2.0, 3.0, nothing]
+        celldm = [1.0, 2.0, 3.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 -6.28319 0.0
             3.14159 3.14159 -0.0
@@ -105,7 +105,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = -9`" begin
         ibrav = -9
-        celldm = [1.0, 2.0, 3.0, nothing]
+        celldm = [1.0, 2.0, 3.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 6.28319 -0.0
             -3.14159 3.14159 0.0
@@ -114,7 +114,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 91` Orthorhombic one-face base-centered A-type" begin
         ibrav = 91
-        celldm = [1.0, 2.0, 3.0, nothing]
+        celldm = [1.0, 2.0, 3.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 0.0 -0.0
             -0.0 3.14159 3.14159
@@ -123,7 +123,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 10` Orthorhombic face-centered" begin
         ibrav = 10
-        celldm = [1.0, 2.0, 3.0, nothing]
+        celldm = [1.0, 2.0, 3.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 6.28319 -6.28319
             -3.14159 3.14159 3.14159
@@ -132,7 +132,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 11` Orthorhombic body-centered" begin
         ibrav = 11
-        celldm = [1.0, 2.0, 3.0, nothing]
+        celldm = [1.0, 2.0, 3.0]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 6.28319 -6.28319
             -3.14159 3.14159 3.14159
@@ -141,7 +141,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 12` Monoclinic P, unique axis c" begin
         ibrav = 12
-        celldm = [1.0, 2.0, 3.0, 0.5, nothing]
+        celldm = [1.0, 2.0, 3.0, 0.5]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 0.0 0.0
             -3.6276 3.6276 0.0
@@ -159,7 +159,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 13` Monoclinic base-centered(unique axis b) " begin
         ibrav = 13
-        celldm = [1.0, 2.0, 3.0, 0.5, nothing]
+        celldm = [1.0, 2.0, 3.0, 0.5]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 -0.0 6.28319
             -3.6276 3.6276 -3.6276
@@ -177,7 +177,7 @@ using QuantumESPRESSOBase
     end
     @testset "`ibrav = 14` Triclinic" begin
         ibrav = 14
-        celldm = [1.0, 2.0, 3.0, 0.2, 0.3, 0.4, nothing]
+        celldm = [1.0, 2.0, 3.0, 0.2, 0.3, 0.4]
         @test round.(reciprocal_lattice(ibrav, celldm), digits = 5) == [
             6.28319 0.0 0.0
             -2.74221 3.42776 0.0
