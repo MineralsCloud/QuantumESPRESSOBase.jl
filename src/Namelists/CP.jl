@@ -130,7 +130,7 @@ Represent the `SYSTEM` namelist of `cp.x`.
     ts_vdw_isolated::Bool = false
     assume_isolated::String = "none"
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @assert ibrav ∈ union(0:1:14, (-3, -5, -9, -12))
+    @assert ibrav ∈ union(0:1:14, (-3, -5, -9, -12, -13))
     @assert(
         ibrav != 0 ? true : celldm[1] != 0 || A != 0,  # Cannot use `iszero` to compare now!
         "Invalid lattice parameters (`celldm` $celldm or `A` $A)!"
@@ -142,6 +142,8 @@ Represent the `SYSTEM` namelist of `cp.x`.
             4 <= length(celldm) <= 6
         elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 10, 11)
             3 <= length(celldm) <= 6
+        elseif ibrav == -13  # `-13` is new from QE 6.4
+            5 <= length(celldm) <= 6
         else
             1 <= length(celldm) <= 6
         end,
