@@ -272,16 +272,18 @@ _direct_lattice(::Val{14}, celldm::AbstractVector{Union{Nothing,Float64}}) =
         ) / sqrt(1 - celldm[6]^2)
     ]
 
+function reciprocal_lattice(mat::AbstractMatrix)
+    volume = det(mat)
+    a1, a2, a3 = mat[1, :], mat[2, :], mat[3, :]
+    return 2π / volume * [cross(a2, a3) cross(a3, a1) cross(a1, a2)]
+end # function reciprocal_lattice
 """
     reciprocal_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
 
 Return a ``3 × 3`` matrix representing the reciprocal lattice from `ibrav` and `celldm`.
 """
 function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
-    bravais = direct_lattice(ibrav, celldm)
-    volume = det(bravais)
-    a1, a2, a3 = bravais[1, :], bravais[2, :], bravais[3, :]
-    return 2π / volume * [cross(a2, a3) cross(a3, a1) cross(a1, a2)]
+    return reciprocal_lattice(direct_lattice(ibrav, celldm))
 end # function reciprocal_lattice
 
 """
