@@ -476,11 +476,7 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 
-function meshgrid(
-    reciprocal::AbstractMatrix,
-    mp::MonkhorstPackGrid,
-    unit::String = "crystal",
-)
+function meshgrid(reciprocal::AbstractMatrix, mp::MonkhorstPackGrid, crystal::Bool = true)
     nk, sk = mp.grid, mp.offsets
     sk = map(x -> isone(x) ? 1 // 2 : 0, sk)
     mesh = Iterators.product(
@@ -488,13 +484,11 @@ function meshgrid(
         (0:nk[2]-1) // nk[2] .+ sk[2],
         (0:nk[3]-1) // nk[3] .+ sk[3],
     )
-    if lowercase(unit) == "crystal"
+    if crystal
         return collect(mesh)
-    elseif lowercase(unit) == "cartesian"
+    else
         a1, a2, a3 = reciprocal[1, :], reciprocal[2, :], reciprocal[3, :]
         return collect(x[1] .* a1 + x[2] .* a2 + x[3] .* a3 for x in mesh)
-    else
-        error("unknown `unit` option given!")
     end
 end # function meshgrid
 # ============================================================================ #
