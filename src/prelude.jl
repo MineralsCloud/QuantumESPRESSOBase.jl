@@ -164,7 +164,7 @@ _direct_lattice(::Val{-3}, celldm::AbstractVector) = celldm[1] / 2 * [
 _direct_lattice(::Val{4}, celldm::AbstractVector) =
     celldm[1] * [
         1 0 0
-        -1 / 2 sqrt(3) / 2 0
+        -1 / 2 √3 / 2 0
         0 0 celldm[3]
     ]
 function _direct_lattice(::Val{5}, celldm::AbstractVector)
@@ -179,12 +179,12 @@ function _direct_lattice(::Val{5}, celldm::AbstractVector)
     ]
 end
 function _direct_lattice(::Val{-5}, celldm::AbstractVector)
-    ap = celldm[1] / sqrt(3)
+    ap = celldm[1] / √3
     c = celldm[3]
     ty = sqrt((1 - c) / 6)
     tz = sqrt((1 + 2c) / 3)
-    u = tz - 2 * sqrt(2) * ty
-    v = tz + sqrt(2) * ty
+    u = tz - 2 * √2 * ty
+    v = tz + √2 * ty
     return ap * [
         u v v
         v u v
