@@ -1,7 +1,8 @@
 using Compat: isnothing
-using LinearAlgebra: det, cross
+using LinearAlgebra: Diagonal, det, cross
 
-export asfieldname, titleof, to_qe, cell_volume, direct_lattice, reciprocal_lattice, supercell
+export asfieldname,
+    titleof, to_qe, cell_volume, direct_lattice, reciprocal_lattice, supercell
 
 """
     InputEntry
@@ -134,44 +135,39 @@ end
 function cell_volume end
 
 """
-    direct_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
+    direct_lattice(ibrav::Integer, celldm::AbstractVector)
 
 Return a ``3 × 3`` matrix representing the Bravais lattice (in real space) from `ibrav` and `celldm`.
 """
-direct_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}}) =
-    _direct_lattice(Val(ibrav), celldm)
+direct_lattice(ibrav::Integer, celldm::AbstractVector) = _direct_lattice(Val(ibrav), celldm)
 # These are helper methods and should not be exported.
-_direct_lattice(::Val{1}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{1}, celldm::AbstractVector) = celldm[1] * [
+    1 0 0
+    0 1 0
+    0 0 1
+]
+_direct_lattice(::Val{2}, celldm::AbstractVector) = celldm[1] / 2 * [
+    -1 0 1
+    0 1 1
+    -1 1 0
+]
+_direct_lattice(::Val{3}, celldm::AbstractVector) = celldm[1] / 2 * [
+    1 1 1
+    -1 1 1
+    -1 -1 1
+]
+_direct_lattice(::Val{-3}, celldm::AbstractVector) = celldm[1] / 2 * [
+    -1 1 1
+    1 -1 1
+    1 1 -1
+]
+_direct_lattice(::Val{4}, celldm::AbstractVector) =
     celldm[1] * [
         1 0 0
-        0 1 0
-        0 0 1
-    ]
-_direct_lattice(::Val{2}, celldm::AbstractVector{Union{Nothing,Float64}}) =
-    celldm[1] / 2 * [
-        -1 0 1
-        0 1 1
-        -1 1 0
-    ]
-_direct_lattice(::Val{3}, celldm::AbstractVector{Union{Nothing,Float64}}) =
-    celldm[1] / 2 * [
-        1 1 1
-        -1 1 1
-        -1 -1 1
-    ]
-_direct_lattice(::Val{-3}, celldm::AbstractVector{Union{Nothing,Float64}}) =
-    celldm[1] / 2 * [
-        -1 1 1
-        1 -1 1
-        1 1 -1
-    ]
-_direct_lattice(::Val{4}, celldm::AbstractVector{Union{Nothing,Float64}}) =
-    celldm[1] * [
-        1 0 0
-        -1 / 2 sqrt(3) / 2 0
+        -1 / 2 √3 / 2 0
         0 0 celldm[3]
     ]
-function _direct_lattice(::Val{5}, celldm::AbstractVector{Union{Nothing,Float64}})
+function _direct_lattice(::Val{5}, celldm::AbstractVector)
     c = celldm[3]
     tx = sqrt((1 - c) / 2)
     ty = sqrt((1 - c) / 6)
@@ -182,86 +178,85 @@ function _direct_lattice(::Val{5}, celldm::AbstractVector{Union{Nothing,Float64}
         -tx -ty tz
     ]
 end
-function _direct_lattice(::Val{-5}, celldm::AbstractVector{Union{Nothing,Float64}})
-    ap = celldm[1] / sqrt(3)
+function _direct_lattice(::Val{-5}, celldm::AbstractVector)
+    ap = celldm[1] / √3
     c = celldm[3]
     ty = sqrt((1 - c) / 6)
     tz = sqrt((1 + 2c) / 3)
-    u = tz - 2 * sqrt(2) * ty
-    v = tz + sqrt(2) * ty
+    u = tz - 2 * √2 * ty
+    v = tz + √2 * ty
     return ap * [
         u v v
         v u v
         v v u
     ]
 end
-_direct_lattice(::Val{6}, celldm::AbstractVector{Union{Nothing,Float64}}) =
-    celldm[1] * [
-        1 0 0
-        0 1 0
-        0 0 celldm[3]
-    ]
-_direct_lattice(::Val{7}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{6}, celldm::AbstractVector) = celldm[1] * [
+    1 0 0
+    0 1 0
+    0 0 celldm[3]
+]
+_direct_lattice(::Val{7}, celldm::AbstractVector) =
     celldm[1] / 2 * [
         1 -1 celldm[3] / celldm[1]
         1 1 celldm[3] / celldm[1]
         -1 -1 celldm[3] / celldm[1]
     ]
-_direct_lattice(::Val{8}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{8}, celldm::AbstractVector) =
     celldm[1] * [
         1 0 0
         0 celldm[2] 0
         0 0 celldm[3]
     ]
-_direct_lattice(::Val{9}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{9}, celldm::AbstractVector) =
     celldm[1] * [
         1 / 2 celldm[2] / 2 0
         -1 / 2 celldm[2] / 2 0
         0 0 celldm[3]
     ]
-_direct_lattice(::Val{-9}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{-9}, celldm::AbstractVector) =
     celldm[1] * [
         1 / 2 -celldm[2] / 2 0
         1 / 2 celldm[2] / 2 0
         0 0 celldm[3]
     ]
-_direct_lattice(::Val{10}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{10}, celldm::AbstractVector) =
     celldm[1] * [
         1 / 2 0 celldm[3] / 2
         1 / 2 celldm[2] / 2 0
         0 celldm[2] / 2 celldm[3] / 2
     ]
-_direct_lattice(::Val{11}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{11}, celldm::AbstractVector) =
     celldm[1] * [
         1 / 2 0 celldm[3] / 2
         1 / 2 celldm[2] / 2 0
         0 celldm[2] / 2 celldm[3] / 2
     ]
-_direct_lattice(::Val{12}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{12}, celldm::AbstractVector) =
     celldm[1] * [
         1 0 0
         celldm[2] * celldm[4] celldm[2] * sqrt(1 - celldm[4]^2) 0
         0 0 celldm[3]
     ]
-_direct_lattice(::Val{-12}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{-12}, celldm::AbstractVector) =
     celldm[1] * [
         1 0 0
         0 celldm[2] 0
         celldm[3] * celldm[5] 0 celldm[3] * sqrt(1 - celldm[5]^2)
     ]
-_direct_lattice(::Val{13}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{13}, celldm::AbstractVector) =
     celldm[1] * [
         1 / 2 0 -celldm[3] / 2
         celldm[2] * celldm[4] celldm[2] * sqrt(1 - celldm[4]^2) 0
         1 / 2 0 celldm[3] / 2
     ]
-_direct_lattice(::Val{-13}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{-13}, celldm::AbstractVector) =
     celldm[1] * [
         1 / 2 -celldm[2] / 2 0
         1 / 2 celldm[2] / 2 0
         celldm[3] * celldm[5] 0 celldm[3] * sqrt(1 - celldm[5]^2)
     ]
-_direct_lattice(::Val{14}, celldm::AbstractVector{Union{Nothing,Float64}}) =
+_direct_lattice(::Val{14}, celldm::AbstractVector) =
     celldm[1] * [
         1 0 0
         celldm[2] * celldm[6] celldm[2] * sqrt(1 - celldm[6]^2) 0
@@ -272,18 +267,30 @@ _direct_lattice(::Val{14}, celldm::AbstractVector{Union{Nothing,Float64}}) =
         ) / sqrt(1 - celldm[6]^2)
     ]
 
+function reciprocal_lattice(mat::AbstractMatrix)
+    @assert size(mat) == (3, 3)
+    volume = det(mat)
+    a1, a2, a3 = mat[1, :], mat[2, :], mat[3, :]
+    return 2π / volume * [cross(a2, a3) cross(a3, a1) cross(a1, a2)]
+end # function reciprocal_lattice
 """
-    reciprocal_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
+    reciprocal_lattice(ibrav::Integer, celldm::AbstractVector)
 
 Return a ``3 × 3`` matrix representing the reciprocal lattice from `ibrav` and `celldm`.
 """
-function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector{Union{Nothing,Float64}})
-    bravais = direct_lattice(ibrav, celldm)
-    volume = det(bravais)
-    a1, a2, a3 = bravais[1, :], bravais[2, :], bravais[3, :]
-    return 2π / volume * [cross(a2, a3) cross(a3, a1) cross(a1, a2)]
+function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector)
+    return reciprocal_lattice(direct_lattice(ibrav, celldm))
 end # function reciprocal_lattice
 
+"""
+    supercell(cell::AbstractMatrix, expansion::AbstractMatrix{<:Integer})
+
+Allow the supercell to be a tilted extension of `cell`.
+"""
+function supercell(cell::AbstractMatrix, expansion::AbstractMatrix{<:Integer})
+    @assert(det(expansion) != 0, "matrix `expansion` cannot be a singular integer matrix!")
+    return expansion * cell
+end # function supercell
 """
     supercell(cell::AbstractMatrix, expansion::AbstractVector{<:Integer})
 
@@ -291,7 +298,5 @@ Return a supercell based on `cell` and expansion coefficients.
 """
 function supercell(cell::AbstractMatrix, expansion::AbstractVector{<:Integer})
     @assert length(expansion) == 3
-    a1, a2, a3 = cell[1, :], cell[2, :], cell[3, :]
-    s1, s2, s3 = expansion
-    return [a1 .* s1 a2 .* s2 a3 .* s3]
+    return supercell(cell, Diagonal(expansion))
 end # function supercell

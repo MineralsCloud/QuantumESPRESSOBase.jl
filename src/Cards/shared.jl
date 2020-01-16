@@ -475,6 +475,28 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!")
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
+
+function meshgrid(
+    reciprocal::AbstractMatrix,
+    mp::MonkhorstPackGrid,
+    unit::String = "crystal",
+)
+    nk, sk = mp.grid, mp.offsets
+    sk = map(x -> isone(x) ? 1 // 2 : 0, sk)
+    mesh = Iterators.product(
+        (0:nk[1]-1) // nk[1] .+ sk[1],
+        (0:nk[2]-1) // nk[2] .+ sk[2],
+        (0:nk[3]-1) // nk[3] .+ sk[3],
+    )
+    if lowercase(unit) == "crystal"
+        return collect(mesh)
+    elseif lowercase(unit) == "cartesian"
+        a1, a2, a3 = reciprocal[1, :], reciprocal[2, :], reciprocal[3, :]
+        return collect(x[1] .* a1 + x[2] .* a2 + x[3] .* a3 for x in mesh)
+    else
+        error("unknown `unit` option given!")
+    end
+end # function meshgrid
 # ============================================================================ #
 
 Cards.optionof(::AtomicSpeciesCard) = nothing
