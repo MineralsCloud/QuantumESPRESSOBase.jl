@@ -1,5 +1,5 @@
 using Compat: isnothing
-using LinearAlgebra: det, cross
+using LinearAlgebra: Diagonal, det, cross
 
 export asfieldname,
     titleof, to_qe, cell_volume, direct_lattice, reciprocal_lattice, supercell
@@ -283,17 +283,20 @@ function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector)
 end # function reciprocal_lattice
 
 """
+    supercell(cell::AbstractMatrix, expansion::AbstractMatrix{<:Integer})
+
+Allow the supercell to be a tilted extension of `cell`.
+"""
+function supercell(cell::AbstractMatrix, expansion::AbstractMatrix{<:Integer})
+    @assert(det(expansion) != 0, "matrix `expansion` cannot be a singular integer matrix!")
+    return expansion * cell
+end # function supercell
+"""
     supercell(cell::AbstractMatrix, expansion::AbstractVector{<:Integer})
 
 Return a supercell based on `cell` and expansion coefficients.
 """
 function supercell(cell::AbstractMatrix, expansion::AbstractVector{<:Integer})
     @assert length(expansion) == 3
-    a1, a2, a3 = cell[1, :], cell[2, :], cell[3, :]
-    s1, s2, s3 = expansion
-    return [a1 .* s1 a2 .* s2 a3 .* s3]
-end # function supercell
-function supercell(cell::AbstractMatrix, expansion::AbstractMatrix{<:Integer})
-    @assert(det(expansion) != 0, "matrix `expansion` cannot be a singular integer matrix!")
-    return expansion * cell
+    return supercell(cell, Diagonal(expansion))
 end # function supercell
