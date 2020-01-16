@@ -5,7 +5,7 @@ using Compat: eachrow
 using Formatting: sprintf1
 using Setfield: get, set, @lens, @set
 
-using QuantumESPRESSOBase: to_qe
+using QuantumESPRESSOBase: to_qe, reciprocal_lattice
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
 
 import QuantumESPRESSOBase
@@ -489,6 +489,15 @@ function meshgrid(reciprocal::AbstractMatrix, mp::MonkhorstPackGrid, crystal::Bo
     else
         a1, a2, a3 = reciprocal[1, :], reciprocal[2, :], reciprocal[3, :]
         return collect(x[1] .* a1 + x[2] .* a2 + x[3] .* a3 for x in mesh)
+    end
+end # function meshgrid
+function meshgrid(card::CellParametersCard, mp::MonkhorstPackGrid)
+    option = optionof(card)
+    mesh = meshgrid(reciprocal_lattice(card.data), mp, true)
+    if option == "alat"
+        return mesh
+    else  # option ∈ ("bohr", "angstrom")
+        mesh * inv(card.data)
     end
 end # function meshgrid
 # ============================================================================ #
