@@ -140,7 +140,7 @@ function cell_volume end
 Return a ``3 × 3`` matrix representing the Bravais lattice (in real space) from `ibrav` and `celldm`.
 """
 function direct_lattice(ibrav::Integer, celldm::AbstractVector)
-    @assert ibrav ∈ union(1:1:14, (-3, -5, -9, 91, -12))  # It can't be `0`!
+    @assert ibrav ∈ union(1:1:14, (-3, -5, -9, 91, -12, -13))  # It can't be `0`!
     @assert(
         if ibrav == 14
             length(celldm) == 6
@@ -148,6 +148,8 @@ function direct_lattice(ibrav::Integer, celldm::AbstractVector)
             4 <= length(celldm) <= 6
         elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 91, 10, 11)  # `91` is new from QE 6.4
             3 <= length(celldm) <= 6
+        elseif ibrav == -13  # `-13` is new from QE 6.4
+            5 <= length(celldm) <= 6
         else
             1 <= length(celldm) <= 6
         end,
