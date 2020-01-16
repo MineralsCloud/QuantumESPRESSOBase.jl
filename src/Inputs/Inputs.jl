@@ -62,7 +62,7 @@ using .CP: CPInput
 Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
 It is lazy, you may want to `collect` it.
 
-To get the optional `Namelist`s, use `(!compulsory_namelists)(input)`.
+To get the optional `Namelist`s, use `(!compulsory_namelists)(input)` (Note the parenthesis!).
 """
 compulsory_namelists(input::Union{PWInput,CPInput}) =
     (getfield(input, x) for x in (:control, :system, :electrons))
@@ -83,7 +83,7 @@ Base.:!(::typeof(compulsory_namelists)) =
 Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
 It is lazy, you may want to `collect` it.
 
-To get the optional `Card`s, use `(!compulsory_cards)(input)`.
+To get the optional `Card`s, use `(!compulsory_cards)(input)` (Note the parenthesis!).
 """
 compulsory_cards(input::PWInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points))
