@@ -168,7 +168,7 @@ _direct_lattice(::Val{4}, celldm::AbstractVector) =
         0 0 celldm[3]
     ]
 function _direct_lattice(::Val{5}, celldm::AbstractVector)
-    c = celldm[3]
+    c = celldm[4]
     tx = sqrt((1 - c) / 2)
     ty = sqrt((1 - c) / 6)
     tz = sqrt((1 + 2c) / 3)
@@ -180,7 +180,7 @@ function _direct_lattice(::Val{5}, celldm::AbstractVector)
 end
 function _direct_lattice(::Val{-5}, celldm::AbstractVector)
     ap = celldm[1] / √3
-    c = celldm[3]
+    c = celldm[4]
     ty = sqrt((1 - c) / 6)
     tz = sqrt((1 + 2c) / 3)
     u = tz - 2 * √2 * ty
@@ -220,6 +220,12 @@ _direct_lattice(::Val{-9}, celldm::AbstractVector) =
         1 / 2 celldm[2] / 2 0
         0 0 celldm[3]
     ]
+_direct_lattice(::Val{91}, celldm::AbstractVector) =
+    celldm[1]*[
+        1 0 0
+        0 celldm[2] / 2 -celldm[3] / 2
+        0 celldm[2] / 2 celldm[3] / 2
+    ]  # New from QE 6.4
 _direct_lattice(::Val{10}, celldm::AbstractVector) =
     celldm[1] * [
         1 / 2 0 celldm[3] / 2
