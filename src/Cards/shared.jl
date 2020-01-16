@@ -476,10 +476,18 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 
-function meshgrid(reciprocal::AbstractMatrix, mp::MonkhorstPackGrid, unit::String = "crystal")
+function meshgrid(
+    reciprocal::AbstractMatrix,
+    mp::MonkhorstPackGrid,
+    unit::String = "crystal",
+)
     nk, sk = mp.grid, mp.offsets
     sk = map(x -> isone(x) ? 1 // 2 : 0, sk)
-    mesh = Iterators.product((0:nk[1] - 1) // nk[1] .+ sk[1], (0:nk[2] - 1) // nk[2] .+ sk[2], (0:nk[3] - 1) // nk[3] .+ sk[3])
+    mesh = Iterators.product(
+        (0:nk[1]-1) // nk[1] .+ sk[1],
+        (0:nk[2]-1) // nk[2] .+ sk[2],
+        (0:nk[3]-1) // nk[3] .+ sk[3],
+    )
     if lowercase(unit) == "crystal"
         return collect(mesh)
     elseif lowercase(unit) == "cartesian"
