@@ -18,7 +18,7 @@ using Kaleido: @batchlens
 using Parameters: @with_kw
 using Setfield: PropertyLens
 
-using QuantumESPRESSOBase: InputEntry, direct_lattice
+using QuantumESPRESSOBase: InputEntry
 using QuantumESPRESSOBase.Namelists.PWscf:
     ControlNamelist, SystemNamelist, ElectronsNamelist, IonsNamelist, CellNamelist
 using QuantumESPRESSOBase.Cards.PWscf:
