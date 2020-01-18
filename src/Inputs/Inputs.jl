@@ -16,7 +16,7 @@ using LinearAlgebra: det
 using Compat: isnothing
 using Kaleido: @batchlens
 
-using QuantumESPRESSOBase: direct_lattice, to_qe
+using QuantumESPRESSOBase: BravaisLattice, to_qe
 using QuantumESPRESSOBase.Namelists: Namelist
 using QuantumESPRESSOBase.Cards: Card, optionof
 using QuantumESPRESSOBase.Cards.PWscf: CellParametersCard
@@ -113,7 +113,7 @@ Return the volume of the cell based on the information given in a `PWInput`, in 
 """
 function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
-        return det(direct_lattice(input.system))
+        return det(BravaisLattice(input.system)())
     else
         if optionof(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
@@ -155,7 +155,7 @@ function Setters.preset_values(::CellParametersSetter, template::Union{PWInput,C
     # !isnothing(template.cell_parameters) && return template
     system = template.system
     return (
-        CellParametersCard("alat", direct_lattice(system)),
+        CellParametersCard("alat", BravaisLattice(system)()),
         0,
         [system.celldm[1]],
     )

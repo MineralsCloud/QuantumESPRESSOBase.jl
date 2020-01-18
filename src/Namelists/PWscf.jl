@@ -19,7 +19,7 @@ using Setfield: set, @lens
 using Unitful
 using UnitfulAtomic
 
-using QuantumESPRESSOBase: direct_lattice
+using QuantumESPRESSOBase: BravaisLattice
 using QuantumESPRESSOBase.Setters:
     VerbositySetter, FiniteTemperatureSetter, CalculationSetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
@@ -441,12 +441,12 @@ QuantumESPRESSOBase.titleof(::Type{<:IonsNamelist}) = "IONS"
 QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
 
 """
-    direct_lattice(nml::SystemNamelist)
+    BravaisLattice(nml::SystemNamelist)
 
-Return a 3x3 matrix representing the Bravais lattice from `nml`.
+Return a `BravaisLattice` from a `SystemNamelist`.
 """
-QuantumESPRESSOBase.direct_lattice(nml::SystemNamelist) =
-    direct_lattice(nml.ibrav, nml.celldm)
+QuantumESPRESSOBase.BravaisLattice(nml::SystemNamelist) =
+    BravaisLattice{nml.ibrav}(nml.celldm)
 
 """
     cell_volume(nml::SystemNamelist)
@@ -455,7 +455,7 @@ Return the volume of the cell based on the information given in a `SystemNamelis
 """
 function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
-    return det(direct_lattice(nml))
+    return det(BravaisLattice(nml)())
 end # function QuantumESPRESSOBase.cell_volume
 
 function Setters.make(::LensMaker{<:VerbositySetter,ControlNamelist})

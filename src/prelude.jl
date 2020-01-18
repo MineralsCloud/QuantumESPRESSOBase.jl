@@ -1,8 +1,8 @@
 using Compat: isnothing
 using LinearAlgebra: Diagonal, det, cross
 
-export asfieldname,
-    titleof, to_qe, cell_volume, direct_lattice, reciprocal_lattice, supercell
+export BravaisLattice
+export asfieldname, titleof, to_qe, cell_volume, reciprocal_lattice, supercell
 
 """
     InputEntry
@@ -157,69 +157,50 @@ struct BravaisLattice{I}
 end
 
 """
-    direct_lattice(ibrav::Integer, celldm::AbstractVector)
+    (::BravaisLattice{I})()
 
-Return a ``3 × 3`` matrix representing the Bravais lattice (in real space) from `ibrav` and `celldm`.
+Return a ``3 × 3`` matrix representing the Bravais lattice from `BravaisLattice{I}`.
 """
-function direct_lattice(ibrav::Integer, celldm::AbstractVector)
-    @assert ibrav ∈ union(1:1:14, (-3, -5, -9, 91, -12, -13))  # It can't be `0`!
-    @assert(
-        if ibrav == 14
-            length(celldm) == 6
-        elseif ibrav ∈ (5, -5, 12, 13)
-            4 <= length(celldm) <= 6
-        elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 91, 10, 11)  # `91` is new from QE 6.4
-            3 <= length(celldm) <= 6
-        elseif ibrav == -13  # `-13` is new from QE 6.4
-            5 <= length(celldm) <= 6
-        else
-            1 <= length(celldm) <= 6
-        end,
-        "`celldm` must have length between 1 to 6! See `ibrav`'s doc!"
-    )
-    return _direct_lattice(Val(ibrav), celldm)
-end # function direct_lattice
-# These are helper methods and should not be exported.
-_direct_lattice(::Val{1}, celldm::AbstractVector) = celldm[1] * [
+(bravais::BravaisLattice{1})() = bravais.celldm[1] * [
     1 0 0
     0 1 0
     0 0 1
 ]
-_direct_lattice(::Val{2}, celldm::AbstractVector) = celldm[1] / 2 * [
+(bravais::BravaisLattice{2})() = bravais.celldm[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
 ]
-_direct_lattice(::Val{3}, celldm::AbstractVector) = celldm[1] / 2 * [
+(bravais::BravaisLattice{3})() = bravais.celldm[1] / 2 * [
     1 1 1
     -1 1 1
     -1 -1 1
 ]
-_direct_lattice(::Val{-3}, celldm::AbstractVector) = celldm[1] / 2 * [
+(bravais::BravaisLattice{-3})() = bravais.celldm[1] / 2 * [
     -1 1 1
     1 -1 1
     1 1 -1
 ]
-_direct_lattice(::Val{4}, celldm::AbstractVector) =
-    celldm[1] * [
+(bravais::BravaisLattice{4})() =
+    bravais.celldm[1] * [
         1 0 0
         -1 / 2 √3 / 2 0
-        0 0 celldm[3]
+        0 0 bravais.celldm[3]
     ]
-function _direct_lattice(::Val{5}, celldm::AbstractVector)
-    c = celldm[4]
+function (bravais::BravaisLattice{5})()
+    c = bravais.celldm[4]
     tx = sqrt((1 - c) / 2)
     ty = sqrt((1 - c) / 6)
     tz = sqrt((1 + 2c) / 3)
-    return celldm[1] * [
+    return bravais.celldm[1] * [
         tx -ty tz
         0 2ty tz
         -tx -ty tz
     ]
 end
-function _direct_lattice(::Val{-5}, celldm::AbstractVector)
-    ap = celldm[1] / √3
-    c = celldm[4]
+function (bravais::BravaisLattice{-5})()
+    ap = bravais.celldm[1] / √3
+    c = bravais.celldm[4]
     ty = sqrt((1 - c) / 6)
     tz = sqrt((1 + 2c) / 3)
     u = tz - 2 * √2 * ty
@@ -230,86 +211,92 @@ function _direct_lattice(::Val{-5}, celldm::AbstractVector)
         v v u
     ]
 end
-_direct_lattice(::Val{6}, celldm::AbstractVector) = celldm[1] * [
+(bravais::BravaisLattice{6})() = bravais.celldm[1] * [
     1 0 0
     0 1 0
-    0 0 celldm[3]
+    0 0 bravais.celldm[3]
 ]
-_direct_lattice(::Val{7}, celldm::AbstractVector) =
-    celldm[1] / 2 * [
-        1 -1 celldm[3] / celldm[1]
-        1 1 celldm[3] / celldm[1]
-        -1 -1 celldm[3] / celldm[1]
+(bravais::BravaisLattice{7})() =
+    bravais.celldm[1] / 2 * [
+        1 -1 bravais.celldm[3] / bravais.celldm[1]
+        1 1 bravais.celldm[3] / bravais.celldm[1]
+        -1 -1 bravais.celldm[3] / bravais.celldm[1]
     ]
-_direct_lattice(::Val{8}, celldm::AbstractVector) =
-    celldm[1] * [
+(bravais::BravaisLattice{8})() =
+    bravais.celldm[1] * [
         1 0 0
-        0 celldm[2] 0
-        0 0 celldm[3]
+        0 bravais.celldm[2] 0
+        0 0 bravais.celldm[3]
     ]
-_direct_lattice(::Val{9}, celldm::AbstractVector) =
-    celldm[1] * [
-        1 / 2 celldm[2] / 2 0
-        -1 / 2 celldm[2] / 2 0
-        0 0 celldm[3]
+(bravais::BravaisLattice{9})() =
+    bravais.celldm[1] * [
+        1 / 2 bravais.celldm[2] / 2 0
+        -1 / 2 bravais.celldm[2] / 2 0
+        0 0 bravais.celldm[3]
     ]
-_direct_lattice(::Val{-9}, celldm::AbstractVector) =
-    celldm[1] * [
-        1 / 2 -celldm[2] / 2 0
-        1 / 2 celldm[2] / 2 0
-        0 0 celldm[3]
+(bravais::BravaisLattice{-9})() =
+    bravais.celldm[1] * [
+        1 / 2 -bravais.celldm[2] / 2 0
+        1 / 2 bravais.celldm[2] / 2 0
+        0 0 bravais.celldm[3]
     ]
-_direct_lattice(::Val{91}, celldm::AbstractVector) =
-    celldm[1] * [
+(bravais::BravaisLattice{91})() =
+    bravais.celldm[1] * [
         1 0 0
-        0 celldm[2] / 2 -celldm[3] / 2
-        0 celldm[2] / 2 celldm[3] / 2
+        0 bravais.celldm[2] / 2 -bravais.celldm[3] / 2
+        0 bravais.celldm[2] / 2 bravais.celldm[3] / 2
     ]  # New from QE 6.4
-_direct_lattice(::Val{10}, celldm::AbstractVector) =
-    celldm[1] * [
-        1 / 2 0 celldm[3] / 2
-        1 / 2 celldm[2] / 2 0
-        0 celldm[2] / 2 celldm[3] / 2
+(bravais::BravaisLattice{10})() =
+    bravais.celldm[1] * [
+        1 / 2 0 bravais.celldm[3] / 2
+        1 / 2 bravais.celldm[2] / 2 0
+        0 bravais.celldm[2] / 2 bravais.celldm[3] / 2
     ]
-_direct_lattice(::Val{11}, celldm::AbstractVector) =
-    celldm[1] * [
-        1 / 2 0 celldm[3] / 2
-        1 / 2 celldm[2] / 2 0
-        0 celldm[2] / 2 celldm[3] / 2
+(bravais::BravaisLattice{11})() =
+    bravais.celldm[1] * [
+        1 / 2 0 bravais.celldm[3] / 2
+        1 / 2 bravais.celldm[2] / 2 0
+        0 bravais.celldm[2] / 2 bravais.celldm[3] / 2
     ]
-_direct_lattice(::Val{12}, celldm::AbstractVector) =
-    celldm[1] * [
+(bravais::BravaisLattice{12})() =
+    bravais.celldm[1] * [
         1 0 0
-        celldm[2] * celldm[4] celldm[2] * sqrt(1 - celldm[4]^2) 0
-        0 0 celldm[3]
+        bravais.celldm[2] * bravais.celldm[4] bravais.celldm[2] *
+                                              sqrt(1 - bravais.celldm[4]^2) 0
+        0 0 bravais.celldm[3]
     ]
-_direct_lattice(::Val{-12}, celldm::AbstractVector) =
-    celldm[1] * [
+(bravais::BravaisLattice{-12})() =
+    bravais.celldm[1] * [
         1 0 0
-        0 celldm[2] 0
-        celldm[3] * celldm[5] 0 celldm[3] * sqrt(1 - celldm[5]^2)
+        0 bravais.celldm[2] 0
+        bravais.celldm[3] * bravais.celldm[5] 0 bravais.celldm[3] *
+                                                sqrt(1 - bravais.celldm[5]^2)
     ]
-_direct_lattice(::Val{13}, celldm::AbstractVector) =
-    celldm[1] * [
-        1 / 2 0 -celldm[3] / 2
-        celldm[2] * celldm[4] celldm[2] * sqrt(1 - celldm[4]^2) 0
-        1 / 2 0 celldm[3] / 2
+(bravais::BravaisLattice{13})() =
+    bravais.celldm[1] * [
+        1 / 2 0 -bravais.celldm[3] / 2
+        bravais.celldm[2] * bravais.celldm[4] bravais.celldm[2] *
+                                              sqrt(1 - bravais.celldm[4]^2) 0
+        1 / 2 0 bravais.celldm[3] / 2
     ]
-_direct_lattice(::Val{-13}, celldm::AbstractVector) =
-    celldm[1] * [
-        1 / 2 -celldm[2] / 2 0
-        1 / 2 celldm[2] / 2 0
-        celldm[3] * celldm[5] 0 celldm[3] * sqrt(1 - celldm[5]^2)
+(bravais::BravaisLattice{-13})() =
+    bravais.celldm[1] * [
+        1 / 2 -bravais.celldm[2] / 2 0
+        1 / 2 bravais.celldm[2] / 2 0
+        bravais.celldm[3] * bravais.celldm[5] 0 bravais.celldm[3] *
+                                                sqrt(1 - bravais.celldm[5]^2)
     ]
-_direct_lattice(::Val{14}, celldm::AbstractVector) =
-    celldm[1] * [
+(bravais::BravaisLattice{14})() =
+    bravais.celldm[1] * [
         1 0 0
-        celldm[2] * celldm[6] celldm[2] * sqrt(1 - celldm[6]^2) 0
-        celldm[3] * celldm[5] celldm[3] * (celldm[4] - celldm[5] * celldm[6]) /
-                              sqrt(1 - celldm[6]^2) celldm[3] * sqrt(
-            1 + 2 * celldm[4] * celldm[5] * celldm[6] - celldm[4]^2 - celldm[5]^2 -
-            celldm[6]^2,
-        ) / sqrt(1 - celldm[6]^2)
+        bravais.celldm[2] * bravais.celldm[6] bravais.celldm[2] *
+                                              sqrt(1 - bravais.celldm[6]^2) 0
+        bravais.celldm[3] * bravais.celldm[5] bravais.celldm[3] * (
+            bravais.celldm[4] - bravais.celldm[5] * bravais.celldm[6]
+        ) / sqrt(1 - bravais.celldm[6]^2) bravais.celldm[3] * sqrt(
+            1 + 2 * bravais.celldm[4] * bravais.celldm[5] * bravais.celldm[6] -
+            bravais.celldm[4]^2 - bravais.celldm[5]^2 - bravais.celldm[6]^2,
+        ) / sqrt(1 - bravais.celldm[6]^2)
     ]
 
 function reciprocal_lattice(mat::AbstractMatrix)
@@ -323,9 +310,9 @@ end # function reciprocal_lattice
 
 Return a ``3 × 3`` matrix representing the reciprocal lattice from `ibrav` and `celldm`.
 """
-function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector)
-    return reciprocal_lattice(direct_lattice(ibrav, celldm))
-end # function reciprocal_lattice
+# function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector)
+#     return reciprocal_lattice(direct_lattice(ibrav, celldm))
+# end # function reciprocal_lattice
 
 """
     supercell(cell::AbstractMatrix, expansion::AbstractMatrix{<:Integer})
