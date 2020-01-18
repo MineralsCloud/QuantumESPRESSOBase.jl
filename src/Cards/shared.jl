@@ -5,7 +5,7 @@ using Compat: eachrow
 using Formatting: sprintf1
 using Setfield: get, set, @lens, @set
 
-using QuantumESPRESSOBase: to_qe, reciprocal_lattice
+using QuantumESPRESSOBase: to_qe, reciprocalof
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
 
 import QuantumESPRESSOBase
@@ -494,9 +494,9 @@ end # function meshgrid
 function meshgrid(card::CellParametersCard, mp::MonkhorstPackGrid)
     option = optionof(card)
     if option == "alat"
-        return meshgrid(reciprocal_lattice(card.data), mp, true)
+        return meshgrid(reciprocalof(card.data), mp, true)
     else  # option ∈ ("bohr", "angstrom")
-        return meshgrid(reciprocal_lattice(card.data), mp, false)
+        return meshgrid(reciprocalof(card.data), mp, false)
     end
 end # function meshgrid
 # ============================================================================ #

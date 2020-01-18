@@ -2,7 +2,7 @@ using Compat: isnothing
 using LinearAlgebra: Diagonal, det, cross
 
 export BravaisLattice
-export asfieldname, titleof, to_qe, cell_volume, reciprocal_lattice, supercell
+export asfieldname, titleof, to_qe, cell_volume, reciprocalof, supercell
 
 """
     InputEntry
@@ -299,20 +299,20 @@ end
         ) / sqrt(1 - bravais.celldm[6]^2)
     ]
 
-function reciprocal_lattice(mat::AbstractMatrix)
+function reciprocalof(mat::AbstractMatrix)
     @assert size(mat) == (3, 3)
     volume = det(mat)
     a1, a2, a3 = mat[1, :], mat[2, :], mat[3, :]
     return 2π / volume * [cross(a2, a3) cross(a3, a1) cross(a1, a2)]
-end # function reciprocal_lattice
+end # function reciprocalof
 """
-    reciprocal_lattice(ibrav::Integer, celldm::AbstractVector)
+    reciprocalof(bravais::BravaisLattice)
 
-Return a ``3 × 3`` matrix representing the reciprocal lattice from `ibrav` and `celldm`.
+Return a ``3 × 3`` matrix representing the reciprocal lattice from a `BravaisLattice`.
 """
-# function reciprocal_lattice(ibrav::Integer, celldm::AbstractVector)
-#     return reciprocal_lattice(direct_lattice(ibrav, celldm))
-# end # function reciprocal_lattice
+function reciprocalof(bravais::BravaisLattice)
+    return reciprocalof(bravais())
+end # function reciprocalof
 
 """
     supercell(cell::AbstractMatrix, expansion::AbstractMatrix{<:Integer})
