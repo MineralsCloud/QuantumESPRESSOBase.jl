@@ -493,11 +493,10 @@ function meshgrid(reciprocal::AbstractMatrix, mp::MonkhorstPackGrid, crystal::Bo
 end # function meshgrid
 function meshgrid(card::CellParametersCard, mp::MonkhorstPackGrid)
     option = optionof(card)
-    mesh = meshgrid(reciprocal_lattice(card.data), mp, true)
     if option == "alat"
-        return mesh
+        return meshgrid(reciprocal_lattice(card.data), mp, true)
     else  # option ∈ ("bohr", "angstrom")
-        mesh * inv(card.data)
+        return meshgrid(reciprocal_lattice(card.data), mp, false)
     end
 end # function meshgrid
 # ============================================================================ #
