@@ -134,6 +134,28 @@ end
 
 function cell_volume end
 
+struct BravaisLattice{I}
+    celldm::Vector{Union{Nothing,Float64}}
+    function BravaisLattice{I}(celldm) where {I}
+        @assert I ∈ union(1:1:14, (-3, -5, -9, 91, -12, -13))  # It can't be `0`!
+        @assert(
+            if I == 14
+                length(celldm) == 6
+            elseif I ∈ (5, -5, 12, 13)
+                4 <= length(celldm) <= 6
+            elseif I ∈ (4, 6, 7, 8, 9, -9, 91, 10, 11)  # `91` is new from QE 6.4
+                3 <= length(celldm) <= 6
+            elseif I == -13  # `-13` is new from QE 6.4
+                5 <= length(celldm) <= 6
+            else
+                1 <= length(celldm) <= 6
+            end,
+            "`celldm` must have length between 1 to 6! See `ibrav`'s doc!"
+        )
+        return new(celldm)
+    end
+end
+
 """
     direct_lattice(ibrav::Integer, celldm::AbstractVector)
 
