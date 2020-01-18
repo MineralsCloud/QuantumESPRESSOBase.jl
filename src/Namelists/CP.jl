@@ -374,7 +374,7 @@ QuantumESPRESSOBase.BravaisLattice(nml::SystemNamelist) =
 
 function QuantumESPRESSOBase.cell_volume(nml::SystemNamelist)
     iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
-    return det(BravaisLattice(nml)())
+    return abs(det(BravaisLattice(nml)()))
 end # function QuantumESPRESSOBase.cell_volume
 
 function Setters.make(::LensMaker{VerbositySetter,ControlNamelist})

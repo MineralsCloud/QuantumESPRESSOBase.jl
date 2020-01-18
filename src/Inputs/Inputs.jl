@@ -113,12 +113,12 @@ Return the volume of the cell based on the information given in a `PWInput`, in 
 """
 function QuantumESPRESSOBase.cell_volume(input::PWInput)
     if isnothing(input.cell_parameters)
-        return det(BravaisLattice(input.system)())
+        return abs(det(BravaisLattice(input.system)()))
     else
         if optionof(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
             isnothing(input.system.celldm[1]) && error("`celldm[1]` is not defined!")
-            return input.system.celldm[1]^3 * det(input.cell_parameters.data)
+            return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
         else  # "bohr" or "angstrom"
             return cell_volume(input.cell_parameters)
         end

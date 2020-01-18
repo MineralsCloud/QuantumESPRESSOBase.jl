@@ -528,9 +528,9 @@ function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
     option = optionof(card)
     if option == "bohr"
-        det(card.data)
+        abs(det(card.data))
     elseif option == "angstrom"
-        det(card.data) / BOHR_TO_ANGSTROM^3
+        abs(det(card.data)) / BOHR_TO_ANGSTROM^3
     elseif option == "alat"
         error("Information not enough! The `celldm[1]` parameter is unknown!")
     else
