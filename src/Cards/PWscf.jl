@@ -11,11 +11,7 @@ julia>
 """
 module PWscf
 
-export UnifiedPseudopotentialFormat,
-    VanderbiltUltraSoft,
-    AndreaDalCorso,
-    OldNormConserving,
-    AtomicSpecies,
+export AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
@@ -26,7 +22,7 @@ export UnifiedPseudopotentialFormat,
     GammaPoint,
     SpecialKPoint,
     KPointsCard
-export pseudopot_format, option_convert, push_atom!, append_atom!, meshgrid
+export option_convert, push_atom!, append_atom!, meshgrid
 
 include("shared.jl")
 
