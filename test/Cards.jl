@@ -4,6 +4,7 @@ module PWscf
 
 using Test
 
+using Pseudopotentials: UnifiedPseudopotentialFormat, pseudopot_format
 using Setfield
 using StructArrays: StructArray
 
