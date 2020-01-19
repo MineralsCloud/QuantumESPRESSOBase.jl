@@ -90,34 +90,6 @@ AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
 
 Represent all possible pseudopotential file formats.
 """
-abstract type PseudopotentialFormat end
-"""
-    UnifiedPseudopotentialFormat <: PseudopotentialFormat
-
-A singleton representing the new UPF format.
-
-If it doesn't work, the pseudopotential format is determined by
-the file name.
-"""
-struct UnifiedPseudopotentialFormat <: PseudopotentialFormat end
-"""
-    VanderbiltUltraSoft <: PseudopotentialFormat
-
-A singleton representing the Vanderbilt US pseudopotential code.
-"""
-struct VanderbiltUltraSoft <: PseudopotentialFormat end
-"""
-    AndreaDalCorso <: PseudopotentialFormat
-
-A singleton representing the Andrea Dal Corso's code (old format).
-"""
-struct AndreaDalCorso <: PseudopotentialFormat end
-"""
-    OldNormConserving <: PseudopotentialFormat
-
-A singleton representing the old PWscf norm-conserving format.
-"""
-struct OldNormConserving <: PseudopotentialFormat end
 
 """
     pseudopot_format(data::AtomicSpecies)::String

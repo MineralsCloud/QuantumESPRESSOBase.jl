@@ -1,10 +1,6 @@
 module CP
 
-export UnifiedPseudopotentialFormat,
-    VanderbiltUltraSoft,
-    AndreaDalCorso,
-    OldNormConserving,
-    AtomicSpecies,
+export AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
@@ -14,7 +10,7 @@ export UnifiedPseudopotentialFormat,
     AtomicVelocitiesCard,
     AtomicForce,
     AtomicForcesCard
-export pseudopot_format, option_convert, push_atom!, append_atom!
+export option_convert, push_atom!, append_atom!
 
 include("shared.jl")
 
