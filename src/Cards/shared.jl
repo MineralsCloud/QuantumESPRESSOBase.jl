@@ -3,11 +3,13 @@ using LinearAlgebra: det
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Formatting: sprintf1
+using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
 
 using QuantumESPRESSOBase: to_qe, reciprocalof
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
 
+import Pseudopotentials
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
 
@@ -86,35 +88,11 @@ AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
     AtomicSpecies(string(atom), mass, pseudopot)
 
 """
-    PseudopotentialFormat
+    pseudopot_format(data::AtomicSpecies)
 
-Represent all possible pseudopotential file formats.
+Return the pseudopotential format of the `AtomicSpecies`.
 """
-
-"""
-    pseudopot_format(data::AtomicSpecies)::String
-
-Return the pseudopotential format.
-
-The pseudopotential file is assumed to be in the new UPF format.
-If it doesn't work, the pseudopotential format is determined by
-the file name:
-- "*.vdb or *.van": Vanderbilt US pseudopotential code
-- "*.RRKJ3": Andrea Dal Corso's code (old format)
-- none of the above: old PWscf norm-conserving format
-"""
-function pseudopot_format(data::AtomicSpecies)::PseudopotentialFormat
-    ext = uppercase(splitext(data.pseudopot)[2])
-    return if ext == ".UPF"
-        UnifiedPseudopotentialFormat()
-    elseif ext ∈ (".VDB", ".VAN")
-        VanderbiltUltraSoft()
-    elseif ext == ".RRKJ3"
-        AndreaDalCorso()
-    else
-        OldNormConserving()
-    end
-end
+Pseudopotentials.pseudopot_format(data::AtomicSpecies) = pseudopot_format(data.pseudopot)
 
 """
     AtomicSpeciesCard <: Card
