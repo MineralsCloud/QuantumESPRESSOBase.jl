@@ -13,3 +13,5 @@
 [![Coverage](https://coveralls.io/repos/github/MineralsCloud/QuantumESPRESSOBase.jl/badge.svg?branch=master)](https://coveralls.io/github/MineralsCloud/QuantumESPRESSOBase.jl?branch=master)
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://MineralsCloud.github.io/QuantumESPRESSOBase.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://MineralsCloud.github.io/QuantumESPRESSOBase.jl/dev)
+
+[`QuantumESPRESSOBase.jl`](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl) provides the underlying data structures that represent the input and output of [Quantum ESPRESSO](https://www.quantum-espresso.org/). It is written purely in language [`Julia`](https://julialang.org/).
