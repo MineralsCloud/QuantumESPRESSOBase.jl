@@ -1,6 +1,6 @@
 module CLI
 
-using Parameters: @with_kw
+using Parameters: @with_kw_noshow
 
 import QuantumESPRESSOBase
 
@@ -15,7 +15,7 @@ abstract type QuantumESPRESSOCmd <: Base.AbstractCmd end
 
 Represent the executable for the PW calculation. Query each field for more information.
 """
-@with_kw struct PWCmd <: QuantumESPRESSOCmd
+@with_kw_noshow struct PWCmd <: QuantumESPRESSOCmd
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
     which::String = "pw.x"
     inp::String
