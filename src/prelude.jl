@@ -22,7 +22,7 @@ using Crystallography:
 
 import Crystallography
 
-export asfieldname, titleof, to_qe, reciprocalof, supercell
+export asfieldname, titleof, to_qe, supercell
 
 """
     InputEntry
@@ -340,21 +340,6 @@ function Lattice(::BravaisLattice{Monoclinic,BaseCentered{:B}}, p::CellParameter
         c * cos(β) c * (cos(α) - cos(β) * cos(γ)) / sin(γ) zz
     ])
 end # function Lattice
-
-function reciprocalof(mat::AbstractMatrix)
-    @assert size(mat) == (3, 3)
-    volume = abs(det(mat))
-    a1, a2, a3 = mat[1, :], mat[2, :], mat[3, :]
-    return 2π / volume * [cross(a2, a3) cross(a3, a1) cross(a1, a2)]
-end # function reciprocalof
-"""
-    reciprocalof(bravais::BravaisLattice)
-
-Return a ``3 × 3`` matrix representing the reciprocal lattice from a `BravaisLattice`.
-"""
-function reciprocalof(bravais::BravaisLattice)
-    return reciprocalof(bravais())
-end # function reciprocalof
 
 """
     supercell(cell::AbstractMatrix, expansion::AbstractMatrix{<:Integer})
