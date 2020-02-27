@@ -1,8 +1,26 @@
-using Compat: isnothing
 using LinearAlgebra: Diagonal, det, cross
 
-export BravaisLattice
-export asfieldname, titleof, to_qe, cell_volume, reciprocalof, supercell
+using Compat: isnothing
+using Crystallography:
+    BravaisLattice,
+    Triclinic,
+    Monoclinic,
+    Orthorhombic,
+    Tetragonal,
+    Cubic,
+    Trigonal,
+    Hexagonal,
+    Centering,
+    BaseCentered,
+    Primitive,
+    BodyCentered,
+    FaceCentered,
+    RhombohedralCentered,
+    BaseCentered
+
+import Crystallography
+
+export asfieldname, titleof, to_qe, reciprocalof, supercell
 
 """
     InputEntry
@@ -132,7 +150,6 @@ function to_qe(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
     return content
 end
 
-function cell_volume end
 
 struct BravaisLattice{I}
     celldm::Vector{Union{Nothing,Float64}}

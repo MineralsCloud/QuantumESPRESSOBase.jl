@@ -9,6 +9,7 @@ using Setfield: get, set, @lens, @set
 using QuantumESPRESSOBase: to_qe, reciprocalof
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
 
+import Crystallography
 import Pseudopotentials
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
@@ -468,13 +469,13 @@ Cards.allowed_options(::Type{<:KPointsCard}) = (
 )
 
 """
-    cell_volume(card)
+    cellvolume(card)
 
 Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
 
 It will throw an error if the information is not enough to calculate the volume.
 """
-function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
+function Crystallography.cellvolume(card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
     option = optionof(card)
     if option == "bohr"
@@ -486,7 +487,7 @@ function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
     else
         error("Option $option is unknown!")
     end
-end # function QuantumESPRESSOBase.cell_volume
+end # function Crystallography.cellvolume
 
 """
     option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
