@@ -150,6 +150,28 @@ function to_qe(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
     return content
 end
 
+Crystallography.BravaisLattice(ibrav::Integer) = BravaisLattice(Val(ibrav))
+Crystallography.BravaisLattice(::Val{1}) = BravaisLattice(Cubic(), Primitive())
+Crystallography.BravaisLattice(::Val{2}) = BravaisLattice(Cubic(), FaceCentered())
+Crystallography.BravaisLattice(::Val{3}) = BravaisLattice(Cubic(), BodyCentered())
+Crystallography.BravaisLattice(::Val{4}) = BravaisLattice(Hexagonal(), Primitive())
+Crystallography.BravaisLattice(::Val{5}) =
+    BravaisLattice(Hexagonal(), RhombohedralCentered())
+Crystallography.BravaisLattice(::Val{-5}) =
+    BravaisLattice(Hexagonal(), RhombohedralCentered())
+Crystallography.BravaisLattice(::Val{6}) = BravaisLattice(Tetragonal(), Primitive())
+Crystallography.BravaisLattice(::Val{7}) = BravaisLattice(Tetragonal(), BodyCentered())
+Crystallography.BravaisLattice(::Val{8}) = BravaisLattice(Orthorhombic(), Primitive())
+Crystallography.BravaisLattice(::Val{9}) = BravaisLattice(Orthorhombic(), BaseCentered(:B))
+Crystallography.BravaisLattice(::Val{-9}) = BravaisLattice(Orthorhombic(), BaseCentered(:B))
+Crystallography.BravaisLattice(::Val{91}) = BravaisLattice(Orthorhombic(), BaseCentered(:A))  # New in QE 6.5
+Crystallography.BravaisLattice(::Val{10}) = BravaisLattice(Orthorhombic(), FaceCentered())
+Crystallography.BravaisLattice(::Val{11}) = BravaisLattice(Orthorhombic(), BodyCentered())
+Crystallography.BravaisLattice(::Val{12}) = BravaisLattice(Monoclinic(), Primitive())
+Crystallography.BravaisLattice(::Val{-12}) = BravaisLattice(Monoclinic(), Primitive())
+Crystallography.BravaisLattice(::Val{13}) = BravaisLattice(Monoclinic(), BaseCentered(:C))
+Crystallography.BravaisLattice(::Val{-13}) = BravaisLattice(Monoclinic(), BaseCentered(:B))  # New in QE 6.5
+Crystallography.BravaisLattice(::Val{14}) = BravaisLattice(Triclinic(), Primitive())
 
 struct BravaisLattice{I}
     celldm::Vector{Union{Nothing,Float64}}
