@@ -16,7 +16,9 @@ using Crystallography:
     BodyCentered,
     FaceCentered,
     RhombohedralCentered,
-    BaseCentered
+    BaseCentered,
+    Lattice,
+    CellParameters
 
 import Crystallography
 
@@ -173,170 +175,171 @@ Crystallography.BravaisLattice(::Val{13}) = BravaisLattice(Monoclinic(), BaseCen
 Crystallography.BravaisLattice(::Val{-13}) = BravaisLattice(Monoclinic(), BaseCentered(:B))  # New in QE 6.5
 Crystallography.BravaisLattice(::Val{14}) = BravaisLattice(Triclinic(), Primitive())
 
-struct BravaisLattice{I}
-    celldm::Vector{Union{Nothing,Float64}}
-    function BravaisLattice{I}(celldm) where {I}
-        @assert I ∈ union(1:1:14, (-3, -5, -9, 91, -12, -13))  # It can't be `0`!
-        @assert(
-            if I == 14
-                length(celldm) == 6
-            elseif I ∈ (5, -5, 12, 13)
-                4 <= length(celldm) <= 6
-            elseif I ∈ (4, 6, 7, 8, 9, -9, 91, 10, 11)  # `91` is new from QE 6.4
-                3 <= length(celldm) <= 6
-            elseif I == -13  # `-13` is new from QE 6.4
-                5 <= length(celldm) <= 6
-            else
-                1 <= length(celldm) <= 6
-            end,
-            "`celldm` must have length between 1 to 6! See `ibrav`'s doc!"
-        )
-        return new(celldm)
-    end
-end
+struct AxesSetting{N} end
+AxesSetting(N::Int) = AxesSetting{N}()
 
-"""
-    (::BravaisLattice{I})()
-
-Return a ``3 × 3`` matrix representing the Bravais lattice from `BravaisLattice{I}`.
-"""
-(bravais::BravaisLattice{1})() = bravais.celldm[1] * [
+Lattice(::BravaisLattice{Cubic,Primitive}, p::CellParameters) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 1
-]
-(bravais::BravaisLattice{2})() = bravais.celldm[1] / 2 * [
+])
+Lattice(::BravaisLattice{Cubic,FaceCentered}, p::CellParameters) = Lattice(p[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
-]
-(bravais::BravaisLattice{3})() = bravais.celldm[1] / 2 * [
-    1 1 1
-    -1 1 1
-    -1 -1 1
-]
-(bravais::BravaisLattice{-3})() = bravais.celldm[1] / 2 * [
-    -1 1 1
-    1 -1 1
-    1 1 -1
-]
-(bravais::BravaisLattice{4})() =
-    bravais.celldm[1] * [
+])
+function Lattice(
+    ::BravaisLattice{Cubic,BodyCentered},
+    p::CellParameters,
+    ::AxesSetting{1},
+)
+    return Lattice(p[1] / 2 * [
+        1 1 1
+        -1 1 1
+        -1 -1 1
+    ])
+end # function Lattice
+function Lattice(
+    ::BravaisLattice{Cubic,BodyCentered},
+    p::CellParameters,
+    ::AxesSetting{2},
+)
+    return Lattice(p[1] / 2 * [
+        -1 1 1
+        1 -1 1
+        1 1 -1
+    ])
+end # function Lattice
+Lattice(::BravaisLattice{Hexagonal{3},Primitive}, p::CellParameters) =
+    Lattice(p[1] * [
         1 0 0
         -1 / 2 √3 / 2 0
-        0 0 bravais.celldm[3]
-    ]
-function (bravais::BravaisLattice{5})()
-    c = bravais.celldm[4]
-    tx = sqrt((1 - c) / 2)
-    ty = sqrt((1 - c) / 6)
-    tz = sqrt((1 + 2c) / 3)
-    return bravais.celldm[1] * [
+        0 0 p[3] / p[1]
+    ])
+function Lattice(
+    ::BravaisLattice{Hexagonal{3},RhombohedralCentered},
+    p::CellParameters,
+    ::AxesSetting{1},
+)
+    r = cos(p[4])
+    tx = sqrt((1 - r) / 2)
+    ty = sqrt((1 - r) / 6)
+    tz = sqrt((1 + 2r) / 3)
+    return Lattice(p[1] * [
         tx -ty tz
         0 2ty tz
         -tx -ty tz
-    ]
+    ])
 end
-function (bravais::BravaisLattice{-5})()
-    ap = bravais.celldm[1] / √3
-    c = bravais.celldm[4]
-    ty = sqrt((1 - c) / 6)
-    tz = sqrt((1 + 2c) / 3)
+function Lattice(
+    ::BravaisLattice{Hexagonal{3},RhombohedralCentered},
+    p::CellParameters,
+    ::AxesSetting{2},
+)
+    ap = p[1] / √3
+    γ = acos(p[4])
+    ty = sqrt((1 - γ) / 6)
+    tz = sqrt((1 + 2γ) / 3)
     u = tz - 2 * √2 * ty
     v = tz + √2 * ty
-    return ap * [
+    return Lattice(ap * [
         u v v
         v u v
         v v u
-    ]
+    ])
 end
-(bravais::BravaisLattice{6})() = bravais.celldm[1] * [
-    1 0 0
-    0 1 0
-    0 0 bravais.celldm[3]
-]
-(bravais::BravaisLattice{7})() =
-    bravais.celldm[1] / 2 * [
-        1 -1 bravais.celldm[3] / bravais.celldm[1]
-        1 1 bravais.celldm[3] / bravais.celldm[1]
-        -1 -1 bravais.celldm[3] / bravais.celldm[1]
-    ]
-(bravais::BravaisLattice{8})() =
-    bravais.celldm[1] * [
+Lattice(::BravaisLattice{Tetragonal,Primitive}, p::CellParameters) =
+    Lattice(p[1] * [
         1 0 0
-        0 bravais.celldm[2] 0
-        0 0 bravais.celldm[3]
-    ]
-(bravais::BravaisLattice{9})() =
-    bravais.celldm[1] * [
-        1 / 2 bravais.celldm[2] / 2 0
-        -1 / 2 bravais.celldm[2] / 2 0
-        0 0 bravais.celldm[3]
-    ]
-(bravais::BravaisLattice{-9})() =
-    bravais.celldm[1] * [
-        1 / 2 -bravais.celldm[2] / 2 0
-        1 / 2 bravais.celldm[2] / 2 0
-        0 0 bravais.celldm[3]
-    ]
-(bravais::BravaisLattice{91})() =
-    bravais.celldm[1] * [
-        1 0 0
-        0 bravais.celldm[2] / 2 -bravais.celldm[3] / 2
-        0 bravais.celldm[2] / 2 bravais.celldm[3] / 2
-    ]  # New from QE 6.4
-(bravais::BravaisLattice{10})() =
-    bravais.celldm[1] * [
-        1 / 2 0 bravais.celldm[3] / 2
-        1 / 2 bravais.celldm[2] / 2 0
-        0 bravais.celldm[2] / 2 bravais.celldm[3] / 2
-    ]
-(bravais::BravaisLattice{11})() =
-    bravais.celldm[1] * [
-        1 / 2 0 bravais.celldm[3] / 2
-        1 / 2 bravais.celldm[2] / 2 0
-        0 bravais.celldm[2] / 2 bravais.celldm[3] / 2
-    ]
-(bravais::BravaisLattice{12})() =
-    bravais.celldm[1] * [
-        1 0 0
-        bravais.celldm[2] * bravais.celldm[4] bravais.celldm[2] *
-                                              sqrt(1 - bravais.celldm[4]^2) 0
-        0 0 bravais.celldm[3]
-    ]
-(bravais::BravaisLattice{-12})() =
-    bravais.celldm[1] * [
-        1 0 0
-        0 bravais.celldm[2] 0
-        bravais.celldm[3] * bravais.celldm[5] 0 bravais.celldm[3] *
-                                                sqrt(1 - bravais.celldm[5]^2)
-    ]
-(bravais::BravaisLattice{13})() =
-    bravais.celldm[1] * [
-        1 / 2 0 -bravais.celldm[3] / 2
-        bravais.celldm[2] * bravais.celldm[4] bravais.celldm[2] *
-                                              sqrt(1 - bravais.celldm[4]^2) 0
-        1 / 2 0 bravais.celldm[3] / 2
-    ]
-(bravais::BravaisLattice{-13})() =
-    bravais.celldm[1] * [
-        1 / 2 -bravais.celldm[2] / 2 0
-        1 / 2 bravais.celldm[2] / 2 0
-        bravais.celldm[3] * bravais.celldm[5] 0 bravais.celldm[3] *
-                                                sqrt(1 - bravais.celldm[5]^2)
-    ]
-(bravais::BravaisLattice{14})() =
-    bravais.celldm[1] * [
-        1 0 0
-        bravais.celldm[2] * bravais.celldm[6] bravais.celldm[2] *
-                                              sqrt(1 - bravais.celldm[6]^2) 0
-        bravais.celldm[3] * bravais.celldm[5] bravais.celldm[3] * (
-            bravais.celldm[4] - bravais.celldm[5] * bravais.celldm[6]
-        ) / sqrt(1 - bravais.celldm[6]^2) bravais.celldm[3] * sqrt(
-            1 + 2 * bravais.celldm[4] * bravais.celldm[5] * bravais.celldm[6] -
-            bravais.celldm[4]^2 - bravais.celldm[5]^2 - bravais.celldm[6]^2,
-        ) / sqrt(1 - bravais.celldm[6]^2)
-    ]
+        0 1 0
+        0 0 p[3] / p[1]
+    ])
+function Lattice(::BravaisLattice{Tetragonal,BodyCentered}, p::CellParameters)
+    r = p[3] / p[1]
+    return Lattice(p[1] / 2 * [
+        1 -1 r
+        1 1 r
+        -1 -1 r
+    ])
+end # function Lattice
+Lattice(::BravaisLattice{Orthorhombic,Primitive}, p::CellParameters) = Lattice([
+    p[1] 0 0
+    0 p[2] 0
+    0 0 p[3]
+])
+Lattice(::BravaisLattice{Orthorhombic,BaseCentered{:B}}, p::CellParameters, ::AxesSetting{1}) = Lattice([
+    p[1] / 2 p[2] / 2 0
+   -p[1] / 2 p[2] / 2 0
+    0        0        p[3]
+])
+Lattice(::BravaisLattice{Orthorhombic,BaseCentered{:B}}, p::CellParameters, ::AxesSetting{2}) = Lattice([
+    p[1] / 2 -p[2] / 2 0
+    p[1] / 2 p[2] / 2  0
+    0        0         p[3]
+])
+Lattice(::BravaisLattice{Orthorhombic,BaseCentered{:A}}, p::CellParameters) = Lattice([
+    p[1] 0 0
+    0 p[2] / 2 -p[3] / 2
+    0 p[2] / 2 p[3] / 2
+])  # New in QE 6.4
+function Lattice(::BravaisLattice{Orthorhombic,FaceCentered}, p::CellParameters)
+    a, b, c = p.x
+    return Lattice([
+        a 0 c
+        a b 0
+        0 b c
+    ] / 2)
+end # function Lattice
+function Lattice(::BravaisLattice{Orthorhombic,BodyCentered}, p::CellParameters)
+    a, b, c = p.x
+    return Lattice([
+        a b c
+        -a b c
+        -a -b c
+    ] / 2)
+end
+function Lattice(::BravaisLattice{Monoclinic,Primitive}, p::CellParameters, ::AxesSetting{1})
+    a, b, c = p.x
+    return Lattice([
+        a 0 0
+        b * cos(p[6]) b * sin(p[6]) 0
+        0 0 c
+    ])
+end
+function Lattice(::BravaisLattice{Monoclinic,Primitive}, p::CellParameters, ::AxesSetting{2})
+    a, b, c = p.x
+    return Lattice([
+        a 0 0
+        0 b 0
+        c * cos(p[5]) 0 c * sin(p[5])
+    ])
+end
+function Lattice(::BravaisLattice{Monoclinic,BaseCentered{:C}}, p::CellParameters)
+    a, b, c = p.x
+    return Lattice([
+        a / 2 0 -c / 2
+        b * cos(p[6]) b * sin(p[6]) 0
+        a / 2 0 c / 2
+    ])
+end
+function Lattice(::BravaisLattice{Monoclinic,BaseCentered{:B}}, p::CellParameters)
+    a, b, c = p.x
+    return Lattice([
+        a / 2 b / 2 0
+        -a / 2 b / 2 0
+        c * cos(p[5]) 0 c * sin(p[5])
+    ])
+end
+function Lattice(::BravaisLattice{Monoclinic,BaseCentered{:B}}, p::CellParameters)
+    a, b, c = p.x
+    α, β, γ = p.y
+    zz = c * sqrt(1 + 2cos(α) * cos(β) * cos(γ) - cos(α)^2 - cos(β)^2 - cos(γ)^2) / sin(γ)
+    return Lattice([
+        a 0 0
+        b * cos(γ) b * sin(γ) 0
+        c * cos(β) c * (cos(α) - cos(β) * cos(γ)) / sin(γ) zz
+    ])
+end # function Lattice
 
 function reciprocalof(mat::AbstractMatrix)
     @assert size(mat) == (3, 3)
