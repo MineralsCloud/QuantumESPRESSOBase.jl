@@ -52,18 +52,16 @@ AtomicVelocity("H", #undef)
 """
 @auto_hash_equals mutable struct AtomicVelocity
     atom::String
-    velocity::Vector{Float64}
-    function AtomicVelocity(atom, velocity)
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        @assert length(velocity) == 3
-        return new(atom, velocity)
+    velocity::SVector{3,Float64}
+    function AtomicVelocity(atom::Union{AbstractChar,AbstractString}, velocity)
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        return new(string(atom), velocity)
     end
     function AtomicVelocity(atom::Union{AbstractChar,AbstractString})
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
         return new(string(atom))
     end
 end
-AtomicVelocity(atom::AbstractChar, velocity) = AtomicVelocity(string(atom), velocity)
 AtomicVelocity(x::AtomicSpecies, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicSpecies) = AtomicVelocity(x.atom)
