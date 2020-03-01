@@ -353,16 +353,11 @@ Represent the Monkhorst--Pack grid.
 - `offsets::Vector{Int}`: The grid offsets ``sk_1``, ``sk_2`` and ``sk_3`` must be `0` (no offset) or `1` (grid displaced by half a grid step in the corresponding direction).
 """
 @auto_hash_equals struct MonkhorstPackGrid
-    grid::Vector{Int}
-    offsets::Vector{Int}
+    grid::SVector{3,Int}
+    offsets::SVector{3,Bool}
     function MonkhorstPackGrid(grid, offsets)
-        @assert length(grid) == length(offsets) == 3
         # See https://github.com/aiidateam/aiida-quantumespresso/blob/4aef9f9/aiida_quantumespresso/cli/utils/validate.py#L10-L37
         @assert(all(grid .> 0), "`grid` must be positive integers!")
-        @assert(
-            all(iszero(x) || isone(x) for x in offsets),
-            "`offsets` elements must be 0 or 1!"
-        )
         return new(grid, offsets)
     end
 end
