@@ -367,15 +367,10 @@ struct GammaPoint <: KPoint end
 Represent a special point of the 3D Brillouin zone. Each of them has a weight.
 """
 @auto_hash_equals struct SpecialKPoint{T<:Real} <: KPoint
-    coord::Vector{T}
+    coord::SVector{3,T}
     weight::T
-    function SpecialKPoint{T}(coord, weight) where {T<:Real}
-        @assert length(coord) == 3
-        return new(coord, weight)
-    end
 end
-SpecialKPoint(coord::AbstractVector, weight) =
-    SpecialKPoint{promote_type(eltype(coord), typeof(weight))}(coord, weight)
+SpecialKPoint(coord, weight) = SpecialKPoint{promote_type(eltype(coord), typeof(weight))}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 """
