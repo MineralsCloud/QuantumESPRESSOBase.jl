@@ -147,10 +147,9 @@ end # function append_atom!
 
 @auto_hash_equals struct RefCellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
-    data::Matrix{T}
+    data::SMatrix{3,3,T}
     function RefCellParametersCard{T}(option, data) where {T<:Real}
         @assert option ∈ allowed_options(RefCellParametersCard)
-        @assert size(data) == (3, 3)
         return new(option, data)
     end
 end
