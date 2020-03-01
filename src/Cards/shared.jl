@@ -124,7 +124,7 @@ as claimed in QE's documentation.
 julia> using QuantumESPRESSOBase.Cards.PWscf
 
 julia> AtomicPosition('O', [0, 0, 0])
-AtomicPosition("O", [0.0, 0.0, 0.0], [1, 1, 1])
+AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 1, 1])
 
 julia> x = AtomicPosition('O');
 
@@ -133,7 +133,7 @@ ERROR: UndefRefError: access to undefined reference
 [...]
 
 julia> x.pos = [0, 0, 0]
-ERROR: TypeError: in setfield!, expected Array{Float64,1}, got Array{Int64,1}
+ERROR: TypeError: in setfield!, expected StaticArrays.SArray{Tuple{3},Float64,1,3}, got StaticArrays.SArray{Tuple{3},Int64,1,3}
 [...]
 
 julia> x.pos = Float64[0, 0, 0]
@@ -143,30 +143,30 @@ julia> x.pos = Float64[0, 0, 0]
  0.0
 
 julia> x.if_pos = [1, 0, 2]
-ERROR: AssertionError: `if_pos` elements must be 0 or 1!
+ERROR: TypeError: in setfield!, expected StaticArrays.SArray{Tuple{3},Bool,1,3}, got StaticArrays.SArray{Tuple{3},Int64,1,3}
 [...]
 
-julia> x.if_pos = [1, 0, 1]
-3-element Array{Int64,1}:
+julia> x.if_pos = Bool[1, 0, 1]
+3-element Array{Bool,1}:
  1
  0
  1
 
 julia> x
-AtomicPosition("O", [0.0, 0.0, 0.0], [1, 0, 1])
+AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 0, 1])
 
 julia> AtomicPosition(
-            AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
-            [0.500000000, 0.288675130, 1.974192764],
+           AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
+           [0.500000000, 0.288675130, 1.974192764],
        )
-AtomicPosition("S", [0.5, 0.28867513, 1.974192764], [1, 1, 1])
+AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
 ```
 """
 @auto_hash_equals mutable struct AtomicPosition
     "Label of the atom as specified in `AtomicSpecies`."
     atom::String
     "Atomic positions. A three-element vector of floats."
-    pos::Vector{Float64}
+    pos::SVector{3,Float64}
     """
     Component `i` of the force for this atom is multiplied by `if_pos(i)`,
     which must be either `0` or `1`.  Used to keep selected atoms and/or
