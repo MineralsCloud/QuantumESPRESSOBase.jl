@@ -5,6 +5,7 @@ using Compat: eachrow
 using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
+using StaticArrays: SVector
 
 using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
@@ -174,22 +175,17 @@ AtomicPosition("S", [0.5, 0.28867513, 1.974192764], [1, 1, 1])
     With `crystal_sg` atomic coordinates the constraints are copied in all equivalent
     atoms.
     """
-    if_pos::Vector{Int}
+    if_pos::SVector{3,Bool}
     function AtomicPosition(atom, pos, if_pos)
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        @assert length(pos) == length(if_pos) == 3
-        @assert(
-            all(iszero(x) || isone(x) for x in if_pos),
-            "`if_pos` elements must be 0 or 1!"
-        )
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
         return new(atom, pos, if_pos)
     end
     function AtomicPosition(atom::Union{AbstractChar,AbstractString})
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
         return new(string(atom))
     end
 end
-AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
+AtomicPosition(atom, pos) = AtomicPosition(atom, pos, trues(3))
 AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
