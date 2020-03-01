@@ -174,9 +174,9 @@ AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
     atoms.
     """
     if_pos::SVector{3,Bool}
-    function AtomicPosition(atom, pos, if_pos)
+    function AtomicPosition(atom::Union{AbstractChar,AbstractString}, pos, if_pos)
         @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
-        return new(atom, pos, if_pos)
+        return new(string(atom), pos, if_pos)
     end
     function AtomicPosition(atom::Union{AbstractChar,AbstractString})
         @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
@@ -184,7 +184,6 @@ AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
     end
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, trues(3))
-AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
 # Introudce mutual constructors since they share the same atoms.
