@@ -40,14 +40,11 @@ julia> x = AtomicVelocity('H');
 julia> x.atom
 "H"
 
-julia> x.velocity = [0.140374e-04, -0.333683e-04, 0.231834e-04]; x.velocity
+julia> x.velocity = [0.140374e-04, -0.333683e-04, 0.231834e-04]
 3-element Array{Float64,1}:
   1.40374e-5
  -3.33683e-5
   2.31834e-5
-
-julia> AtomicVelocity(AtomicSpecies("H", 1.00794000, "H.pbe-rrkjus_psl.1.0.0.UPF"))
-AtomicVelocity("H", #undef)
 ```
 """
 @auto_hash_equals mutable struct AtomicVelocity
