@@ -5,7 +5,7 @@ using Compat: eachrow
 using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
-using StaticArrays: SVector
+using StaticArrays: SVector, SMatrix
 
 using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
@@ -308,10 +308,9 @@ Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
 @auto_hash_equals struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
-    data::Matrix{T}
+    data::SMatrix{3,3,T}
     function CellParametersCard{T}(option, data) where {T<:Real}
         @assert option ∈ allowed_options(CellParametersCard)
-        @assert size(data) == (3, 3)
         return new(option, data)
     end
 end
