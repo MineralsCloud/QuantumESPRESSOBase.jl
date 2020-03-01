@@ -168,13 +168,11 @@ Cards.allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
 Cards.allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 
 function Base.setproperty!(value::AtomicVelocity, name::Symbol, x)
-    if name == :atom
-        @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        if x isa AbstractChar
-            x = string(x)
-        end
-    elseif name == :velocity && x isa AbstractVector  # It cannot be an `else` here, since it will capture invalid `name`s.
-        @assert length(x) == 3
+    x = if name == :atom
+        @assert(length(x) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        x = string(x)  # Make sure it is a `String`
+    elseif name == :velocity && x isa AbstractVector
+        SVector{3}(x)
     end
     setfield!(value, name, x)
 end # function Base.setproperty!
