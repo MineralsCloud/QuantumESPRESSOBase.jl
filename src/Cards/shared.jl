@@ -6,9 +6,10 @@ using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
 
-using QuantumESPRESSOBase: to_qe, reciprocalof
+using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
 
+import Crystallography
 import Pseudopotentials
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
@@ -426,29 +427,29 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 
-function meshgrid(reciprocal::AbstractMatrix, mp::MonkhorstPackGrid, crystal::Bool = true)
-    nk, sk = mp.grid, mp.offsets
-    sk = map(x -> isone(x) ? 1 // 2 : 0, sk)
-    mesh = Iterators.product(
-        (0:nk[1]-1) // nk[1] .+ sk[1],
-        (0:nk[2]-1) // nk[2] .+ sk[2],
-        (0:nk[3]-1) // nk[3] .+ sk[3],
-    )
-    if crystal
-        return collect(mesh)
-    else
-        a1, a2, a3 = reciprocal[1, :], reciprocal[2, :], reciprocal[3, :]
-        return collect(x[1] .* a1 + x[2] .* a2 + x[3] .* a3 for x in mesh)
-    end
-end # function meshgrid
-function meshgrid(card::CellParametersCard, mp::MonkhorstPackGrid)
-    option = optionof(card)
-    if option == "alat"
-        return meshgrid(reciprocalof(card.data), mp, true)
-    else  # option ∈ ("bohr", "angstrom")
-        return meshgrid(reciprocalof(card.data), mp, false)
-    end
-end # function meshgrid
+# function meshgrid(reciprocal::AbstractMatrix, mp::MonkhorstPackGrid, crystal::Bool = true)
+#     nk, sk = mp.grid, mp.offsets
+#     sk = map(x -> isone(x) ? 1 // 2 : 0, sk)
+#     mesh = Iterators.product(
+#         (0:nk[1]-1) // nk[1] .+ sk[1],
+#         (0:nk[2]-1) // nk[2] .+ sk[2],
+#         (0:nk[3]-1) // nk[3] .+ sk[3],
+#     )
+#     if crystal
+#         return collect(mesh)
+#     else
+#         a1, a2, a3 = reciprocal[1, :], reciprocal[2, :], reciprocal[3, :]
+#         return collect(x[1] .* a1 + x[2] .* a2 + x[3] .* a3 for x in mesh)
+#     end
+# end # function meshgrid
+# function meshgrid(card::CellParametersCard, mp::MonkhorstPackGrid)
+#     option = optionof(card)
+#     if option == "alat"
+#         return meshgrid(reciprocalof(card.data), mp, true)
+#     else  # option ∈ ("bohr", "angstrom")
+#         return meshgrid(reciprocalof(card.data), mp, false)
+#     end
+# end # function meshgrid
 # ============================================================================ #
 
 Cards.optionof(::AtomicSpeciesCard) = nothing
@@ -468,13 +469,13 @@ Cards.allowed_options(::Type{<:KPointsCard}) = (
 )
 
 """
-    cell_volume(card)
+    cellvolume(card)
 
 Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
 
 It will throw an error if the information is not enough to calculate the volume.
 """
-function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
+function Crystallography.cellvolume(card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
     option = optionof(card)
     if option == "bohr"
@@ -486,7 +487,7 @@ function QuantumESPRESSOBase.cell_volume(card::AbstractCellParametersCard)
     else
         error("Option $option is unknown!")
     end
-end # function QuantumESPRESSOBase.cell_volume
+end # function Crystallography.cellvolume
 
 """
     option_convert(new_option::AbstractString, card::AbstractCellParametersCard)

@@ -22,6 +22,7 @@ using QuantumESPRESSOBase.Cards: Card, optionof
 using QuantumESPRESSOBase.Cards.PWscf: CellParametersCard
 using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
 
+import Crystallography
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
@@ -107,11 +108,11 @@ Base.:!(::typeof(compulsory_cards)) = function (input::T) where {T<:Union{PWInpu
 end
 
 """
-    cell_volume(input::PWInput)
+    cellvolume(input::PWInput)
 
 Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
 """
-function QuantumESPRESSOBase.cell_volume(input::PWInput)
+function Crystallography.cellvolume(input::PWInput)
     if isnothing(input.cell_parameters)
         return abs(det(BravaisLattice(input.system)()))
     else
@@ -120,10 +121,10 @@ function QuantumESPRESSOBase.cell_volume(input::PWInput)
             isnothing(input.system.celldm[1]) && error("`celldm[1]` is not defined!")
             return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
         else  # "bohr" or "angstrom"
-            return cell_volume(input.cell_parameters)
+            return cellvolume(input.cell_parameters)
         end
     end
-end # function QuantumESPRESSOBase.cell_volume
+end # function Crystallography.cellvolume
 
 function QuantumESPRESSOBase.to_qe(
     input::QuantumESPRESSOInput;
