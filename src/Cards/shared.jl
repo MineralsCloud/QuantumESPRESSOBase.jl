@@ -320,15 +320,14 @@ CellParametersCard(data) = CellParametersCard("alat", data)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
-@auto_hash_equals struct AtomicForce{T<:Real}
+@auto_hash_equals struct AtomicForce
     atom::String
-    force::SVector{3,T}
-    function AtomicForce{T}(atom::Union{AbstractChar,AbstractString}, force) where {T<:Real}
-        @assert length(force) == 3
+    force::SVector{3,Float64}
+    function AtomicForce(atom::Union{AbstractChar,AbstractString}, force)
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
         return new(string(atom), force)
     end
 end
-AtomicForce(atom, force::AbstractVector{T}) where {T} = AtomicForce{T}(atom, force)
 
 struct AtomicForcesCard <: Card
     data::Vector{AtomicForce}
