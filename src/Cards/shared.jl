@@ -77,17 +77,15 @@ AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
     See also: [`pseudopot_format`](@ref)
     """
     pseudopot::String
-    function AtomicSpecies(atom, mass, pseudopot)
+    function AtomicSpecies(atom::Union{AbstractChar,AbstractString}, mass, pseudopot)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        return new(atom, mass, pseudopot)
+        return new(string(atom), mass, pseudopot)
     end
     function AtomicSpecies(atom::Union{AbstractChar,AbstractString})
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         return new(string(atom))
     end
 end
-AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
-    AtomicSpecies(string(atom), mass, pseudopot)
 
 """
     pseudopot_format(data::AtomicSpecies)
