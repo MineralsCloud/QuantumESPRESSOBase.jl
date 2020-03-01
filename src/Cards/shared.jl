@@ -349,8 +349,8 @@ abstract type KPoint end
 Represent the Monkhorst--Pack grid.
 
 # Arguments
-- `grid::Vector{Int}`: These parameters specify the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst-Pack grids.
-- `offsets::Vector{Int}`: The grid offsets ``sk_1``, ``sk_2`` and ``sk_3`` must be `0` (no offset) or `1` (grid displaced by half a grid step in the corresponding direction).
+- `grid`: A length-three vector specifying the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst--Pack grids.
+- `offsets`: A length-three vector specifying whether the grid is displaced by half a grid step in the corresponding directions.
 """
 @auto_hash_equals struct MonkhorstPackGrid
     grid::SVector{3,Int}
@@ -610,9 +610,7 @@ end
 function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
     if name == :atom
         @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        if x isa AbstractChar
-            x = string(x)
-        end
+        x = string(x)  # An `if` statement is more expensive than directly setting a string
     end
     setfield!(value, name, x)
 end # function Base.setproperty!
