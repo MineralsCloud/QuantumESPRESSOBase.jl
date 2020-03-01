@@ -5,6 +5,7 @@ using Compat: eachrow
 using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
+using StaticArrays: SVector, SMatrix
 
 using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
@@ -76,17 +77,15 @@ AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
     See also: [`pseudopot_format`](@ref)
     """
     pseudopot::String
-    function AtomicSpecies(atom, mass, pseudopot)
+    function AtomicSpecies(atom::Union{AbstractChar,AbstractString}, mass, pseudopot)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        return new(atom, mass, pseudopot)
+        return new(string(atom), mass, pseudopot)
     end
     function AtomicSpecies(atom::Union{AbstractChar,AbstractString})
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         return new(string(atom))
     end
 end
-AtomicSpecies(atom::AbstractChar, mass, pseudopot) =
-    AtomicSpecies(string(atom), mass, pseudopot)
 
 """
     pseudopot_format(data::AtomicSpecies)
@@ -123,7 +122,7 @@ as claimed in QE's documentation.
 julia> using QuantumESPRESSOBase.Cards.PWscf
 
 julia> AtomicPosition('O', [0, 0, 0])
-AtomicPosition("O", [0.0, 0.0, 0.0], [1, 1, 1])
+AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 1, 1])
 
 julia> x = AtomicPosition('O');
 
@@ -132,7 +131,7 @@ ERROR: UndefRefError: access to undefined reference
 [...]
 
 julia> x.pos = [0, 0, 0]
-ERROR: TypeError: in setfield!, expected Array{Float64,1}, got Array{Int64,1}
+ERROR: TypeError: in setfield!, expected StaticArrays.SArray{Tuple{3},Float64,1,3}, got StaticArrays.SArray{Tuple{3},Int64,1,3}
 [...]
 
 julia> x.pos = Float64[0, 0, 0]
@@ -142,30 +141,30 @@ julia> x.pos = Float64[0, 0, 0]
  0.0
 
 julia> x.if_pos = [1, 0, 2]
-ERROR: AssertionError: `if_pos` elements must be 0 or 1!
+ERROR: TypeError: in setfield!, expected StaticArrays.SArray{Tuple{3},Bool,1,3}, got StaticArrays.SArray{Tuple{3},Int64,1,3}
 [...]
 
-julia> x.if_pos = [1, 0, 1]
-3-element Array{Int64,1}:
+julia> x.if_pos = Bool[1, 0, 1]
+3-element Array{Bool,1}:
  1
  0
  1
 
 julia> x
-AtomicPosition("O", [0.0, 0.0, 0.0], [1, 0, 1])
+AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 0, 1])
 
 julia> AtomicPosition(
-            AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
-            [0.500000000, 0.288675130, 1.974192764],
+           AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
+           [0.500000000, 0.288675130, 1.974192764],
        )
-AtomicPosition("S", [0.5, 0.28867513, 1.974192764], [1, 1, 1])
+AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
 ```
 """
 @auto_hash_equals mutable struct AtomicPosition
     "Label of the atom as specified in `AtomicSpecies`."
     atom::String
     "Atomic positions. A three-element vector of floats."
-    pos::Vector{Float64}
+    pos::SVector{3,Float64}
     """
     Component `i` of the force for this atom is multiplied by `if_pos(i)`,
     which must be either `0` or `1`.  Used to keep selected atoms and/or
@@ -174,23 +173,17 @@ AtomicPosition("S", [0.5, 0.28867513, 1.974192764], [1, 1, 1])
     With `crystal_sg` atomic coordinates the constraints are copied in all equivalent
     atoms.
     """
-    if_pos::Vector{Int}
-    function AtomicPosition(atom, pos, if_pos)
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        @assert length(pos) == length(if_pos) == 3
-        @assert(
-            all(iszero(x) || isone(x) for x in if_pos),
-            "`if_pos` elements must be 0 or 1!"
-        )
-        return new(atom, pos, if_pos)
+    if_pos::SVector{3,Bool}
+    function AtomicPosition(atom::Union{AbstractChar,AbstractString}, pos, if_pos)
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        return new(string(atom), pos, if_pos)
     end
     function AtomicPosition(atom::Union{AbstractChar,AbstractString})
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
         return new(string(atom))
     end
 end
-AtomicPosition(atom, pos) = AtomicPosition(atom, pos, ones(Int, 3))
-AtomicPosition(x::AbstractChar, pos, if_pos) = AtomicPosition(string(x), pos, if_pos)
+AtomicPosition(atom, pos) = AtomicPosition(atom, pos, trues(3))
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
 # Introudce mutual constructors since they share the same atoms.
@@ -315,10 +308,9 @@ Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
 @auto_hash_equals struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
-    data::Matrix{T}
+    data::SMatrix{3,3,T}
     function CellParametersCard{T}(option, data) where {T<:Real}
         @assert option ∈ allowed_options(CellParametersCard)
-        @assert size(data) == (3, 3)
         return new(option, data)
     end
 end
@@ -328,15 +320,14 @@ CellParametersCard(data) = CellParametersCard("alat", data)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
-@auto_hash_equals struct AtomicForce{T<:Real}
+@auto_hash_equals struct AtomicForce
     atom::String
-    force::Vector{T}
-    function AtomicForce{T}(atom, force) where {T<:Real}
-        @assert length(force) == 3
-        return new(atom, force)
+    force::SVector{3,Float64}
+    function AtomicForce(atom::Union{AbstractChar,AbstractString}, force)
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        return new(string(atom), force)
     end
 end
-AtomicForce(atom, force::AbstractVector{T}) where {T} = AtomicForce{T}(atom, force)
 
 struct AtomicForcesCard <: Card
     data::Vector{AtomicForce}
@@ -353,20 +344,15 @@ abstract type KPoint end
 Represent the Monkhorst--Pack grid.
 
 # Arguments
-- `grid::Vector{Int}`: These parameters specify the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst-Pack grids.
-- `offsets::Vector{Int}`: The grid offsets ``sk_1``, ``sk_2`` and ``sk_3`` must be `0` (no offset) or `1` (grid displaced by half a grid step in the corresponding direction).
+- `grid`: A length-three vector specifying the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst--Pack grids.
+- `offsets`: A length-three vector specifying whether the grid is displaced by half a grid step in the corresponding directions.
 """
 @auto_hash_equals struct MonkhorstPackGrid
-    grid::Vector{Int}
-    offsets::Vector{Int}
+    grid::SVector{3,Int}
+    offsets::SVector{3,Bool}
     function MonkhorstPackGrid(grid, offsets)
-        @assert length(grid) == length(offsets) == 3
         # See https://github.com/aiidateam/aiida-quantumespresso/blob/4aef9f9/aiida_quantumespresso/cli/utils/validate.py#L10-L37
         @assert(all(grid .> 0), "`grid` must be positive integers!")
-        @assert(
-            all(iszero(x) || isone(x) for x in offsets),
-            "`offsets` elements must be 0 or 1!"
-        )
         return new(grid, offsets)
     end
 end
@@ -380,15 +366,10 @@ struct GammaPoint <: KPoint end
 Represent a special point of the 3D Brillouin zone. Each of them has a weight.
 """
 @auto_hash_equals struct SpecialKPoint{T<:Real} <: KPoint
-    coord::Vector{T}
+    coord::SVector{3,T}
     weight::T
-    function SpecialKPoint{T}(coord, weight) where {T<:Real}
-        @assert length(coord) == 3
-        return new(coord, weight)
-    end
 end
-SpecialKPoint(coord::AbstractVector, weight) =
-    SpecialKPoint{promote_type(eltype(coord), typeof(weight))}(coord, weight)
+SpecialKPoint(coord, weight) = SpecialKPoint{promote_type(eltype(coord), typeof(weight))}(coord, weight)
 SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 """
@@ -619,23 +600,16 @@ end
 function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
     if name == :atom
         @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        if x isa AbstractChar
-            x = string(x)
-        end
+        x = string(x)  # An `if` statement is more expensive than directly setting a string
     end
     setfield!(value, name, x)
 end # function Base.setproperty!
 function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
-    if name == :atom
-        @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        if x isa AbstractChar
-            x = string(x)
-        end
-    elseif name == :pos && x isa AbstractVector
-        @assert length(x) == 3
-    elseif name == :if_pos && x isa AbstractVector  # It cannot be an `else` here, since it will capture invalid `name`s.
-        @assert length(x) == 3
-        @assert(all(iszero(y) || isone(y) for y in x), "`if_pos` elements must be 0 or 1!")
+    x = if name == :atom
+        @assert(length(x) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        x = string(x)  # Make sure it is a `String`
+    elseif name ∈ (:pos, :if_pos) && x isa AbstractVector
+        SVector{3}(x)
     end
     setfield!(value, name, x)
 end # function Base.setproperty!

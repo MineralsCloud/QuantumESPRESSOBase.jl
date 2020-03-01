@@ -40,30 +40,25 @@ julia> x = AtomicVelocity('H');
 julia> x.atom
 "H"
 
-julia> x.velocity = [0.140374e-04, -0.333683e-04, 0.231834e-04]; x.velocity
+julia> x.velocity = [0.140374e-04, -0.333683e-04, 0.231834e-04]
 3-element Array{Float64,1}:
   1.40374e-5
  -3.33683e-5
   2.31834e-5
-
-julia> AtomicVelocity(AtomicSpecies("H", 1.00794000, "H.pbe-rrkjus_psl.1.0.0.UPF"))
-AtomicVelocity("H", #undef)
 ```
 """
 @auto_hash_equals mutable struct AtomicVelocity
     atom::String
-    velocity::Vector{Float64}
-    function AtomicVelocity(atom, velocity)
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        @assert length(velocity) == 3
-        return new(atom, velocity)
+    velocity::SVector{3,Float64}
+    function AtomicVelocity(atom::Union{AbstractChar,AbstractString}, velocity)
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        return new(string(atom), velocity)
     end
     function AtomicVelocity(atom::Union{AbstractChar,AbstractString})
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
         return new(string(atom))
     end
 end
-AtomicVelocity(atom::AbstractChar, velocity) = AtomicVelocity(string(atom), velocity)
 AtomicVelocity(x::AtomicSpecies, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicSpecies) = AtomicVelocity(x.atom)
@@ -152,10 +147,9 @@ end # function append_atom!
 
 @auto_hash_equals struct RefCellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
-    data::Matrix{T}
+    data::SMatrix{3,3,T}
     function RefCellParametersCard{T}(option, data) where {T<:Real}
         @assert option ∈ allowed_options(RefCellParametersCard)
-        @assert size(data) == (3, 3)
         return new(option, data)
     end
 end
@@ -170,13 +164,11 @@ Cards.allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
 Cards.allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 
 function Base.setproperty!(value::AtomicVelocity, name::Symbol, x)
-    if name == :atom
-        @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        if x isa AbstractChar
-            x = string(x)
-        end
-    elseif name == :velocity && x isa AbstractVector  # It cannot be an `else` here, since it will capture invalid `name`s.
-        @assert length(x) == 3
+    x = if name == :atom
+        @assert(length(x) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        x = string(x)  # Make sure it is a `String`
+    elseif name == :velocity && x isa AbstractVector
+        SVector{3}(x)
     end
     setfield!(value, name, x)
 end # function Base.setproperty!
