@@ -22,7 +22,7 @@ export AtomicSpecies,
     GammaPoint,
     SpecialKPoint,
     KPointsCard
-export option_convert, push_atom!, append_atom!, meshgrid
+export optconvert, push_atom!, append_atom!, meshgrid
 
 include("shared.jl")
 

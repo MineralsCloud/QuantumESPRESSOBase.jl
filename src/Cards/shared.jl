@@ -471,13 +471,13 @@ function Crystallography.cellvolume(card::AbstractCellParametersCard)
 end # function Crystallography.cellvolume
 
 """
-    option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
+    optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
 
 Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom", or its reverse.
 
 It does not support conversion between "alat" and the rests.
 """
-function option_convert(new_option::AbstractString, card::AbstractCellParametersCard)
+function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
     old_option = optionof(card)
     new_option == old_option && return card  # No conversion is needed
@@ -490,7 +490,7 @@ function option_convert(new_option::AbstractString, card::AbstractCellParameters
         error("Unknown option pair ($pair) given!")
     end
     return typeof(card)(new_option, card.data .* factor)
-end # function option_convert
+end # function optconvert
 
 QuantumESPRESSOBase.asfieldname(::Type{<:AtomicSpeciesCard}) = :atomic_species
 QuantumESPRESSOBase.asfieldname(::Type{<:AtomicPositionsCard}) = :atomic_positions

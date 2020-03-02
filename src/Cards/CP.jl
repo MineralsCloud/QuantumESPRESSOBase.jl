@@ -10,7 +10,7 @@ export AtomicSpecies,
     AtomicVelocitiesCard,
     AtomicForce,
     AtomicForcesCard
-export option_convert, push_atom!, append_atom!
+export optconvert, push_atom!, append_atom!
 
 include("shared.jl")
 
