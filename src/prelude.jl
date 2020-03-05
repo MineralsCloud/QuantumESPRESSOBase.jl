@@ -1,26 +1,11 @@
 using LinearAlgebra: Diagonal, det, cross
 
 using Compat: isnothing
-using Crystallography:
-    BravaisLattice,
-    Triclinic,
-    Monoclinic,
-    Orthorhombic,
-    Tetragonal,
-    Cubic,
-    Trigonal,
-    Hexagonal,
-    Centering,
-    BaseCentered,
-    Primitive,
-    BodyCentered,
-    FaceCentered,
-    RhombohedralCentered,
-    BaseCentered,
-    Lattice,
-    CellParameters
+using Crystallography
+using Crystallography.Crystals: Lattice, CellParameters
 
 import Crystallography
+import Crystallography.Crystals
 
 export asfieldname, titleof, to_qe
 
@@ -153,74 +138,59 @@ function to_qe(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
 end
 
 Crystallography.BravaisLattice(ibrav::Integer) = BravaisLattice(Val(ibrav))
-Crystallography.BravaisLattice(::Val{1}) = BravaisLattice(Cubic(), Primitive())
-Crystallography.BravaisLattice(::Val{2}) = BravaisLattice(Cubic(), FaceCentered())
-Crystallography.BravaisLattice(::Val{3}) = BravaisLattice(Cubic(), BodyCentered())
-Crystallography.BravaisLattice(::Val{4}) = BravaisLattice(Hexagonal(), Primitive())
-Crystallography.BravaisLattice(::Val{5}) =
-    BravaisLattice(Hexagonal(), RhombohedralCentered())
-Crystallography.BravaisLattice(::Val{-5}) =
-    BravaisLattice(Hexagonal(), RhombohedralCentered())
-Crystallography.BravaisLattice(::Val{6}) = BravaisLattice(Tetragonal(), Primitive())
-Crystallography.BravaisLattice(::Val{7}) = BravaisLattice(Tetragonal(), BodyCentered())
-Crystallography.BravaisLattice(::Val{8}) = BravaisLattice(Orthorhombic(), Primitive())
-Crystallography.BravaisLattice(::Val{9}) = BravaisLattice(Orthorhombic(), BaseCentered(:B))
-Crystallography.BravaisLattice(::Val{-9}) = BravaisLattice(Orthorhombic(), BaseCentered(:B))
-Crystallography.BravaisLattice(::Val{91}) = BravaisLattice(Orthorhombic(), BaseCentered(:A))  # New in QE 6.5
-Crystallography.BravaisLattice(::Val{10}) = BravaisLattice(Orthorhombic(), FaceCentered())
-Crystallography.BravaisLattice(::Val{11}) = BravaisLattice(Orthorhombic(), BodyCentered())
-Crystallography.BravaisLattice(::Val{12}) = BravaisLattice(Monoclinic(), Primitive())
-Crystallography.BravaisLattice(::Val{-12}) = BravaisLattice(Monoclinic(), Primitive())
-Crystallography.BravaisLattice(::Val{13}) = BravaisLattice(Monoclinic(), BaseCentered(:C))
-Crystallography.BravaisLattice(::Val{-13}) = BravaisLattice(Monoclinic(), BaseCentered(:B))  # New in QE 6.5
-Crystallography.BravaisLattice(::Val{14}) = BravaisLattice(Triclinic(), Primitive())
+Crystallography.BravaisLattice(::Val{1}) = (Cubic(), Primitive())
+Crystallography.BravaisLattice(::Val{2}) = (Cubic(), FaceCentering())
+Crystallography.BravaisLattice(::Val{3}) = (Cubic(), BodyCentering())
+Crystallography.BravaisLattice(::Val{4}) = (Hexagonal(), Primitive())
+Crystallography.BravaisLattice(::Val{5}) = (Hexagonal(), RhombohedralCentering())
+Crystallography.BravaisLattice(::Val{-5}) = (Hexagonal(), RhombohedralCentering())
+Crystallography.BravaisLattice(::Val{6}) = (Tetragonal(), Primitive())
+Crystallography.BravaisLattice(::Val{7}) = (Tetragonal(), BodyCentering())
+Crystallography.BravaisLattice(::Val{8}) = (Orthorhombic(), Primitive())
+Crystallography.BravaisLattice(::Val{9}) = (Orthorhombic(), BaseCentering(:B))
+Crystallography.BravaisLattice(::Val{-9}) = (Orthorhombic(), BaseCentering(:B))
+Crystallography.BravaisLattice(::Val{91}) = (Orthorhombic(), BaseCentering(:A))  # New in QE 6.5
+Crystallography.BravaisLattice(::Val{10}) = (Orthorhombic(), FaceCentering())
+Crystallography.BravaisLattice(::Val{11}) = (Orthorhombic(), BodyCentering())
+Crystallography.BravaisLattice(::Val{12}) = (Monoclinic(), Primitive())
+Crystallography.BravaisLattice(::Val{-12}) = (Monoclinic(), Primitive())
+Crystallography.BravaisLattice(::Val{13}) = (Monoclinic(), BaseCentering(:C))
+Crystallography.BravaisLattice(::Val{-13}) = (Monoclinic(), BaseCentering(:B))  # New in QE 6.5
+Crystallography.BravaisLattice(::Val{14}) = (Triclinic(), Primitive())
 
 struct AxesSetting{N} end
 AxesSetting(N::Int) = AxesSetting{N}()
 
-Crystallography.Lattice(::BravaisLattice{Cubic,Primitive}, p::CellParameters) = Lattice(p[1] * [
+Crystals.Lattice(::PrimitiveCubic, p::CellParameters) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 1
 ])
-Crystallography.Lattice(::BravaisLattice{Cubic,FaceCentered}, p::CellParameters) = Lattice(p[1] / 2 * [
+Crystals.Lattice(::FaceCenteredCubic, p::CellParameters) = Lattice(p[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
 ])
-function Crystallography.Lattice(
-    ::BravaisLattice{Cubic,BodyCentered},
-    p::CellParameters,
-    ::AxesSetting{1},
-)
+function Crystals.Lattice(::BodyCenteredCubic, p::CellParameters, ::AxesSetting{1})
     return Lattice(p[1] / 2 * [
         1 1 1
         -1 1 1
         -1 -1 1
     ])
 end # function Lattice
-function Crystallography.Lattice(
-    ::BravaisLattice{Cubic,BodyCentered},
-    p::CellParameters,
-    ::AxesSetting{2},
-)
+function Crystals.Lattice(::BodyCenteredCubic, p::CellParameters, ::AxesSetting{2})
     return Lattice(p[1] / 2 * [
         -1 1 1
         1 -1 1
         1 1 -1
     ])
 end # function Lattice
-Crystallography.Lattice(::BravaisLattice{Hexagonal{3},Primitive}, p::CellParameters) =
-    Lattice(p[1] * [
-        1 0 0
-        -1 / 2 √3 / 2 0
-        0 0 p[3] / p[1]
-    ])
-function Crystallography.Lattice(
-    ::BravaisLattice{Hexagonal{3},RhombohedralCentered},
-    p::CellParameters,
-    ::AxesSetting{1},
-)
+Crystals.Lattice(::PrimitiveHexagonal, p::CellParameters) = Lattice(p[1] * [
+    1 0 0
+    -1 / 2 √3 / 2 0
+    0 0 p[3] / p[1]
+])
+function Crystals.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting{1})
     r = cos(p[4])
     tx = sqrt((1 - r) / 2)
     ty = sqrt((1 - r) / 6)
@@ -231,11 +201,7 @@ function Crystallography.Lattice(
         -tx -ty tz
     ])
 end
-function Crystallography.Lattice(
-    ::BravaisLattice{Hexagonal{3},RhombohedralCentered},
-    p::CellParameters,
-    ::AxesSetting{2},
-)
+function Crystals.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting{2})
     ap = p[1] / √3
     γ = acos(p[4])
     ty = sqrt((1 - γ) / 6)
@@ -248,13 +214,12 @@ function Crystallography.Lattice(
         v v u
     ])
 end
-Crystallography.Lattice(::BravaisLattice{Tetragonal,Primitive}, p::CellParameters) =
-    Lattice(p[1] * [
-        1 0 0
-        0 1 0
-        0 0 p[3] / p[1]
-    ])
-function Crystallography.Lattice(::BravaisLattice{Tetragonal,BodyCentered}, p::CellParameters)
+Crystals.Lattice(::PrimitiveTetragonal, p::CellParameters) = Lattice(p[1] * [
+    1 0 0
+    0 1 0
+    0 0 p[3] / p[1]
+])
+function Crystals.Lattice(::BodyCenteredTetragonal, p::CellParameters)
     r = p[3] / p[1]
     return Lattice(p[1] / 2 * [
         1 -1 r
@@ -262,27 +227,27 @@ function Crystallography.Lattice(::BravaisLattice{Tetragonal,BodyCentered}, p::C
         -1 -1 r
     ])
 end # function Lattice
-Crystallography.Lattice(::BravaisLattice{Orthorhombic,Primitive}, p::CellParameters) = Lattice([
+Crystals.Lattice(::PrimitiveOrthorhombic, p::CellParameters) = Lattice([
     p[1] 0 0
     0 p[2] 0
     0 0 p[3]
 ])
-Crystallography.Lattice(::BravaisLattice{Orthorhombic,BaseCentered{:B}}, p::CellParameters, ::AxesSetting{1}) = Lattice([
+Crystals.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{1}) = Lattice([
     p[1] / 2 p[2] / 2 0
-   -p[1] / 2 p[2] / 2 0
-    0        0        p[3]
+    -p[1] / 2 p[2] / 2 0
+    0 0 p[3]
 ])
-Crystallography.Lattice(::BravaisLattice{Orthorhombic,BaseCentered{:B}}, p::CellParameters, ::AxesSetting{2}) = Lattice([
+Crystals.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{2}) = Lattice([
     p[1] / 2 -p[2] / 2 0
-    p[1] / 2 p[2] / 2  0
-    0        0         p[3]
+    p[1] / 2 p[2] / 2 0
+    0 0 p[3]
 ])
-Crystallography.Lattice(::BravaisLattice{Orthorhombic,BaseCentered{:A}}, p::CellParameters) = Lattice([
+Crystals.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p::CellParameters) = Lattice([
     p[1] 0 0
     0 p[2] / 2 -p[3] / 2
     0 p[2] / 2 p[3] / 2
 ])  # New in QE 6.4
-function Crystallography.Lattice(::BravaisLattice{Orthorhombic,FaceCentered}, p::CellParameters)
+function Crystals.Lattice(::FaceCenteredOrthorhombic, p::CellParameters)
     a, b, c = p.x
     return Lattice([
         a 0 c
@@ -290,7 +255,7 @@ function Crystallography.Lattice(::BravaisLattice{Orthorhombic,FaceCentered}, p:
         0 b c
     ] / 2)
 end # function Lattice
-function Crystallography.Lattice(::BravaisLattice{Orthorhombic,BodyCentered}, p::CellParameters)
+function Crystals.Lattice(::BodyCenteredOrthorhombic, p::CellParameters)
     a, b, c = p.x
     return Lattice([
         a b c
@@ -298,7 +263,7 @@ function Crystallography.Lattice(::BravaisLattice{Orthorhombic,BodyCentered}, p:
         -a -b c
     ] / 2)
 end
-function Crystallography.Lattice(::BravaisLattice{Monoclinic,Primitive}, p::CellParameters, ::AxesSetting{1})
+function Crystals.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{1})
     a, b, c = p.x
     return Lattice([
         a 0 0
@@ -306,7 +271,7 @@ function Crystallography.Lattice(::BravaisLattice{Monoclinic,Primitive}, p::Cell
         0 0 c
     ])
 end
-function Crystallography.Lattice(::BravaisLattice{Monoclinic,Primitive}, p::CellParameters, ::AxesSetting{2})
+function Crystals.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{2})
     a, b, c = p.x
     return Lattice([
         a 0 0
@@ -314,7 +279,7 @@ function Crystallography.Lattice(::BravaisLattice{Monoclinic,Primitive}, p::Cell
         c * cos(p[5]) 0 c * sin(p[5])
     ])
 end
-function Crystallography.Lattice(::BravaisLattice{Monoclinic,BaseCentered{:C}}, p::CellParameters)
+function Crystals.Lattice(::CCenteredMonoclinic, p::CellParameters)
     a, b, c = p.x
     return Lattice([
         a / 2 0 -c / 2
@@ -322,7 +287,7 @@ function Crystallography.Lattice(::BravaisLattice{Monoclinic,BaseCentered{:C}}, 
         a / 2 0 c / 2
     ])
 end
-function Crystallography.Lattice(::BravaisLattice{Monoclinic,BaseCentered{:B}}, p::CellParameters)
+function Crystals.Lattice(::BCenteredMonoclinic, p::CellParameters)
     a, b, c = p.x
     return Lattice([
         a / 2 b / 2 0
@@ -330,10 +295,10 @@ function Crystallography.Lattice(::BravaisLattice{Monoclinic,BaseCentered{:B}}, 
         c * cos(p[5]) 0 c * sin(p[5])
     ])
 end
-function Crystallography.Lattice(::BravaisLattice{Monoclinic,BaseCentered{:B}}, p::CellParameters)
+function Crystals.Lattice(::PrimitiveTriclinic, p::CellParameters)
     a, b, c = p.x
     α, β, γ = p.y
-    zz = c * sqrt(1 + 2cos(α) * cos(β) * cos(γ) - cos(α)^2 - cos(β)^2 - cos(γ)^2) / sin(γ)
+    zz = c * sqrt(1 + 2 * cos(α) * cos(β) * cos(γ) - cos(α)^2 - cos(β)^2 - cos(γ)^2) / sin(γ)
     return Lattice([
         a 0 0
         b * cos(γ) b * sin(γ) 0
