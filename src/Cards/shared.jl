@@ -10,7 +10,7 @@ using StaticArrays: SVector, SMatrix
 using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
 
-import Crystallography
+import Crystallography.Crystals
 import Pseudopotentials
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
@@ -456,7 +456,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 
 It will throw an error if the information is not enough to calculate the volume.
 """
-function Crystallography.cellvolume(card::AbstractCellParametersCard)
+function Crystals.cellvolume(card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
     option = optionof(card)
     if option == "bohr"
@@ -468,7 +468,7 @@ function Crystallography.cellvolume(card::AbstractCellParametersCard)
     else
         error("Option $option is unknown!")
     end
-end # function Crystallography.cellvolume
+end # function Crystals.cellvolume
 
 """
     optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
