@@ -26,7 +26,7 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, getnamelists, getcards, compulsory_namelists, compulsory_cards, getoption, allowed_options, entryname, titleof
+export to_dict, dropdefault, getnamelists, getcards, get_compulsory_namelists, compulsory_cards, getoption, allowed_options, entryname, titleof
 
 """
     InputEntry
@@ -222,16 +222,16 @@ using .PWscf: PWInput
 using .CP: CPInput
 
 """
-    compulsory_namelists(input::Union{PWInput,CPInput})
+    get_compulsory_namelists(input::Union{PWInput,CPInput})
 
 Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
 It is lazy, you may want to `collect` it.
 
-To get the optional `Namelist`s, use `(!compulsory_namelists)(input)` (Note the parenthesis!).
+To get the optional `Namelist`s, use `(!get_compulsory_namelists)(input)` (Note the parenthesis!).
 """
-compulsory_namelists(input::Union{PWInput,CPInput}) =
+get_compulsory_namelists(input::Union{PWInput,CPInput}) =
     (getfield(input, x) for x in (:control, :system, :electrons))
-Base.:!(::typeof(compulsory_namelists)) =
+Base.:!(::typeof(get_compulsory_namelists)) =
     function (input::T) where {T<:Union{PWInput,CPInput}}
         (
             getfield(input, x) for x in fieldnames(T) if x ∉ (
