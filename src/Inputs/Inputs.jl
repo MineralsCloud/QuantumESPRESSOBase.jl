@@ -26,7 +26,7 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, namelistsof, cardsof, compulsory_namelists, compulsory_cards, optionof, allowed_options, entryname, titleof
+export to_dict, dropdefault, getnamelists, cardsof, compulsory_namelists, compulsory_cards, optionof, allowed_options, entryname, titleof
 
 """
     InputEntry
@@ -199,11 +199,11 @@ abstract type QuantumESPRESSOInput end
 _filterfields(f, obj) = Iterators.filter(f, (getfield(obj, i) for i in 1:nfields(obj)))
 
 """
-    namelistsof(input::QuantumESPRESSOInput)
+    getnamelists(input::QuantumESPRESSOInput)
 
 Return an iterable of `Namelist`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
 """
-namelistsof(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Namelist), input)
+getnamelists(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Namelist), input)
 
 """
     cardsof(input::QuantumESPRESSOInput)
@@ -308,7 +308,7 @@ function QuantumESPRESSOBase.to_qe(
     verbose::Bool = false,
 )::String
     content = ""
-    for namelist in namelistsof(input)
+    for namelist in getnamelists(input)
         content *=
             to_qe(namelist, indent = indent, delim = delim, newline = newline) * newline
     end
