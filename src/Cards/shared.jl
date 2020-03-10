@@ -353,13 +353,8 @@ Represent the Monkhorst--Pack grid.
 - `offsets`: A length-three vector specifying whether the grid is displaced by half a grid step in the corresponding directions.
 """
 @auto_hash_equals struct MonkhorstPackGrid
-    grid::SVector{3,Int}
+    grid::SVector{3,UInt}
     offsets::SVector{3,Bool}
-    function MonkhorstPackGrid(grid, offsets)
-        # See https://github.com/aiidateam/aiida-quantumespresso/blob/4aef9f9/aiida_quantumespresso/cli/utils/validate.py#L10-L37
-        @assert(all(grid .> 0), "`grid` must be positive integers!")
-        return new(grid, offsets)
-    end
 end
 
 "Represent the centre of the Brillouin zone (commonly marked as the Γ point)."
