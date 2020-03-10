@@ -26,7 +26,96 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, namelistsof, cardsof, compulsory_namelists, compulsory_cards, optionof, allowed_options
+export to_dict, dropdefault, namelistsof, cardsof, compulsory_namelists, compulsory_cards, optionof, allowed_options, asfieldname, titleof
+
+"""
+    InputEntry
+
+Represent any component of a `QuantumESPRESSOInput`.
+
+Hierachy of `InputEntry`:
+```
+QuantumESPRESSOBase.InputEntry
+├─ QuantumESPRESSOBase.Cards.Card
+│  ├─ CP.AbstractCellParametersCard
+│  │  ├─ CP.CellParametersCard
+│  │  └─ CP.RefCellParametersCard
+│  ├─ CP.AtomicForcesCard
+│  ├─ CP.AtomicPositionsCard
+│  ├─ CP.AtomicSpeciesCard
+│  ├─ CP.AtomicVelocitiesCard
+│  ├─ CP.KPointsCard
+│  ├─ PHonon.AbstractCellParametersCard
+│  │  └─ PHonon.CellParametersCard
+│  ├─ PHonon.AtomicForcesCard
+│  ├─ PHonon.AtomicPositionsCard
+│  ├─ PHonon.AtomicSpeciesCard
+│  ├─ PHonon.KPointsCard
+│  ├─ PWscf.AbstractCellParametersCard
+│  │  └─ PWscf.CellParametersCard
+│  ├─ PWscf.AtomicForcesCard
+│  ├─ PWscf.AtomicPositionsCard
+│  ├─ PWscf.AtomicSpeciesCard
+│  └─ PWscf.KPointsCard
+└─ QuantumESPRESSOBase.Namelists.Namelist
+   ├─ CP.CellNamelist
+   ├─ CP.ControlNamelist
+   ├─ CP.ElectronsNamelist
+   ├─ CP.IonsNamelist
+   ├─ CP.PressAiNamelist
+   ├─ CP.SystemNamelist
+   ├─ CP.WannierNamelist
+   ├─ PHonon.DynmatNamelist
+   ├─ PHonon.MatdynNamelist
+   ├─ PHonon.PhNamelist
+   ├─ PHonon.Q2rNamelist
+   ├─ PWscf.BandsNamelist
+   ├─ PWscf.CellNamelist
+   ├─ PWscf.ControlNamelist
+   ├─ PWscf.DosNamelist
+   ├─ PWscf.ElectronsNamelist
+   ├─ PWscf.IonsNamelist
+   └─ PWscf.SystemNamelist
+```
+"""
+abstract type InputEntry end
+
+"""
+    asfieldname(::Type{<:InputEntry})
+    asfieldname(::InputEntry)
+
+Return the field name of a `Namelist` or a `Card` in a `QuantumESPRESSOInput`.
+
+# Examples
+
+```jldoctest
+julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Namelists.PWscf: SystemNamelist
+
+julia> asfieldname(SystemNamelist) == asfieldname(SystemNamelist()) == :system
+true
+```
+"""
+asfieldname(x::InputEntry) = asfieldname(typeof(x))
+
+"""
+    titleof(::Type{<:InputEntry})
+    titleof(::InputEntry)
+
+Return the title of the input entry in Quantum ESPRESSO.
+
+The definition `titleof(x) = titleof(typeof(x))` is provided for convenience so that
+instances can be passed instead of types.
+
+# Examples
+
+```jldoctest
+julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Namelists.PWscf: SystemNamelist
+
+julia> titleof(SystemNamelist()) == titleof(SystemNamelist) == "SYSTEM"
+true
+```
+"""
+titleof(x::InputEntry) = titleof(typeof(x))
 
 """
     Namelist <: InputEntry
