@@ -19,7 +19,7 @@ using Setfield: set, @lens
 using Unitful
 using UnitfulAtomic
 
-using Crystallography: BravaisLattice, CellParameters
+using Crystallography: BravaisLattice, CellParameters, cellvolume
 using QuantumESPRESSOBase.Setters:
     VerbositySetter, FiniteTemperatureSetter, CalculationSetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
@@ -463,10 +463,7 @@ end # function Crystallography.Lattice
 
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
-function Crystallography.cellvolume(nml::SystemNamelist)
-    iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
-    return abs(det(BravaisLattice(nml)()))
-end # function Crystallography.cellvolume
+Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
 function Setters.make(::LensMaker{<:VerbositySetter,ControlNamelist})
     return @batchlens begin
