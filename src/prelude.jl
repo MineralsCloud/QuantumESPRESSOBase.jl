@@ -135,26 +135,27 @@ function to_qe(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
     return content
 end
 
-Crystallography.BravaisLattice(ibrav::Integer) = BravaisLattice(Val(ibrav))
-Crystallography.BravaisLattice(::Val{1}) = (Cubic(), Primitive())
-Crystallography.BravaisLattice(::Val{2}) = (Cubic(), FaceCentering())
-Crystallography.BravaisLattice(::Val{3}) = (Cubic(), BodyCentering())
-Crystallography.BravaisLattice(::Val{4}) = (Hexagonal(), Primitive())
-Crystallography.BravaisLattice(::Val{5}) = (Hexagonal(), RhombohedralCentering())
-Crystallography.BravaisLattice(::Val{-5}) = (Hexagonal(), RhombohedralCentering())
-Crystallography.BravaisLattice(::Val{6}) = (Tetragonal(), Primitive())
-Crystallography.BravaisLattice(::Val{7}) = (Tetragonal(), BodyCentering())
-Crystallography.BravaisLattice(::Val{8}) = (Orthorhombic(), Primitive())
-Crystallography.BravaisLattice(::Val{9}) = (Orthorhombic(), BaseCentering(:B))
-Crystallography.BravaisLattice(::Val{-9}) = (Orthorhombic(), BaseCentering(:B))
-Crystallography.BravaisLattice(::Val{91}) = (Orthorhombic(), BaseCentering(:A))  # New in QE 6.5
-Crystallography.BravaisLattice(::Val{10}) = (Orthorhombic(), FaceCentering())
-Crystallography.BravaisLattice(::Val{11}) = (Orthorhombic(), BodyCentering())
-Crystallography.BravaisLattice(::Val{12}) = (Monoclinic(), Primitive())
-Crystallography.BravaisLattice(::Val{-12}) = (Monoclinic(), Primitive())
-Crystallography.BravaisLattice(::Val{13}) = (Monoclinic(), BaseCentering(:C))
-Crystallography.BravaisLattice(::Val{-13}) = (Monoclinic(), BaseCentering(:B))  # New in QE 6.5
-Crystallography.BravaisLattice(::Val{14}) = (Triclinic(), Primitive())
+Crystallography.BravaisLattice(ibrav::Integer) = _BravaisLattice(Val(ibrav))
+# These are helper methods and should not be exported!
+_BravaisLattice(::Val{1}) = (Cubic(), Primitive())
+_BravaisLattice(::Val{2}) = (Cubic(), FaceCentering())
+_BravaisLattice(::Val{3}) = (Cubic(), BodyCentering())
+_BravaisLattice(::Val{4}) = (Hexagonal(), Primitive())
+_BravaisLattice(::Val{5}) = (Hexagonal(), RhombohedralCentering())
+_BravaisLattice(::Val{-5}) = (Hexagonal(), RhombohedralCentering())
+_BravaisLattice(::Val{6}) = (Tetragonal(), Primitive())
+_BravaisLattice(::Val{7}) = (Tetragonal(), BodyCentering())
+_BravaisLattice(::Val{8}) = (Orthorhombic(), Primitive())
+_BravaisLattice(::Val{9}) = (Orthorhombic(), BaseCentering(:B))
+_BravaisLattice(::Val{-9}) = (Orthorhombic(), BaseCentering(:B))
+_BravaisLattice(::Val{91}) = (Orthorhombic(), BaseCentering(:A))  # New in QE 6.5
+_BravaisLattice(::Val{10}) = (Orthorhombic(), FaceCentering())
+_BravaisLattice(::Val{11}) = (Orthorhombic(), BodyCentering())
+_BravaisLattice(::Val{12}) = (Monoclinic(), Primitive())
+_BravaisLattice(::Val{-12}) = (Monoclinic(), Primitive())
+_BravaisLattice(::Val{13}) = (Monoclinic(), BaseCentering(:C))
+_BravaisLattice(::Val{-13}) = (Monoclinic(), BaseCentering(:B))  # New in QE 6.5
+_BravaisLattice(::Val{14}) = (Triclinic(), Primitive())
 
 struct AxesSetting{N} end
 AxesSetting(N::Int) = AxesSetting{N}()
