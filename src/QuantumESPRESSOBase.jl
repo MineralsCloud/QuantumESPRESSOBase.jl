@@ -139,6 +139,7 @@ end
 
 Crystallography.BravaisLattice(ibrav::Integer) = _BravaisLattice(Val(ibrav))
 # These are helper methods and should not be exported!
+_BravaisLattice(::Val{N}) where {N} = error("Bravais lattice undefined for `ibrav = $N`!")
 _BravaisLattice(::Val{1}) = (Cubic(), Primitive())
 _BravaisLattice(::Val{2}) = (Cubic(), FaceCentering())
 _BravaisLattice(::Val{3}) = (Cubic(), BodyCentering())
