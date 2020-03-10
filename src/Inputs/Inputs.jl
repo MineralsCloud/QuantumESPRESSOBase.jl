@@ -26,7 +26,7 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, getnamelists, getcards, get_compulsory_namelists, compulsory_cards, getoption, allowed_options, entryname, titleof
+export to_dict, dropdefault, getnamelists, getcards, get_compulsory_namelists, get_compulsory_cards, getoption, allowed_options, entryname, titleof
 
 """
     InputEntry
@@ -243,26 +243,26 @@ Base.:!(::typeof(get_compulsory_namelists)) =
     end
 
 """
-    compulsory_cards(input::PWInput)
+    get_compulsory_cards(input::PWInput)
 
 Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
 It is lazy, you may want to `collect` it.
 
-To get the optional `Card`s, use `(!compulsory_cards)(input)` (Note the parenthesis!).
+To get the optional `Card`s, use `(!get_compulsory_cards)(input)` (Note the parenthesis!).
 """
-compulsory_cards(input::PWInput) =
+get_compulsory_cards(input::PWInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points))
 """
-    compulsory_cards(input::CPInput)
+    get_compulsory_cards(input::CPInput)
 
 Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
 It is lazy, you may want to `collect` it.
 
-To get the optional `Card`s, use `(!compulsory_cards)(input)` (Note the parenthesis!).
+To get the optional `Card`s, use `(!get_compulsory_cards)(input)` (Note the parenthesis!).
 """
-compulsory_cards(input::CPInput) =
+get_compulsory_cards(input::CPInput) =
     (getfield(input, x) for x in (:atomic_species, :atomic_positions))
-Base.:!(::typeof(compulsory_cards)) = function (input::T) where {T<:Union{PWInput,CPInput}}
+Base.:!(::typeof(get_compulsory_cards)) = function (input::T) where {T<:Union{PWInput,CPInput}}
     (
         getfield(input, x) for x in fieldnames(T) if x ∉ (
             :atomic_species,
