@@ -1,5 +1,3 @@
-module Cards
-
 module PWscf
 
 using Test
@@ -9,7 +7,7 @@ using Setfield
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase
-using QuantumESPRESSOBase.Cards.PWscf
+using QuantumESPRESSOBase.Inputs.PWscf
 
 @testset "Constructing `AtomicSpecies`" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L128.
@@ -275,110 +273,211 @@ end # testset
 
 end # module PWscf
 
-module CP
-
-using Test
-
-using Setfield
-using StructArrays: StructArray
-
-using QuantumESPRESSOBase
-using QuantumESPRESSOBase.Cards.CP
-
-@testset "Constructing `AtomicVelocity`" begin
-    # Data from https://gitlab.com/QEF/q-e/blob/master/CPV/examples/autopilot-example/reference/water.autopilot.out
-    x = AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])
-    @test_throws AssertionError @set x.atom = "hydrogen"
-    @test_throws InexactError @set x.velocity = [1im, 2im, 3im]
-    @test_throws AssertionError x.velocity = [1, 2, 3, 4]
-    @test_throws AssertionError x.velocity = [1, 2]
-    x.atom = 'H'  # Setting `atom` with a `Char` still works
-    @test x.atom == "H"
-    @test_throws ErrorException x.velociti = [1, 2, 3] # Given a wrong field name
-    @test x == AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])
-    y = AtomicVelocity('H')  # Incomplete initialization
-    @test_throws UndefRefError y == AtomicVelocity("H")
-    as = AtomicSpecies("H", 1.00794000, "H.pbe-rrkjus_psl.1.0.0.UPF")
-    v = [0.140374E-04, -0.333683E-04, 0.231834E-04]
-    @test AtomicVelocity(as).atom == "H"
-    @test AtomicVelocity(as, v) == AtomicVelocity("H", v)
-    ap = AtomicPosition('H', [0.500000000, 0.288675130, 1.974192764])
-    @test AtomicVelocity(ap).atom == "H"
-    @test AtomicVelocity(ap, v) == AtomicVelocity("H", v)
+@testset "Test constructing a `PWInput`: silicon" begin
+    # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
+    for diago in ("david", "cg", "ppcg")
+        control = ControlNamelist(
+            tstress = true,
+            tprnfor = true,
+            outdir = raw"$TMP_DIR/",
+            prefix = "silicon",
+            pseudo_dir = raw"$PSEUDO_DIR/",
+        )
+        system =
+            SystemNamelist(ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
+        electrons = ElectronsNamelist(conv_thr = 1.0e-8, diagonalization = "$diago")
+        atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
+        atomic_positions = AtomicPositionsCard([
+            AtomicPosition("Si", [0.0, 0.0, 0.0]),
+            AtomicPosition("Si", [0.25, 0.25, 0.25]),
+        ])
+        k_points = KPointsCard(
+            "tpiba",
+            [
+                0.125 0.125 0.125 1.0
+                0.125 0.125 0.375 3.0
+                0.125 0.125 0.625 3.0
+                0.125 0.125 0.875 3.0
+                0.125 0.375 0.375 3.0
+                0.125 0.375 0.625 6.0
+                0.125 0.375 0.875 6.0
+                0.125 0.625 0.625 3.0
+                0.375 0.375 0.375 1.0
+                0.375 0.375 0.625 3.0
+            ],
+        )
+        object = PWInput(
+            control = control,
+            system = system,
+            electrons = electrons,
+            atomic_species = atomic_species,
+            atomic_positions = atomic_positions,
+            k_points = k_points,
+            cell_parameters = nothing,
+        )
+    end
 end # testset
 
-@testset "Test constructing `AtomicVelocitiesCard` from `StructArray`" begin
-    a = ["H", "O"]
-    v = [
-        [0.140374E-04, -0.333683E-04, 0.231834E-04],
-        [-0.111125E-05, -0.466724E-04, 0.972745E-05],
-    ]
-    card = AtomicVelocitiesCard(StructArray{AtomicVelocity}((a, v)))
-    @test card.data == [
-        AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04]),
-        AtomicVelocity("O", [-0.111125E-05, -0.466724E-04, 0.972745E-05]),
-    ]
+@testset "Test constructing a `PWInput`: silicon bands" begin
+    # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
+    for diago in ("david", "cg", "ppcg")
+        control = ControlNamelist(
+            calculation = "bands",
+            pseudo_dir = raw"$PSEUDO_DIR/",
+            outdir = raw"$TMP_DIR/",
+            prefix = "silicon",
+        )
+        system = SystemNamelist(
+            ibrav = 2,
+            celldm = [10.2],
+            nat = 2,
+            ntyp = 1,
+            ecutwfc = 18.0,
+            nbnd = 8,
+        )
+        electrons = ElectronsNamelist(diagonalization = "$diago")
+        atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
+        atomic_positions = AtomicPositionsCard([
+            AtomicPosition("Si", [0.0, 0.0, 0.0]),
+            AtomicPosition("Si", [0.25, 0.25, 0.25]),
+        ])
+        k_points = KPointsCard([
+            0.0 0.0 0.0 1.0
+            0.0 0.0 0.1 1.0
+            0.0 0.0 0.2 1.0
+            0.0 0.0 0.3 1.0
+            0.0 0.0 0.4 1.0
+            0.0 0.0 0.5 1.0
+            0.0 0.0 0.6 1.0
+            0.0 0.0 0.7 1.0
+            0.0 0.0 0.8 1.0
+            0.0 0.0 0.9 1.0
+            0.0 0.0 1.0 1.0
+            0.0 0.0 0.0 1.0
+            0.0 0.1 0.1 1.0
+            0.0 0.2 0.2 1.0
+            0.0 0.3 0.3 1.0
+            0.0 0.4 0.4 1.0
+            0.0 0.5 0.5 1.0
+            0.0 0.6 0.6 1.0
+            0.0 0.7 0.7 1.0
+            0.0 0.8 0.8 1.0
+            0.0 0.9 0.9 1.0
+            0.0 1.0 1.0 1.0
+            0.0 0.0 0.0 1.0
+            0.1 0.1 0.1 1.0
+            0.2 0.2 0.2 1.0
+            0.3 0.3 0.3 1.0
+            0.4 0.4 0.4 1.0
+            0.5 0.5 0.5 1.0
+        ])
+        object = PWInput(
+            control = control,
+            system = system,
+            electrons = electrons,
+            atomic_species = atomic_species,
+            atomic_positions = atomic_positions,
+            k_points = k_points,
+            cell_parameters = nothing,
+        )
+    end
 end # testset
 
-@testset "Test `push_atom!`" begin
-    @testset "`push_atom!` for `AtomicVelocity`" begin
-        v = [AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])]
-        push_atom!(v, "S", "N")
-        @test [x.atom for x in v] == ["H", "S", "N"]
-    end # testset
-    @testset "" begin
-        a = ["H", "O"]
-        v = [
-            [0.140374E-04, -0.333683E-04, 0.231834E-04],
-            [-0.111125E-05, -0.466724E-04, 0.972745E-05],
-        ]
-        card = AtomicVelocitiesCard(StructArray{AtomicVelocity}((a, v)))
-        push_atom!(card, "S", "N")
-        @test [x.atom for x in card.data] == ["H", "O", "S", "N"]
-    end # testset
+@testset "Test constructing a `PWInput`: aluminium" begin
+    # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
+    for diago in ("david", "cg", "ppcg")
+        control = ControlNamelist(
+            calculation = "scf",
+            restart_mode = "from_scratch",
+            pseudo_dir = raw"$PSEUDO_DIR/",
+            outdir = raw"$TMP_DIR/",
+            prefix = "al",
+            tprnfor = true,
+            tstress = true,
+        )
+        system = SystemNamelist(
+            ibrav = 2,
+            celldm = [7.50],
+            nat = 1,
+            ntyp = 1,
+            ecutwfc = 15.0,
+            occupations = "smearing",
+            smearing = "marzari-vanderbilt",
+            degauss = 0.05,
+        )
+        electrons = ElectronsNamelist(diagonalization = "$diago", mixing_beta = 0.7)
+        atomic_species = AtomicSpeciesCard([AtomicSpecies("Al", 26.98, "Al.pz-vbc.UPF")])
+        atomic_positions = AtomicPositionsCard([AtomicPosition("Al", [0.0, 0.0, 0.0])])
+        k_points = KPointsCard([
+            0.0625000 0.0625000 0.0625000 1.00
+            0.0625000 0.0625000 0.1875000 3.00
+            0.0625000 0.0625000 0.3125000 3.00
+            0.0625000 0.0625000 0.4375000 3.00
+            0.0625000 0.0625000 0.5625000 3.00
+            0.0625000 0.0625000 0.6875000 3.00
+            0.0625000 0.0625000 0.8125000 3.00
+            0.0625000 0.0625000 0.9375000 3.00
+            0.0625000 0.1875000 0.1875000 3.00
+            0.0625000 0.1875000 0.3125000 6.00
+            0.0625000 0.1875000 0.4375000 6.00
+            0.0625000 0.1875000 0.5625000 6.00
+            0.0625000 0.1875000 0.6875000 6.00
+            0.0625000 0.1875000 0.8125000 6.00
+            0.0625000 0.1875000 0.9375000 6.00
+            0.0625000 0.3125000 0.3125000 3.00
+            0.0625000 0.3125000 0.4375000 6.00
+            0.0625000 0.3125000 0.5625000 6.00
+            0.0625000 0.3125000 0.6875000 6.00
+            0.0625000 0.3125000 0.8125000 6.00
+            0.0625000 0.3125000 0.9375000 6.00
+            0.0625000 0.4375000 0.4375000 3.00
+            0.0625000 0.4375000 0.5625000 6.00
+            0.0625000 0.4375000 0.6875000 6.00
+            0.0625000 0.4375000 0.8125000 6.00
+            0.0625000 0.4375000 0.9375000 6.00
+            0.0625000 0.5625000 0.5625000 3.00
+            0.0625000 0.5625000 0.6875000 6.00
+            0.0625000 0.5625000 0.8125000 6.00
+            0.0625000 0.6875000 0.6875000 3.00
+            0.0625000 0.6875000 0.8125000 6.00
+            0.0625000 0.8125000 0.8125000 3.00
+            0.1875000 0.1875000 0.1875000 1.00
+            0.1875000 0.1875000 0.3125000 3.00
+            0.1875000 0.1875000 0.4375000 3.00
+            0.1875000 0.1875000 0.5625000 3.00
+            0.1875000 0.1875000 0.6875000 3.00
+            0.1875000 0.1875000 0.8125000 3.00
+            0.1875000 0.3125000 0.3125000 3.00
+            0.1875000 0.3125000 0.4375000 6.00
+            0.1875000 0.3125000 0.5625000 6.00
+            0.1875000 0.3125000 0.6875000 6.00
+            0.1875000 0.3125000 0.8125000 6.00
+            0.1875000 0.4375000 0.4375000 3.00
+            0.1875000 0.4375000 0.5625000 6.00
+            0.1875000 0.4375000 0.6875000 6.00
+            0.1875000 0.4375000 0.8125000 6.00
+            0.1875000 0.5625000 0.5625000 3.00
+            0.1875000 0.5625000 0.6875000 6.00
+            0.1875000 0.6875000 0.6875000 3.00
+            0.3125000 0.3125000 0.3125000 1.00
+            0.3125000 0.3125000 0.4375000 3.00
+            0.3125000 0.3125000 0.5625000 3.00
+            0.3125000 0.3125000 0.6875000 3.00
+            0.3125000 0.4375000 0.4375000 3.00
+            0.3125000 0.4375000 0.5625000 6.00
+            0.3125000 0.4375000 0.6875000 6.00
+            0.3125000 0.5625000 0.5625000 3.00
+            0.4375000 0.4375000 0.4375000 1.00
+            0.4375000 0.4375000 0.5625000 3.00
+        ])
+        object = PWInput(
+            control = control,
+            system = system,
+            electrons = electrons,
+            atomic_species = atomic_species,
+            atomic_positions = atomic_positions,
+            k_points = k_points,
+            cell_parameters = nothing,
+        )
+    end
 end # testset
-
-@testset "Test `append_atom!`" begin
-    @testset "`append_atom!` to `AtomicVelocity`" begin
-        v = [AtomicVelocity("H", [0.140374E-04, -0.333683E-04, 0.231834E-04])]
-        append_atom!(v, ["S", "N"])
-        @test [x.atom for x in v] == ["H", "S", "N"]
-    end # testset
-    @testset "`append_atom!` to `AtomicVelocitiesCard`" begin
-        a = ["H", "O"]
-        v = [
-            [0.140374E-04, -0.333683E-04, 0.231834E-04],
-            [-0.111125E-05, -0.466724E-04, 0.972745E-05],
-        ]
-        card = AtomicVelocitiesCard(StructArray{AtomicVelocity}((a, v)))
-        append_atom!(card, ["S", "N"])
-        @test [x.atom for x in card.data] == ["H", "O", "S", "N"]
-    end # testset
-end # testset
-
-@testset "Constructing `RefCellParametersCard`" begin
-    option = "bohr"
-    data = [
-        12 0 0
-        0 5 0
-        0 0 5
-    ]
-    init = RefCellParametersCard(option, data)
-    @test_throws AssertionError @set init.option = "alat"
-    @test_throws AssertionError @set init.option = "crystal" # Allowed options are angstrom, bohr
-    @test_throws AssertionError @set init.data = [ # Matrix size should be (3, 3)
-        1 2
-        3 4
-    ]
-    @test_throws AssertionError @set init.data = [
-        1 2 3 4
-        5 6 7 8
-        4 3 2 1
-        8 7 6 5
-    ]
-    @test RefCellParametersCard(data).option == "bohr"
-end # testset
-
-end # module CP
-
-end # module Cards
