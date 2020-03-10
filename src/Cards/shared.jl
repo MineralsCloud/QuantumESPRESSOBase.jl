@@ -2,6 +2,7 @@ using LinearAlgebra: det
 
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
+using Crystallography: Lattice, Cell
 using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
@@ -10,7 +11,7 @@ using StaticArrays: SVector, SMatrix
 using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
 
-import Crystallography.Crystals
+import Crystallography
 import Pseudopotentials
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Cards
@@ -102,6 +103,7 @@ Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 struct AtomicSpeciesCard <: Card
     data::Vector{AtomicSpecies}
 end
+AtomicSpeciesCard(cell::Cell) = AtomicSpeciesCard(map(AtomicSpecies ∘ string, cell.numbers))
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
@@ -211,6 +213,7 @@ AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
 function AtomicPositionsCard(option, card::AtomicSpeciesCard)
     return AtomicPositionsCard(option, map(AtomicPosition, card.data))
 end # function AtomicPositionsCard
+AtomicPositionsCard(option, cell::Cell) = AtomicPositionsCard(option, [AtomicPosition(string(atom), pos) for (atom, pos) in zip(cell.numbers, cell.positions)])
 # Introudce mutual constructors since they share the same atoms.
 function AtomicSpeciesCard(card::AtomicPositionsCard)
     return AtomicSpeciesCard(map(AtomicSpecies, card.data))
@@ -302,7 +305,7 @@ abstract type AbstractCellParametersCard <: Card end
 
 """
     CellParametersCard{T<:Real} <: AbstractCellParametersCard
-    CellParametersCard(option::String, data::Matrix)
+    CellParametersCard(option::String, data::AbstractMatrix)
 
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
@@ -317,6 +320,8 @@ end
 CellParametersCard(option, data::AbstractMatrix{T}) where {T} =
     CellParametersCard{T}(option, data)
 CellParametersCard(data) = CellParametersCard("alat", data)
+CellParametersCard(option, lattice::Lattice{T}) where {T} = CellParametersCard(option, convert(Matrix{T}, lattice))
+CellParametersCard(option, cell::Cell) = CellParametersCard(option, cell.lattice)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
@@ -408,31 +413,6 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 
-# function meshgrid(reciprocal::AbstractMatrix, mp::MonkhorstPackGrid, crystal::Bool = true)
-#     nk, sk = mp.grid, mp.offsets
-#     sk = map(x -> isone(x) ? 1 // 2 : 0, sk)
-#     mesh = Iterators.product(
-#         (0:nk[1]-1) // nk[1] .+ sk[1],
-#         (0:nk[2]-1) // nk[2] .+ sk[2],
-#         (0:nk[3]-1) // nk[3] .+ sk[3],
-#     )
-#     if crystal
-#         return collect(mesh)
-#     else
-#         a1, a2, a3 = reciprocal[1, :], reciprocal[2, :], reciprocal[3, :]
-#         return collect(x[1] .* a1 + x[2] .* a2 + x[3] .* a3 for x in mesh)
-#     end
-# end # function meshgrid
-# function meshgrid(card::CellParametersCard, mp::MonkhorstPackGrid)
-#     option = optionof(card)
-#     if option == "alat"
-#         return meshgrid(reciprocalof(card.data), mp, true)
-#     else  # option ∈ ("bohr", "angstrom")
-#         return meshgrid(reciprocalof(card.data), mp, false)
-#     end
-# end # function meshgrid
-# ============================================================================ #
-
 Cards.optionof(::AtomicSpeciesCard) = nothing
 
 Cards.allowed_options(::Type{<:AtomicPositionsCard}) =
@@ -456,7 +436,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 
 It will throw an error if the information is not enough to calculate the volume.
 """
-function Crystals.cellvolume(card::AbstractCellParametersCard)
+function Crystallography.cellvolume(card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
     option = optionof(card)
     if option == "bohr"
@@ -468,7 +448,7 @@ function Crystals.cellvolume(card::AbstractCellParametersCard)
     else
         error("Option $option is unknown!")
     end
-end # function Crystals.cellvolume
+end # function Crystallography.cellvolume
 
 """
     optconvert(new_option::AbstractString, card::AbstractCellParametersCard)

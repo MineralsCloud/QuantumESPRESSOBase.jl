@@ -20,7 +20,7 @@ using Setfield: @lens
 using QuantumESPRESSOBase.Setters: VerbositySetter, CalculationSetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
 
-import Crystallography.Crystals
+import Crystallography
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
@@ -89,7 +89,7 @@ Represent the `SYSTEM` namelist of `cp.x`.
 """
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Union{Nothing,Float64}} = Vector{Float64}(undef, 6)
+    celldm::Vector{Float64} = zeros(6)  # Must specify
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -373,10 +373,10 @@ Return a `BravaisLattice` from a `SystemNamelist`.
 QuantumESPRESSOBase.BravaisLattice(nml::SystemNamelist) =
     BravaisLattice{nml.ibrav}(nml.celldm)
 
-function Crystals.cellvolume(nml::SystemNamelist)
+function Crystallography.cellvolume(nml::SystemNamelist)
     iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
     return abs(det(BravaisLattice(nml)()))
-end # function Crystals.cellvolume
+end # function Crystallography.cellvolume
 
 function Setters.make(::LensMaker{VerbositySetter,ControlNamelist})
     return @batchlens begin

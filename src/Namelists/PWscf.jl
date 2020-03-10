@@ -19,12 +19,12 @@ using Setfield: set, @lens
 using Unitful
 using UnitfulAtomic
 
-using QuantumESPRESSOBase: BravaisLattice
+using Crystallography: BravaisLattice, CellParameters, cellvolume
 using QuantumESPRESSOBase.Setters:
     VerbositySetter, FiniteTemperatureSetter, CalculationSetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
 
-import Crystallography.Crystals
+import Crystallography
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
@@ -102,7 +102,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
 """
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = 1  # The default value in QE's source code is -1
-    celldm::Vector{Maybe{Float64}} = [nothing]  # Must specify
+    celldm::Vector{Float64} = zeros(6)  # Must specify
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -442,22 +442,28 @@ QuantumESPRESSOBase.titleof(::Type{<:IonsNamelist}) = "IONS"
 QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
 
 """
-    BravaisLattice(nml::SystemNamelist)
+    Crystallography.BravaisLattice(nml::SystemNamelist)
 
 Return a `BravaisLattice` from a `SystemNamelist`.
 """
-QuantumESPRESSOBase.BravaisLattice(nml::SystemNamelist) =
-    BravaisLattice{nml.ibrav}(nml.celldm)
+Crystallography.BravaisLattice(nml::SystemNamelist) = BravaisLattice{nml.ibrav}()
+
+"""
+    Crystallography.Lattice(nml::SystemNamelist)
+
+Return a `Lattice` from a `SystemNamelist`.
+"""
+function Crystallography.Lattice(nml::SystemNamelist)
+    b = BravaisLattice(nml)
+    return Lattice(b, CellParameters(nml.celldm...))
+end # function Crystallography.Lattice
 
 """
     cellvolume(nml::SystemNamelist)
 
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
-function Crystals.cellvolume(nml::SystemNamelist)
-    iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
-    return abs(det(BravaisLattice(nml)()))
-end # function Crystals.cellvolume
+Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
 function Setters.make(::LensMaker{<:VerbositySetter,ControlNamelist})
     return @batchlens begin
