@@ -19,7 +19,7 @@ using Setfield: set, @lens
 using Unitful
 using UnitfulAtomic
 
-using Crystallography: BravaisLattice
+using Crystallography: BravaisLattice, CellParameters
 using QuantumESPRESSOBase.Setters:
     VerbositySetter, FiniteTemperatureSetter, CalculationSetter, LensMaker
 using QuantumESPRESSOBase.Namelists: Namelist
@@ -446,10 +446,17 @@ QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
 
 Return a `BravaisLattice` from a `SystemNamelist`.
 """
-function Crystallography.BravaisLattice(nml::SystemNamelist)
-    ibrav = nml.ibrav
-    return iszero(ibrav) ? nothing : BravaisLattice{nml.ibrav}()
-end # function Crystallography.BravaisLattice
+Crystallography.BravaisLattice(nml::SystemNamelist) = BravaisLattice{nml.ibrav}()
+
+"""
+    Crystallography.Lattice(nml::SystemNamelist)
+
+Return a `Lattice` from a `SystemNamelist`.
+"""
+function Crystallography.Lattice(nml::SystemNamelist)
+    b = BravaisLattice(nml)
+    return Lattice(b, CellParameters(nml.celldm...))
+end # function Crystallography.Lattice
 
 """
     cellvolume(nml::SystemNamelist)
