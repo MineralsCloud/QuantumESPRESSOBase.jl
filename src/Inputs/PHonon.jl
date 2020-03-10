@@ -166,22 +166,20 @@ Inputs.titleof(::Type{<:Q2rNamelist}) = "INPUT"
 Inputs.titleof(::Type{<:MatdynNamelist}) = "INPUT"
 Inputs.titleof(::Type{<:DynmatNamelist}) = "INPUT"
 
-include("shared.jl")
-
-@with_kw struct PhInput <: QuantumESPRESSOInput
-    inputph::PhNamelist = PhNamelist()
-    q_points::Union{Nothing,KPointsCard} = nothing
-end # struct PhInput
+# @with_kw struct PhInput <: QuantumESPRESSOInput
+#     inputph::PhNamelist = PhNamelist()
+#     q_points::Union{Nothing,KPointsCard} = nothing
+# end # struct PhInput
 
 struct Q2rInput <: QuantumESPRESSOInput
     input::Q2rNamelist
 end # struct Q2rInput
 Q2rInput() = Q2rInput(Q2rNamelist())
 
-@with_kw struct MatdynInput <: QuantumESPRESSOInput
-    input::MatdynNamelist = MatdynNamelist()
-    q_points::KPointsCard
-end # struct MatdynInput
+# @with_kw struct MatdynInput <: QuantumESPRESSOInput
+#     input::MatdynNamelist = MatdynNamelist()
+#     q_points::KPointsCard
+# end # struct MatdynInput
 
 struct DynmatInput <: QuantumESPRESSOInput
     input::DynmatNamelist
