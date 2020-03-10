@@ -467,10 +467,10 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     return typeof(card)(new_option, card.data .* factor)
 end # function optconvert
 
-QuantumESPRESSOBase.asfieldname(::Type{<:AtomicSpeciesCard}) = :atomic_species
-QuantumESPRESSOBase.asfieldname(::Type{<:AtomicPositionsCard}) = :atomic_positions
-QuantumESPRESSOBase.asfieldname(::Type{<:CellParametersCard}) = :cell_parameters
-QuantumESPRESSOBase.asfieldname(::Type{<:KPointsCard}) = :k_points
+QuantumESPRESSOBase.entryname(::Type{<:AtomicSpeciesCard}) = :atomic_species
+QuantumESPRESSOBase.entryname(::Type{<:AtomicPositionsCard}) = :atomic_positions
+QuantumESPRESSOBase.entryname(::Type{<:CellParametersCard}) = :cell_parameters
+QuantumESPRESSOBase.entryname(::Type{<:KPointsCard}) = :k_points
 
 QuantumESPRESSOBase.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 QuantumESPRESSOBase.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"

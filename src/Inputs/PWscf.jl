@@ -443,11 +443,11 @@ Represent the `BANDS` namelist of `bands.x`.
     @assert spin_component ∈ 1:2
 end # struct BandsNamelist
 
-QuantumESPRESSOBase.asfieldname(::Type{<:ControlNamelist}) = :control
-QuantumESPRESSOBase.asfieldname(::Type{<:SystemNamelist}) = :system
-QuantumESPRESSOBase.asfieldname(::Type{<:ElectronsNamelist}) = :electrons
-QuantumESPRESSOBase.asfieldname(::Type{<:IonsNamelist}) = :ions
-QuantumESPRESSOBase.asfieldname(::Type{<:CellNamelist}) = :cell
+QuantumESPRESSOBase.entryname(::Type{<:ControlNamelist}) = :control
+QuantumESPRESSOBase.entryname(::Type{<:SystemNamelist}) = :system
+QuantumESPRESSOBase.entryname(::Type{<:ElectronsNamelist}) = :electrons
+QuantumESPRESSOBase.entryname(::Type{<:IonsNamelist}) = :ions
+QuantumESPRESSOBase.entryname(::Type{<:CellNamelist}) = :cell
 
 QuantumESPRESSOBase.titleof(::Type{<:ControlNamelist}) = "CONTROL"
 QuantumESPRESSOBase.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
@@ -578,7 +578,7 @@ function Setters.make(::LensMaker{AlatPressSetter,PWInput})
     end
 end # function Setters.make
 function Setters.upgrade(lm::LensMaker{S,T}, ::Type{PWInput}) where {S,T<:InputEntry}
-    return PropertyLens{asfieldname(T)}() ∘ make(lm)
+    return PropertyLens{entryname(T)}() ∘ make(lm)
 end # function Setters.upgrade
 
 end

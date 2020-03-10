@@ -356,11 +356,11 @@ Input this namelist only if `calculation` is `"cp-wf"` or `"vc-cp-wf"`.
     @assert 1 <= wfsd <= 3
 end # struct WannierNamelist
 
-QuantumESPRESSOBase.asfieldname(::Type{<:ControlNamelist}) = :control
-QuantumESPRESSOBase.asfieldname(::Type{<:SystemNamelist}) = :system
-QuantumESPRESSOBase.asfieldname(::Type{<:ElectronsNamelist}) = :electrons
-QuantumESPRESSOBase.asfieldname(::Type{<:IonsNamelist}) = :ions
-QuantumESPRESSOBase.asfieldname(::Type{<:CellNamelist}) = :cell
+QuantumESPRESSOBase.entryname(::Type{<:ControlNamelist}) = :control
+QuantumESPRESSOBase.entryname(::Type{<:SystemNamelist}) = :system
+QuantumESPRESSOBase.entryname(::Type{<:ElectronsNamelist}) = :electrons
+QuantumESPRESSOBase.entryname(::Type{<:IonsNamelist}) = :ions
+QuantumESPRESSOBase.entryname(::Type{<:CellNamelist}) = :cell
 
 QuantumESPRESSOBase.titleof(::Type{<:ControlNamelist}) = "CONTROL"
 QuantumESPRESSOBase.titleof(::Type{<:SystemNamelist}) = "SYSTEM"

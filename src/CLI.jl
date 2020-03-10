@@ -81,11 +81,11 @@ function Base.convert(::Type{Cmd}, cmd::PWCmd)
     return `$(cmd.which)$(options...) -inp $(cmd.inp)`
 end # function Base.convert
 
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{1}}) = :nimage
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{2}}) = :npool
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{3}}) = :ntg
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{4}}) = :nyfft
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{5}}) = :nband
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{6}}) = :ndiag
+QuantumESPRESSOBase.entryname(::Type{<:ParallelizationLevel{1}}) = :nimage
+QuantumESPRESSOBase.entryname(::Type{<:ParallelizationLevel{2}}) = :npool
+QuantumESPRESSOBase.entryname(::Type{<:ParallelizationLevel{3}}) = :ntg
+QuantumESPRESSOBase.entryname(::Type{<:ParallelizationLevel{4}}) = :nyfft
+QuantumESPRESSOBase.entryname(::Type{<:ParallelizationLevel{5}}) = :nband
+QuantumESPRESSOBase.entryname(::Type{<:ParallelizationLevel{6}}) = :ndiag
 
 end

@@ -26,7 +26,7 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, namelistsof, cardsof, compulsory_namelists, compulsory_cards, optionof, allowed_options, asfieldname, titleof
+export to_dict, dropdefault, namelistsof, cardsof, compulsory_namelists, compulsory_cards, optionof, allowed_options, entryname, titleof
 
 """
     InputEntry
@@ -81,8 +81,8 @@ QuantumESPRESSOBase.InputEntry
 abstract type InputEntry end
 
 """
-    asfieldname(::Type{<:InputEntry})
-    asfieldname(::InputEntry)
+    entryname(::Type{<:InputEntry})
+    entryname(::InputEntry)
 
 Return the field name of a `Namelist` or a `Card` in a `QuantumESPRESSOInput`.
 
@@ -91,11 +91,11 @@ Return the field name of a `Namelist` or a `Card` in a `QuantumESPRESSOInput`.
 ```jldoctest
 julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Namelists.PWscf: SystemNamelist
 
-julia> asfieldname(SystemNamelist) == asfieldname(SystemNamelist()) == :system
+julia> entryname(SystemNamelist) == entryname(SystemNamelist()) == :system
 true
 ```
 """
-asfieldname(x::InputEntry) = asfieldname(typeof(x))
+entryname(x::InputEntry) = entryname(typeof(x))
 
 """
     titleof(::Type{<:InputEntry})
