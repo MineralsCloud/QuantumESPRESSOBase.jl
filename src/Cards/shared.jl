@@ -2,6 +2,7 @@ using LinearAlgebra: det
 
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
+using Crystallography: Lattice, Cell
 using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
@@ -102,6 +103,7 @@ Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 struct AtomicSpeciesCard <: Card
     data::Vector{AtomicSpecies}
 end
+AtomicSpeciesCard(cell::Cell) = AtomicSpeciesCard(map(AtomicSpecies ∘ string, cell.numbers))
 # ============================================================================ #
 
 # ============================== AtomicPosition ============================== #
@@ -211,6 +213,7 @@ AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
 function AtomicPositionsCard(option, card::AtomicSpeciesCard)
     return AtomicPositionsCard(option, map(AtomicPosition, card.data))
 end # function AtomicPositionsCard
+AtomicPositionsCard(option, cell::Cell) = AtomicPositionsCard(option, [AtomicPosition(string(atom), pos) for (atom, pos) in zip(cell.numbers, cell.positions)])
 # Introudce mutual constructors since they share the same atoms.
 function AtomicSpeciesCard(card::AtomicPositionsCard)
     return AtomicSpeciesCard(map(AtomicSpecies, card.data))
@@ -302,7 +305,7 @@ abstract type AbstractCellParametersCard <: Card end
 
 """
     CellParametersCard{T<:Real} <: AbstractCellParametersCard
-    CellParametersCard(option::String, data::Matrix)
+    CellParametersCard(option::String, data::AbstractMatrix)
 
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
@@ -317,6 +320,8 @@ end
 CellParametersCard(option, data::AbstractMatrix{T}) where {T} =
     CellParametersCard{T}(option, data)
 CellParametersCard(data) = CellParametersCard("alat", data)
+CellParametersCard(option, lattice::Lattice{T}) where {T} = CellParametersCard(option, convert(Matrix{T}, lattice))
+CellParametersCard(option, cell::Cell) = CellParametersCard(option, cell.lattice)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
