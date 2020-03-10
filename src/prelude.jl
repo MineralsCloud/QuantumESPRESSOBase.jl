@@ -2,10 +2,8 @@ using LinearAlgebra: Diagonal, det, cross
 
 using Compat: isnothing
 using Crystallography
-using Crystallography.Crystals: Lattice, CellParameters
 
 import Crystallography
-import Crystallography.Crystals
 
 export asfieldname, titleof, to_qe
 
@@ -161,36 +159,36 @@ Crystallography.BravaisLattice(::Val{14}) = (Triclinic(), Primitive())
 struct AxesSetting{N} end
 AxesSetting(N::Int) = AxesSetting{N}()
 
-Crystals.Lattice(::PrimitiveCubic, p::CellParameters) = Lattice(p[1] * [
+Crystallography.Lattice(::PrimitiveCubic, p::CellParameters) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 1
 ])
-Crystals.Lattice(::FaceCenteredCubic, p::CellParameters) = Lattice(p[1] / 2 * [
+Crystallography.Lattice(::FaceCenteredCubic, p::CellParameters) = Lattice(p[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
 ])
-function Crystals.Lattice(::BodyCenteredCubic, p::CellParameters, ::AxesSetting{1})
+function Crystallography.Lattice(::BodyCenteredCubic, p::CellParameters, ::AxesSetting{1})
     return Lattice(p[1] / 2 * [
         1 1 1
         -1 1 1
         -1 -1 1
     ])
 end # function Lattice
-function Crystals.Lattice(::BodyCenteredCubic, p::CellParameters, ::AxesSetting{2})
+function Crystallography.Lattice(::BodyCenteredCubic, p::CellParameters, ::AxesSetting{2})
     return Lattice(p[1] / 2 * [
         -1 1 1
         1 -1 1
         1 1 -1
     ])
 end # function Lattice
-Crystals.Lattice(::PrimitiveHexagonal, p::CellParameters) = Lattice(p[1] * [
+Crystallography.Lattice(::PrimitiveHexagonal, p::CellParameters) = Lattice(p[1] * [
     1 0 0
     -1 / 2 √3 / 2 0
     0 0 p[3] / p[1]
 ])
-function Crystals.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting{1})
+function Crystallography.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting{1})
     r = cos(p[4])
     tx = sqrt((1 - r) / 2)
     ty = sqrt((1 - r) / 6)
@@ -201,7 +199,7 @@ function Crystals.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting
         -tx -ty tz
     ])
 end
-function Crystals.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting{2})
+function Crystallography.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting{2})
     ap = p[1] / √3
     γ = acos(p[4])
     ty = sqrt((1 - γ) / 6)
@@ -214,12 +212,12 @@ function Crystals.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting
         v v u
     ])
 end
-Crystals.Lattice(::PrimitiveTetragonal, p::CellParameters) = Lattice(p[1] * [
+Crystallography.Lattice(::PrimitiveTetragonal, p::CellParameters) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 p[3] / p[1]
 ])
-function Crystals.Lattice(::BodyCenteredTetragonal, p::CellParameters)
+function Crystallography.Lattice(::BodyCenteredTetragonal, p::CellParameters)
     r = p[3] / p[1]
     return Lattice(p[1] / 2 * [
         1 -1 r
@@ -227,27 +225,27 @@ function Crystals.Lattice(::BodyCenteredTetragonal, p::CellParameters)
         -1 -1 r
     ])
 end # function Lattice
-Crystals.Lattice(::PrimitiveOrthorhombic, p::CellParameters) = Lattice([
+Crystallography.Lattice(::PrimitiveOrthorhombic, p::CellParameters) = Lattice([
     p[1] 0 0
     0 p[2] 0
     0 0 p[3]
 ])
-Crystals.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{1}) = Lattice([
+Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{1}) = Lattice([
     p[1] / 2 p[2] / 2 0
     -p[1] / 2 p[2] / 2 0
     0 0 p[3]
 ])
-Crystals.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{2}) = Lattice([
+Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{2}) = Lattice([
     p[1] / 2 -p[2] / 2 0
     p[1] / 2 p[2] / 2 0
     0 0 p[3]
 ])
-Crystals.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p::CellParameters) = Lattice([
+Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p::CellParameters) = Lattice([
     p[1] 0 0
     0 p[2] / 2 -p[3] / 2
     0 p[2] / 2 p[3] / 2
 ])  # New in QE 6.4
-function Crystals.Lattice(::FaceCenteredOrthorhombic, p::CellParameters)
+function Crystallography.Lattice(::FaceCenteredOrthorhombic, p::CellParameters)
     a, b, c = p.x
     return Lattice([
         a 0 c
@@ -255,7 +253,7 @@ function Crystals.Lattice(::FaceCenteredOrthorhombic, p::CellParameters)
         0 b c
     ] / 2)
 end # function Lattice
-function Crystals.Lattice(::BodyCenteredOrthorhombic, p::CellParameters)
+function Crystallography.Lattice(::BodyCenteredOrthorhombic, p::CellParameters)
     a, b, c = p.x
     return Lattice([
         a b c
@@ -263,7 +261,7 @@ function Crystals.Lattice(::BodyCenteredOrthorhombic, p::CellParameters)
         -a -b c
     ] / 2)
 end
-function Crystals.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{1})
+function Crystallography.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{1})
     a, b, c = p.x
     return Lattice([
         a 0 0
@@ -271,7 +269,7 @@ function Crystals.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSettin
         0 0 c
     ])
 end
-function Crystals.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{2})
+function Crystallography.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{2})
     a, b, c = p.x
     return Lattice([
         a 0 0
@@ -279,7 +277,7 @@ function Crystals.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSettin
         c * cos(p[5]) 0 c * sin(p[5])
     ])
 end
-function Crystals.Lattice(::CCenteredMonoclinic, p::CellParameters)
+function Crystallography.Lattice(::CCenteredMonoclinic, p::CellParameters)
     a, b, c = p.x
     return Lattice([
         a / 2 0 -c / 2
@@ -287,7 +285,7 @@ function Crystals.Lattice(::CCenteredMonoclinic, p::CellParameters)
         a / 2 0 c / 2
     ])
 end
-function Crystals.Lattice(::BCenteredMonoclinic, p::CellParameters)
+function Crystallography.Lattice(::BCenteredMonoclinic, p::CellParameters)
     a, b, c = p.x
     return Lattice([
         a / 2 b / 2 0
@@ -295,7 +293,7 @@ function Crystals.Lattice(::BCenteredMonoclinic, p::CellParameters)
         c * cos(p[5]) 0 c * sin(p[5])
     ])
 end
-function Crystals.Lattice(::PrimitiveTriclinic, p::CellParameters)
+function Crystallography.Lattice(::PrimitiveTriclinic, p::CellParameters)
     a, b, c = p.x
     α, β, γ = p.y
     zz = c * sqrt(1 + 2 * cos(α) * cos(β) * cos(γ) - cos(α)^2 - cos(β)^2 - cos(γ)^2) / sin(γ)
