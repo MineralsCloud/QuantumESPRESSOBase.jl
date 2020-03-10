@@ -26,7 +26,7 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, getnamelists, getcards, compulsory_namelists, compulsory_cards, optionof, allowed_options, entryname, titleof
+export to_dict, dropdefault, getnamelists, getcards, compulsory_namelists, compulsory_cards, getoption, allowed_options, entryname, titleof
 
 """
     InputEntry
@@ -162,14 +162,14 @@ The abstraction of all components of a `QuantumESPRESSOInput` that is not a `Nam
 abstract type Card <: InputEntry end
 
 """
-    optionof(x::Card)
+    getoption(x::Card)
 
 Return the option for `Card` `x`.
 
 A user should not use `x.option` to access a `Card`'s `option`. Because some `Card`s do not have an option.
-Using `optionof(x)` is suggested.
+Using `getoption(x)` is suggested.
 """
-optionof(card::Card) = getfield(card, :option)
+getoption(card::Card) = getfield(card, :option)
 
 """
     allowed_options(T::Type{<:Card})
@@ -280,7 +280,7 @@ function Crystallography.cellvolume(input::PWInput)
     if isnothing(input.cell_parameters)
         return abs(det(BravaisLattice(input.system)()))
     else
-        if optionof(input.cell_parameters) == "alat"
+        if getoption(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
             isnothing(input.system.celldm[1]) && error("`celldm[1]` is not defined!")
             return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))

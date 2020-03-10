@@ -547,8 +547,8 @@ RefCellParametersCard(option, data::AbstractMatrix{T}) where {T} =
     RefCellParametersCard{T}(option, data)
 RefCellParametersCard(data) = RefCellParametersCard("bohr", data)
 
-Inputs.optionof(::AtomicVelocitiesCard) = "a.u"
-Inputs.optionof(::AtomicForcesCard) = nothing
+Inputs.getoption(::AtomicVelocitiesCard) = "a.u"
+Inputs.getoption(::AtomicForcesCard) = nothing
 
 Inputs.allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
 Inputs.allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")

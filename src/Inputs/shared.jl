@@ -9,7 +9,7 @@ using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix
 
 using QuantumESPRESSOBase: to_qe
-using QuantumESPRESSOBase.Inputs: Card, optionof, allowed_options
+using QuantumESPRESSOBase.Inputs: Card, getoption, allowed_options
 
 import Crystallography
 import Pseudopotentials
@@ -408,7 +408,7 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 
-Inputs.optionof(::AtomicSpeciesCard) = nothing
+Inputs.getoption(::AtomicSpeciesCard) = nothing
 
 Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
@@ -433,7 +433,7 @@ It will throw an error if the information is not enough to calculate the volume.
 """
 function Crystallography.cellvolume(card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
-    option = optionof(card)
+    option = getoption(card)
     if option == "bohr"
         abs(det(card.data))
     elseif option == "angstrom"
@@ -454,7 +454,7 @@ It does not support conversion between "alat" and the rests.
 """
 function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
-    old_option = optionof(card)
+    old_option = getoption(card)
     new_option == old_option && return card  # No conversion is needed
     pair = old_option => new_option
     factor = if pair == ("bohr" => "angstrom")
@@ -512,7 +512,7 @@ function QuantumESPRESSOBase.to_qe(
     newline = '\n',
     verbose::Bool = false,
 )
-    return "ATOMIC_POSITIONS { $(optionof(card)) }" *
+    return "ATOMIC_POSITIONS { $(getoption(card)) }" *
     newline *
     join(
         (
@@ -529,7 +529,7 @@ function QuantumESPRESSOBase.to_qe(
     numfmt = "%14.9f",
     newline = '\n',
 )
-    return "CELL_PARAMETERS { $(optionof(card)) }" *
+    return "CELL_PARAMETERS { $(getoption(card)) }" *
     newline *
     join(
         (
@@ -560,7 +560,7 @@ function QuantumESPRESSOBase.to_qe(
     newline = '\n',
 )
     content = "K_POINTS { $(card.option) }" * newline
-    if optionof(card) in ("gamma", "automatic")
+    if getoption(card) in ("gamma", "automatic")
         content *= indent * to_qe(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
         content *= string(length(card.data), newline)
