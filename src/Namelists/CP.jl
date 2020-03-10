@@ -89,7 +89,7 @@ Represent the `SYSTEM` namelist of `cp.x`.
 """
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Union{Nothing,Float64}} = Vector{Float64}(undef, 6)
+    celldm::Vector{Float64} = zeros(6)  # Must specify
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0

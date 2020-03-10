@@ -102,7 +102,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
 """
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = 1  # The default value in QE's source code is -1
-    celldm::Vector{Maybe{Float64}} = [nothing]  # Must specify
+    celldm::Vector{Float64} = zeros(6)  # Must specify
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
