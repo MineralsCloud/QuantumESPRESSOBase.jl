@@ -14,19 +14,94 @@ module Inputs
 using LinearAlgebra: det
 
 using Compat: isnothing
+using Crystallography: BravaisLattice
 using Kaleido: @batchlens
+using OrderedCollections: OrderedDict
 
-using QuantumESPRESSOBase: BravaisLattice, to_qe
-using QuantumESPRESSOBase.Namelists: Namelist
-using QuantumESPRESSOBase.Cards: Card, optionof
-using QuantumESPRESSOBase.Cards.PWscf: CellParametersCard
+using QuantumESPRESSOBase: InputEntry, titleof, to_qe
 using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
 
 import Crystallography
 import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
-export namelistsof, cardsof, compulsory_namelists, compulsory_cards
+export Card
+export to_dict, dropdefault, namelistsof, cardsof, compulsory_namelists, compulsory_cards, optionof, allowed_options
+
+"""
+    Namelist <: InputEntry
+
+The abstraction of an component of a `QuantumESPRESSOInput`, a basic Fortran data structure.
+"""
+abstract type Namelist <: InputEntry end
+
+"""
+    to_dict(nml; defaultorder = true)
+
+Convert a `Namelist` to a dictionary.
+
+# Arguments
+- `nml::Namelist`: the namelist to be converted.
+- `defaultorder::Bool = true`: whether or not use the default order of parameters in QE's docs.
+"""
+function to_dict(nml::Namelist; defaultorder::Bool = true)
+    dict = (defaultorder ? OrderedDict{Symbol,Any}() : Dict{Symbol,Any}())
+    for n in propertynames(nml)
+        dict[n] = getproperty(nml, n)
+    end
+    return dict
+end
+
+"""
+    dropdefault(nml::Namelist)
+
+Return an `AbstractDict` of non-default values of a `Namelist`.
+"""
+function dropdefault(nml::Namelist)
+    default = typeof(nml)()  # Create a `Namelist` with all default values
+    # Compare `default` with `nml`, discard the same values
+    result = filter!(item -> item.second != getfield(default, item.first), to_dict(nml))
+    isempty(result) && @info "Every entry in the namelist is the default value!"
+    return result
+end
+
+"""
+    Card <: InputEntry
+
+The abstraction of all components of a `QuantumESPRESSOInput` that is not a `Namelist`.
+"""
+abstract type Card <: InputEntry end
+
+"""
+    optionof(x::Card)
+
+Return the option for `Card` `x`.
+
+A user should not use `x.option` to access a `Card`'s `option`. Because some `Card`s do not have an option.
+Using `optionof(x)` is suggested.
+"""
+optionof(card::Card) = getfield(card, :option)
+
+"""
+    allowed_options(T::Type{<:Card})
+
+Return the allowed options for `Card` `T`.
+
+# Examples
+```jldoctest
+julia> using QuantumESPRESSOBase.Cards, QuantumESPRESSOBase.Cards.PWscf
+
+julia> allowed_options(AtomicPositionsCard)
+("alat", "bohr", "angstrom", "crystal", "crystal_sg")
+
+julia> allowed_options(CellParametersCard)
+("alat", "bohr", "angstrom")
+
+julia> allowed_options(KPointsCard)
+("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+```
+"""
+allowed_options(::Type{<:Card}) = nothing
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput end
@@ -126,6 +201,16 @@ function Crystallography.cellvolume(input::PWInput)
     end
 end # function Crystallography.cellvolume
 
+function QuantumESPRESSOBase.to_qe(
+    nml::Namelist;
+    indent = ' '^4,
+    delim = ' ',
+    newline = '\n',
+)
+    namelist_name = titleof(nml)
+    content = to_qe(dropdefault(nml); indent = indent, delim = delim)
+    return "&$namelist_name" * newline * content * '/'
+end
 function QuantumESPRESSOBase.to_qe(
     input::QuantumESPRESSOInput;
     indent = ' '^4,

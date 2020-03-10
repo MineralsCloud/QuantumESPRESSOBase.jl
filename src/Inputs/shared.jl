@@ -9,12 +9,12 @@ using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix
 
 using QuantumESPRESSOBase: to_qe
-using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
+using QuantumESPRESSOBase.Inputs: Card, optionof, allowed_options
 
 import Crystallography
 import Pseudopotentials
 import QuantumESPRESSOBase
-import QuantumESPRESSOBase.Cards
+import QuantumESPRESSOBase.Inputs
 
 # =============================== AtomicSpecies ============================== #
 """
@@ -408,12 +408,12 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 
-Cards.optionof(::AtomicSpeciesCard) = nothing
+Inputs.optionof(::AtomicSpeciesCard) = nothing
 
-Cards.allowed_options(::Type{<:AtomicPositionsCard}) =
+Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-Cards.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
-Cards.allowed_options(::Type{<:KPointsCard}) = (
+Inputs.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
+Inputs.allowed_options(::Type{<:KPointsCard}) = (
     "tpiba",
     "automatic",
     "crystal",
