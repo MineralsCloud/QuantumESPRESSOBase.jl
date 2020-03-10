@@ -2,7 +2,7 @@ module CLI
 
 using Parameters: @with_kw_noshow
 
-import QuantumESPRESSOBase
+import QuantumESPRESSOBase.Inputs
 
 export ParallelizationLevel, PWCmd
 
@@ -81,11 +81,11 @@ function Base.convert(::Type{Cmd}, cmd::PWCmd)
     return `$(cmd.which)$(options...) -inp $(cmd.inp)`
 end # function Base.convert
 
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{1}}) = :nimage
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{2}}) = :npool
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{3}}) = :ntg
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{4}}) = :nyfft
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{5}}) = :nband
-QuantumESPRESSOBase.asfieldname(::Type{<:ParallelizationLevel{6}}) = :ndiag
+Inputs.entryname(::Type{<:ParallelizationLevel{1}}) = :nimage
+Inputs.entryname(::Type{<:ParallelizationLevel{2}}) = :npool
+Inputs.entryname(::Type{<:ParallelizationLevel{3}}) = :ntg
+Inputs.entryname(::Type{<:ParallelizationLevel{4}}) = :nyfft
+Inputs.entryname(::Type{<:ParallelizationLevel{5}}) = :nband
+Inputs.entryname(::Type{<:ParallelizationLevel{6}}) = :ndiag
 
 end

@@ -9,12 +9,12 @@ using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix
 
 using QuantumESPRESSOBase: to_qe
-using QuantumESPRESSOBase.Cards: Card, optionof, allowed_options
+using QuantumESPRESSOBase.Inputs: Card, getoption, allowed_options
 
 import Crystallography
 import Pseudopotentials
 import QuantumESPRESSOBase
-import QuantumESPRESSOBase.Cards
+import QuantumESPRESSOBase.Inputs
 
 # =============================== AtomicSpecies ============================== #
 """
@@ -408,12 +408,12 @@ function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
 end
 
-Cards.optionof(::AtomicSpeciesCard) = nothing
+Inputs.getoption(::AtomicSpeciesCard) = nothing
 
-Cards.allowed_options(::Type{<:AtomicPositionsCard}) =
+Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-Cards.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
-Cards.allowed_options(::Type{<:KPointsCard}) = (
+Inputs.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
+Inputs.allowed_options(::Type{<:KPointsCard}) = (
     "tpiba",
     "automatic",
     "crystal",
@@ -433,7 +433,7 @@ It will throw an error if the information is not enough to calculate the volume.
 """
 function Crystallography.cellvolume(card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
-    option = optionof(card)
+    option = getoption(card)
     if option == "bohr"
         abs(det(card.data))
     elseif option == "angstrom"
@@ -454,7 +454,7 @@ It does not support conversion between "alat" and the rests.
 """
 function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
     BOHR_TO_ANGSTROM = 0.529177210903
-    old_option = optionof(card)
+    old_option = getoption(card)
     new_option == old_option && return card  # No conversion is needed
     pair = old_option => new_option
     factor = if pair == ("bohr" => "angstrom")
@@ -467,15 +467,49 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     return typeof(card)(new_option, card.data .* factor)
 end # function optconvert
 
-QuantumESPRESSOBase.asfieldname(::Type{<:AtomicSpeciesCard}) = :atomic_species
-QuantumESPRESSOBase.asfieldname(::Type{<:AtomicPositionsCard}) = :atomic_positions
-QuantumESPRESSOBase.asfieldname(::Type{<:CellParametersCard}) = :cell_parameters
-QuantumESPRESSOBase.asfieldname(::Type{<:KPointsCard}) = :k_points
+Inputs.entryname(::Type{<:ControlNamelist}) = :control
+Inputs.entryname(::Type{<:SystemNamelist}) = :system
+Inputs.entryname(::Type{<:ElectronsNamelist}) = :electrons
+Inputs.entryname(::Type{<:IonsNamelist}) = :ions
+Inputs.entryname(::Type{<:CellNamelist}) = :cell
+Inputs.entryname(::Type{<:AtomicSpeciesCard}) = :atomic_species
+Inputs.entryname(::Type{<:AtomicPositionsCard}) = :atomic_positions
+Inputs.entryname(::Type{<:CellParametersCard}) = :cell_parameters
+Inputs.entryname(::Type{<:KPointsCard}) = :k_points
 
-QuantumESPRESSOBase.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-QuantumESPRESSOBase.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-QuantumESPRESSOBase.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
-QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
+Inputs.titleof(::Type{<:ControlNamelist}) = "CONTROL"
+Inputs.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
+Inputs.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
+Inputs.titleof(::Type{<:IonsNamelist}) = "IONS"
+Inputs.titleof(::Type{<:CellNamelist}) = "CELL"
+Inputs.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+Inputs.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
+Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
+
+"""
+    Crystallography.BravaisLattice(nml::SystemNamelist)
+
+Return a `BravaisLattice` from a `SystemNamelist`.
+"""
+Crystallography.BravaisLattice(nml::SystemNamelist) = BravaisLattice{nml.ibrav}()
+
+"""
+    Crystallography.Lattice(nml::SystemNamelist)
+
+Return a `Lattice` from a `SystemNamelist`.
+"""
+function Crystallography.Lattice(nml::SystemNamelist)
+    b = BravaisLattice(nml)
+    return Lattice(b, CellParameters(nml.celldm...))
+end # function Crystallography.Lattice
+
+"""
+    cellvolume(nml::SystemNamelist)
+
+Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
+"""
+Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
 function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f")
     return join(
@@ -512,7 +546,7 @@ function QuantumESPRESSOBase.to_qe(
     newline = '\n',
     verbose::Bool = false,
 )
-    return "ATOMIC_POSITIONS { $(optionof(card)) }" *
+    return "ATOMIC_POSITIONS { $(getoption(card)) }" *
     newline *
     join(
         (
@@ -529,7 +563,7 @@ function QuantumESPRESSOBase.to_qe(
     numfmt = "%14.9f",
     newline = '\n',
 )
-    return "CELL_PARAMETERS { $(optionof(card)) }" *
+    return "CELL_PARAMETERS { $(getoption(card)) }" *
     newline *
     join(
         (
@@ -560,7 +594,7 @@ function QuantumESPRESSOBase.to_qe(
     newline = '\n',
 )
     content = "K_POINTS { $(card.option) }" * newline
-    if optionof(card) in ("gamma", "automatic")
+    if getoption(card) in ("gamma", "automatic")
         content *= indent * to_qe(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
         content *= string(length(card.data), newline)

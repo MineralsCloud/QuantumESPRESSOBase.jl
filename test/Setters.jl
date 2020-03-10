@@ -6,7 +6,7 @@ using Setfield: set
 using Unitful
 using UnitfulAtomic
 
-using QuantumESPRESSOBase.Namelists.PWscf
+using QuantumESPRESSOBase.Inputs.PWscf
 using QuantumESPRESSOBase.Setters
 
 @testset "Test `VerbositySetter` on `ControlNamelist`" begin
