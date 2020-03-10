@@ -442,42 +442,6 @@ Represent the `BANDS` namelist of `bands.x`.
     @assert spin_component ∈ 1:2
 end # struct BandsNamelist
 
-Inputs.entryname(::Type{<:ControlNamelist}) = :control
-Inputs.entryname(::Type{<:SystemNamelist}) = :system
-Inputs.entryname(::Type{<:ElectronsNamelist}) = :electrons
-Inputs.entryname(::Type{<:IonsNamelist}) = :ions
-Inputs.entryname(::Type{<:CellNamelist}) = :cell
-
-Inputs.titleof(::Type{<:ControlNamelist}) = "CONTROL"
-Inputs.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
-Inputs.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
-Inputs.titleof(::Type{<:IonsNamelist}) = "IONS"
-Inputs.titleof(::Type{<:CellNamelist}) = "CELL"
-
-"""
-    Crystallography.BravaisLattice(nml::SystemNamelist)
-
-Return a `BravaisLattice` from a `SystemNamelist`.
-"""
-Crystallography.BravaisLattice(nml::SystemNamelist) = BravaisLattice{nml.ibrav}()
-
-"""
-    Crystallography.Lattice(nml::SystemNamelist)
-
-Return a `Lattice` from a `SystemNamelist`.
-"""
-function Crystallography.Lattice(nml::SystemNamelist)
-    b = BravaisLattice(nml)
-    return Lattice(b, CellParameters(nml.celldm...))
-end # function Crystallography.Lattice
-
-"""
-    cellvolume(nml::SystemNamelist)
-
-Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
-"""
-Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
-
 function Setters.make(::LensMaker{<:VerbositySetter,ControlNamelist})
     return @batchlens begin
         _.verbosity

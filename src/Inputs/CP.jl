@@ -356,31 +356,6 @@ Input this namelist only if `calculation` is `"cp-wf"` or `"vc-cp-wf"`.
     @assert 1 <= wfsd <= 3
 end # struct WannierNamelist
 
-Inputs.entryname(::Type{<:ControlNamelist}) = :control
-Inputs.entryname(::Type{<:SystemNamelist}) = :system
-Inputs.entryname(::Type{<:ElectronsNamelist}) = :electrons
-Inputs.entryname(::Type{<:IonsNamelist}) = :ions
-Inputs.entryname(::Type{<:CellNamelist}) = :cell
-
-Inputs.titleof(::Type{<:ControlNamelist}) = "CONTROL"
-Inputs.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
-Inputs.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
-Inputs.titleof(::Type{<:IonsNamelist}) = "IONS"
-Inputs.titleof(::Type{<:CellNamelist}) = "CELL"
-
-"""
-    BravaisLattice(nml::SystemNamelist)
-
-Return a `BravaisLattice` from a `SystemNamelist`.
-"""
-QuantumESPRESSOBase.BravaisLattice(nml::SystemNamelist) =
-    BravaisLattice{nml.ibrav}(nml.celldm)
-
-function Crystallography.cellvolume(nml::SystemNamelist)
-    iszero(nml.ibrav) && error("`ibrav` must be non-zero to calculate the cell volume!")
-    return abs(det(BravaisLattice(nml)()))
-end # function Crystallography.cellvolume
-
 function Setters.make(::LensMaker{VerbositySetter,ControlNamelist})
     return @batchlens begin
         _.verbosity
