@@ -356,17 +356,17 @@ Input this namelist only if `calculation` is `"cp-wf"` or `"vc-cp-wf"`.
     @assert 1 <= wfsd <= 3
 end # struct WannierNamelist
 
-QuantumESPRESSOBase.entryname(::Type{<:ControlNamelist}) = :control
-QuantumESPRESSOBase.entryname(::Type{<:SystemNamelist}) = :system
-QuantumESPRESSOBase.entryname(::Type{<:ElectronsNamelist}) = :electrons
-QuantumESPRESSOBase.entryname(::Type{<:IonsNamelist}) = :ions
-QuantumESPRESSOBase.entryname(::Type{<:CellNamelist}) = :cell
+Inputs.entryname(::Type{<:ControlNamelist}) = :control
+Inputs.entryname(::Type{<:SystemNamelist}) = :system
+Inputs.entryname(::Type{<:ElectronsNamelist}) = :electrons
+Inputs.entryname(::Type{<:IonsNamelist}) = :ions
+Inputs.entryname(::Type{<:CellNamelist}) = :cell
 
-QuantumESPRESSOBase.titleof(::Type{<:ControlNamelist}) = "CONTROL"
-QuantumESPRESSOBase.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
-QuantumESPRESSOBase.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
-QuantumESPRESSOBase.titleof(::Type{<:IonsNamelist}) = "IONS"
-QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
+Inputs.titleof(::Type{<:ControlNamelist}) = "CONTROL"
+Inputs.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
+Inputs.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
+Inputs.titleof(::Type{<:IonsNamelist}) = "IONS"
+Inputs.titleof(::Type{<:CellNamelist}) = "CELL"
 
 """
     BravaisLattice(nml::SystemNamelist)

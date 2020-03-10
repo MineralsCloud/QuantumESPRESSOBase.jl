@@ -16,9 +16,9 @@ using Parameters: @with_kw
 using QuantumESPRESSOBase.Inputs: Namelist, QuantumESPRESSOInput
 
 import QuantumESPRESSOBase
+import QuantumESPRESSOBase.Inputs
 
 export PhInput, Q2rInput, MatdynInput, DynmatInput
-
 export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
@@ -156,15 +156,15 @@ Represent the `INPUT` namelist of `dynmat.x`.
     lplasma::Bool = false
 end # struct DynmatNamelist
 
-QuantumESPRESSOBase.entryname(::Type{<:PhNamelist}) = :inputph
-QuantumESPRESSOBase.entryname(::Type{<:Q2rNamelist}) = :input
-QuantumESPRESSOBase.entryname(::Type{<:MatdynNamelist}) = :input
-QuantumESPRESSOBase.entryname(::Type{<:DynmatNamelist}) = :input
+Inputs.entryname(::Type{<:PhNamelist}) = :inputph
+Inputs.entryname(::Type{<:Q2rNamelist}) = :input
+Inputs.entryname(::Type{<:MatdynNamelist}) = :input
+Inputs.entryname(::Type{<:DynmatNamelist}) = :input
 
-QuantumESPRESSOBase.titleof(::Type{<:PhNamelist}) = "INPUTPH"
-QuantumESPRESSOBase.titleof(::Type{<:Q2rNamelist}) = "INPUT"
-QuantumESPRESSOBase.titleof(::Type{<:MatdynNamelist}) = "INPUT"
-QuantumESPRESSOBase.titleof(::Type{<:DynmatNamelist}) = "INPUT"
+Inputs.titleof(::Type{<:PhNamelist}) = "INPUTPH"
+Inputs.titleof(::Type{<:Q2rNamelist}) = "INPUT"
+Inputs.titleof(::Type{<:MatdynNamelist}) = "INPUT"
+Inputs.titleof(::Type{<:DynmatNamelist}) = "INPUT"
 
 include("shared.jl")
 

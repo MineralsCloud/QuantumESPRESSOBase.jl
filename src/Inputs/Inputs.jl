@@ -18,7 +18,7 @@ using Crystallography: BravaisLattice
 using Kaleido: @batchlens
 using OrderedCollections: OrderedDict
 
-using QuantumESPRESSOBase: InputEntry, titleof, to_qe
+using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
 
 import Crystallography

@@ -21,12 +21,11 @@ using Setfield: PropertyLens, set, @lens
 using Unitful
 using UnitfulAtomic
 
-using QuantumESPRESSOBase: InputEntry
-using QuantumESPRESSOBase.Inputs: Namelist, QuantumESPRESSOInput
+using QuantumESPRESSOBase.Inputs: InputEntry, Namelist, QuantumESPRESSOInput
 using QuantumESPRESSOBase.Setters: AlatPressSetter, LensMaker, VerbositySetter, FiniteTemperatureSetter, CalculationSetter, LensMaker
 
 import Crystallography
-import QuantumESPRESSOBase
+import QuantumESPRESSOBase.Inputs
 import QuantumESPRESSOBase.Setters
 
 export ControlNamelist,
@@ -443,17 +442,17 @@ Represent the `BANDS` namelist of `bands.x`.
     @assert spin_component ∈ 1:2
 end # struct BandsNamelist
 
-QuantumESPRESSOBase.entryname(::Type{<:ControlNamelist}) = :control
-QuantumESPRESSOBase.entryname(::Type{<:SystemNamelist}) = :system
-QuantumESPRESSOBase.entryname(::Type{<:ElectronsNamelist}) = :electrons
-QuantumESPRESSOBase.entryname(::Type{<:IonsNamelist}) = :ions
-QuantumESPRESSOBase.entryname(::Type{<:CellNamelist}) = :cell
+Inputs.entryname(::Type{<:ControlNamelist}) = :control
+Inputs.entryname(::Type{<:SystemNamelist}) = :system
+Inputs.entryname(::Type{<:ElectronsNamelist}) = :electrons
+Inputs.entryname(::Type{<:IonsNamelist}) = :ions
+Inputs.entryname(::Type{<:CellNamelist}) = :cell
 
-QuantumESPRESSOBase.titleof(::Type{<:ControlNamelist}) = "CONTROL"
-QuantumESPRESSOBase.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
-QuantumESPRESSOBase.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
-QuantumESPRESSOBase.titleof(::Type{<:IonsNamelist}) = "IONS"
-QuantumESPRESSOBase.titleof(::Type{<:CellNamelist}) = "CELL"
+Inputs.titleof(::Type{<:ControlNamelist}) = "CONTROL"
+Inputs.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
+Inputs.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
+Inputs.titleof(::Type{<:IonsNamelist}) = "IONS"
+Inputs.titleof(::Type{<:CellNamelist}) = "CELL"
 
 """
     Crystallography.BravaisLattice(nml::SystemNamelist)

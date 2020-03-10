@@ -467,15 +467,15 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     return typeof(card)(new_option, card.data .* factor)
 end # function optconvert
 
-QuantumESPRESSOBase.entryname(::Type{<:AtomicSpeciesCard}) = :atomic_species
-QuantumESPRESSOBase.entryname(::Type{<:AtomicPositionsCard}) = :atomic_positions
-QuantumESPRESSOBase.entryname(::Type{<:CellParametersCard}) = :cell_parameters
-QuantumESPRESSOBase.entryname(::Type{<:KPointsCard}) = :k_points
+Inputs.entryname(::Type{<:AtomicSpeciesCard}) = :atomic_species
+Inputs.entryname(::Type{<:AtomicPositionsCard}) = :atomic_positions
+Inputs.entryname(::Type{<:CellParametersCard}) = :cell_parameters
+Inputs.entryname(::Type{<:KPointsCard}) = :k_points
 
-QuantumESPRESSOBase.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-QuantumESPRESSOBase.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-QuantumESPRESSOBase.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
-QuantumESPRESSOBase.titleof(::Type{<:KPointsCard}) = "K_POINTS"
+Inputs.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+Inputs.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
+Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f")
     return join(
