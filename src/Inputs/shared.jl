@@ -369,17 +369,17 @@ end
 Represent the `K_POINTS` card in QE.
 
 # Arguments
-- `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 - `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
+- `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
-@auto_hash_equals struct KPointsCard{
+struct KPointsCard{
     A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}},
 } <: Card
-    option::String
     data::A
+    option::String
     function KPointsCard{A}(
-        option,
         data,
+        option,
     ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}}
         @assert option ∈ allowed_options(KPointsCard)
         @assert if option == "automatic"
@@ -389,17 +389,13 @@ Represent the `K_POINTS` card in QE.
         else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
             eltype(data) <: SpecialKPoint
         end
-        return new(option, data)
+        return new(data, option)
     end
 end
-KPointsCard(option, data::A) where {A} = KPointsCard{A}(option, data)
-KPointsCard(data::AbstractVector{SpecialKPoint}) = KPointsCard("tpiba", data)
-KPointsCard(data::GammaPoint) = KPointsCard("gamma", data)
-KPointsCard(data::MonkhorstPackGrid) = KPointsCard("automatic", data)
-function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
-    @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!")
-    return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
-end
+KPointsCard(data::A, option) where {A} = KPointsCard{A}(data, option)
+KPointsCard(data::AbstractVector{SpecialKPoint}) = KPointsCard(data, "tpiba")
+KPointsCard(data::GammaPoint) = KPointsCard(data, "gamma")
+KPointsCard(data::MonkhorstPackGrid) = KPointsCard(data, "automatic")
 
 Inputs.getoption(::AtomicSpeciesCard) = nothing
 
