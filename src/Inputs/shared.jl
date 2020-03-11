@@ -552,15 +552,8 @@ function QuantumESPRESSOBase.to_qe(
     numfmt = "%14.9f",
     newline = '\n',
 )
-    return "CELL_PARAMETERS { $(getoption(card)) }" *
-    newline *
-    join(
-        (
-            indent * join(map(x -> sprintf1(numfmt, x), row), delim)
-            for row in eachrow(card.data)
-        ),
-        newline,
-    )
+    it = (indent * join((sprintf1(numfmt, x) for x in row), delim) for row in eachrow(card.data))
+    return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
 end
 QuantumESPRESSOBase.to_qe(data::GammaPoint) = ""
 function QuantumESPRESSOBase.to_qe(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d")
