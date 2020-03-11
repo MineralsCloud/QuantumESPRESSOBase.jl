@@ -312,7 +312,7 @@ struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
         return new(data, option)
     end
 end
-CellParametersCard(data::AbstractMatrix{T}, option) where {T} =
+CellParametersCard(data::AbstractMatrix{T}, option = "alat") where {T} =
     CellParametersCard{T}(data, option)
 CellParametersCard(lattice::Lattice{T}, option) where {T} = CellParametersCard(convert(Matrix{T}, lattice), option)
 CellParametersCard(cell::Cell, option) = CellParametersCard(cell.lattice, option)
