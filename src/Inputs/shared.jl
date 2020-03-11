@@ -536,7 +536,7 @@ function QuantumESPRESSOBase.to_qe(
     verbose::Bool = false,
 )
     v = verbose ? [data.pos; data.if_pos] : data.pos
-    return join([sprintf1("%3s", data.atom); map(x -> sprintf1(numfmt, x), v)], delim)
+    return join([sprintf1("%3s", data.atom); map(x -> sprintf1(numfmt, x), v)], delim)  # FIXME: `numfmt` on `Bool` will give wrong result
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicPositionsCard;
