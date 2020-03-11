@@ -381,17 +381,11 @@ include("shared.jl")
 
 """
     AtomicVelocity(atom::Union{AbstractChar,String}, velocity::Vector{Float64})
-    AtomicVelocity(x::AtomicSpecies, velocity)
     AtomicVelocity(x::AtomicPosition, velocity)
-    AtomicVelocity(atom::Union{AbstractChar,AbstractString})
-    AtomicVelocity(x::AtomicSpecies)
-    AtomicVelocity(x::AtomicPosition)
 
 Represent each line of the `ATOMIC_VELOCITIES` card in QE's `CP` package.
 
-It is a `mutable struct` and supports _incomplete Initialization_ as in the fourth to
-sixth constructors. See the examples below. The `atom` field accepts at most 3 characters
-as claimed in QE's documentation.
+The `atom` field accepts at most 3 characters.
 
 # Examples
 ```jldoctest
@@ -399,17 +393,6 @@ julia> using QuantumESPRESSOBase.Cards.CP
 
 julia> AtomicVelocity("H", [0.140374e-04, -0.333683e-04, 0.231834e-04])
 AtomicVelocity("H", [1.40374e-5, -3.33683e-5, 2.31834e-5])
-
-julia> x = AtomicVelocity('H');
-
-julia> x.atom
-"H"
-
-julia> x.velocity = [0.140374e-04, -0.333683e-04, 0.231834e-04]
-3-element Array{Float64,1}:
-  1.40374e-5
- -3.33683e-5
-  2.31834e-5
 ```
 """
 struct AtomicVelocity
@@ -425,23 +408,21 @@ AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
 # Introudce mutual constructors since they share the same atoms.
 """
     AtomicSpecies(x::AtomicVelocity, mass, pseudopot)
-    AtomicSpecies(x::AtomicVelocity)
 
-Construct an incomplete `AtomicSpecies` from an `AtomicVelocity` instance.
+Construct an `AtomicSpecies` from an `AtomicVelocity` instance.
 """
 AtomicSpecies(x::AtomicVelocity, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
 """
     AtomicPosition(x::AtomicVelocity, pos, if_pos)
-    AtomicPosition(x::AtomicVelocity)
 
-Construct an incomplete `AtomicPosition` from an `AtomicVelocity` instance.
+Construct an `AtomicPosition` from an `AtomicVelocity` instance.
 """
 AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 
 """
     AtomicVelocitiesCard <: Card
 
-Represent the `ATOMIC_VELOCITIES` card in QE's `CP` package. It does not have an "option".
+Represent the `ATOMIC_VELOCITIES` card in QE's `CP` package which does not have an "option".
 """
 struct AtomicVelocitiesCard <: Card
     data::Vector{AtomicVelocity}

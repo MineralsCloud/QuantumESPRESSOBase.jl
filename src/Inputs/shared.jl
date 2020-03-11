@@ -17,15 +17,11 @@ import QuantumESPRESSOBase.Inputs
 # =============================== AtomicSpecies ============================== #
 """
     AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
-    AtomicSpecies(atom::Union{AbstractChar,AbstractString})
     AtomicSpecies(x::AtomicPosition, mass, pseudopot)
-    AtomicSpecies(x::AtomicPosition)
 
 Represent each line of the `ATOMIC_SPECIES` card in QE.
 
-It is a `mutable struct` and supports _incomplete Initialization_ as in the second and
-fourth constructors. See the examples below. The `atom` field accepts at most 3 characters
-as claimed in QE's documentation.
+The `atom` field accepts at most 3 characters.
 
 # Examples
 ```jldoctest
@@ -33,21 +29,6 @@ julia> using QuantumESPRESSOBase.Cards.PWscf
 
 julia> AtomicSpecies("C1", 12, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
 AtomicSpecies("C1", 12.0, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
-
-julia> x = AtomicSpecies('S');
-
-julia> x.atom
-"S"
-
-julia> x.mass = 32.066; x.mass
-32.066
-
-julia> x.pseudopot
-ERROR: UndefRefError: access to undefined reference
-[...]
-
-julia> x.pseudopot = "S.pz-n-rrkjus_psl.0.1.UPF"; x.pseudopot
-"S.pz-n-rrkjus_psl.0.1.UPF"
 
 julia> AtomicSpecies(
            AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764]),
@@ -103,15 +84,11 @@ AtomicSpeciesCard(cell::Cell) = AtomicSpeciesCard(map(AtomicSpecies ∘ string, 
 # ============================== AtomicPosition ============================== #
 """
     AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
-    AtomicPosition(atom::Union{AbstractChar,AbstractString})
     AtomicPosition(x::AtomicSpecies, pos, if_pos)
-    AtomicPosition(x::AtomicSpecies)
 
 Represent each line of the `ATOMIC_POSITIONS` card in QE.
 
-It is a `mutable struct` and supports _incomplete Initialization_ as in the second and
-fourth constructors. See the examples below. The `atom` field accepts at most 3 characters
-as claimed in QE's documentation.
+The `atom` field accepts at most 3 characters.
 
 # Examples
 ```jldoctest
@@ -119,35 +96,6 @@ julia> using QuantumESPRESSOBase.Cards.PWscf
 
 julia> AtomicPosition('O', [0, 0, 0])
 AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 1, 1])
-
-julia> x = AtomicPosition('O');
-
-julia> x.pos
-ERROR: UndefRefError: access to undefined reference
-[...]
-
-julia> x.pos = [0, 0, 0]
-ERROR: TypeError: in setfield!, expected StaticArrays.SArray{Tuple{3},Float64,1,3}, got StaticArrays.SArray{Tuple{3},Int64,1,3}
-[...]
-
-julia> x.pos = Float64[0, 0, 0]
-3-element Array{Float64,1}:
- 0.0
- 0.0
- 0.0
-
-julia> x.if_pos = [1, 0, 2]
-ERROR: TypeError: in setfield!, expected StaticArrays.SArray{Tuple{3},Bool,1,3}, got StaticArrays.SArray{Tuple{3},Int64,1,3}
-[...]
-
-julia> x.if_pos = Bool[1, 0, 1]
-3-element Array{Bool,1}:
- 1
- 0
- 1
-
-julia> x
-AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 0, 1])
 
 julia> AtomicPosition(
            AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
