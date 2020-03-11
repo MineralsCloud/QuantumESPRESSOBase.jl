@@ -456,7 +456,7 @@ function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
         @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         x = string(x)  # An `if` statement is more expensive than directly setting a string
     end
-    setfield!(value, name, x)
+    setfield!(value, name, x)  # FIXME: It is now immutable!
 end # function Base.setproperty!
 function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
     x = if name == :atom
@@ -465,5 +465,5 @@ function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
     elseif name ∈ (:pos, :if_pos) && x isa AbstractVector
         SVector{3}(x)
     end
-    setfield!(value, name, x)
+    setfield!(value, name, x)  # FIXME: It is now immutable!
 end # function Base.setproperty!
