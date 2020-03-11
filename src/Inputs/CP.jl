@@ -412,22 +412,16 @@ julia> x.velocity = [0.140374e-04, -0.333683e-04, 0.231834e-04]
   2.31834e-5
 ```
 """
-@auto_hash_equals mutable struct AtomicVelocity
+struct AtomicVelocity
     atom::String
     velocity::SVector{3,Float64}
     function AtomicVelocity(atom::Union{AbstractChar,AbstractString}, velocity)
         @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
         return new(string(atom), velocity)
     end
-    function AtomicVelocity(atom::Union{AbstractChar,AbstractString})
-        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
-        return new(string(atom))
-    end
 end
 AtomicVelocity(x::AtomicSpecies, velocity) = AtomicVelocity(x.atom, velocity)
 AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
-AtomicVelocity(x::AtomicSpecies) = AtomicVelocity(x.atom)
-AtomicVelocity(x::AtomicPosition) = AtomicVelocity(x.atom)
 # Introudce mutual constructors since they share the same atoms.
 """
     AtomicSpecies(x::AtomicVelocity, mass, pseudopot)
@@ -436,7 +430,6 @@ AtomicVelocity(x::AtomicPosition) = AtomicVelocity(x.atom)
 Construct an incomplete `AtomicSpecies` from an `AtomicVelocity` instance.
 """
 AtomicSpecies(x::AtomicVelocity, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
-AtomicSpecies(x::AtomicVelocity) = AtomicSpecies(x.atom)
 """
     AtomicPosition(x::AtomicVelocity, pos, if_pos)
     AtomicPosition(x::AtomicVelocity)
@@ -444,14 +437,13 @@ AtomicSpecies(x::AtomicVelocity) = AtomicSpecies(x.atom)
 Construct an incomplete `AtomicPosition` from an `AtomicVelocity` instance.
 """
 AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
-AtomicPosition(x::AtomicVelocity) = AtomicPosition(x.atom)
 
 """
     AtomicVelocitiesCard <: Card
 
 Represent the `ATOMIC_VELOCITIES` card in QE's `CP` package. It does not have an "option".
 """
-@auto_hash_equals struct AtomicVelocitiesCard <: Card
+struct AtomicVelocitiesCard <: Card
     data::Vector{AtomicVelocity}
 end
 

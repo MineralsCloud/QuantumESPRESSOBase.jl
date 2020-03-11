@@ -57,7 +57,7 @@ julia> AtomicSpecies(
 AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
 ```
 """
-@auto_hash_equals mutable struct AtomicSpecies
+struct AtomicSpecies
     "Label of the atom. Max total length cannot exceed 3 characters."
     atom::String
     """
@@ -79,10 +79,6 @@ AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
     function AtomicSpecies(atom::Union{AbstractChar,AbstractString}, mass, pseudopot)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         return new(string(atom), mass, pseudopot)
-    end
-    function AtomicSpecies(atom::Union{AbstractChar,AbstractString})
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        return new(string(atom))
     end
 end
 
@@ -160,7 +156,7 @@ julia> AtomicPosition(
 AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
 ```
 """
-@auto_hash_equals mutable struct AtomicPosition
+struct AtomicPosition
     "Label of the atom as specified in `AtomicSpecies`."
     atom::String
     "Atomic positions. A three-element vector of floats."
@@ -178,17 +174,11 @@ AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
         @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
         return new(string(atom), pos, if_pos)
     end
-    function AtomicPosition(atom::Union{AbstractChar,AbstractString})
-        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
-        return new(string(atom))
-    end
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, trues(3))
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
-AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
 # Introudce mutual constructors since they share the same atoms.
 AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
-AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 
 """
     AtomicPositionsCard <: Card
@@ -199,7 +189,7 @@ Represent the `ATOMIC_POSITIONS` card in QE.
 - `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
 - `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 """
-@auto_hash_equals struct AtomicPositionsCard <: Card
+struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
     option::String
     function AtomicPositionsCard(data, option = "alat")
@@ -207,10 +197,8 @@ Represent the `ATOMIC_POSITIONS` card in QE.
         return new(data, option)
     end
 end
-AtomicPositionsCard(card::AtomicSpeciesCard, option) = AtomicPositionsCard(map(AtomicPosition, card.data), option)
 AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard([AtomicPosition(string(atom), pos) for (atom, pos) in zip(cell.numbers, cell.positions)], option)
 # Introudce mutual constructors since they share the same atoms.
-AtomicSpeciesCard(card::AtomicPositionsCard) = AtomicSpeciesCard(map(AtomicSpecies, card.data))
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     lens = @lens _.data.atom
