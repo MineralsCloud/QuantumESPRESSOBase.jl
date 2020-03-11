@@ -399,7 +399,9 @@ Represent the `K_POINTS` card in QE.
     end
 end
 KPointsCard(option, data::A) where {A} = KPointsCard{A}(option, data)
-KPointsCard(data) = KPointsCard("tpiba", data)
+KPointsCard(data::AbstractVector{SpecialKPoint}) = KPointsCard("tpiba", data)
+KPointsCard(data::GammaPoint) = KPointsCard("gamma", data)
+KPointsCard(data::MonkhorstPackGrid) = KPointsCard("automatic", data)
 function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
     @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!")
     return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
