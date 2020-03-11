@@ -198,26 +198,21 @@ AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 Represent the `ATOMIC_POSITIONS` card in QE.
 
 # Arguments
-- `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 - `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
+- `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 """
 @auto_hash_equals struct AtomicPositionsCard <: Card
-    option::String
     data::Vector{AtomicPosition}
-    function AtomicPositionsCard(option, data)
+    option::String
+    function AtomicPositionsCard(data, option = "alat")
         @assert option ∈ allowed_options(AtomicPositionsCard)
-        return new(option, data)
+        return new(data, option)
     end
 end
-AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
-function AtomicPositionsCard(option, card::AtomicSpeciesCard)
-    return AtomicPositionsCard(option, map(AtomicPosition, card.data))
-end # function AtomicPositionsCard
-AtomicPositionsCard(option, cell::Cell) = AtomicPositionsCard(option, [AtomicPosition(string(atom), pos) for (atom, pos) in zip(cell.numbers, cell.positions)])
+AtomicPositionsCard(card::AtomicSpeciesCard, option) = AtomicPositionsCard(map(AtomicPosition, card.data), option)
+AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard([AtomicPosition(string(atom), pos) for (atom, pos) in zip(cell.numbers, cell.positions)], option)
 # Introudce mutual constructors since they share the same atoms.
-function AtomicSpeciesCard(card::AtomicPositionsCard)
-    return AtomicSpeciesCard(map(AtomicSpecies, card.data))
-end # function AtomicSpeciesCard
+AtomicSpeciesCard(card::AtomicPositionsCard) = AtomicSpeciesCard(map(AtomicSpecies, card.data))
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     lens = @lens _.data.atom
