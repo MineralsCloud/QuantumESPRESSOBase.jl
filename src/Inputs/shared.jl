@@ -453,7 +453,7 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     else
         error("Unknown option pair ($pair) given!")
     end
-    return typeof(card)(new_option, card.data .* factor)
+    return typeof(card)(card.data .* factor, new_option)
 end # function optconvert
 
 Inputs.entryname(::Type{<:ControlNamelist}) = :control
