@@ -456,23 +456,23 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     return typeof(card)(card.data .* factor, new_option)
 end # function optconvert
 
-Inputs.entryname(::Type{<:ControlNamelist}) = :control
-Inputs.entryname(::Type{<:SystemNamelist}) = :system
-Inputs.entryname(::Type{<:ElectronsNamelist}) = :electrons
-Inputs.entryname(::Type{<:IonsNamelist}) = :ions
-Inputs.entryname(::Type{<:CellNamelist}) = :cell
-Inputs.entryname(::Type{<:AtomicSpeciesCard}) = :atomic_species
-Inputs.entryname(::Type{<:AtomicPositionsCard}) = :atomic_positions
+Inputs.entryname(::Type{ControlNamelist}) = :control
+Inputs.entryname(::Type{SystemNamelist}) = :system
+Inputs.entryname(::Type{ElectronsNamelist}) = :electrons
+Inputs.entryname(::Type{IonsNamelist}) = :ions
+Inputs.entryname(::Type{CellNamelist}) = :cell
+Inputs.entryname(::Type{AtomicSpeciesCard}) = :atomic_species
+Inputs.entryname(::Type{AtomicPositionsCard}) = :atomic_positions
 Inputs.entryname(::Type{<:CellParametersCard}) = :cell_parameters
 Inputs.entryname(::Type{<:KPointsCard}) = :k_points
 
-Inputs.titleof(::Type{<:ControlNamelist}) = "CONTROL"
-Inputs.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
-Inputs.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
-Inputs.titleof(::Type{<:IonsNamelist}) = "IONS"
-Inputs.titleof(::Type{<:CellNamelist}) = "CELL"
-Inputs.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-Inputs.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+Inputs.titleof(::Type{ControlNamelist}) = "CONTROL"
+Inputs.titleof(::Type{SystemNamelist}) = "SYSTEM"
+Inputs.titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
+Inputs.titleof(::Type{IonsNamelist}) = "IONS"
+Inputs.titleof(::Type{CellNamelist}) = "CELL"
+Inputs.titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+Inputs.titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
