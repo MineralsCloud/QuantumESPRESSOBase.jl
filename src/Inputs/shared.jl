@@ -527,7 +527,7 @@ function QuantumESPRESSOBase.to_qe(
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES" *
     newline *
-    join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), newline)
+    join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in unique(card.data)), newline)
 end
 function QuantumESPRESSOBase.to_qe(
     data::AtomicPosition;
