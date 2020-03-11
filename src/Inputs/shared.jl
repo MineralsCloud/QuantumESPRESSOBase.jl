@@ -319,7 +319,7 @@ CellParametersCard(cell::Cell, option) = CellParametersCard(cell.lattice, option
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
-@auto_hash_equals struct AtomicForce
+struct AtomicForce
     atom::String
     force::SVector{3,Float64}
     function AtomicForce(atom::Union{AbstractChar,AbstractString}, force)
