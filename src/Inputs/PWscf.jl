@@ -47,7 +47,7 @@ export AtomicSpecies,
     GammaPoint,
     SpecialKPoint,
     KPointsCard
-export optconvert, push_atom!, append_atom!
+export optconvert
 
 const Maybe{T} = Union{T,Nothing}
 

@@ -33,7 +33,7 @@ export AtomicSpecies,
     AtomicVelocitiesCard,
     AtomicForce,
     AtomicForcesCard
-export optconvert, push_atom!, append_atom!
+export optconvert
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 """
@@ -454,61 +454,6 @@ Represent the `ATOMIC_VELOCITIES` card in QE's `CP` package. It does not have an
 @auto_hash_equals struct AtomicVelocitiesCard <: Card
     data::Vector{AtomicVelocity}
 end
-
-"""
-    push_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractString...)
-
-Push an atom or multiple atoms to a vector of `AtomicVelocity`s.
-
-**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
-
-See also: [`push!`](@ref), [`append_atom!`](@ref)
-"""
-function push_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractString...)
-    return push!(v, map(AtomicVelocity, atoms)...)
-end # function push_atom!
-"""
-    push_atom!(card::AtomicVelocitiesCard, atoms::AbstractString...)
-
-Push an atom or multiple atoms to a `AtomicVelocitiesCard`.
-
-**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
-
-See also: [`push!`](@ref), [`append_atom!`](@ref)
-"""
-function push_atom!(card::AtomicVelocitiesCard, atoms::AbstractString...)
-    push!(card.data, map(AtomicVelocity, atoms)...)
-    return card
-end # function push_atom!
-
-"""
-    append_atom!(v::AbstractVector{AtomicVelocity}, atoms::AbstractVector{<:AbstractString})
-
-Append a vector of atoms to a vector of `AtomicVelocity`s.
-
-**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
-
-See also: [`append!`](@ref), [`push_atom!`](@ref)
-"""
-function append_atom!(
-    v::AbstractVector{AtomicVelocity},
-    atoms::AbstractVector{<:AbstractString},
-)
-    return append!(v, map(AtomicVelocity, atoms))
-end # function append_atom!
-"""
-    append_atom!(card::AtomicVelocitiesCard, atoms::AbstractVector{<:AbstractString})
-
-Append a vector of atoms to a `AtomicVelocitiesCard`.
-
-**Note**: these new `atoms` will result in incomplete `AtomicVelocity`s!
-
-See also: [`append!`](@ref), [`push_atom!`](@ref)
-"""
-function append_atom!(card::AtomicVelocitiesCard, atoms::AbstractVector{<:AbstractString})
-    append!(card.data, map(AtomicVelocity, atoms))
-    return card
-end # function append_atom!
 
 @auto_hash_equals struct RefCellParametersCard{T<:Real} <: AbstractCellParametersCard
     option::String
