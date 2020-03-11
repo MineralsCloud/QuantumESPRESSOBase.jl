@@ -300,23 +300,22 @@ abstract type AbstractCellParametersCard <: Card end
 
 """
     CellParametersCard{T<:Real} <: AbstractCellParametersCard
-    CellParametersCard(option::String, data::AbstractMatrix)
+    CellParametersCard(data::AbstractMatrix, option::String)
 
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
-@auto_hash_equals struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
-    option::String
+struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     data::SMatrix{3,3,T}
-    function CellParametersCard{T}(option, data) where {T<:Real}
+    option::String
+    function CellParametersCard{T}(data, option = "alat") where {T<:Real}
         @assert option ∈ allowed_options(CellParametersCard)
-        return new(option, data)
+        return new(data, option)
     end
 end
-CellParametersCard(option, data::AbstractMatrix{T}) where {T} =
-    CellParametersCard{T}(option, data)
-CellParametersCard(data) = CellParametersCard("alat", data)
-CellParametersCard(option, lattice::Lattice{T}) where {T} = CellParametersCard(option, convert(Matrix{T}, lattice))
-CellParametersCard(option, cell::Cell) = CellParametersCard(option, cell.lattice)
+CellParametersCard(data::AbstractMatrix{T}, option) where {T} =
+    CellParametersCard{T}(data, option)
+CellParametersCard(lattice::Lattice{T}, option) where {T} = CellParametersCard(convert(Matrix{T}, lattice), option)
+CellParametersCard(cell::Cell, option) = CellParametersCard(cell.lattice, option)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
