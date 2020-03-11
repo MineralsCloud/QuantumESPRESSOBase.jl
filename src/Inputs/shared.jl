@@ -6,7 +6,7 @@ using Crystallography: Lattice, Cell
 using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
-using StaticArrays: SVector, SMatrix
+using StaticArrays: SVector, SMatrix, FieldVector
 
 using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Inputs: Card, getoption, allowed_options
@@ -340,9 +340,6 @@ end
 # ============================================================================ #
 
 # ============================== KPointsCard ============================== #
-"Represent a general point in the 3D reciprocal space."
-abstract type KPoint end
-
 """
     MonkhorstPackGrid(grid, offsets)
 
@@ -352,44 +349,44 @@ Represent the Monkhorst--Pack grid.
 - `grid`: A length-three vector specifying the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst--Pack grids.
 - `offsets`: A length-three vector specifying whether the grid is displaced by half a grid step in the corresponding directions.
 """
-@auto_hash_equals struct MonkhorstPackGrid
+struct MonkhorstPackGrid
     grid::SVector{3,UInt}
     offsets::SVector{3,Bool}
 end
 
 "Represent the centre of the Brillouin zone (commonly marked as the Γ point)."
-struct GammaPoint <: KPoint end
+struct GammaPoint end
 
 """
     SpecialKPoint(coord, weight)
 
 Represent a special point of the 3D Brillouin zone. Each of them has a weight.
 """
-@auto_hash_equals struct SpecialKPoint{T<:Real} <: KPoint
-    coord::SVector{3,T}
-    weight::T
+struct SpecialKPoint <: FieldVector{4,Float64}
+    x::Float64
+    y::Float64
+    z::Float64
+    w::Float64
 end
-SpecialKPoint(coord, weight) = SpecialKPoint{promote_type(eltype(coord), typeof(weight))}(coord, weight)
-SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 """
-    struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}} <: Card
+    struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <: Card
 
 Represent the `K_POINTS` card in QE.
 
 # Arguments
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
-- `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
+- `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 """
 @auto_hash_equals struct KPointsCard{
-    A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}},
+    A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}},
 } <: Card
     option::String
     data::A
     function KPointsCard{A}(
         option,
         data,
-    ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}}
+    ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}}
         @assert option ∈ allowed_options(KPointsCard)
         @assert if option == "automatic"
             typeof(data) <: MonkhorstPackGrid
