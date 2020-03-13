@@ -81,11 +81,4 @@ function Base.convert(::Type{Cmd}, cmd::PWCmd)
     return `$(cmd.which)$(options...) -inp $(cmd.inp)`
 end # function Base.convert
 
-Inputs.entryname(::Type{<:ParallelizationLevel{1}}) = :nimage
-Inputs.entryname(::Type{<:ParallelizationLevel{2}}) = :npool
-Inputs.entryname(::Type{<:ParallelizationLevel{3}}) = :ntg
-Inputs.entryname(::Type{<:ParallelizationLevel{4}}) = :nyfft
-Inputs.entryname(::Type{<:ParallelizationLevel{5}}) = :nband
-Inputs.entryname(::Type{<:ParallelizationLevel{6}}) = :ndiag
-
 end

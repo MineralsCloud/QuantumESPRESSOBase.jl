@@ -13,12 +13,12 @@ module Inputs
 
 using LinearAlgebra: det
 
-using Compat: isnothing
+using Compat: isnothing, only
 using Crystallography: BravaisLattice
 using Kaleido: @batchlens
 using OrderedCollections: OrderedDict
 
-using QuantumESPRESSOBase: to_qe
+using QuantumESPRESSOBase: qestring
 using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
 
 import Crystallography
@@ -26,7 +26,7 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, getnamelists, getcards, get_compulsory_namelists, get_compulsory_cards, getoption, allowed_options, entryname, titleof
+export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof
 
 """
     InputEntry
@@ -35,67 +35,10 @@ Represent any component of a `QuantumESPRESSOInput`.
 
 Hierachy of `InputEntry`:
 ```
-QuantumESPRESSOBase.InputEntry
-├─ QuantumESPRESSOBase.Cards.Card
-│  ├─ CP.AbstractCellParametersCard
-│  │  ├─ CP.CellParametersCard
-│  │  └─ CP.RefCellParametersCard
-│  ├─ CP.AtomicForcesCard
-│  ├─ CP.AtomicPositionsCard
-│  ├─ CP.AtomicSpeciesCard
-│  ├─ CP.AtomicVelocitiesCard
-│  ├─ CP.KPointsCard
-│  ├─ PHonon.AbstractCellParametersCard
-│  │  └─ PHonon.CellParametersCard
-│  ├─ PHonon.AtomicForcesCard
-│  ├─ PHonon.AtomicPositionsCard
-│  ├─ PHonon.AtomicSpeciesCard
-│  ├─ PHonon.KPointsCard
-│  ├─ PWscf.AbstractCellParametersCard
-│  │  └─ PWscf.CellParametersCard
-│  ├─ PWscf.AtomicForcesCard
-│  ├─ PWscf.AtomicPositionsCard
-│  ├─ PWscf.AtomicSpeciesCard
-│  └─ PWscf.KPointsCard
-└─ QuantumESPRESSOBase.Namelists.Namelist
-   ├─ CP.CellNamelist
-   ├─ CP.ControlNamelist
-   ├─ CP.ElectronsNamelist
-   ├─ CP.IonsNamelist
-   ├─ CP.PressAiNamelist
-   ├─ CP.SystemNamelist
-   ├─ CP.WannierNamelist
-   ├─ PHonon.DynmatNamelist
-   ├─ PHonon.MatdynNamelist
-   ├─ PHonon.PhNamelist
-   ├─ PHonon.Q2rNamelist
-   ├─ PWscf.BandsNamelist
-   ├─ PWscf.CellNamelist
-   ├─ PWscf.ControlNamelist
-   ├─ PWscf.DosNamelist
-   ├─ PWscf.ElectronsNamelist
-   ├─ PWscf.IonsNamelist
-   └─ PWscf.SystemNamelist
+
 ```
 """
 abstract type InputEntry end
-
-"""
-    entryname(::Type{<:InputEntry})
-    entryname(::InputEntry)
-
-Return the field name of a `Namelist` or a `Card` in a `QuantumESPRESSOInput`.
-
-# Examples
-
-```jldoctest
-julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Namelists.PWscf: SystemNamelist
-
-julia> entryname(SystemNamelist) == entryname(SystemNamelist()) == :system
-true
-```
-"""
-entryname(x::InputEntry) = entryname(typeof(x))
 
 """
     titleof(::Type{<:InputEntry})
@@ -109,9 +52,9 @@ instances can be passed instead of types.
 # Examples
 
 ```jldoctest
-julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Namelists.PWscf: SystemNamelist
+julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Inputs.PWscf: ControlNamelist
 
-julia> titleof(SystemNamelist()) == titleof(SystemNamelist) == "SYSTEM"
+julia> titleof(ControlNamelist()) == titleof(ControlNamelist) == "CONTROL"
 true
 ```
 """
@@ -166,8 +109,8 @@ abstract type Card <: InputEntry end
 
 Return the option for `Card` `x`.
 
-A user should not use `x.option` to access a `Card`'s `option`. Because some `Card`s do not have an option.
-Using `getoption(x)` is suggested.
+!!! warning
+    A user should not use `x.option` to access a `Card`'s `option`.
 """
 getoption(card::Card) = getfield(card, :option)
 
@@ -195,22 +138,27 @@ allowed_options(::Type{<:Card}) = nothing
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput end
 
-# A helper function to implement `namelists` and `cards`. It should not be exported.
-_filterfields(f, obj) = Iterators.filter(f, (getfield(obj, i) for i in 1:nfields(obj)))
+# This is a helper function and should not be exported.
+entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) = only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 """
-    getnamelists(input::QuantumESPRESSOInput)
+    getnamelists(input::QuantumESPRESSOInput, selector::Symbol = :all)
 
 Return an iterable of `Namelist`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
+
+Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
 """
-getnamelists(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Namelist), input)
+getnamelists(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} = (getfield(input, x) for x in _selectnamelists(T, Val(selector)))
 
 """
-    getcards(input::QuantumESPRESSOInput)
+    getcards(input::T, selector::Symbol = :all)
 
 Return an iterable of `Card`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
+
+Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
+Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
 """
-getcards(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Card), input)
+getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} = (getfield(input, x) for x in _selectcards(T, Val(selector)))
 
 # =============================== Modules ============================== #
 include("PWscf.jl")
@@ -221,55 +169,17 @@ include("PHonon.jl")
 using .PWscf: PWInput
 using .CP: CPInput
 
-"""
-    get_compulsory_namelists(input::Union{PWInput,CPInput})
+_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) = (:control, :system, :electrons)
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
 
-Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
-It is lazy, you may want to `collect` it.
+_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing})
+_selectcards(T::Type{PWInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions, :k_points)
+_selectcards(T::Type{CPInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions)
+_selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectcards(T, Val(:all)), _selectcards(T, Val(:compulsory)))
 
-To get the optional `Namelist`s, use `(!get_compulsory_namelists)(input)` (Note the parenthesis!).
-"""
-get_compulsory_namelists(input::Union{PWInput,CPInput}) =
-    (getfield(input, x) for x in (:control, :system, :electrons))
-Base.:!(::typeof(get_compulsory_namelists)) =
-    function (input::T) where {T<:Union{PWInput,CPInput}}
-        (
-            getfield(input, x) for x in fieldnames(T) if x ∉ (
-                :control,
-                :system,
-                :electrons,
-            ) && fieldtype(T, x) <: Namelist
-        )
-    end
-
-"""
-    get_compulsory_cards(input::PWInput)
-
-Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
-It is lazy, you may want to `collect` it.
-
-To get the optional `Card`s, use `(!get_compulsory_cards)(input)` (Note the parenthesis!).
-"""
-get_compulsory_cards(input::PWInput) =
-    (getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points))
-"""
-    get_compulsory_cards(input::CPInput)
-
-Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
-It is lazy, you may want to `collect` it.
-
-To get the optional `Card`s, use `(!get_compulsory_cards)(input)` (Note the parenthesis!).
-"""
-get_compulsory_cards(input::CPInput) =
-    (getfield(input, x) for x in (:atomic_species, :atomic_positions))
-Base.:!(::typeof(get_compulsory_cards)) = function (input::T) where {T<:Union{PWInput,CPInput}}
-    (
-        getfield(input, x) for x in fieldnames(T) if x ∉ (
-            :atomic_species,
-            :atomic_positions,
-        ) && fieldtype(T, x) <: Card
-    )
-end
+# Referenced from https://discourse.julialang.org/t/how-to-get-the-non-nothing-type-from-union-t-nothing/30523
+nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # Should not be exported
 
 """
     cellvolume(input::PWInput)
@@ -290,17 +200,17 @@ function Crystallography.cellvolume(input::PWInput)
     end
 end # function Crystallography.cellvolume
 
-function QuantumESPRESSOBase.to_qe(
+function QuantumESPRESSOBase.qestring(
     nml::Namelist;
     indent = ' '^4,
     delim = ' ',
     newline = '\n',
 )
     namelist_name = titleof(nml)
-    content = to_qe(dropdefault(nml); indent = indent, delim = delim)
+    content = qestring(dropdefault(nml); indent = indent, delim = delim)
     return "&$namelist_name" * newline * content * '/'
 end
-function QuantumESPRESSOBase.to_qe(
+function QuantumESPRESSOBase.qestring(
     input::QuantumESPRESSOInput;
     indent = ' '^4,
     delim = ' ',
@@ -310,10 +220,10 @@ function QuantumESPRESSOBase.to_qe(
     content = ""
     for namelist in getnamelists(input)
         content *=
-            to_qe(namelist, indent = indent, delim = delim, newline = newline) * newline
+            qestring(namelist, indent = indent, delim = delim, newline = newline) * newline
     end
     for card in getcards(input)
-        content *= to_qe(card, indent = indent, delim = delim, newline = newline) * newline
+        content *= qestring(card, indent = indent, delim = delim, newline = newline) * newline
     end
     return content
 end

@@ -7,7 +7,7 @@ using Crystallography
 
 import Crystallography
 
-export to_qe
+export qestring
 
 to_fortran(v::Int) = string(v)
 function to_fortran(v::Float32; scientific::Bool = false)
@@ -28,11 +28,11 @@ function to_fortran(v::AbstractString)
 end
 
 """
-    to_qe(x; indent = ' '^4, delim = ' ')
+    qestring(x; indent = ' '^4, delim = ' ')
 
 Return a `String` representing the object, which is valid for Quantum ESPRESSO's input.
 """
-function to_qe(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
+function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
     content = ""
     f = string ∘ to_fortran
     for (key, value) in dict
