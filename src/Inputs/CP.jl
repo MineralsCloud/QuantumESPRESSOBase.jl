@@ -428,17 +428,16 @@ struct AtomicVelocitiesCard <: Card
     data::Vector{AtomicVelocity}
 end
 
-@auto_hash_equals struct RefCellParametersCard{T<:Real} <: AbstractCellParametersCard
-    option::String
+struct RefCellParametersCard{T<:Real} <: AbstractCellParametersCard
     data::SMatrix{3,3,T}
-    function RefCellParametersCard{T}(option, data) where {T<:Real}
+    option::String
+    function RefCellParametersCard{T}(data, option = "bohr") where {T<:Real}
         @assert option ∈ allowed_options(RefCellParametersCard)
-        return new(option, data)
+        return new(data, option)
     end
 end
-RefCellParametersCard(option, data::AbstractMatrix{T}) where {T} =
-    RefCellParametersCard{T}(option, data)
-RefCellParametersCard(data) = RefCellParametersCard("bohr", data)
+RefCellParametersCard(data::AbstractMatrix{T}, option = "bohr") where {T} =
+    RefCellParametersCard{T}(data, option)
 
 Inputs.getoption(::AtomicVelocitiesCard) = "a.u"
 Inputs.getoption(::AtomicForcesCard) = nothing
