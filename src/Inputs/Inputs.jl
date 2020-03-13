@@ -26,7 +26,7 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, getnamelists, getcards, get_compulsory_namelists, get_compulsory_cards, getoption, allowed_options, titleof
+export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof
 
 """
     InputEntry
@@ -141,22 +141,24 @@ abstract type QuantumESPRESSOInput end
 # This is a helper function and should not be exported.
 entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) = only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
-# A helper function to implement `namelists` and `cards`. It should not be exported.
-_filterfields(f, obj) = Iterators.filter(f, (getfield(obj, i) for i in 1:nfields(obj)))
-
 """
-    getnamelists(input::QuantumESPRESSOInput)
+    getnamelists(input::QuantumESPRESSOInput, selector::Symbol = :all)
 
 Return an iterable of `Namelist`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
+
+Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
 """
-getnamelists(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Namelist), input)
+getnamelists(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} = (getfield(input, x) for x in _selectnamelists(T, Val(selector)))
 
 """
-    getcards(input::QuantumESPRESSOInput)
+    getcards(input::T, selector::Symbol = :all)
 
 Return an iterable of `Card`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
+
+Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
+Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
 """
-getcards(input::QuantumESPRESSOInput) = _filterfields(x -> isa(x, Card), input)
+getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} = (getfield(input, x) for x in _selectcards(T, Val(selector)))
 
 # =============================== Modules ============================== #
 include("PWscf.jl")
@@ -175,35 +177,6 @@ _selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(entryname(x, 
 _selectcards(T::Type{PWInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions, :k_points)
 _selectcards(T::Type{CPInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions)
 _selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectcards(T, Val(:all)), _selectcards(T, Val(:compulsory)))
-
-"""
-    get_compulsory_cards(input::PWInput)
-
-Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
-It is lazy, you may want to `collect` it.
-
-To get the optional `Card`s, use `(!get_compulsory_cards)(input)` (Note the parenthesis!).
-"""
-get_compulsory_cards(input::PWInput) =
-    (getfield(input, x) for x in (:atomic_species, :atomic_positions, :k_points))
-"""
-    get_compulsory_cards(input::CPInput)
-
-Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
-It is lazy, you may want to `collect` it.
-
-To get the optional `Card`s, use `(!get_compulsory_cards)(input)` (Note the parenthesis!).
-"""
-get_compulsory_cards(input::CPInput) =
-    (getfield(input, x) for x in (:atomic_species, :atomic_positions))
-Base.:!(::typeof(get_compulsory_cards)) = function (input::T) where {T<:Union{PWInput,CPInput}}
-    (
-        getfield(input, x) for x in fieldnames(T) if x ∉ (
-            :atomic_species,
-            :atomic_positions,
-        ) && fieldtype(T, x) <: Card
-    )
-end
 
 """
     cellvolume(input::PWInput)
