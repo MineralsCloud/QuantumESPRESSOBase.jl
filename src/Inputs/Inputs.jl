@@ -173,10 +173,13 @@ _selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(entryname
 _selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) = (:control, :system, :electrons)
 _selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
 
-_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Card)
+_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing})
 _selectcards(T::Type{PWInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions, :k_points)
 _selectcards(T::Type{CPInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions)
 _selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectcards(T, Val(:all)), _selectcards(T, Val(:compulsory)))
+
+# Referenced from https://discourse.julialang.org/t/how-to-get-the-non-nothing-type-from-union-t-nothing/30523
+nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # Should not be exported
 
 """
     cellvolume(input::PWInput)
