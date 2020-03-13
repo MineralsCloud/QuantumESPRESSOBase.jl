@@ -227,13 +227,27 @@ function QuantumESPRESSOBase.qestring(
     newline = '\n',
 )
     content = ""
-    for namelist in getnamelists(input)
+    for i in 1:nfields(input)
         content *=
-            qestring(namelist, indent = indent, delim = delim, newline = newline) * newline
+            qestring(
+                getfield(input, i),
+                indent = indent,
+                delim = delim,
+                newline = newline,
+            ) * newline
     end
-    for card in getcards(input)
+    return content
+end
+function QuantumESPRESSOBase.qestring(
+    v::AbstractVector{<:InputEntry},
+    indent = ' '^4,
+    delim = ' ',
+    newline = '\n',
+)
+    content = ""
+    for i in 1:length(v)
         content *=
-            qestring(card, indent = indent, delim = delim, newline = newline) * newline
+            qestring(v[i], indent = indent, delim = delim, newline = newline) * newline
     end
     return content
 end
