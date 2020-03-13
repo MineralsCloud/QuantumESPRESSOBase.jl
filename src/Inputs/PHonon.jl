@@ -156,10 +156,10 @@ Represent the `INPUT` namelist of `dynmat.x`.
     lplasma::Bool = false
 end # struct DynmatNamelist
 
-Inputs.titleof(::Type{<:PhNamelist}) = "INPUTPH"
-Inputs.titleof(::Type{<:Q2rNamelist}) = "INPUT"
-Inputs.titleof(::Type{<:MatdynNamelist}) = "INPUT"
-Inputs.titleof(::Type{<:DynmatNamelist}) = "INPUT"
+Inputs.titleof(::Type{PhNamelist}) = "INPUTPH"
+Inputs.titleof(::Type{Q2rNamelist}) = "INPUT"
+Inputs.titleof(::Type{MatdynNamelist}) = "INPUT"
+Inputs.titleof(::Type{DynmatNamelist}) = "INPUT"
 
 # @with_kw struct PhInput <: QuantumESPRESSOInput
 #     inputph::PhNamelist = PhNamelist()
