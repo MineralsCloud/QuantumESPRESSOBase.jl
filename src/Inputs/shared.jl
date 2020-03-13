@@ -428,18 +428,14 @@ function QuantumESPRESSOBase.qestring(
     return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
 end
 QuantumESPRESSOBase.qestring(data::GammaPoint) = ""
-function QuantumESPRESSOBase.qestring(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d")
-    return join(
-        map(x -> sprintf1(numfmt, x), [getfield(data, 1); getfield(data, 2)]),
-        delim,
-    )
-end
-function QuantumESPRESSOBase.qestring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f")
-    return join(
-        map(x -> sprintf1(numfmt, x), [getfield(data, 1); getfield(data, 2)]),
-        delim,
-    )
-end
+QuantumESPRESSOBase.qestring(
+    data::MonkhorstPackGrid;
+    delim = ' ',
+    numfmt = "%5d",
+    args...,
+) = join(map(x -> sprintf1(numfmt, x), [data.grid; data.offsets]), delim)
+QuantumESPRESSOBase.qestring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
+    join(map(x -> sprintf1(numfmt, x), collect(data)), delim)
 function QuantumESPRESSOBase.qestring(
     card::KPointsCard;
     indent = ' '^4,
