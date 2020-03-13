@@ -21,7 +21,7 @@ using Setfield: PropertyLens, set, @lens
 using Unitful
 using UnitfulAtomic
 
-using QuantumESPRESSOBase.Inputs: InputEntry, Namelist, QuantumESPRESSOInput
+using QuantumESPRESSOBase.Inputs: InputEntry, Namelist, QuantumESPRESSOInput, entryname
 using QuantumESPRESSOBase.Setters: AlatPressSetter, LensMaker, VerbositySetter, FiniteTemperatureSetter, CalculationSetter, LensMaker
 
 import Crystallography
@@ -532,6 +532,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
         "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
     )
 end # struct PWInput
+PWInput(args...) = PWInput(; Dict(zip(entryname.(args), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
 
 function Setters.make(::LensMaker{AlatPressSetter,PWInput})
     return @batchlens begin
