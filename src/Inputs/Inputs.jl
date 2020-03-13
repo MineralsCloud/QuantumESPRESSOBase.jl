@@ -167,9 +167,9 @@ include("PHonon.jl")
 using .PWscf: PWInput
 using .CP: CPInput
 
-_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = [entryname(x, T) for x in fieldtypes(T) if x <: Namelist]
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) = (:control, :system, :electrons) ∩ _selectnamelists(T, Val(:all))
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectnamelists(T, Val(:all)), (:control, :system, :electrons))
+_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) = (:control, :system, :electrons)
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
 
 """
     get_compulsory_cards(input::PWInput)
