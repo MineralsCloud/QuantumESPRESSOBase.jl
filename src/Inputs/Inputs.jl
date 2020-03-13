@@ -35,47 +35,7 @@ Represent any component of a `QuantumESPRESSOInput`.
 
 Hierachy of `InputEntry`:
 ```
-QuantumESPRESSOBase.InputEntry
-├─ QuantumESPRESSOBase.Cards.Card
-│  ├─ CP.AbstractCellParametersCard
-│  │  ├─ CP.CellParametersCard
-│  │  └─ CP.RefCellParametersCard
-│  ├─ CP.AtomicForcesCard
-│  ├─ CP.AtomicPositionsCard
-│  ├─ CP.AtomicSpeciesCard
-│  ├─ CP.AtomicVelocitiesCard
-│  ├─ CP.KPointsCard
-│  ├─ PHonon.AbstractCellParametersCard
-│  │  └─ PHonon.CellParametersCard
-│  ├─ PHonon.AtomicForcesCard
-│  ├─ PHonon.AtomicPositionsCard
-│  ├─ PHonon.AtomicSpeciesCard
-│  ├─ PHonon.KPointsCard
-│  ├─ PWscf.AbstractCellParametersCard
-│  │  └─ PWscf.CellParametersCard
-│  ├─ PWscf.AtomicForcesCard
-│  ├─ PWscf.AtomicPositionsCard
-│  ├─ PWscf.AtomicSpeciesCard
-│  └─ PWscf.KPointsCard
-└─ QuantumESPRESSOBase.Namelists.Namelist
-   ├─ CP.CellNamelist
-   ├─ CP.ControlNamelist
-   ├─ CP.ElectronsNamelist
-   ├─ CP.IonsNamelist
-   ├─ CP.PressAiNamelist
-   ├─ CP.SystemNamelist
-   ├─ CP.WannierNamelist
-   ├─ PHonon.DynmatNamelist
-   ├─ PHonon.MatdynNamelist
-   ├─ PHonon.PhNamelist
-   ├─ PHonon.Q2rNamelist
-   ├─ PWscf.BandsNamelist
-   ├─ PWscf.CellNamelist
-   ├─ PWscf.ControlNamelist
-   ├─ PWscf.DosNamelist
-   ├─ PWscf.ElectronsNamelist
-   ├─ PWscf.IonsNamelist
-   └─ PWscf.SystemNamelist
+
 ```
 """
 abstract type InputEntry end
@@ -92,9 +52,9 @@ instances can be passed instead of types.
 # Examples
 
 ```jldoctest
-julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Namelists.PWscf: SystemNamelist
+julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Inputs.PWscf: ControlNamelist
 
-julia> titleof(SystemNamelist()) == titleof(SystemNamelist) == "SYSTEM"
+julia> titleof(ControlNamelist()) == titleof(ControlNamelist) == "CONTROL"
 true
 ```
 """
@@ -149,8 +109,8 @@ abstract type Card <: InputEntry end
 
 Return the option for `Card` `x`.
 
-A user should not use `x.option` to access a `Card`'s `option`. Because some `Card`s do not have an option.
-Using `getoption(x)` is suggested.
+!!! warning
+    A user should not use `x.option` to access a `Card`'s `option`.
 """
 getoption(card::Card) = getfield(card, :option)
 
