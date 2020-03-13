@@ -13,7 +13,7 @@ module Inputs
 
 using LinearAlgebra: det
 
-using Compat: isnothing
+using Compat: isnothing, only
 using Crystallography: BravaisLattice
 using Kaleido: @batchlens
 using OrderedCollections: OrderedDict
@@ -26,7 +26,7 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, getnamelists, getcards, get_compulsory_namelists, get_compulsory_cards, getoption, allowed_options, entryname, titleof
+export to_dict, dropdefault, getnamelists, getcards, get_compulsory_namelists, get_compulsory_cards, getoption, allowed_options, titleof
 
 """
     InputEntry
@@ -80,22 +80,8 @@ QuantumESPRESSOBase.InputEntry
 """
 abstract type InputEntry end
 
-"""
-    entryname(::Type{<:InputEntry})
-    entryname(::InputEntry)
-
-Return the field name of a `Namelist` or a `Card` in a `QuantumESPRESSOInput`.
-
-# Examples
-
-```jldoctest
-julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Namelists.PWscf: SystemNamelist
-
-julia> entryname(SystemNamelist) == entryname(SystemNamelist()) == :system
-true
-```
-"""
-entryname(x::InputEntry) = entryname(typeof(x))
+# This is a helper function and should not be exported.
+entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) = only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 """
     titleof(::Type{<:InputEntry})

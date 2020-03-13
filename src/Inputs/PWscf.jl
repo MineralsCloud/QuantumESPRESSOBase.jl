@@ -532,7 +532,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
         "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
     )
 end # struct PWInput
-PWInput(args...) = PWInput(; Dict(zip(entryname.(args), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
+PWInput(args...) = PWInput(; Dict(zip(entryname.(args, PWInput), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
 
 function Setters.make(::LensMaker{AlatPressSetter,PWInput})
     return @batchlens begin
@@ -541,8 +541,8 @@ function Setters.make(::LensMaker{AlatPressSetter,PWInput})
         _.cell_parameters.option
     end
 end # function Setters.make
-function Setters.upgrade(lm::LensMaker{S,T}, ::Type{PWInput}) where {S,T<:InputEntry}
-    return PropertyLens{entryname(T)}() ∘ make(lm)
-end # function Setters.upgrade
+# function Setters.upgrade(lm::LensMaker{S,T}, ::Type{PWInput}) where {S,T<:InputEntry}
+    # return PropertyLens{entryname(T)}() ∘ make(lm)
+# end # function Setters.upgrade
 
 end

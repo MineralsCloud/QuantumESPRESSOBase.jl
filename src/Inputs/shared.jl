@@ -318,16 +318,6 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     return typeof(card)(card.data .* factor, new_option)
 end # function optconvert
 
-Inputs.entryname(::Type{ControlNamelist}) = :control
-Inputs.entryname(::Type{SystemNamelist}) = :system
-Inputs.entryname(::Type{ElectronsNamelist}) = :electrons
-Inputs.entryname(::Type{IonsNamelist}) = :ions
-Inputs.entryname(::Type{CellNamelist}) = :cell
-Inputs.entryname(::Type{AtomicSpeciesCard}) = :atomic_species
-Inputs.entryname(::Type{AtomicPositionsCard}) = :atomic_positions
-Inputs.entryname(::Type{<:CellParametersCard}) = :cell_parameters
-Inputs.entryname(::Type{<:KPointsCard}) = :k_points
-
 Inputs.titleof(::Type{ControlNamelist}) = "CONTROL"
 Inputs.titleof(::Type{SystemNamelist}) = "SYSTEM"
 Inputs.titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
