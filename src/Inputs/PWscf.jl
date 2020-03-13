@@ -532,7 +532,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
         "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
     )
 end # struct PWInput
-PWInput(args...) = PWInput(; Dict(zip(entryname.(args, PWInput), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
+PWInput(args...) = PWInput(; Dict(zip(map(arg -> entryname(typeof(arg), PWInput), args), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
 
 function Setters.make(::LensMaker{AlatPressSetter,PWInput})
     return @batchlens begin
