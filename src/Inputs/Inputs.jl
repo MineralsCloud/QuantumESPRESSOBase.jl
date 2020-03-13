@@ -80,9 +80,6 @@ QuantumESPRESSOBase.InputEntry
 """
 abstract type InputEntry end
 
-# This is a helper function and should not be exported.
-entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) = only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
-
 """
     titleof(::Type{<:InputEntry})
     titleof(::InputEntry)
@@ -180,6 +177,9 @@ allowed_options(::Type{<:Card}) = nothing
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput end
+
+# This is a helper function and should not be exported.
+entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) = only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 # A helper function to implement `namelists` and `cards`. It should not be exported.
 _filterfields(f, obj) = Iterators.filter(f, (getfield(obj, i) for i in 1:nfields(obj)))
