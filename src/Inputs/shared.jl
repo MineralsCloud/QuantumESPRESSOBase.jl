@@ -5,7 +5,7 @@ using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix, FieldVector
 
-using QuantumESPRESSOBase: to_qe
+using QuantumESPRESSOBase: qestring
 using QuantumESPRESSOBase.Inputs: Card, getoption, allowed_options
 
 import Crystallography
@@ -352,13 +352,13 @@ Return the volume of the cell based on the information given in a `SystemNamelis
 """
 Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
-function QuantumESPRESSOBase.to_qe(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f")
+function QuantumESPRESSOBase.qestring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f")
     return join(
         (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
         delim,
     )
 end
-function QuantumESPRESSOBase.to_qe(
+function QuantumESPRESSOBase.qestring(
     card::AtomicSpeciesCard;
     indent = ' '^4,
     delim = ' ',
@@ -368,9 +368,9 @@ function QuantumESPRESSOBase.to_qe(
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES" *
     newline *
-    join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in unique(card.data)), newline)
+    join((indent * qestring(x; delim = delim, numfmt = numfmt) for x in unique(card.data)), newline)
 end
-function QuantumESPRESSOBase.to_qe(
+function QuantumESPRESSOBase.qestring(
     data::AtomicPosition;
     delim = ' ',
     numfmt = "%14.9f",
@@ -379,7 +379,7 @@ function QuantumESPRESSOBase.to_qe(
     v = verbose ? [data.pos; data.if_pos] : data.pos
     return join([sprintf1("%3s", data.atom); map(x -> sprintf1(numfmt, x), v)], delim)  # FIXME: `numfmt` on `Bool` will give wrong result
 end
-function QuantumESPRESSOBase.to_qe(
+function QuantumESPRESSOBase.qestring(
     card::AtomicPositionsCard;
     indent = ' '^4,
     delim = ' ',
@@ -391,13 +391,13 @@ function QuantumESPRESSOBase.to_qe(
     newline *
     join(
         (
-            indent * to_qe(x; delim = delim, numfmt = numfmt, verbose = verbose)
+            indent * qestring(x; delim = delim, numfmt = numfmt, verbose = verbose)
             for x in card.data
         ),
         newline,
     )
 end
-function QuantumESPRESSOBase.to_qe(
+function QuantumESPRESSOBase.qestring(
     card::CellParametersCard;
     indent = ' '^4,
     delim = ' ',
@@ -407,20 +407,20 @@ function QuantumESPRESSOBase.to_qe(
     it = (indent * join((sprintf1(numfmt, x) for x in row), delim) for row in eachrow(card.data))
     return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
 end
-QuantumESPRESSOBase.to_qe(data::GammaPoint) = ""
-function QuantumESPRESSOBase.to_qe(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d")
+QuantumESPRESSOBase.qestring(data::GammaPoint) = ""
+function QuantumESPRESSOBase.qestring(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d")
     return join(
         map(x -> sprintf1(numfmt, x), [getfield(data, 1); getfield(data, 2)]),
         delim,
     )
 end
-function QuantumESPRESSOBase.to_qe(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f")
+function QuantumESPRESSOBase.qestring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f")
     return join(
         map(x -> sprintf1(numfmt, x), [getfield(data, 1); getfield(data, 2)]),
         delim,
     )
 end
-function QuantumESPRESSOBase.to_qe(
+function QuantumESPRESSOBase.qestring(
     card::KPointsCard;
     indent = ' '^4,
     delim = ' ',
@@ -429,11 +429,11 @@ function QuantumESPRESSOBase.to_qe(
 )
     content = "K_POINTS { $(card.option) }" * newline
     if getoption(card) in ("gamma", "automatic")
-        content *= indent * to_qe(card.data)
+        content *= indent * qestring(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
         content *= string(length(card.data), newline)
         content *= join(
-            (indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data),
+            (indent * qestring(x; delim = delim, numfmt = numfmt) for x in card.data),
             newline,
         )
     end

@@ -18,7 +18,7 @@ using Crystallography: BravaisLattice
 using Kaleido: @batchlens
 using OrderedCollections: OrderedDict
 
-using QuantumESPRESSOBase: to_qe
+using QuantumESPRESSOBase: qestring
 using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
 
 import Crystallography
@@ -200,17 +200,17 @@ function Crystallography.cellvolume(input::PWInput)
     end
 end # function Crystallography.cellvolume
 
-function QuantumESPRESSOBase.to_qe(
+function QuantumESPRESSOBase.qestring(
     nml::Namelist;
     indent = ' '^4,
     delim = ' ',
     newline = '\n',
 )
     namelist_name = titleof(nml)
-    content = to_qe(dropdefault(nml); indent = indent, delim = delim)
+    content = qestring(dropdefault(nml); indent = indent, delim = delim)
     return "&$namelist_name" * newline * content * '/'
 end
-function QuantumESPRESSOBase.to_qe(
+function QuantumESPRESSOBase.qestring(
     input::QuantumESPRESSOInput;
     indent = ' '^4,
     delim = ' ',
@@ -220,10 +220,10 @@ function QuantumESPRESSOBase.to_qe(
     content = ""
     for namelist in getnamelists(input)
         content *=
-            to_qe(namelist, indent = indent, delim = delim, newline = newline) * newline
+            qestring(namelist, indent = indent, delim = delim, newline = newline) * newline
     end
     for card in getcards(input)
-        content *= to_qe(card, indent = indent, delim = delim, newline = newline) * newline
+        content *= qestring(card, indent = indent, delim = delim, newline = newline) * newline
     end
     return content
 end
