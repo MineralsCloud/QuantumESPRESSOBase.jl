@@ -1,7 +1,5 @@
 module QuantumESPRESSOBase
 
-using LinearAlgebra: Diagonal, det, cross
-
 using Crystallography
 
 import Crystallography
