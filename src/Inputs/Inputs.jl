@@ -139,7 +139,8 @@ allowed_options(::Type{<:Card}) = nothing
 abstract type QuantumESPRESSOInput end
 
 # This is a helper function and should not be exported.
-entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) = only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
+entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
+    only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 """
     getnamelists(input::QuantumESPRESSOInput, selector::Symbol = :all)
@@ -148,7 +149,8 @@ Return an iterable of `Namelist`s of a `QuantumESPRESSOInput`. It is lazy, you m
 
 Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
 """
-getnamelists(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} = (getfield(input, x) for x in _selectnamelists(T, Val(selector)))
+getnamelists(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
+    (getfield(input, x) for x in _selectnamelists(T, Val(selector)))
 
 """
     getcards(input::T, selector::Symbol = :all)
@@ -158,7 +160,8 @@ Return an iterable of `Card`s of a `QuantumESPRESSOInput`. It is lazy, you may w
 Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
 Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
 """
-getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} = (getfield(input, x) for x in _selectcards(T, Val(selector)))
+getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
+    (getfield(input, x) for x in _selectcards(T, Val(selector)))
 
 # =============================== Modules ============================== #
 include("PWscf.jl")
@@ -169,14 +172,21 @@ include("PHonon.jl")
 using .PWscf: PWInput
 using .CP: CPInput
 
-_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) = (:control, :system, :electrons)
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
+_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) =
+    Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) =
+    (:control, :system, :electrons)
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
+    setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
 
-_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing})
-_selectcards(T::Type{PWInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions, :k_points)
+_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(
+    entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing}
+)
+_selectcards(T::Type{PWInput}, ::Val{:compulsory}) =
+    (:atomic_species, :atomic_positions, :k_points)
 _selectcards(T::Type{CPInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions)
-_selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectcards(T, Val(:all)), _selectcards(T, Val(:compulsory)))
+_selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
+    setdiff(_selectcards(T, Val(:all)), _selectcards(T, Val(:compulsory)))
 
 # Referenced from https://discourse.julialang.org/t/how-to-get-the-non-nothing-type-from-union-t-nothing/30523
 nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # Should not be exported
@@ -215,7 +225,6 @@ function QuantumESPRESSOBase.qestring(
     indent = ' '^4,
     delim = ' ',
     newline = '\n',
-    verbose::Bool = false,
 )
     content = ""
     for namelist in getnamelists(input)
@@ -223,7 +232,8 @@ function QuantumESPRESSOBase.qestring(
             qestring(namelist, indent = indent, delim = delim, newline = newline) * newline
     end
     for card in getcards(input)
-        content *= qestring(card, indent = indent, delim = delim, newline = newline) * newline
+        content *=
+            qestring(card, indent = indent, delim = delim, newline = newline) * newline
     end
     return content
 end
@@ -239,11 +249,7 @@ end # function Setters.make
 function Setters.preset_values(::CellParametersSetter, template::Union{PWInput,CPInput})
     # !isnothing(template.cell_parameters) && return template
     system = template.system
-    return (
-        CellParametersCard("alat", BravaisLattice(system)()),
-        0,
-        [system.celldm[1]],
-    )
+    return (CellParametersCard("alat", BravaisLattice(system)()), 0, [system.celldm[1]])
 end # function Setters.preset_values
 
 end

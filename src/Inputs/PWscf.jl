@@ -22,7 +22,13 @@ using Unitful
 using UnitfulAtomic
 
 using QuantumESPRESSOBase.Inputs: InputEntry, Namelist, QuantumESPRESSOInput, entryname
-using QuantumESPRESSOBase.Setters: AlatPressSetter, LensMaker, VerbositySetter, FiniteTemperatureSetter, CalculationSetter, LensMaker
+using QuantumESPRESSOBase.Setters:
+    AlatPressSetter,
+    LensMaker,
+    VerbositySetter,
+    FiniteTemperatureSetter,
+    CalculationSetter,
+    LensMaker
 
 import Crystallography
 import QuantumESPRESSOBase.Inputs
@@ -532,7 +538,8 @@ Construct a `PWInput` which represents the input of program `pw.x`.
         "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
     )
 end # struct PWInput
-PWInput(args...) = PWInput(; Dict(zip(map(arg -> entryname(typeof(arg), PWInput), args), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
+PWInput(args...) =
+    PWInput(; Dict(zip(map(arg -> entryname(typeof(arg), PWInput), args), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
 
 function Setters.make(::LensMaker{AlatPressSetter,PWInput})
     return @batchlens begin
@@ -542,7 +549,7 @@ function Setters.make(::LensMaker{AlatPressSetter,PWInput})
     end
 end # function Setters.make
 # function Setters.upgrade(lm::LensMaker{S,T}, ::Type{PWInput}) where {S,T<:InputEntry}
-    # return PropertyLens{entryname(T)}() ∘ make(lm)
+# return PropertyLens{entryname(T)}() ∘ make(lm)
 # end # function Setters.upgrade
 
 end

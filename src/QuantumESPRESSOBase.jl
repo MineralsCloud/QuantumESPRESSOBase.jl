@@ -141,26 +141,41 @@ function Crystallography.Lattice(::BodyCenteredTetragonal, p::CellParameters)
         -1 -1 r
     ], true)
 end # function Lattice
-Crystallography.Lattice(::PrimitiveOrthorhombic, p::CellParameters) = Lattice([
-    p[1] 0 0
-    0 p[2] 0
-    0 0 p[3]
-], true)
-Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{1}) = Lattice([
-    p[1] / 2 p[2] / 2 0
-    -p[1] / 2 p[2] / 2 0
-    0 0 p[3]
-], true)
-Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{2}) = Lattice([
-    p[1] / 2 -p[2] / 2 0
-    p[1] / 2 p[2] / 2 0
-    0 0 p[3]
-], true)
-Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p::CellParameters) = Lattice([
-    p[1] 0 0
-    0 p[2] / 2 -p[3] / 2
-    0 p[2] / 2 p[3] / 2
-], true)  # New in QE 6.4
+Crystallography.Lattice(::PrimitiveOrthorhombic, p::CellParameters) = Lattice(
+    [
+        p[1] 0 0
+        0 p[2] 0
+        0 0 p[3]
+    ],
+    true,
+)
+Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{1}) =
+    Lattice(
+        [
+            p[1] / 2 p[2] / 2 0
+            -p[1] / 2 p[2] / 2 0
+            0 0 p[3]
+        ],
+        true,
+    )
+Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{2}) =
+    Lattice(
+        [
+            p[1] / 2 -p[2] / 2 0
+            p[1] / 2 p[2] / 2 0
+            0 0 p[3]
+        ],
+        true,
+    )
+Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p::CellParameters) =
+    Lattice(
+        [
+            p[1] 0 0
+            0 p[2] / 2 -p[3] / 2
+            0 p[2] / 2 p[3] / 2
+        ],
+        true,
+    )  # New in QE 6.4
 function Crystallography.Lattice(::FaceCenteredOrthorhombic, p::CellParameters)
     a, b, c = p.x
     return Lattice([
@@ -179,45 +194,61 @@ function Crystallography.Lattice(::BodyCenteredOrthorhombic, p::CellParameters)
 end
 function Crystallography.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{1})
     a, b, c = p.x
-    return Lattice([
-        a 0 0
-        b * cos(p[6]) b * sin(p[6]) 0
-        0 0 c
-    ], true)
+    return Lattice(
+        [
+            a 0 0
+            b * cos(p[6]) b * sin(p[6]) 0
+            0 0 c
+        ],
+        true,
+    )
 end
 function Crystallography.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{2})
     a, b, c = p.x
-    return Lattice([
-        a 0 0
-        0 b 0
-        c * cos(p[5]) 0 c * sin(p[5])
-    ], true)
+    return Lattice(
+        [
+            a 0 0
+            0 b 0
+            c * cos(p[5]) 0 c * sin(p[5])
+        ],
+        true,
+    )
 end
 function Crystallography.Lattice(::CCenteredMonoclinic, p::CellParameters)
     a, b, c = p.x
-    return Lattice([
-        a / 2 0 -c / 2
-        b * cos(p[6]) b * sin(p[6]) 0
-        a / 2 0 c / 2
-    ], true)
+    return Lattice(
+        [
+            a / 2 0 -c / 2
+            b * cos(p[6]) b * sin(p[6]) 0
+            a / 2 0 c / 2
+        ],
+        true,
+    )
 end
 function Crystallography.Lattice(::BCenteredMonoclinic, p::CellParameters)
     a, b, c = p.x
-    return Lattice([
-        a / 2 b / 2 0
-        -a / 2 b / 2 0
-        c * cos(p[5]) 0 c * sin(p[5])
-    ], true)
+    return Lattice(
+        [
+            a / 2 b / 2 0
+            -a / 2 b / 2 0
+            c * cos(p[5]) 0 c * sin(p[5])
+        ],
+        true,
+    )
 end
 function Crystallography.Lattice(::PrimitiveTriclinic, p::CellParameters)
     a, b, c = p.x
     α, β, γ = p.y
-    zz = c * sqrt(1 + 2 * cos(α) * cos(β) * cos(γ) - cos(α)^2 - cos(β)^2 - cos(γ)^2) / sin(γ)
-    return Lattice([
-        a 0 0
-        b * cos(γ) b * sin(γ) 0
-        c * cos(β) c * (cos(α) - cos(β) * cos(γ)) / sin(γ) zz
-    ], true)
+    zz =
+        c * sqrt(1 + 2 * cos(α) * cos(β) * cos(γ) - cos(α)^2 - cos(β)^2 - cos(γ)^2) / sin(γ)
+    return Lattice(
+        [
+            a 0 0
+            b * cos(γ) b * sin(γ) 0
+            c * cos(β) c * (cos(α) - cos(β) * cos(γ)) / sin(γ) zz
+        ],
+        true,
+    )
 end # function Lattice
 
 include("Setters.jl")

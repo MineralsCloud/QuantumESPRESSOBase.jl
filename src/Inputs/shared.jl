@@ -144,7 +144,13 @@ struct AtomicPositionsCard <: Card
         return new(data, option)
     end
 end
-AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard([AtomicPosition(string(atom), pos) for (atom, pos) in zip(cell.numbers, cell.positions)], option)
+AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard(
+    [
+        AtomicPosition(string(atom), pos)
+        for (atom, pos) in zip(cell.numbers, cell.positions)
+    ],
+    option,
+)
 # Introudce mutual constructors since they share the same atoms.
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
@@ -176,7 +182,8 @@ struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
 end
 CellParametersCard(data::AbstractMatrix{T}, option = "alat") where {T} =
     CellParametersCard{T}(data, option)
-CellParametersCard(lattice::Lattice{T}, option) where {T} = CellParametersCard(convert(Matrix{T}, lattice), option)
+CellParametersCard(lattice::Lattice{T}, option) where {T} =
+    CellParametersCard(convert(Matrix{T}, lattice), option)
 CellParametersCard(cell::Cell, option) = CellParametersCard(cell.lattice, option)
 # ============================================================================ #
 
@@ -234,9 +241,8 @@ Represent the `K_POINTS` card in QE.
 - `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
-struct KPointsCard{
-    A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}},
-} <: Card
+struct KPointsCard{A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <:
+       Card
     data::A
     option::String
     function KPointsCard{A}(
@@ -352,7 +358,12 @@ Return the volume of the cell based on the information given in a `SystemNamelis
 """
 Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
-function QuantumESPRESSOBase.qestring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
+function QuantumESPRESSOBase.qestring(
+    data::AtomicSpecies;
+    delim = ' ',
+    numfmt = "%14.9f",
+    args...,
+)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
         delim,
@@ -368,16 +379,26 @@ function QuantumESPRESSOBase.qestring(
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES" *
     newline *
-    join((indent * qestring(x; delim = delim, numfmt = numfmt) for x in unique(card.data)), newline)
+    join(
+        (indent * qestring(x; delim = delim, numfmt = numfmt) for x in unique(card.data)),
+        newline,
+    )
 end
 function QuantumESPRESSOBase.qestring(
     data::AtomicPosition;
     delim = ' ',
     numfmt = "%14.9f",
-    verbose::Bool = false,
+    args...,
 )
-    v = verbose ? [data.pos; data.if_pos] : data.pos
-    return join([sprintf1("%3s", data.atom); map(x -> sprintf1(numfmt, x), v)], delim)  # FIXME: `numfmt` on `Bool` will give wrong result
+    f(x) = x ? "" : "0"
+    return join(
+        [
+            sprintf1("%3s", data.atom)
+            map(x -> sprintf1(numfmt, x), data.pos)
+            map(f, data.if_pos)
+        ],
+        delim,
+    )
 end
 function QuantumESPRESSOBase.qestring(
     card::AtomicPositionsCard;
@@ -385,15 +406,11 @@ function QuantumESPRESSOBase.qestring(
     delim = ' ',
     numfmt = "%14.9f",
     newline = '\n',
-    verbose::Bool = false,
 )
     return "ATOMIC_POSITIONS { $(getoption(card)) }" *
     newline *
     join(
-        (
-            indent * qestring(x; delim = delim, numfmt = numfmt, verbose = verbose)
-            for x in card.data
-        ),
+        (indent * qestring(x; delim = delim, numfmt = numfmt) for x in card.data),
         newline,
     )
 end
@@ -404,7 +421,10 @@ function QuantumESPRESSOBase.qestring(
     numfmt = "%14.9f",
     newline = '\n',
 )
-    it = (indent * join((sprintf1(numfmt, x) for x in row), delim) for row in eachrow(card.data))
+    it = (
+        indent * join((sprintf1(numfmt, x) for x in row), delim) for
+        row in eachrow(card.data)
+    )
     return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
 end
 QuantumESPRESSOBase.qestring(data::GammaPoint) = ""
