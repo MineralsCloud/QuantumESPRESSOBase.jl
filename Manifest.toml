@@ -1,10 +1,5 @@
 # This file is machine-generated - editing it directly is not advised
 
-[[AutoHashEquals]]
-git-tree-sha1 = "45bb6705d93be619b81451bb2006b7ee5d4e4453"
-uuid = "15f4f7f2-30c1-5605-9d31-71845cf9641f"
-version = "0.2.0"
-
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
@@ -21,16 +16,16 @@ uuid = "324d7699-5711-5eae-9e2f-1d82baa6b597"
 version = "0.7.7"
 
 [[CodecZlib]]
-deps = ["BinaryProvider", "Libdl", "TranscodingStreams"]
-git-tree-sha1 = "05916673a2627dd91b4969ff8ba6941bc85a960e"
+deps = ["TranscodingStreams", "Zlib_jll"]
+git-tree-sha1 = "ded953804d019afa9a3f98981d99b33e3db7b6da"
 uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
-version = "0.6.0"
+version = "0.7.0"
 
 [[Compat]]
-deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
-git-tree-sha1 = "ed2c4abadf84c53d9e58510b5fc48912c2336fbb"
+deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "SHA", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
+git-tree-sha1 = "0198d18b28c093bef39872a22f1a897218a925f5"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
-version = "2.2.0"
+version = "3.8.0"
 
 [[CompilerSupportLibraries_jll]]
 deps = ["Libdl", "Pkg"]
@@ -50,10 +45,10 @@ uuid = "187b0558-2788-49d3-abe0-74a17ed4e7c9"
 version = "1.0.0"
 
 [[CoordinateTransformations]]
-deps = ["Compat", "Rotations", "StaticArrays"]
-git-tree-sha1 = "47f05d0b7f4999609f92e657147df000818c1f24"
+deps = ["LinearAlgebra", "Rotations", "StaticArrays"]
+git-tree-sha1 = "71333ea3f841bca6c1aa2863f11758eb9b37bfbc"
 uuid = "150eb455-5306-5404-9cee-2592286d6298"
-version = "0.5.0"
+version = "0.5.1"
 
 [[Crystallography]]
 deps = ["CoordinateTransformations", "LibSymspg", "LinearAlgebra", "StaticArrays", "SymPy"]
@@ -99,9 +94,9 @@ uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[FileIO]]
 deps = ["Pkg"]
-git-tree-sha1 = "2c84c57aced468fa21763c66d3bef33adcd09ec7"
+git-tree-sha1 = "250ac7dfd54b5ce47372505b392756633d4e9732"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-version = "1.2.2"
+version = "1.2.3"
 
 [[Formatting]]
 deps = ["Printf"]
@@ -129,10 +124,10 @@ uuid = "82899510-4779-5014-852e-03e436cf321d"
 version = "1.0.0"
 
 [[JLD2]]
-deps = ["CodecZlib", "DataStructures", "FileIO", "Mmap", "Pkg", "Printf", "UUIDs"]
-git-tree-sha1 = "d6cfa7c24e27d7eaa2290372739c8298257dae16"
+deps = ["CodecZlib", "DataStructures", "FileIO", "Mmap", "Printf"]
+git-tree-sha1 = "343d1ec8ae7d57a608d79ef12e9a853cbb9acd96"
 uuid = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
-version = "0.1.12"
+version = "0.1.3"
 
 [[JSON]]
 deps = ["Dates", "Mmap", "Parsers", "Unicode"]
@@ -363,3 +358,9 @@ version = "0.3.0"
 git-tree-sha1 = "80229be1f670524750d905f8fc8148e5a8c4537f"
 uuid = "81def892-9a0e-5fdd-b105-ffc91e053289"
 version = "1.2.0"
+
+[[Zlib_jll]]
+deps = ["Libdl", "Pkg"]
+git-tree-sha1 = "fd36a6739e256527287c5444960d0266712cd49e"
+uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
+version = "1.2.11+8"

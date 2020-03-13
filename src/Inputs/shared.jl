@@ -1,4 +1,3 @@
-using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Crystallography: Lattice, Cell
 using Formatting: sprintf1
