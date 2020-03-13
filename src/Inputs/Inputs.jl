@@ -167,26 +167,9 @@ include("PHonon.jl")
 using .PWscf: PWInput
 using .CP: CPInput
 
-"""
-    get_compulsory_namelists(input::Union{PWInput,CPInput})
-
-Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
-It is lazy, you may want to `collect` it.
-
-To get the optional `Namelist`s, use `(!get_compulsory_namelists)(input)` (Note the parenthesis!).
-"""
-get_compulsory_namelists(input::Union{PWInput,CPInput}) =
-    (getfield(input, x) for x in (:control, :system, :electrons))
-Base.:!(::typeof(get_compulsory_namelists)) =
-    function (input::T) where {T<:Union{PWInput,CPInput}}
-        (
-            getfield(input, x) for x in fieldnames(T) if x ∉ (
-                :control,
-                :system,
-                :electrons,
-            ) && fieldtype(T, x) <: Namelist
-        )
-    end
+_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = [entryname(x, T) for x in fieldtypes(T) if x <: Namelist]
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) = (:control, :system, :electrons) ∩ _selectnamelists(T, Val(:all))
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) = setdiff(_selectnamelists(T, Val(:all)), (:control, :system, :electrons))
 
 """
     get_compulsory_cards(input::PWInput)
