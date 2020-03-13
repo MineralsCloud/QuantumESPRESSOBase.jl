@@ -1,12 +1,9 @@
-using LinearAlgebra: det
-
-using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Crystallography: Lattice, Cell
 using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
-using StaticArrays: SVector, SMatrix
+using StaticArrays: SVector, SMatrix, FieldVector
 
 using QuantumESPRESSOBase: to_qe
 using QuantumESPRESSOBase.Inputs: Card, getoption, allowed_options
@@ -19,15 +16,11 @@ import QuantumESPRESSOBase.Inputs
 # =============================== AtomicSpecies ============================== #
 """
     AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
-    AtomicSpecies(atom::Union{AbstractChar,AbstractString})
     AtomicSpecies(x::AtomicPosition, mass, pseudopot)
-    AtomicSpecies(x::AtomicPosition)
 
 Represent each line of the `ATOMIC_SPECIES` card in QE.
 
-It is a `mutable struct` and supports _incomplete Initialization_ as in the second and
-fourth constructors. See the examples below. The `atom` field accepts at most 3 characters
-as claimed in QE's documentation.
+The `atom` field accepts at most 3 characters.
 
 # Examples
 ```jldoctest
@@ -35,21 +28,6 @@ julia> using QuantumESPRESSOBase.Cards.PWscf
 
 julia> AtomicSpecies("C1", 12, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
 AtomicSpecies("C1", 12.0, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
-
-julia> x = AtomicSpecies('S');
-
-julia> x.atom
-"S"
-
-julia> x.mass = 32.066; x.mass
-32.066
-
-julia> x.pseudopot
-ERROR: UndefRefError: access to undefined reference
-[...]
-
-julia> x.pseudopot = "S.pz-n-rrkjus_psl.0.1.UPF"; x.pseudopot
-"S.pz-n-rrkjus_psl.0.1.UPF"
 
 julia> AtomicSpecies(
            AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764]),
@@ -59,7 +37,7 @@ julia> AtomicSpecies(
 AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
 ```
 """
-@auto_hash_equals mutable struct AtomicSpecies
+struct AtomicSpecies
     "Label of the atom. Max total length cannot exceed 3 characters."
     atom::String
     """
@@ -81,10 +59,6 @@ AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
     function AtomicSpecies(atom::Union{AbstractChar,AbstractString}, mass, pseudopot)
         @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         return new(string(atom), mass, pseudopot)
-    end
-    function AtomicSpecies(atom::Union{AbstractChar,AbstractString})
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
-        return new(string(atom))
     end
 end
 
@@ -109,15 +83,11 @@ AtomicSpeciesCard(cell::Cell) = AtomicSpeciesCard(map(AtomicSpecies ∘ string, 
 # ============================== AtomicPosition ============================== #
 """
     AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
-    AtomicPosition(atom::Union{AbstractChar,AbstractString})
     AtomicPosition(x::AtomicSpecies, pos, if_pos)
-    AtomicPosition(x::AtomicSpecies)
 
 Represent each line of the `ATOMIC_POSITIONS` card in QE.
 
-It is a `mutable struct` and supports _incomplete Initialization_ as in the second and
-fourth constructors. See the examples below. The `atom` field accepts at most 3 characters
-as claimed in QE's documentation.
+The `atom` field accepts at most 3 characters.
 
 # Examples
 ```jldoctest
@@ -126,35 +96,6 @@ julia> using QuantumESPRESSOBase.Cards.PWscf
 julia> AtomicPosition('O', [0, 0, 0])
 AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 1, 1])
 
-julia> x = AtomicPosition('O');
-
-julia> x.pos
-ERROR: UndefRefError: access to undefined reference
-[...]
-
-julia> x.pos = [0, 0, 0]
-ERROR: TypeError: in setfield!, expected StaticArrays.SArray{Tuple{3},Float64,1,3}, got StaticArrays.SArray{Tuple{3},Int64,1,3}
-[...]
-
-julia> x.pos = Float64[0, 0, 0]
-3-element Array{Float64,1}:
- 0.0
- 0.0
- 0.0
-
-julia> x.if_pos = [1, 0, 2]
-ERROR: TypeError: in setfield!, expected StaticArrays.SArray{Tuple{3},Bool,1,3}, got StaticArrays.SArray{Tuple{3},Int64,1,3}
-[...]
-
-julia> x.if_pos = Bool[1, 0, 1]
-3-element Array{Bool,1}:
- 1
- 0
- 1
-
-julia> x
-AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 0, 1])
-
 julia> AtomicPosition(
            AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
            [0.500000000, 0.288675130, 1.974192764],
@@ -162,7 +103,7 @@ julia> AtomicPosition(
 AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
 ```
 """
-@auto_hash_equals mutable struct AtomicPosition
+struct AtomicPosition
     "Label of the atom as specified in `AtomicSpecies`."
     atom::String
     "Atomic positions. A three-element vector of floats."
@@ -180,17 +121,11 @@ AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
         @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
         return new(string(atom), pos, if_pos)
     end
-    function AtomicPosition(atom::Union{AbstractChar,AbstractString})
-        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
-        return new(string(atom))
-    end
 end
 AtomicPosition(atom, pos) = AtomicPosition(atom, pos, trues(3))
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
-AtomicPosition(x::AtomicSpecies) = AtomicPosition(x.atom)
 # Introudce mutual constructors since they share the same atoms.
 AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
-AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 
 """
     AtomicPositionsCard <: Card
@@ -198,26 +133,19 @@ AtomicSpecies(x::AtomicPosition) = AtomicSpecies(x.atom)
 Represent the `ATOMIC_POSITIONS` card in QE.
 
 # Arguments
-- `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 - `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
+- `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 """
-@auto_hash_equals struct AtomicPositionsCard <: Card
-    option::String
+struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
-    function AtomicPositionsCard(option, data)
+    option::String
+    function AtomicPositionsCard(data, option = "alat")
         @assert option ∈ allowed_options(AtomicPositionsCard)
-        return new(option, data)
+        return new(data, option)
     end
 end
-AtomicPositionsCard(data) = AtomicPositionsCard("alat", data)
-function AtomicPositionsCard(option, card::AtomicSpeciesCard)
-    return AtomicPositionsCard(option, map(AtomicPosition, card.data))
-end # function AtomicPositionsCard
-AtomicPositionsCard(option, cell::Cell) = AtomicPositionsCard(option, [AtomicPosition(string(atom), pos) for (atom, pos) in zip(cell.numbers, cell.positions)])
+AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard([AtomicPosition(string(atom), pos) for (atom, pos) in zip(cell.numbers, cell.positions)], option)
 # Introudce mutual constructors since they share the same atoms.
-function AtomicSpeciesCard(card::AtomicPositionsCard)
-    return AtomicSpeciesCard(map(AtomicSpecies, card.data))
-end # function AtomicSpeciesCard
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
     lens = @lens _.data.atom
@@ -228,104 +156,32 @@ function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
 end # function validate
 validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 
-const AtomicSpeciesOrPosition = Union{AtomicSpecies,AtomicPosition}
-
-"""
-    push_atom!(v::AbstractVector{AtomicSpecies}, atoms::AbstractString...)
-    push_atom!(v::AbstractVector{AtomicPosition}, atoms::AbstractString...)
-
-Push an atom or multiple atoms to a vector of `AtomicSpecies` or `AtomicPosition`s.
-
-**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
-
-See also: [`push!`](@ref), [`append_atom!`](@ref)
-"""
-function push_atom!(
-    v::AbstractVector{T},
-    atoms::AbstractString...,
-) where {T<:AtomicSpeciesOrPosition}
-    return push!(v, map(T, atoms)...)
-end # function push_atom!
-"""
-    push_atom!(card::Union{AtomicSpeciesCard,AtomicPositionsCard}, atoms::AbstractString...)
-
-Push an atom or multiple atoms to a `AtomicSpeciesCard` or `AtomicPositionsCard`.
-
-**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
-
-See also: [`push!`](@ref), [`append_atom!`](@ref)
-"""
-function push_atom!(
-    card::Union{AtomicSpeciesCard,AtomicPositionsCard},
-    atoms::AbstractString...,
-)
-    T = eltype(card.data)
-    push!(card.data, map(T, atoms)...)
-    return card
-end # function push_atom!
-
-"""
-    append_atom!(v::AbstractVector{AtomicSpecies}, atoms::AbstractVector{<:AbstractString})
-    append_atom!(v::AbstractVector{AtomicPosition}, atoms::AbstractVector{<:AbstractString})
-
-Append a vector of atoms to a vector of `AtomicSpecies` or `AtomicPosition`s.
-
-**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
-
-See also: [`append!`](@ref), [`push_atom!`](@ref)
-"""
-function append_atom!(
-    v::AbstractVector{T},
-    atoms::AbstractVector{<:AbstractString},
-) where {T<:AtomicSpeciesOrPosition}
-    return append!(v, map(T, atoms))
-end # function append_atom!
-"""
-    append_atom!(card::Union{AtomicSpeciesCard,AtomicPositionsCard}, atoms::AbstractVector{<:AbstractString})
-
-Append a vector of atoms to a `AtomicSpeciesCard` or `AtomicPositionsCard`.
-
-**Note**: these new `atoms` will result in incomplete `AtomicSpecies` or `AtomicPosition`s!
-
-See also: [`append!`](@ref), [`push_atom!`](@ref)
-"""
-function append_atom!(
-    card::Union{AtomicSpeciesCard,AtomicPositionsCard},
-    atoms::AbstractVector{<:AbstractString},
-)
-    T = eltype(card.data)
-    append!(card.data, map(T, atoms))
-    return card
-end # function append_atom!
-# ============================================================================ #
-
 # ============================== CellParameters ============================== #
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
 abstract type AbstractCellParametersCard <: Card end
 
 """
     CellParametersCard{T<:Real} <: AbstractCellParametersCard
-    CellParametersCard(option::String, data::AbstractMatrix)
+    CellParametersCard(data::AbstractMatrix, option::String)
 
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
-@auto_hash_equals struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
-    option::String
+struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     data::SMatrix{3,3,T}
-    function CellParametersCard{T}(option, data) where {T<:Real}
+    option::String
+    function CellParametersCard{T}(data, option = "alat") where {T<:Real}
         @assert option ∈ allowed_options(CellParametersCard)
-        return new(option, data)
+        return new(data, option)
     end
 end
-CellParametersCard(option, data::AbstractMatrix{T}) where {T} =
-    CellParametersCard{T}(option, data)
-CellParametersCard(data) = CellParametersCard("alat", data)
-CellParametersCard(option, lattice::Lattice{T}) where {T} = CellParametersCard(option, convert(Matrix{T}, lattice))
-CellParametersCard(option, cell::Cell) = CellParametersCard(option, cell.lattice)
+CellParametersCard(data::AbstractMatrix{T}, option = "alat") where {T} =
+    CellParametersCard{T}(data, option)
+CellParametersCard(lattice::Lattice{T}, option) where {T} = CellParametersCard(convert(Matrix{T}, lattice), option)
+CellParametersCard(cell::Cell, option) = CellParametersCard(cell.lattice, option)
 # ============================================================================ #
 
 # ============================== AtomicForce ============================== #
-@auto_hash_equals struct AtomicForce
+struct AtomicForce
     atom::String
     force::SVector{3,Float64}
     function AtomicForce(atom::Union{AbstractChar,AbstractString}, force)
@@ -340,9 +196,6 @@ end
 # ============================================================================ #
 
 # ============================== KPointsCard ============================== #
-"Represent a general point in the 3D reciprocal space."
-abstract type KPoint end
-
 """
     MonkhorstPackGrid(grid, offsets)
 
@@ -352,44 +205,44 @@ Represent the Monkhorst--Pack grid.
 - `grid`: A length-three vector specifying the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst--Pack grids.
 - `offsets`: A length-three vector specifying whether the grid is displaced by half a grid step in the corresponding directions.
 """
-@auto_hash_equals struct MonkhorstPackGrid
+struct MonkhorstPackGrid
     grid::SVector{3,UInt}
     offsets::SVector{3,Bool}
 end
 
 "Represent the centre of the Brillouin zone (commonly marked as the Γ point)."
-struct GammaPoint <: KPoint end
+struct GammaPoint end
 
 """
     SpecialKPoint(coord, weight)
 
 Represent a special point of the 3D Brillouin zone. Each of them has a weight.
 """
-@auto_hash_equals struct SpecialKPoint{T<:Real} <: KPoint
-    coord::SVector{3,T}
-    weight::T
+struct SpecialKPoint <: FieldVector{4,Float64}
+    x::Float64
+    y::Float64
+    z::Float64
+    w::Float64
 end
-SpecialKPoint(coord, weight) = SpecialKPoint{promote_type(eltype(coord), typeof(weight))}(coord, weight)
-SpecialKPoint(x, y, z, w) = SpecialKPoint([x, y, z], w)
 
 """
-    struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}} <: Card
+    struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <: Card
 
 Represent the `K_POINTS` card in QE.
 
 # Arguments
+- `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
-- `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 """
-@auto_hash_equals struct KPointsCard{
-    A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}},
+struct KPointsCard{
+    A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}},
 } <: Card
-    option::String
     data::A
+    option::String
     function KPointsCard{A}(
-        option,
         data,
-    ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{<:SpecialKPoint}}}
+        option,
+    ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}}
         @assert option ∈ allowed_options(KPointsCard)
         @assert if option == "automatic"
             typeof(data) <: MonkhorstPackGrid
@@ -398,15 +251,13 @@ Represent the `K_POINTS` card in QE.
         else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
             eltype(data) <: SpecialKPoint
         end
-        return new(option, data)
+        return new(data, option)
     end
 end
-KPointsCard(option, data::A) where {A} = KPointsCard{A}(option, data)
-KPointsCard(data) = KPointsCard("tpiba", data)
-function KPointsCard(option::AbstractString, data::AbstractMatrix{<:Real})
-    @assert(size(data, 2) == 4, "The size of `data` is not `(N, 4)`, but $(size(data))!")
-    return KPointsCard(option, [SpecialKPoint(x...) for x in eachrow(data)])
-end
+KPointsCard(data::A, option) where {A} = KPointsCard{A}(data, option)
+KPointsCard(data::AbstractVector{SpecialKPoint}) = KPointsCard(data, "tpiba")
+KPointsCard(data::GammaPoint) = KPointsCard(data, "gamma")
+KPointsCard(data::MonkhorstPackGrid) = KPointsCard(data, "automatic")
 
 Inputs.getoption(::AtomicSpeciesCard) = nothing
 
@@ -464,26 +315,26 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     else
         error("Unknown option pair ($pair) given!")
     end
-    return typeof(card)(new_option, card.data .* factor)
+    return typeof(card)(card.data .* factor, new_option)
 end # function optconvert
 
-Inputs.entryname(::Type{<:ControlNamelist}) = :control
-Inputs.entryname(::Type{<:SystemNamelist}) = :system
-Inputs.entryname(::Type{<:ElectronsNamelist}) = :electrons
-Inputs.entryname(::Type{<:IonsNamelist}) = :ions
-Inputs.entryname(::Type{<:CellNamelist}) = :cell
-Inputs.entryname(::Type{<:AtomicSpeciesCard}) = :atomic_species
-Inputs.entryname(::Type{<:AtomicPositionsCard}) = :atomic_positions
+Inputs.entryname(::Type{ControlNamelist}) = :control
+Inputs.entryname(::Type{SystemNamelist}) = :system
+Inputs.entryname(::Type{ElectronsNamelist}) = :electrons
+Inputs.entryname(::Type{IonsNamelist}) = :ions
+Inputs.entryname(::Type{CellNamelist}) = :cell
+Inputs.entryname(::Type{AtomicSpeciesCard}) = :atomic_species
+Inputs.entryname(::Type{AtomicPositionsCard}) = :atomic_positions
 Inputs.entryname(::Type{<:CellParametersCard}) = :cell_parameters
 Inputs.entryname(::Type{<:KPointsCard}) = :k_points
 
-Inputs.titleof(::Type{<:ControlNamelist}) = "CONTROL"
-Inputs.titleof(::Type{<:SystemNamelist}) = "SYSTEM"
-Inputs.titleof(::Type{<:ElectronsNamelist}) = "ELECTRONS"
-Inputs.titleof(::Type{<:IonsNamelist}) = "IONS"
-Inputs.titleof(::Type{<:CellNamelist}) = "CELL"
-Inputs.titleof(::Type{<:AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-Inputs.titleof(::Type{<:AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+Inputs.titleof(::Type{ControlNamelist}) = "CONTROL"
+Inputs.titleof(::Type{SystemNamelist}) = "SYSTEM"
+Inputs.titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
+Inputs.titleof(::Type{IonsNamelist}) = "IONS"
+Inputs.titleof(::Type{CellNamelist}) = "CELL"
+Inputs.titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+Inputs.titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
@@ -527,7 +378,7 @@ function QuantumESPRESSOBase.to_qe(
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES" *
     newline *
-    join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in card.data), newline)
+    join((indent * to_qe(x; delim = delim, numfmt = numfmt) for x in unique(card.data)), newline)
 end
 function QuantumESPRESSOBase.to_qe(
     data::AtomicPosition;
@@ -536,7 +387,7 @@ function QuantumESPRESSOBase.to_qe(
     verbose::Bool = false,
 )
     v = verbose ? [data.pos; data.if_pos] : data.pos
-    return join([sprintf1("%3s", data.atom); map(x -> sprintf1(numfmt, x), v)], delim)
+    return join([sprintf1("%3s", data.atom); map(x -> sprintf1(numfmt, x), v)], delim)  # FIXME: `numfmt` on `Bool` will give wrong result
 end
 function QuantumESPRESSOBase.to_qe(
     card::AtomicPositionsCard;
@@ -563,15 +414,8 @@ function QuantumESPRESSOBase.to_qe(
     numfmt = "%14.9f",
     newline = '\n',
 )
-    return "CELL_PARAMETERS { $(getoption(card)) }" *
-    newline *
-    join(
-        (
-            indent * join(map(x -> sprintf1(numfmt, x), row), delim)
-            for row in eachrow(card.data)
-        ),
-        newline,
-    )
+    it = (indent * join((sprintf1(numfmt, x) for x in row), delim) for row in eachrow(card.data))
+    return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
 end
 QuantumESPRESSOBase.to_qe(data::GammaPoint) = ""
 function QuantumESPRESSOBase.to_qe(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d")
@@ -611,7 +455,7 @@ function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
         @assert(length(x) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
         x = string(x)  # An `if` statement is more expensive than directly setting a string
     end
-    setfield!(value, name, x)
+    setfield!(value, name, x)  # FIXME: It is now immutable!
 end # function Base.setproperty!
 function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
     x = if name == :atom
@@ -620,5 +464,5 @@ function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
     elseif name ∈ (:pos, :if_pos) && x isa AbstractVector
         SVector{3}(x)
     end
-    setfield!(value, name, x)
+    setfield!(value, name, x)  # FIXME: It is now immutable!
 end # function Base.setproperty!
