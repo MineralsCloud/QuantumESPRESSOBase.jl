@@ -32,7 +32,7 @@ end
 
 Return a `String` representing the object, which is valid for Quantum ESPRESSO's input.
 """
-function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
+function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
     content = ""
     f = string ∘ to_fortran
     for (key, value) in dict
@@ -47,6 +47,7 @@ function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')::String
     end
     return content
 end
+qestring(::Nothing; args...) = ""
 
 Crystallography.BravaisLattice(ibrav::Integer) = _BravaisLattice(Val(ibrav))
 # These are helper methods and should not be exported!

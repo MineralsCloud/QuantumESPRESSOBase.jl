@@ -352,7 +352,7 @@ Return the volume of the cell based on the information given in a `SystemNamelis
 """
 Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
-function QuantumESPRESSOBase.qestring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f")
+function QuantumESPRESSOBase.qestring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
         delim,

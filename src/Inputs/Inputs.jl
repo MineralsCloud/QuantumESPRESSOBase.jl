@@ -216,7 +216,7 @@ function QuantumESPRESSOBase.qestring(
     delim = ' ',
     newline = '\n',
     verbose::Bool = false,
-)::String
+)
     content = ""
     for namelist in getnamelists(input)
         content *=
