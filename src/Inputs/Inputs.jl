@@ -26,7 +26,7 @@ import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Setters
 
 export Card
-export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof
+export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
 
 """
     InputEntry
@@ -210,7 +210,46 @@ function Crystallography.cellvolume(input::PWInput)
     end
 end # function Crystallography.cellvolume
 
-function QuantumESPRESSOBase.qestring(
+to_fortran(v::Int) = string(v)
+function to_fortran(v::Float32; scientific::Bool = false)
+    str = string(v)
+    scientific && return replace(str, r"f"i => "e")
+    return str
+end
+function to_fortran(v::Float64; scientific::Bool = false)
+    str = string(v)
+    scientific && return replace(str, r"e"i => "d")
+    return string(v)
+end
+function to_fortran(v::Bool)
+    v ? ".true." : ".false."
+end
+function to_fortran(v::AbstractString)
+    return "'$v'"
+end
+
+"""
+    qestring(x; indent = ' '^4, delim = ' ')
+
+Return a `String` representing the object, which is valid for Quantum ESPRESSO's input.
+"""
+function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
+    content = ""
+    f = string ∘ to_fortran
+    for (key, value) in dict
+        if value isa Vector
+            for (i, x) in enumerate(value)
+                isnothing(x) && continue
+                content *= indent * join(["$key($i)", "=", "$(f(x))\n"], delim)
+            end
+        else
+            content *= indent * join(["$key", "=", "$(f(value))\n"], delim)
+        end
+    end
+    return content
+end
+qestring(::Nothing; args...) = ""
+function qestring(
     nml::Namelist;
     indent = ' '^4,
     delim = ' ',
@@ -220,7 +259,7 @@ function QuantumESPRESSOBase.qestring(
     content = qestring(dropdefault(nml); indent = indent, delim = delim)
     return "&$namelist_name" * newline * content * '/'
 end
-function QuantumESPRESSOBase.qestring(
+function qestring(
     input::QuantumESPRESSOInput;
     indent = ' '^4,
     delim = ' ',
@@ -238,7 +277,7 @@ function QuantumESPRESSOBase.qestring(
     end
     return content
 end
-function QuantumESPRESSOBase.qestring(
+function qestring(
     v::AbstractVector{<:InputEntry},
     indent = ' '^4,
     delim = ' ',

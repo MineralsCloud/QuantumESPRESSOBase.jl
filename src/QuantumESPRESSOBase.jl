@@ -2,52 +2,9 @@ module QuantumESPRESSOBase
 
 using LinearAlgebra: Diagonal, det, cross
 
-using Compat: isnothing
 using Crystallography
 
 import Crystallography
-
-export qestring
-
-to_fortran(v::Int) = string(v)
-function to_fortran(v::Float32; scientific::Bool = false)
-    str = string(v)
-    scientific && return replace(str, r"f"i => "e")
-    return str
-end
-function to_fortran(v::Float64; scientific::Bool = false)
-    str = string(v)
-    scientific && return replace(str, r"e"i => "d")
-    return string(v)
-end
-function to_fortran(v::Bool)
-    v ? ".true." : ".false."
-end
-function to_fortran(v::AbstractString)
-    return "'$v'"
-end
-
-"""
-    qestring(x; indent = ' '^4, delim = ' ')
-
-Return a `String` representing the object, which is valid for Quantum ESPRESSO's input.
-"""
-function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
-    content = ""
-    f = string ∘ to_fortran
-    for (key, value) in dict
-        if value isa Vector
-            for (i, x) in enumerate(value)
-                isnothing(x) && continue
-                content *= indent * join(["$key($i)", "=", "$(f(x))\n"], delim)
-            end
-        else
-            content *= indent * join(["$key", "=", "$(f(value))\n"], delim)
-        end
-    end
-    return content
-end
-qestring(::Nothing; args...) = ""
 
 Crystallography.BravaisLattice(ibrav::Integer) = _BravaisLattice(Val(ibrav))
 # These are helper methods and should not be exported!

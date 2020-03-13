@@ -5,12 +5,10 @@ using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix, FieldVector
 
-using QuantumESPRESSOBase: qestring
-using QuantumESPRESSOBase.Inputs: Card, getoption, allowed_options
+using QuantumESPRESSOBase.Inputs: Card, getoption, allowed_options, qestring
 
 import Crystallography
 import Pseudopotentials
-import QuantumESPRESSOBase
 import QuantumESPRESSOBase.Inputs
 
 # =============================== AtomicSpecies ============================== #
@@ -358,7 +356,7 @@ Return the volume of the cell based on the information given in a `SystemNamelis
 """
 Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
-function QuantumESPRESSOBase.qestring(
+function Inputs.qestring(
     data::AtomicSpecies;
     delim = ' ',
     numfmt = "%14.9f",
@@ -369,7 +367,7 @@ function QuantumESPRESSOBase.qestring(
         delim,
     )
 end
-function QuantumESPRESSOBase.qestring(
+function Inputs.qestring(
     card::AtomicSpeciesCard;
     indent = ' '^4,
     delim = ' ',
@@ -384,7 +382,7 @@ function QuantumESPRESSOBase.qestring(
         newline,
     )
 end
-function QuantumESPRESSOBase.qestring(
+function Inputs.qestring(
     data::AtomicPosition;
     delim = ' ',
     numfmt = "%14.9f",
@@ -400,7 +398,7 @@ function QuantumESPRESSOBase.qestring(
         delim,
     )
 end
-function QuantumESPRESSOBase.qestring(
+function Inputs.qestring(
     card::AtomicPositionsCard;
     indent = ' '^4,
     delim = ' ',
@@ -414,7 +412,7 @@ function QuantumESPRESSOBase.qestring(
         newline,
     )
 end
-function QuantumESPRESSOBase.qestring(
+function Inputs.qestring(
     card::CellParametersCard;
     indent = ' '^4,
     delim = ' ',
@@ -427,16 +425,16 @@ function QuantumESPRESSOBase.qestring(
     )
     return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
 end
-QuantumESPRESSOBase.qestring(data::GammaPoint) = ""
-QuantumESPRESSOBase.qestring(
+Inputs.qestring(data::GammaPoint) = ""
+Inputs.qestring(
     data::MonkhorstPackGrid;
     delim = ' ',
     numfmt = "%5d",
     args...,
 ) = join(map(x -> sprintf1(numfmt, x), [data.grid; data.offsets]), delim)
-QuantumESPRESSOBase.qestring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
+Inputs.qestring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
     join(map(x -> sprintf1(numfmt, x), collect(data)), delim)
-function QuantumESPRESSOBase.qestring(
+function Inputs.qestring(
     card::KPointsCard;
     indent = ' '^4,
     delim = ' ',
