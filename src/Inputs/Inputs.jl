@@ -18,7 +18,6 @@ using Crystallography: BravaisLattice
 using Kaleido: @batchlens
 using OrderedCollections: OrderedDict
 
-using QuantumESPRESSOBase: qestring
 using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
 
 import Crystallography
@@ -163,53 +162,6 @@ Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and
 getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
     (getfield(input, x) for x in _selectcards(T, Val(selector)))
 
-# =============================== Modules ============================== #
-include("PWscf.jl")
-include("CP.jl")
-include("PHonon.jl")
-# ============================================================================ #
-
-using .PWscf: PWInput
-using .CP: CPInput
-
-_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) =
-    Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) =
-    (:control, :system, :electrons)
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
-    setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
-
-_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(
-    entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing}
-)
-_selectcards(T::Type{PWInput}, ::Val{:compulsory}) =
-    (:atomic_species, :atomic_positions, :k_points)
-_selectcards(T::Type{CPInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions)
-_selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
-    setdiff(_selectcards(T, Val(:all)), _selectcards(T, Val(:compulsory)))
-
-# Referenced from https://discourse.julialang.org/t/how-to-get-the-non-nothing-type-from-union-t-nothing/30523
-nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # Should not be exported
-
-"""
-    cellvolume(input::PWInput)
-
-Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
-"""
-function Crystallography.cellvolume(input::PWInput)
-    if isnothing(input.cell_parameters)
-        return abs(det(BravaisLattice(input.system)()))
-    else
-        if getoption(input.cell_parameters) == "alat"
-            # If no value of `celldm` is changed...
-            isnothing(input.system.celldm[1]) && error("`celldm[1]` is not defined!")
-            return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
-        else  # "bohr" or "angstrom"
-            return cellvolume(input.cell_parameters)
-        end
-    end
-end # function Crystallography.cellvolume
-
 to_fortran(v::Int) = string(v)
 function to_fortran(v::Float32; scientific::Bool = false)
     str = string(v)
@@ -290,6 +242,53 @@ function qestring(
     end
     return content
 end
+
+# =============================== Modules ============================== #
+include("PWscf.jl")
+include("CP.jl")
+include("PHonon.jl")
+# ============================================================================ #
+
+using .PWscf: PWInput
+using .CP: CPInput
+
+_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) =
+    Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) =
+    (:control, :system, :electrons)
+_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
+    setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
+
+_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(
+    entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing}
+)
+_selectcards(T::Type{PWInput}, ::Val{:compulsory}) =
+    (:atomic_species, :atomic_positions, :k_points)
+_selectcards(T::Type{CPInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions)
+_selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
+    setdiff(_selectcards(T, Val(:all)), _selectcards(T, Val(:compulsory)))
+
+# Referenced from https://discourse.julialang.org/t/how-to-get-the-non-nothing-type-from-union-t-nothing/30523
+nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # Should not be exported
+
+"""
+    cellvolume(input::PWInput)
+
+Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
+"""
+function Crystallography.cellvolume(input::PWInput)
+    if isnothing(input.cell_parameters)
+        return abs(det(BravaisLattice(input.system)()))
+    else
+        if getoption(input.cell_parameters) == "alat"
+            # If no value of `celldm` is changed...
+            isnothing(input.system.celldm[1]) && error("`celldm[1]` is not defined!")
+            return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
+        else  # "bohr" or "angstrom"
+            return cellvolume(input.cell_parameters)
+        end
+    end
+end # function Crystallography.cellvolume
 
 function Setters.make(::LensMaker{CellParametersSetter,<:Union{PWInput,CPInput}})
     return @batchlens begin
