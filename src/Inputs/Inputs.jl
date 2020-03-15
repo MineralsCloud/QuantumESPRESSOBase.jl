@@ -15,6 +15,7 @@ using LinearAlgebra: det
 
 using Compat: isnothing, only
 using Crystallography: BravaisLattice
+using PyFortran90Namelists: fstring
 using Kaleido: @batchlens
 using OrderedCollections: OrderedDict
 
@@ -162,24 +163,6 @@ Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and
 getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
     (getfield(input, x) for x in _selectcards(T, Val(selector)))
 
-to_fortran(v::Int) = string(v)
-function to_fortran(v::Float32; scientific::Bool = false)
-    str = string(v)
-    scientific && return replace(str, r"f"i => "e")
-    return str
-end
-function to_fortran(v::Float64; scientific::Bool = false)
-    str = string(v)
-    scientific && return replace(str, r"e"i => "d")
-    return string(v)
-end
-function to_fortran(v::Bool)
-    v ? ".true." : ".false."
-end
-function to_fortran(v::AbstractString)
-    return "'$v'"
-end
-
 """
     qestring(x; indent = ' '^4, delim = ' ')
 
@@ -187,7 +170,6 @@ Return a `String` representing the object, which is valid for Quantum ESPRESSO's
 """
 function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
     content = ""
-    f = string ∘ to_fortran
     for (key, value) in dict
         if value isa Vector
             for (i, x) in enumerate(value)
@@ -195,7 +177,7 @@ function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
                 content *= indent * join(["$key($i)", "=", "$(f(x))\n"], delim)
             end
         else
-            content *= indent * join(["$key", "=", "$(f(value))\n"], delim)
+            content *= indent * join(["$key", "=", "$(fstring(value))\n"], delim)
         end
     end
     return content
