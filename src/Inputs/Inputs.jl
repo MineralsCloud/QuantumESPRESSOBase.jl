@@ -174,7 +174,7 @@ function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
         if value isa Vector
             for (i, x) in enumerate(value)
                 isnothing(x) && continue
-                content *= indent * join(["$key($i)", "=", "$(f(x))\n"], delim)
+                content *= indent * join(["$key($i)", "=", "$(fstring(x))\n"], delim)
             end
         else
             content *= indent * join(["$key", "=", "$(fstring(value))\n"], delim)
