@@ -229,6 +229,7 @@ struct SpecialKPoint <: FieldVector{4,Float64}
     z::Float64
     w::Float64
 end
+SpecialKPoint(::GammaPoint) = SpecialKPoint(0.0, 0.0, 0.0, 1.0)
 
 """
     struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <: Card
