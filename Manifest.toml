@@ -231,6 +231,14 @@ git-tree-sha1 = "3a3fdb9000d35958c9ba2323ca7c4958901f115d"
 uuid = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 version = "1.91.4"
 
+[[PyFortran90Namelists]]
+deps = ["Compat", "Pkg", "PyCall", "VersionParsing"]
+git-tree-sha1 = "414db24c54acef6c7e58b1f2bec1f9a368fb8b06"
+repo-rev = "master"
+repo-url = "git@github.com:singularitti/PyFortran90Namelists.jl.git"
+uuid = "e44308e6-bd5b-11e9-2850-49daf8f1ec40"
+version = "0.1.0"
+
 [[REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
