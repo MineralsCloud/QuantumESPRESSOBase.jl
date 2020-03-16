@@ -69,8 +69,8 @@ Represent the `CONTROL` namelist of `pw.x`.
     verbosity::String = "low"
     restart_mode::String = "from_scratch"
     wf_collect::Bool = true
-    nstep::Int = 50
-    iprint::Int = 100000
+    nstep::UInt = 50
+    iprint::UInt = 100000
     tstress::Bool = false
     tprnfor::Bool = false
     dt::Float64 = 20.0
@@ -86,31 +86,31 @@ Represent the `CONTROL` namelist of `pw.x`.
     tefield::Bool = false
     dipfield::Bool = false
     lelfield::Bool = false
-    nberrycyc::Int = 1
+    nberrycyc::UInt = 1
     lorbm::Bool = false
     lberry::Bool = false
-    gdir::Int = 0
-    nppstr::Int = 0
+    gdir::UInt = 1  # The QE default value is `0`!
+    nppstr::UInt = 0
     lfcpopt::Bool = false
     gate::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
     @assert calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
     @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
     @assert restart_mode ∈ ("from_scratch", "restart")
-    @assert nstep >= 0
     @assert iprint >= 1
     @assert disk_io ∈ ("high", "medium", "low", "none", "default")
     @assert dt >= 0
     @assert max_seconds >= 0
     @assert etot_conv_thr >= 0
     @assert forc_conv_thr >= 0
+    @assert gdir ∈ 1:3
     @assert(
         !all((gate, tefield, !dipfield)),
         "`gate` cannot be used with `tefield` if dipole correction is not active!"
     )
     @assert(
         !all((gate, dipfield, !tefield)),
-        "Dipole correction is not active if `tefield = false`!"
+        "dipole correction is not active if `tefield = false`!"
     )
 end # struct ControlNamelist
 
@@ -120,7 +120,7 @@ end # struct ControlNamelist
 Represent the `SYSTEM` namelist of `pw.x`.
 """
 @with_kw struct SystemNamelist <: Namelist
-    ibrav::Int = 1  # The default value in QE's source code is -1
+    ibrav::Int = 0  # The default value in QE's source code is -1
     celldm::Vector{Float64} = zeros(6)  # Must specify
     A::Float64 = 0.0
     B::Float64 = 0.0
@@ -128,9 +128,9 @@ Represent the `SYSTEM` namelist of `pw.x`.
     cosAB::Float64 = 0.0
     cosAC::Float64 = 0.0
     cosBC::Float64 = 0.0
-    nat::Int = 0
-    ntyp::Int = 0
-    nbnd::Int = 0
+    nat::UInt = 0
+    ntyp::UInt = 0
+    nbnd::UInt = 0
     tot_charge::Float64 = 0.0
     starting_charge::Vector{Maybe{Float64}} = []
     tot_magnetization::Float64 = -1.0
@@ -138,12 +138,12 @@ Represent the `SYSTEM` namelist of `pw.x`.
     ecutwfc::Float64 = 0.0
     ecutrho::Float64 = 0.0
     ecutfock::Float64 = 0.0
-    nr1::Int = 0
-    nr2::Int = 0
-    nr3::Int = 0
-    nr1s::Int = 0
-    nr2s::Int = 0
-    nr3s::Int = 0
+    nr1::UInt = 0
+    nr2::UInt = 0
+    nr3::UInt = 0
+    nr1s::UInt = 0
+    nr2s::UInt = 0
+    nr3s::UInt = 0
     nosym::Bool = false
     nosym_evc::Bool = false
     noinv::Bool = false
@@ -155,7 +155,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
     starting_spin_angle::Bool = false
     degauss::Float64 = 0.0
     smearing::String = "gaussian"
-    nspin::Int = 1
+    nspin::UInt = 1
     noncolin::Bool = false
     ecfixed::Float64 = 0.0
     qcutz::Float64 = 0.0
@@ -166,12 +166,12 @@ Represent the `SYSTEM` namelist of `pw.x`.
     exxdiv_treatment::String = "gygi-baldereschi"
     x_gamma_extrapolation::Bool = true
     ecutvcut::Float64 = 0.0
-    nqx1::Int = 1
-    nqx2::Int = 1
-    nqx3::Int = 1
+    nqx1::UInt = 1
+    nqx2::UInt = 1
+    nqx3::UInt = 1
     localization_thr::Float64 = 0.0  # This is only for QE 6.4
     lda_plus_u::Bool = false
-    lda_plus_u_kind::Int = 0
+    lda_plus_u_kind::UInt = 0
     Hubbard_U::Vector{Maybe{Float64}} = []
     Hubbard_J0::Vector{Maybe{Float64}} = []
     Hubbard_alpha::Vector{Maybe{Float64}} = []
@@ -179,7 +179,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
     # Hubbard_J::Vector{Vector{Maybe{Float64}}} = [zeros(ntyp)]  # The default value in QE's source code is just one 0.0
     starting_ns_eigenvalue::Float64 = -1.0  # It's actually a multidimensional array.
     U_projection_type::String = "atomic"
-    edir::Int = 1
+    edir::UInt = 1
     emaxpos::Float64 = 0.5
     eopreg::Float64 = 0.1
     eamp::Float64 = 0.001  # The default value in QE's source code is 0.0
@@ -188,13 +188,13 @@ Represent the `SYSTEM` namelist of `pw.x`.
     constrained_magnetization::String = "none"
     fixed_magnetization::Vector{Maybe{Float64}} = zeros(3)  # The default value in QE's source code is just one 0.0
     lambda::Float64 = 1.0
-    report::Int = 100
+    report::UInt = 100
     lspinorb::Bool = false
     assume_isolated::String = "none"
     esm_bc::String = "pbc"
     esm_w::Float64 = 0.0
     esm_efield::Float64 = 0.0
-    esm_nfit::Int = 4
+    esm_nfit::UInt = 4
     fcp_mu::Float64 = 0.0
     vdw_corr::String = "none"
     london::Bool = false
@@ -207,9 +207,9 @@ Represent the `SYSTEM` namelist of `pw.x`.
     xdm::Bool = false
     xdm_a1::Float64 = 0.6836  # The default value in QE's source code is 0.0
     xdm_a2::Float64 = 1.5045  # The default value in QE's source code is 0.0
-    space_group::Int = 0
+    space_group::UInt = 0
     uniqueb::Bool = false
-    origin_choice::Int = 1
+    origin_choice::UInt = 1
     rhombohedral::Bool = true
     zgate::Float64 = 0.5
     relaxz::Bool = false
@@ -220,7 +220,11 @@ Represent the `SYSTEM` namelist of `pw.x`.
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
     @assert ibrav ∈ union(0:1:14, (-3, -5, -9, 91, -12, -13))
     @assert(
-        ibrav != 0 && (celldm[1] != 0 || A != 0),  # Cannot use `iszero` to compare now!
+        if ibrav == 0
+            true  # Skip the check, cannot use `nothing`
+        else
+            celldm[1] != 0 || A != 0  # Cannot use `iszero` to compare now!
+        end,
         "invalid lattice parameters (`celldm` $celldm or `A` $A)!"
     )
     @assert(
@@ -237,8 +241,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
         end,
         "`celldm` must have length between 1 to 6! See `ibrav`'s doc!"
     )
-    @assert nat >= 0
-    @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
+    @assert(ntyp <= 10, "`ntyp` $ntyp is larger than 10!")
     @assert ntyp <= nat
     @assert(
         smearing ∈ (
@@ -262,6 +265,9 @@ Represent the `SYSTEM` namelist of `pw.x`.
     @assert ecfixed >= 0
     @assert qcutz >= 0
     @assert q2sigma >= 0
+    @assert lda_plus_u_kind ∈ 0:1
+    @assert edir ∈ 1:3
+    @assert origin_choice ∈ 1:2
     @assert length(starting_charge) <= ntyp
     @assert length(starting_magnetization) <= ntyp
     @assert length(Hubbard_U) <= ntyp
@@ -290,7 +296,7 @@ end # struct SystemNamelist
 Represent the `ELECTRONS` namelist of `pw.x`.
 """
 @with_kw struct ElectronsNamelist <: Namelist
-    electron_maxstep::Int = 100
+    electron_maxstep::UInt = 100
     scf_must_converge::Bool = true
     conv_thr::Float64 = 1e-6
     adaptive_thr::Bool = false
@@ -298,13 +304,13 @@ Represent the `ELECTRONS` namelist of `pw.x`.
     conv_thr_multi::Float64 = 0.1
     mixing_mode::String = "plain"
     mixing_beta::Float64 = 0.7
-    mixing_ndim::Int = 8
-    mixing_fixed_ns::Int = 0
+    mixing_ndim::UInt = 8
+    mixing_fixed_ns::UInt = 0
     diagonalization::String = "david"
-    ortho_para::Int = 0
+    ortho_para::UInt = 0
     diago_thr_init::Float64 = 0.0
-    diago_cg_maxiter::Int = 20
-    diago_david_ndim::Int = 4
+    diago_cg_maxiter::UInt = 20
+    diago_david_ndim::UInt = 4
     diago_full_acc::Bool = false
     efield::Float64 = 0.0
     efield_cart::Vector{Maybe{Float64}} = zeros(3)
@@ -337,10 +343,10 @@ Input this namelist only if `calculation` is `"relax"`, `"md"`, `"vc-relax"`, or
     tempw::Float64 = 300.0
     tolp::Float64 = 100.0
     delta_t::Float64 = 1.0
-    nraise::Int = 1
+    nraise::UInt = 1
     refold_pos::Bool = false
     upscale::Float64 = 100.0
-    bfgs_ndim::Int = 1
+    bfgs_ndim::UInt = 1
     trust_radius_max::Float64 = 0.8
     trust_radius_min::Float64 = 1e-3  # The default value in QE's source code is 0.0001
     trust_radius_ini::Float64 = 0.5
@@ -443,8 +449,8 @@ Represent the `BANDS` namelist of `bands.x`.
     lsym::Bool = true
     no_overlap::Bool = true
     plot_2d::Bool = false
-    firstk::Int = 0
-    lastk::Int = 10000000
+    firstk::UInt = 0
+    lastk::UInt = 10000000
     @assert spin_component ∈ 1:2
 end # struct BandsNamelist
 
