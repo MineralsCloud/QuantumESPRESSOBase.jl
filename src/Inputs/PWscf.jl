@@ -69,8 +69,8 @@ Represent the `CONTROL` namelist of `pw.x`.
     verbosity::String = "low"
     restart_mode::String = "from_scratch"
     wf_collect::Bool = true
-    nstep::Int = 50
-    iprint::Int = 100000
+    nstep::UInt = 50
+    iprint::UInt = 100000
     tstress::Bool = false
     tprnfor::Bool = false
     dt::Float64 = 20.0
@@ -86,31 +86,31 @@ Represent the `CONTROL` namelist of `pw.x`.
     tefield::Bool = false
     dipfield::Bool = false
     lelfield::Bool = false
-    nberrycyc::Int = 1
+    nberrycyc::UInt = 1
     lorbm::Bool = false
     lberry::Bool = false
-    gdir::Int = 0
-    nppstr::Int = 0
+    gdir::UInt = 1  # The QE default value is `0`!
+    nppstr::UInt = 0
     lfcpopt::Bool = false
     gate::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
     @assert calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
     @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
     @assert restart_mode ∈ ("from_scratch", "restart")
-    @assert nstep >= 0
     @assert iprint >= 1
     @assert disk_io ∈ ("high", "medium", "low", "none", "default")
     @assert dt >= 0
     @assert max_seconds >= 0
     @assert etot_conv_thr >= 0
     @assert forc_conv_thr >= 0
+    @assert gdir ∈ 1:3
     @assert(
         !all((gate, tefield, !dipfield)),
         "`gate` cannot be used with `tefield` if dipole correction is not active!"
     )
     @assert(
         !all((gate, dipfield, !tefield)),
-        "Dipole correction is not active if `tefield = false`!"
+        "dipole correction is not active if `tefield = false`!"
     )
 end # struct ControlNamelist
 
