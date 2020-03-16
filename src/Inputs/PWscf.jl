@@ -296,7 +296,7 @@ end # struct SystemNamelist
 Represent the `ELECTRONS` namelist of `pw.x`.
 """
 @with_kw struct ElectronsNamelist <: Namelist
-    electron_maxstep::Int = 100
+    electron_maxstep::UInt = 100
     scf_must_converge::Bool = true
     conv_thr::Float64 = 1e-6
     adaptive_thr::Bool = false
@@ -304,13 +304,13 @@ Represent the `ELECTRONS` namelist of `pw.x`.
     conv_thr_multi::Float64 = 0.1
     mixing_mode::String = "plain"
     mixing_beta::Float64 = 0.7
-    mixing_ndim::Int = 8
-    mixing_fixed_ns::Int = 0
+    mixing_ndim::UInt = 8
+    mixing_fixed_ns::UInt = 0
     diagonalization::String = "david"
-    ortho_para::Int = 0
+    ortho_para::UInt = 0
     diago_thr_init::Float64 = 0.0
-    diago_cg_maxiter::Int = 20
-    diago_david_ndim::Int = 4
+    diago_cg_maxiter::UInt = 20
+    diago_david_ndim::UInt = 4
     diago_full_acc::Bool = false
     efield::Float64 = 0.0
     efield_cart::Vector{Maybe{Float64}} = zeros(3)
@@ -343,10 +343,10 @@ Input this namelist only if `calculation` is `"relax"`, `"md"`, `"vc-relax"`, or
     tempw::Float64 = 300.0
     tolp::Float64 = 100.0
     delta_t::Float64 = 1.0
-    nraise::Int = 1
+    nraise::UInt = 1
     refold_pos::Bool = false
     upscale::Float64 = 100.0
-    bfgs_ndim::Int = 1
+    bfgs_ndim::UInt = 1
     trust_radius_max::Float64 = 0.8
     trust_radius_min::Float64 = 1e-3  # The default value in QE's source code is 0.0001
     trust_radius_ini::Float64 = 0.5
@@ -449,8 +449,8 @@ Represent the `BANDS` namelist of `bands.x`.
     lsym::Bool = true
     no_overlap::Bool = true
     plot_2d::Bool = false
-    firstk::Int = 0
-    lastk::Int = 10000000
+    firstk::UInt = 0
+    lastk::UInt = 10000000
     @assert spin_component ∈ 1:2
 end # struct BandsNamelist
 
