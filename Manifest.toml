@@ -29,9 +29,9 @@ version = "3.8.0"
 
 [[CompilerSupportLibraries_jll]]
 deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "b57c5d019367c90f234a7bc7e24ff0a84971da5d"
+git-tree-sha1 = "aa832564f930a7fc9290972526908d01a35aefac"
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "0.2.0+1"
+version = "0.3.0+0"
 
 [[Conda]]
 deps = ["JSON", "VersionParsing"]
@@ -52,7 +52,7 @@ version = "0.5.1"
 
 [[Crystallography]]
 deps = ["CoordinateTransformations", "LibSymspg", "LinearAlgebra", "StaticArrays", "SymPy"]
-git-tree-sha1 = "1e07432e18d0db4e1457c7e496729cb53bbf3e70"
+git-tree-sha1 = "ab7350f6dab49f939aa26861d65014a41f54addc"
 repo-rev = "master"
 repo-url = "git@github.com:singularitti/Crystallography.jl.git"
 uuid = "3bff3928-7a76-11e9-2089-d112443085a5"
@@ -142,6 +142,7 @@ uuid = "caafb194-7e8d-11e9-2724-d5981dd0806d"
 version = "0.2.5"
 
 [[LibGit2]]
+deps = ["Printf"]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 
 [[LibSymspg]]
@@ -204,7 +205,7 @@ uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
 version = "0.3.12"
 
 [[Pkg]]
-deps = ["Dates", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Test", "UUIDs"]
+deps = ["Dates", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [[PooledArrays]]
@@ -233,7 +234,7 @@ version = "1.91.4"
 
 [[PyFortran90Namelists]]
 deps = ["Compat", "Pkg", "PyCall", "VersionParsing"]
-git-tree-sha1 = "14362115557391c10c429a8cb39943ae0643f505"
+git-tree-sha1 = "977e16f5e271c8ea27f6bfcb3c843b782c2d047b"
 repo-rev = "master"
 repo-url = "git@github.com:singularitti/PyFortran90Namelists.jl.git"
 uuid = "e44308e6-bd5b-11e9-2850-49daf8f1ec40"
