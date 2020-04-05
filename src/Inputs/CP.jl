@@ -7,13 +7,12 @@ using Kaleido: @batchlens
 using Parameters: @with_kw
 using Setfield: @lens
 
-using QuantumESPRESSOBase.Inputs: Namelist, QuantumESPRESSOInput
-using QuantumESPRESSOBase.Setters: VerbositySetter, CalculationSetter, LensMaker
+using ..Inputs: Namelist, QuantumESPRESSOInput
+using ...Setters: VerbositySetter, CalculationSetter, LensMaker
 
 import Crystallography
-import QuantumESPRESSOBase
-import QuantumESPRESSOBase.Inputs
-import QuantumESPRESSOBase.Setters
+import ..Inputs
+import ...Setters
 
 export CPInput
 export ControlNamelist,

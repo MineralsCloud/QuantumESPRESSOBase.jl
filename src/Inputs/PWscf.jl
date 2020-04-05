@@ -21,8 +21,8 @@ using Setfield: PropertyLens, set, @lens
 using Unitful
 using UnitfulAtomic
 
-using QuantumESPRESSOBase.Inputs: InputEntry, Namelist, QuantumESPRESSOInput, entryname
-using QuantumESPRESSOBase.Setters:
+using ..Inputs: InputEntry, Namelist, QuantumESPRESSOInput, entryname
+using ...Setters:
     AlatPressSetter,
     LensMaker,
     VerbositySetter,
@@ -31,8 +31,8 @@ using QuantumESPRESSOBase.Setters:
     LensMaker
 
 import Crystallography
-import QuantumESPRESSOBase.Inputs
-import QuantumESPRESSOBase.Setters
+import ..Inputs
+import ...Setters
 
 export ControlNamelist,
     SystemNamelist,

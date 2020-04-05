@@ -19,11 +19,10 @@ using PyFortran90Namelists: fstring
 using Kaleido: @batchlens
 using OrderedCollections: OrderedDict
 
-using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
+using ..Setters: CellParametersSetter, LensMaker
 
 import Crystallography
-import QuantumESPRESSOBase
-import QuantumESPRESSOBase.Setters
+import ..Setters
 
 export Card
 export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
