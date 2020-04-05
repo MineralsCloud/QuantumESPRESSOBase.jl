@@ -1,9 +1,8 @@
 module CP
 
-using LinearAlgebra: det
-
 using Compat: isnothing
 using Kaleido: @batchlens
+using LinearAlgebra: det
 using Parameters: @with_kw
 using Setfield: @lens
 
@@ -14,15 +13,14 @@ import Crystallography
 import ..Inputs
 import ...Setters
 
-export CPInput
 export ControlNamelist,
     SystemNamelist,
     ElectronsNamelist,
     IonsNamelist,
     CellNamelist,
     PressAiNamelist,
-    WannierNamelist
-export AtomicSpecies,
+    WannierNamelist,
+    AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
@@ -31,7 +29,8 @@ export AtomicSpecies,
     AtomicVelocity,
     AtomicVelocitiesCard,
     AtomicForce,
-    AtomicForcesCard
+    AtomicForcesCard,
+    CPInput
 export optconvert
 
 # From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4

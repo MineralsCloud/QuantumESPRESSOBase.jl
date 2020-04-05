@@ -11,11 +11,10 @@ julia>
 """
 module PWscf
 
-using LinearAlgebra: det
-
 using Compat: isnothing
 using Crystallography: BravaisLattice, CellParameters, cellvolume
 using Kaleido: @batchlens
+using LinearAlgebra: det
 using Parameters: @with_kw
 using Setfield: PropertyLens, set, @lens
 using Unitful
@@ -41,8 +40,7 @@ export ControlNamelist,
     CellNamelist,
     DosNamelist,
     BandsNamelist,
-    PWInput
-export AtomicSpecies,
+    AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
@@ -52,7 +50,8 @@ export AtomicSpecies,
     MonkhorstPackGrid,
     GammaPoint,
     SpecialKPoint,
-    KPointsCard
+    KPointsCard,
+    PWInput
 export optconvert
 
 # From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4

@@ -11,13 +11,12 @@ julia>
 """
 module Inputs
 
-using LinearAlgebra: det
-
 using Compat: isnothing, only
 using Crystallography: BravaisLattice
-using PyFortran90Namelists: fstring
 using Kaleido: @batchlens
+using LinearAlgebra: det
 using OrderedCollections: OrderedDict
+using PyFortran90Namelists: fstring
 
 using ..Setters: CellParametersSetter, LensMaker
 
