@@ -2,8 +2,6 @@ module CLI
 
 using Parameters: @with_kw_noshow
 
-import QuantumESPRESSOBase.Inputs
-
 export ParallelizationLevel, PWCmd
 
 struct ParallelizationLevel{N} end

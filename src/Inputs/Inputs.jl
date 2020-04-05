@@ -11,19 +11,17 @@ julia>
 """
 module Inputs
 
-using LinearAlgebra: det
-
 using Compat: isnothing, only
 using Crystallography: BravaisLattice
-using PyFortran90Namelists: fstring
 using Kaleido: @batchlens
+using LinearAlgebra: det
 using OrderedCollections: OrderedDict
+using PyFortran90Namelists: fstring
 
-using QuantumESPRESSOBase.Setters: CellParametersSetter, LensMaker
+using ..Setters: CellParametersSetter, LensMaker
 
 import Crystallography
-import QuantumESPRESSOBase
-import QuantumESPRESSOBase.Setters
+import ..Setters
 
 export Card
 export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring

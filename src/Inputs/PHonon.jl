@@ -13,10 +13,9 @@ module PHonon
 
 using Parameters: @with_kw
 
-using QuantumESPRESSOBase.Inputs: Namelist, QuantumESPRESSOInput
+using ..Inputs: Namelist, QuantumESPRESSOInput
 
-import QuantumESPRESSOBase
-import QuantumESPRESSOBase.Inputs
+import ..Inputs
 
 export PhInput, Q2rInput, MatdynInput, DynmatInput
 export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist

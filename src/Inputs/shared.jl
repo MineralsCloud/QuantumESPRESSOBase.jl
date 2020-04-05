@@ -5,13 +5,11 @@ using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix, FieldVector
 
-using QuantumESPRESSOBase.Inputs: Card, getoption, allowed_options, qestring
+using ..Inputs: Card, getoption, allowed_options, qestring
 
 import Crystallography
 import Pseudopotentials
-import QuantumESPRESSOBase.Inputs
-
-const Maybe{T} = Union{T,Nothing}
+import ..Inputs
 
 # =============================== AtomicSpecies ============================== #
 """
