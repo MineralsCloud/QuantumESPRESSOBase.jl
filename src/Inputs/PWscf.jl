@@ -55,7 +55,8 @@ export AtomicSpecies,
     KPointsCard
 export optconvert
 
-include("shared.jl")
+# From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4
+const Maybe{T} = Union{T,Nothing}
 
 # The default values are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90.
 """
@@ -452,7 +453,9 @@ Represent the `BANDS` namelist of `bands.x`.
     firstk::UInt = 0
     lastk::UInt = 10000000
     @assert spin_component ∈ 1:2
-end # struct BandsNamelist
+end # struct
+
+include("shared.jl")
 
 function Setters.make(::LensMaker{<:VerbositySetter,ControlNamelist})
     return @batchlens begin

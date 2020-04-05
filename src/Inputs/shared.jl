@@ -11,8 +11,6 @@ import Crystallography
 import Pseudopotentials
 import ..Inputs
 
-const Maybe{T} = Union{T,Nothing}
-
 # =============================== AtomicSpecies ============================== #
 """
     AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)

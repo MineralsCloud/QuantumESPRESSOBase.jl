@@ -34,7 +34,8 @@ export AtomicSpecies,
     AtomicForcesCard
 export optconvert
 
-include("shared.jl")
+# From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4
+const Maybe{T} = Union{T,Nothing}
 
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 """
@@ -360,6 +361,8 @@ Input this namelist only if `calculation` is `"cp-wf"` or `"vc-cp-wf"`.
     @assert 1 <= calwf <= 5
     @assert 1 <= wfsd <= 3
 end # struct WannierNamelist
+
+include("shared.jl")
 
 function Setters.make(::LensMaker{VerbositySetter,ControlNamelist})
     return @batchlens begin
