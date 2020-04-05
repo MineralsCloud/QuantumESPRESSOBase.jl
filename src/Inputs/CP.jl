@@ -35,6 +35,8 @@ export AtomicSpecies,
     AtomicForcesCard
 export optconvert
 
+include("shared.jl")
+
 # The following default values are picked from `<QE source>/Modules/read_namelists.f90`
 """
     ControlNamelist <: Namelist
@@ -92,7 +94,7 @@ Represent the `SYSTEM` namelist of `cp.x`.
 """
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = -1
-    celldm::Vector{Float64} = zeros(6)  # Must specify
+    celldm::Vector{Maybe{Float64}} = zeros(6)  # Must specify
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -380,8 +382,6 @@ Setters.preset_values(::VerbositySetter{:low}, ::ControlNamelist) =
     ("low", false, false, false, false, "default")
 Setters.preset_values(::CalculationSetter{T}, ::ControlNamelist) where {T} =
     replace(string(T), "_" => "-")
-
-include("shared.jl")
 
 """
     AtomicVelocity(atom::Union{AbstractChar,String}, velocity::Vector{Float64})

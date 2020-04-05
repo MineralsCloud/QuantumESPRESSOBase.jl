@@ -11,6 +11,8 @@ import Crystallography
 import Pseudopotentials
 import QuantumESPRESSOBase.Inputs
 
+const Maybe{T} = Union{T,Nothing}
+
 # =============================== AtomicSpecies ============================== #
 """
     AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)

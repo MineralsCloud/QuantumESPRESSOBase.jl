@@ -55,7 +55,7 @@ export AtomicSpecies,
     KPointsCard
 export optconvert
 
-const Maybe{T} = Union{T,Nothing}
+include("shared.jl")
 
 # The default values are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90.
 """
@@ -121,7 +121,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
 """
 @with_kw struct SystemNamelist <: Namelist
     ibrav::Int = 0  # The default value in QE's source code is -1
-    celldm::Vector{Float64} = zeros(6)  # Must specify
+    celldm::Vector{Maybe{Float64}} = zeros(6)  # Must specify
     A::Float64 = 0.0
     B::Float64 = 0.0
     C::Float64 = 0.0
@@ -506,8 +506,6 @@ function Setters.preset_values(::FiniteTemperatureSetter{N}, ::SystemNamelist) w
 end # function Setters.preset_values
 Setters.preset_values(::CalculationSetter{T}, ::ControlNamelist) where {T} =
     replace(string(T), "_" => "-")
-
-include("shared.jl")
 
 """
     PWInput <: QuantumESPRESSOInput
