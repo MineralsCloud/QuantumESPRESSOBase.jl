@@ -27,16 +27,20 @@ export Card
 export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
 
 """
-    InputEntry
+    Namelist
 
-Represent any component of a `Input`.
-
-Hierachy of `InputEntry`:
-```
-
-```
+The abstraction of an component of a `Input`, a basic Fortran data structure.
 """
-abstract type InputEntry end
+abstract type Namelist end
+
+"""
+    Card
+
+The abstraction of all components of a `Input` that is not a `Namelist`.
+"""
+abstract type Card end
+
+const InputEntry = Union{Namelist,Card}
 
 """
     titleof(::Type{<:InputEntry})
@@ -57,13 +61,6 @@ true
 ```
 """
 titleof(x::InputEntry) = titleof(typeof(x))
-
-"""
-    Namelist <: InputEntry
-
-The abstraction of an component of a `Input`, a basic Fortran data structure.
-"""
-abstract type Namelist <: InputEntry end
 
 """
     to_dict(nml; defaultorder = true)
@@ -94,13 +91,6 @@ function dropdefault(nml::Namelist)
     isempty(result) && @info "Every entry in the namelist is the default value!"
     return result
 end
-
-"""
-    Card <: InputEntry
-
-The abstraction of all components of a `Input` that is not a `Namelist`.
-"""
-abstract type Card <: InputEntry end
 
 """
     getoption(x::Card)
