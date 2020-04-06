@@ -13,7 +13,7 @@ module PHonon
 
 using Parameters: @with_kw
 
-using ..Inputs: Namelist, QuantumESPRESSOInput
+using ..Inputs: Namelist, Input
 
 import ..Inputs
 
@@ -160,22 +160,22 @@ Inputs.titleof(::Type{Q2rNamelist}) = "INPUT"
 Inputs.titleof(::Type{MatdynNamelist}) = "INPUT"
 Inputs.titleof(::Type{DynmatNamelist}) = "INPUT"
 
-# @with_kw struct PhInput <: QuantumESPRESSOInput
+# @with_kw struct PhInput <: Input
 #     inputph::PhNamelist = PhNamelist()
 #     q_points::Union{Nothing,KPointsCard} = nothing
 # end # struct PhInput
 
-struct Q2rInput <: QuantumESPRESSOInput
+struct Q2rInput <: Input
     input::Q2rNamelist
 end # struct Q2rInput
 Q2rInput() = Q2rInput(Q2rNamelist())
 
-# @with_kw struct MatdynInput <: QuantumESPRESSOInput
+# @with_kw struct MatdynInput <: Input
 #     input::MatdynNamelist = MatdynNamelist()
 #     q_points::KPointsCard
 # end # struct MatdynInput
 
-struct DynmatInput <: QuantumESPRESSOInput
+struct DynmatInput <: Input
     input::DynmatNamelist
 end # struct DynmatInput
 DynmatInput() = DynmatInput(DynmatNamelist())

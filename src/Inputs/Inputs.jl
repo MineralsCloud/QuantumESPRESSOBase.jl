@@ -23,20 +23,23 @@ using ..Setters: CellParametersSetter, LensMaker
 import Crystallography
 import ..Setters
 
-export Card
 export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
 
 """
-    InputEntry
+    Namelist
 
-Represent any component of a `QuantumESPRESSOInput`.
-
-Hierachy of `InputEntry`:
-```
-
-```
+The abstraction of an component of a `Input`, a basic Fortran data structure.
 """
-abstract type InputEntry end
+abstract type Namelist end
+
+"""
+    Card
+
+The abstraction of all components of a `Input` that is not a `Namelist`.
+"""
+abstract type Card end
+
+const InputEntry = Union{Namelist,Card}
 
 """
     titleof(::Type{<:InputEntry})
@@ -57,13 +60,6 @@ true
 ```
 """
 titleof(x::InputEntry) = titleof(typeof(x))
-
-"""
-    Namelist <: InputEntry
-
-The abstraction of an component of a `QuantumESPRESSOInput`, a basic Fortran data structure.
-"""
-abstract type Namelist <: InputEntry end
 
 """
     to_dict(nml; defaultorder = true)
@@ -94,13 +90,6 @@ function dropdefault(nml::Namelist)
     isempty(result) && @info "Every entry in the namelist is the default value!"
     return result
 end
-
-"""
-    Card <: InputEntry
-
-The abstraction of all components of a `QuantumESPRESSOInput` that is not a `Namelist`.
-"""
-abstract type Card <: InputEntry end
 
 """
     getoption(x::Card)
@@ -134,31 +123,31 @@ julia> allowed_options(KPointsCard)
 allowed_options(::Type{<:Card}) = nothing
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
-abstract type QuantumESPRESSOInput end
+abstract type Input end
 
 # This is a helper function and should not be exported.
-entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
+entryname(S::Type{<:InputEntry}, T::Type{<:Input}) =
     only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 """
-    getnamelists(input::QuantumESPRESSOInput, selector::Symbol = :all)
+    getnamelists(input::Input, selector::Symbol = :all)
 
-Return an iterable of `Namelist`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
+Return an iterable of `Namelist`s of a `Input`. It is lazy, you may want to `collect` it.
 
 Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
 """
-getnamelists(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
+getnamelists(input::T, selector::Symbol = :all) where {T<:Input} =
     (getfield(input, x) for x in _selectnamelists(T, Val(selector)))
 
 """
     getcards(input::T, selector::Symbol = :all)
 
-Return an iterable of `Card`s of a `QuantumESPRESSOInput`. It is lazy, you may want to `collect` it.
+Return an iterable of `Card`s of a `Input`. It is lazy, you may want to `collect` it.
 
 Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
 Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
 """
-getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
+getcards(input::T, selector::Symbol = :all) where {T<:Input} =
     (getfield(input, x) for x in _selectcards(T, Val(selector)))
 
 """
@@ -192,7 +181,7 @@ function qestring(
     return "&$namelist_name" * newline * content * '/'
 end
 function qestring(
-    input::QuantumESPRESSOInput;
+    input::Input;
     indent = ' '^4,
     delim = ' ',
     newline = '\n',
@@ -232,14 +221,14 @@ include("PHonon.jl")
 using .PWscf: PWInput
 using .CP: CPInput
 
-_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) =
+_selectnamelists(T::Type{<:Input}, ::Val{:all}) =
     Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
 _selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) =
     (:control, :system, :electrons)
 _selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
     setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
 
-_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(
+_selectcards(T::Type{<:Input}, ::Val{:all}) = Tuple(
     entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing}
 )
 _selectcards(T::Type{PWInput}, ::Val{:compulsory}) =

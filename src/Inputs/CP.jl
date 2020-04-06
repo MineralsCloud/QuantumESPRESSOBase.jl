@@ -6,7 +6,7 @@ using LinearAlgebra: det
 using Parameters: @with_kw
 using Setfield: @lens
 
-using ..Inputs: Namelist, QuantumESPRESSOInput
+using ..Inputs: Namelist, Input
 using ...Setters: VerbositySetter, CalculationSetter, LensMaker
 
 import Crystallography
@@ -461,7 +461,7 @@ function Base.setproperty!(value::AtomicVelocity, name::Symbol, x)
 end # function Base.setproperty!
 
 """
-    CPInput <: QuantumESPRESSOInput
+    CPInput <: Input
     CPInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
 
 Construct a `PWInput` which represents the input of program `pw.x`.
@@ -480,7 +480,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
 - `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 - `ref_cell_parameters::Union{Nothing,RefCellParametersCard}`: the `REF_CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 """
-@with_kw struct CPInput <: QuantumESPRESSOInput
+@with_kw struct CPInput <: Input
     control::ControlNamelist = ControlNamelist()
     system::SystemNamelist = SystemNamelist()
     electrons::ElectronsNamelist = ElectronsNamelist()

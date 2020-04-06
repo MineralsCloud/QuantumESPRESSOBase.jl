@@ -20,7 +20,7 @@ using Setfield: PropertyLens, set, @lens
 using Unitful
 using UnitfulAtomic
 
-using ..Inputs: InputEntry, Namelist, QuantumESPRESSOInput, entryname
+using ..Inputs: InputEntry, Namelist, Input, entryname
 using ...Setters:
     AlatPressSetter,
     LensMaker,
@@ -510,7 +510,7 @@ Setters.preset_values(::CalculationSetter{T}, ::ControlNamelist) where {T} =
     replace(string(T), "_" => "-")
 
 """
-    PWInput <: QuantumESPRESSOInput
+    PWInput <: Input
     PWInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
 
 Construct a `PWInput` which represents the input of program `pw.x`.
@@ -526,7 +526,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
 - `k_points::KPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
 - `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 """
-@with_kw struct PWInput <: QuantumESPRESSOInput
+@with_kw struct PWInput <: Input
     control::ControlNamelist = ControlNamelist()
     system::SystemNamelist = SystemNamelist()
     electrons::ElectronsNamelist = ElectronsNamelist()
