@@ -23,7 +23,6 @@ using ..Setters: CellParametersSetter, LensMaker
 import Crystallography
 import ..Setters
 
-export Card
 export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
 
 """
