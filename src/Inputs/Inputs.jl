@@ -251,8 +251,11 @@ function Crystallography.cellvolume(input::PWInput)
     else
         if getoption(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
-            isnothing(input.system.celldm[1]) && error("`celldm[1]` is not defined!")
-            return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
+            if isnothing(input.system.celldm[1])
+                error("`celldm[1]` is not defined!")
+            else
+                return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
+            end
         else  # "bohr" or "angstrom"
             return cellvolume(input.cell_parameters)
         end
