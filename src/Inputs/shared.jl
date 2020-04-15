@@ -4,6 +4,8 @@ using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix, FieldVector
+using Unitful
+using UnitfulAtomic
 
 using ..Inputs: Card, getoption, allowed_options, qestring
 
@@ -285,19 +287,17 @@ Inputs.allowed_options(::Type{<:KPointsCard}) = (
 
 Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
 
-It will throw an error if the information is not enough to calculate the volume.
+!!! warning
+    It will throw an error if the option is `"alat"`.
 """
 function Crystallography.cellvolume(card::AbstractCellParametersCard)
-    BOHR_TO_ANGSTROM = 0.529177210903
     option = getoption(card)
     if option == "bohr"
         abs(det(card.data))
     elseif option == "angstrom"
-        abs(det(card.data)) / BOHR_TO_ANGSTROM^3
-    elseif option == "alat"
-        error("Information not enough! The `celldm[1]` parameter is unknown!")
-    else
-        error("Option $option is unknown!")
+        ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
+    else  # option == "alat"
+        error("information not enough! Parameter `celldm[1]` needed!")
     end
 end # function Crystallography.cellvolume
 
@@ -306,21 +306,24 @@ end # function Crystallography.cellvolume
 
 Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom", or its reverse.
 
-It does not support conversion between "alat" and the rests.
+!!! warning
+    It does not support conversion between `"alat"` and the others.
 """
 function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
-    BOHR_TO_ANGSTROM = 0.529177210903
     old_option = getoption(card)
-    new_option == old_option && return card  # No conversion is needed
-    pair = old_option => new_option
-    factor = if pair == ("bohr" => "angstrom")
-        BOHR_TO_ANGSTROM
-    elseif pair == ("angstrom" => "bohr")
-        1 / BOHR_TO_ANGSTROM
+    if new_option == old_option
+        return card  # No conversion is needed
     else
-        error("Unknown option pair ($pair) given!")
+        return typeof(card)(
+            if (old_option => new_option) == ("bohr" => "angstrom")
+                @. ustrip(u"angstrom", card.data * u"bohr")
+            elseif (old_option => new_option) == ("angstrom" => "bohr")
+                @. ustrip(u"bohr", card.data * u"angstrom")
+            else
+                error("unknown conversion rule $(old_option => new_option)!")
+            end
+        )
     end
-    return typeof(card)(card.data .* factor, new_option)
 end # function optconvert
 
 Inputs.titleof(::Type{ControlNamelist}) = "CONTROL"
