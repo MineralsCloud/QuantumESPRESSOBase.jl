@@ -12,7 +12,8 @@ julia>
 module PWscf
 
 using Compat: isnothing
-using Crystallography: BravaisLattice, CellParameters, cellvolume
+using Crystallography: Bravais, CellParameters
+using Crystallography.Arithmetics: cellvolume
 using Kaleido: @batchlens
 using LinearAlgebra: det
 using Parameters: @with_kw

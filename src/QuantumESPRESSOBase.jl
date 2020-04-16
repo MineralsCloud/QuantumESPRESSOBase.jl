@@ -4,28 +4,28 @@ using Crystallography
 
 import Crystallography
 
-Crystallography.BravaisLattice(ibrav::Integer) = _BravaisLattice(Val(ibrav))
+Crystallography.Bravais(ibrav::Integer) = _Bravais(Val(ibrav))
 # These are helper methods and should not be exported!
-_BravaisLattice(::Val{N}) where {N} = error("Bravais lattice undefined for `ibrav = $N`!")
-_BravaisLattice(::Val{1}) = PrimitiveCubic()
-_BravaisLattice(::Val{2}) = FaceCenteredCubic()
-_BravaisLattice(::Val{3}) = BodyCenteredCubic()
-_BravaisLattice(::Val{4}) = PrimitiveHexagonal()
-_BravaisLattice(::Val{5}) = RCenteredHexagonal()
-_BravaisLattice(::Val{-5}) = RCenteredHexagonal()
-_BravaisLattice(::Val{6}) = PrimitiveTetragonal()
-_BravaisLattice(::Val{7}) = BodyCenteredTetragonal()
-_BravaisLattice(::Val{8}) = PrimitiveOrthorhombic()
-_BravaisLattice(::Val{9}) = BCenteredOrthorhombic()
-_BravaisLattice(::Val{-9}) = BCenteredOrthorhombic()
-_BravaisLattice(::Val{91}) = ACenteredOrthorhombic()  # New in QE 6.5
-_BravaisLattice(::Val{10}) = FaceCenteredOrthorhombic()
-_BravaisLattice(::Val{11}) = BodyCenteredOrthorhombic()
-_BravaisLattice(::Val{12}) = PrimitiveMonoclinic()
-_BravaisLattice(::Val{-12}) = PrimitiveMonoclinic()
-_BravaisLattice(::Val{13}) = CCenteredMonoclinic()
-_BravaisLattice(::Val{-13}) = BCenteredMonoclinic()  # New in QE 6.5
-_BravaisLattice(::Val{14}) = PrimitiveTriclinic()
+_Bravais(::Val{N}) where {N} = error("Bravais lattice undefined for `ibrav = $N`!")
+_Bravais(::Val{1}) = PrimitiveCubic()
+_Bravais(::Val{2}) = FaceCenteredCubic()
+_Bravais(::Val{3}) = BodyCenteredCubic()
+_Bravais(::Val{4}) = PrimitiveHexagonal()
+_Bravais(::Val{5}) = RCenteredHexagonal()
+_Bravais(::Val{-5}) = RCenteredHexagonal()
+_Bravais(::Val{6}) = PrimitiveTetragonal()
+_Bravais(::Val{7}) = BodyCenteredTetragonal()
+_Bravais(::Val{8}) = PrimitiveOrthorhombic()
+_Bravais(::Val{9}) = BCenteredOrthorhombic()
+_Bravais(::Val{-9}) = BCenteredOrthorhombic()
+_Bravais(::Val{91}) = ACenteredOrthorhombic()  # New in QE 6.5
+_Bravais(::Val{10}) = FaceCenteredOrthorhombic()
+_Bravais(::Val{11}) = BodyCenteredOrthorhombic()
+_Bravais(::Val{12}) = PrimitiveMonoclinic()
+_Bravais(::Val{-12}) = PrimitiveMonoclinic()
+_Bravais(::Val{13}) = CCenteredMonoclinic()
+_Bravais(::Val{-13}) = BCenteredMonoclinic()  # New in QE 6.5
+_Bravais(::Val{14}) = PrimitiveTriclinic()
 
 struct AxesSetting{N} end
 AxesSetting(N::Int) = AxesSetting{N}()

@@ -9,7 +9,7 @@ using UnitfulAtomic
 
 using ..Inputs: Card, getoption, allowed_options, qestring
 
-import Crystallography
+import Crystallography.Arithmetics
 import Pseudopotentials
 import ..Inputs
 
@@ -283,25 +283,6 @@ Inputs.allowed_options(::Type{<:KPointsCard}) = (
 )
 
 """
-    cellvolume(card)
-
-Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
-
-!!! warning
-    It will throw an error if the option is `"alat"`.
-"""
-function Crystallography.cellvolume(card::AbstractCellParametersCard)
-    option = getoption(card)
-    if option == "bohr"
-        abs(det(card.data))
-    elseif option == "angstrom"
-        ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
-    else  # option == "alat"
-        error("information not enough! Parameter `celldm[1]` needed!")
-    end
-end # function Crystallography.cellvolume
-
-"""
     optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
 
 Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom", or its reverse.
@@ -337,11 +318,11 @@ Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
-    Crystallography.BravaisLattice(nml::SystemNamelist)
+    Crystallography.Bravais(nml::SystemNamelist)
 
-Return a `BravaisLattice` from a `SystemNamelist`.
+Return a `Bravais` from a `SystemNamelist`.
 """
-Crystallography.BravaisLattice(nml::SystemNamelist) = BravaisLattice{nml.ibrav}()
+Crystallography.Bravais(nml::SystemNamelist) = Bravais{nml.ibrav}()
 
 """
     Crystallography.Lattice(nml::SystemNamelist)
@@ -349,16 +330,34 @@ Crystallography.BravaisLattice(nml::SystemNamelist) = BravaisLattice{nml.ibrav}(
 Return a `Lattice` from a `SystemNamelist`.
 """
 function Crystallography.Lattice(nml::SystemNamelist)
-    b = BravaisLattice(nml)
+    b = Bravais(nml)
     return Lattice(b, CellParameters(nml.celldm...))
 end # function Crystallography.Lattice
 
+"""
+    cellvolume(card)
+
+Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
+
+!!! warning
+    It will throw an error if the option is `"alat"`.
+"""
+function Arithmetics.cellvolume(card::AbstractCellParametersCard)
+    option = getoption(card)
+    if option == "bohr"
+        abs(det(card.data))
+    elseif option == "angstrom"
+        ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
+    else  # option == "alat"
+        error("information not enough! Parameter `celldm[1]` needed!")
+    end
+end # function Arithmetics.cellvolume
 """
     cellvolume(nml::SystemNamelist)
 
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
-Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
+Arithmetics.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
 function Inputs.qestring(
     data::AtomicSpecies;
