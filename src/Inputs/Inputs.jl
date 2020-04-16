@@ -12,7 +12,7 @@ julia>
 module Inputs
 
 using Compat: isnothing, only
-using Crystallography: BravaisLattice
+using Crystallography: Bravais
 using Kaleido: @batchlens
 using LinearAlgebra: det
 using OrderedCollections: OrderedDict
@@ -20,7 +20,7 @@ using PyFortran90Namelists: fstring
 
 using ..Setters: CellParametersSetter, LensMaker
 
-import Crystallography
+import Crystallography.Arithmetics
 import ..Setters
 
 export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
@@ -245,9 +245,9 @@ nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # 
 
 Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
 """
-function Crystallography.cellvolume(input::PWInput)
+function Arithmetics.cellvolume(input::PWInput)
     if isnothing(input.cell_parameters)
-        return abs(det(BravaisLattice(input.system)()))
+        return abs(det(Bravais(input.system)()))
     else
         if getoption(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
@@ -260,7 +260,7 @@ function Crystallography.cellvolume(input::PWInput)
             return cellvolume(input.cell_parameters)
         end
     end
-end # function Crystallography.cellvolume
+end # function Arithmetics.cellvolume
 
 function Setters.make(::LensMaker{CellParametersSetter,<:Union{PWInput,CPInput}})
     return @batchlens begin
@@ -273,7 +273,7 @@ end # function Setters.make
 function Setters.preset_values(::CellParametersSetter, template::Union{PWInput,CPInput})
     # !isnothing(template.cell_parameters) && return template
     system = template.system
-    return (CellParametersCard("alat", BravaisLattice(system)()), 0, [system.celldm[1]])
+    return (CellParametersCard("alat", Bravais(system)()), 0, [system.celldm[1]])
 end # function Setters.preset_values
 
 end
