@@ -252,7 +252,6 @@ Input this namelist only if `calculation` is `"cp"`, `"relax"`, `"vc-relax"`, `"
     @assert tempw > 0
     @assert fnosep > 0
     @assert 0 <= nhpcl <= 4
-
 end # struct IonsNamelist
 
 """

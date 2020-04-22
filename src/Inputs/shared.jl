@@ -1,5 +1,5 @@
 using Compat: eachrow
-using Crystallography: Lattice, Cell
+using Crystallography: Bravais, Lattice, CellParameters, Cell
 using Formatting: sprintf1
 using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
@@ -8,10 +8,12 @@ using Unitful
 using UnitfulAtomic
 
 using ..Inputs: Card, getoption, allowed_options, qestring
+using ...Setters: CellParametersSetter
 
 import Crystallography.Arithmetics
 import Pseudopotentials
 import ..Inputs
+import ...Setters
 
 # =============================== AtomicSpecies ============================== #
 """
@@ -358,6 +360,20 @@ end # function Arithmetics.cellvolume
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
 Arithmetics.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
+
+function Setters.make(::LensMaker{CellParametersSetter,<:Union{PWInput,CPInput}})
+    return @batchlens begin
+        _.cell_parameters
+        _.system.ibrav
+        _.system.celldm
+    end
+end # function Setters.make
+
+function Setters.preset_values(::CellParametersSetter, template)
+    # !isnothing(template.cell_parameters) && return template
+    system = template.system
+    return (CellParametersCard(Lattice(Bravais(system), CellParameters(template.celldm...)), "alat"), 0, [system.celldm[1]])
+end # function Setters.preset_values
 
 function Inputs.qestring(
     data::AtomicSpecies;

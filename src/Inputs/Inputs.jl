@@ -262,18 +262,4 @@ function Arithmetics.cellvolume(input::PWInput)
     end
 end # function Arithmetics.cellvolume
 
-function Setters.make(::LensMaker{CellParametersSetter,<:Union{PWInput,CPInput}})
-    return @batchlens begin
-        _.cell_parameters
-        _.system.ibrav
-        _.system.celldm
-    end
-end # function Setters.make
-
-function Setters.preset_values(::CellParametersSetter, template::Union{PWInput,CPInput})
-    # !isnothing(template.cell_parameters) && return template
-    system = template.system
-    return (CellParametersCard("alat", Bravais(system)()), 0, [system.celldm[1]])
-end # function Setters.preset_values
-
 end
