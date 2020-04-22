@@ -16,6 +16,7 @@ using Crystallography: Bravais
 using Kaleido: @batchlens
 using LinearAlgebra: det
 using OrderedCollections: OrderedDict
+using Parameters: type2dict
 using PyFortran90Namelists: fstring
 
 using ..Setters: CellParametersSetter, LensMaker
@@ -90,6 +91,8 @@ function dropdefault(nml::Namelist)
     isempty(result) && @info "Every entry in the namelist is the default value!"
     return result
 end
+
+Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(type2dict(a), type2dict(b))
 
 """
     getoption(x::Card)
