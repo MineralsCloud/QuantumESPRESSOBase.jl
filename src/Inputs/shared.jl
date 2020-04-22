@@ -204,85 +204,11 @@ struct AtomicForcesCard <: Card
 end
 # ============================================================================ #
 
-# ============================== KPointsCard ============================== #
-"""
-    MonkhorstPackGrid(grid, offsets)
-
-Represent the Monkhorst--Pack grid.
-
-# Arguments
-- `grid`: A length-three vector specifying the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst--Pack grids.
-- `offsets`: A length-three vector specifying whether the grid is displaced by half a grid step in the corresponding directions.
-"""
-struct MonkhorstPackGrid
-    grid::SVector{3,UInt}
-    offsets::SVector{3,Bool}
-end
-
-"Represent the centre of the Brillouin zone (commonly marked as the Γ point)."
-struct GammaPoint end
-
-"""
-    SpecialKPoint(coord, weight)
-
-Represent a special point of the 3D Brillouin zone. Each of them has a weight.
-"""
-struct SpecialKPoint <: FieldVector{4,Float64}
-    x::Float64
-    y::Float64
-    z::Float64
-    w::Float64
-end
-SpecialKPoint(::GammaPoint) = SpecialKPoint(0.0, 0.0, 0.0, 1.0)
-
-"""
-    struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <: Card
-
-Represent the `K_POINTS` card in QE.
-
-# Arguments
-- `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
-- `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
-"""
-struct KPointsCard{A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <:
-       Card
-    data::A
-    option::String
-    function KPointsCard{A}(
-        data,
-        option,
-    ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}}
-        @assert option ∈ allowed_options(KPointsCard)
-        @assert if option == "automatic"
-            typeof(data) <: MonkhorstPackGrid
-        elseif option == "gamma"
-            typeof(data) <: GammaPoint
-        else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-            eltype(data) <: SpecialKPoint
-        end
-        return new(data, option)
-    end
-end
-KPointsCard(data::A, option) where {A} = KPointsCard{A}(data, option)
-KPointsCard(data::AbstractVector{SpecialKPoint}) = KPointsCard(data, "tpiba")
-KPointsCard(data::GammaPoint) = KPointsCard(data, "gamma")
-KPointsCard(data::MonkhorstPackGrid) = KPointsCard(data, "automatic")
-
 Inputs.getoption(::AtomicSpeciesCard) = nothing
 
 Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 Inputs.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
-Inputs.allowed_options(::Type{<:KPointsCard}) = (
-    "tpiba",
-    "automatic",
-    "crystal",
-    "gamma",
-    "tpiba_b",
-    "crystal_b",
-    "tpiba_c",
-    "crystal_c",
-)
 
 """
     optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
@@ -317,7 +243,6 @@ Inputs.titleof(::Type{CellNamelist}) = "CELL"
 Inputs.titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 Inputs.titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
-Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
     Crystallography.Bravais(nml::SystemNamelist)
@@ -443,34 +368,6 @@ function Inputs.qestring(
         row in eachrow(card.data)
     )
     return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
-end
-Inputs.qestring(data::GammaPoint) = ""
-Inputs.qestring(
-    data::MonkhorstPackGrid;
-    delim = ' ',
-    numfmt = "%5d",
-    args...,
-) = join(map(x -> sprintf1(numfmt, x), [data.grid; data.offsets]), delim)
-Inputs.qestring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
-    join(map(x -> sprintf1(numfmt, x), collect(data)), delim)
-function Inputs.qestring(
-    card::KPointsCard;
-    indent = ' '^4,
-    delim = ' ',
-    numfmt = "%14.9f",
-    newline = '\n',
-)
-    content = "K_POINTS { $(card.option) }" * newline
-    if getoption(card) in ("gamma", "automatic")
-        content *= indent * qestring(card.data)
-    else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-        content *= string(length(card.data), newline)
-        content *= join(
-            (indent * qestring(x; delim = delim, numfmt = numfmt) for x in card.data),
-            newline,
-        )
-    end
-    return content
 end
 
 function Base.setproperty!(value::AtomicSpecies, name::Symbol, x)
