@@ -324,7 +324,7 @@ Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 Return a `Bravais` from a `SystemNamelist`.
 """
-Crystallography.Bravais(nml::SystemNamelist) = Bravais{nml.ibrav}()
+Crystallography.Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
 
 """
     Crystallography.Lattice(nml::SystemNamelist)
