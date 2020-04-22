@@ -632,27 +632,6 @@ Return the volume of the cell based on the information given in a `SystemNamelis
 """
 Arithmetics.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
-function Setters.make(::LensMaker{CellParametersSetter,<:Union{PWInput,CPInput}})
-    return @batchlens begin
-        _.cell_parameters
-        _.system.ibrav
-        _.system.celldm
-    end
-end # function Setters.make
-
-function Setters.preset_values(::CellParametersSetter, template)
-    # !isnothing(template.cell_parameters) && return template
-    system = template.system
-    return (
-        CellParametersCard(
-            Lattice(Bravais(system), CellParameters(template.celldm...)),
-            "alat",
-        ),
-        0,
-        [system.celldm[1]],
-    )
-end # function Setters.preset_values
-
 function Inputs.qestring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),

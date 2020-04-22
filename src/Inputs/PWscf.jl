@@ -774,7 +774,7 @@ Return the volume of the cell based on the information given in a `SystemNamelis
 """
 Arithmetics.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
-function Setters.make(::LensMaker{CellParametersSetter,<:Union{PWInput,CPInput}})
+function Setters.make(::LensMaker{CellParametersSetter})
     return @batchlens begin
         _.cell_parameters
         _.system.ibrav
