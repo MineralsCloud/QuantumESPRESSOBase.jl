@@ -12,7 +12,7 @@ julia>
 module Inputs
 
 using Compat: isnothing, only
-using Crystallography: Bravais
+using Crystallography: Lattice
 using Kaleido: @batchlens
 using LinearAlgebra: det
 using OrderedCollections: OrderedDict
@@ -248,7 +248,7 @@ Return the volume of the cell based on the information given in a `PWInput`, in 
 """
 function Arithmetics.cellvolume(input::PWInput)
     if isnothing(input.cell_parameters)
-        return abs(det(Bravais(input.system)))
+        return abs(det(Lattice(input.system)))
     else
         if getoption(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...

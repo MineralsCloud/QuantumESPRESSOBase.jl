@@ -746,7 +746,7 @@ Return a `Lattice` from a `SystemNamelist`.
 """
 function Crystallography.Lattice(nml::SystemNamelist)
     b = Bravais(nml)
-    return Lattice(b, CellParameters(nml.celldm...))
+    return Lattice(b, nml.celldm)
 end # function Crystallography.Lattice
 
 """
@@ -785,14 +785,7 @@ end # function Setters.make
 function Setters.preset_values(::CellParametersSetter, template)
     # !isnothing(template.cell_parameters) && return template
     system = template.system
-    return (
-        CellParametersCard(
-            Lattice(Bravais(system), CellParameters(system.celldm...)),
-            "alat",
-        ),
-        0,
-        [system.celldm[1]],
-    )
+    return (CellParametersCard(Lattice(system), "alat"), 0, [system.celldm[1]])
 end # function Setters.preset_values
 
 Inputs.getoption(::AtomicSpeciesCard) = nothing
