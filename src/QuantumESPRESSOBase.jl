@@ -30,36 +30,36 @@ _Bravais(::Val{14}) = PrimitiveTriclinic()
 struct AxesSetting{N} end
 AxesSetting(N::Int) = AxesSetting{N}()
 
-Crystallography.Lattice(::PrimitiveCubic, p::CellParameters) = Lattice(p[1] * [
+Crystallography.Lattice(::PrimitiveCubic, p) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 1
 ], true)
-Crystallography.Lattice(::FaceCenteredCubic, p::CellParameters) = Lattice(p[1] / 2 * [
+Crystallography.Lattice(::FaceCenteredCubic, p) = Lattice(p[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
 ], true)
-function Crystallography.Lattice(::BodyCenteredCubic, p::CellParameters, ::AxesSetting{1})
+function Crystallography.Lattice(::BodyCenteredCubic, p, ::AxesSetting{1})
     return Lattice(p[1] / 2 * [
         1 1 1
         -1 1 1
         -1 -1 1
     ], true)
 end # function Lattice
-function Crystallography.Lattice(::BodyCenteredCubic, p::CellParameters, ::AxesSetting{2})
+function Crystallography.Lattice(::BodyCenteredCubic, p, ::AxesSetting{2})
     return Lattice(p[1] / 2 * [
         -1 1 1
         1 -1 1
         1 1 -1
     ], true)
 end # function Lattice
-Crystallography.Lattice(::PrimitiveHexagonal, p::CellParameters) = Lattice(p[1] * [
+Crystallography.Lattice(::PrimitiveHexagonal, p) = Lattice(p[1] * [
     1 0 0
     -1 / 2 √3 / 2 0
     0 0 p[3] / p[1]
 ], true)
-function Crystallography.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting{1})
+function Crystallography.Lattice(::RCenteredHexagonal, p, ::AxesSetting{1})
     r = cos(p[4])
     tx = sqrt((1 - r) / 2)
     ty = sqrt((1 - r) / 6)
@@ -70,7 +70,7 @@ function Crystallography.Lattice(::RCenteredHexagonal, p::CellParameters, ::Axes
         -tx -ty tz
     ], true)
 end
-function Crystallography.Lattice(::RCenteredHexagonal, p::CellParameters, ::AxesSetting{2})
+function Crystallography.Lattice(::RCenteredHexagonal, p, ::AxesSetting{2})
     ap = p[1] / √3
     γ = acos(p[4])
     ty = sqrt((1 - γ) / 6)
@@ -83,12 +83,12 @@ function Crystallography.Lattice(::RCenteredHexagonal, p::CellParameters, ::Axes
         v v u
     ], true)
 end
-Crystallography.Lattice(::PrimitiveTetragonal, p::CellParameters) = Lattice(p[1] * [
+Crystallography.Lattice(::PrimitiveTetragonal, p) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 p[3] / p[1]
 ], true)
-function Crystallography.Lattice(::BodyCenteredTetragonal, p::CellParameters)
+function Crystallography.Lattice(::BodyCenteredTetragonal, p)
     r = p[3] / p[1]
     return Lattice(p[1] / 2 * [
         1 -1 r
@@ -96,7 +96,7 @@ function Crystallography.Lattice(::BodyCenteredTetragonal, p::CellParameters)
         -1 -1 r
     ], true)
 end # function Lattice
-Crystallography.Lattice(::PrimitiveOrthorhombic, p::CellParameters) = Lattice(
+Crystallography.Lattice(::PrimitiveOrthorhombic, p) = Lattice(
     [
         p[1] 0 0
         0 p[2] 0
@@ -104,7 +104,7 @@ Crystallography.Lattice(::PrimitiveOrthorhombic, p::CellParameters) = Lattice(
     ],
     true,
 )
-Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{1}) =
+Crystallography.Lattice(::BCenteredOrthorhombic, p, ::AxesSetting{1}) =
     Lattice(
         [
             p[1] / 2 p[2] / 2 0
@@ -113,7 +113,7 @@ Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSettin
         ],
         true,
     )
-Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSetting{2}) =
+Crystallography.Lattice(::BCenteredOrthorhombic, p, ::AxesSetting{2}) =
     Lattice(
         [
             p[1] / 2 -p[2] / 2 0
@@ -122,7 +122,7 @@ Crystallography.Lattice(::BCenteredOrthorhombic, p::CellParameters, ::AxesSettin
         ],
         true,
     )
-Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p::CellParameters) =
+Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p) =
     Lattice(
         [
             p[1] 0 0
@@ -131,7 +131,7 @@ Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p::CellParamete
         ],
         true,
     )  # New in QE 6.4
-function Crystallography.Lattice(::FaceCenteredOrthorhombic, p::CellParameters)
+function Crystallography.Lattice(::FaceCenteredOrthorhombic, p)
     a, b, c = p.x
     return Lattice([
         a 0 c
@@ -139,7 +139,7 @@ function Crystallography.Lattice(::FaceCenteredOrthorhombic, p::CellParameters)
         0 b c
     ] / 2, true)
 end # function Lattice
-function Crystallography.Lattice(::BodyCenteredOrthorhombic, p::CellParameters)
+function Crystallography.Lattice(::BodyCenteredOrthorhombic, p)
     a, b, c = p.x
     return Lattice([
         a b c
@@ -147,7 +147,7 @@ function Crystallography.Lattice(::BodyCenteredOrthorhombic, p::CellParameters)
         -a -b c
     ] / 2, true)
 end
-function Crystallography.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{1})
+function Crystallography.Lattice(::PrimitiveMonoclinic, p, ::AxesSetting{1})
     a, b, c = p.x
     return Lattice(
         [
@@ -158,7 +158,7 @@ function Crystallography.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::Axe
         true,
     )
 end
-function Crystallography.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::AxesSetting{2})
+function Crystallography.Lattice(::PrimitiveMonoclinic, p, ::AxesSetting{2})
     a, b, c = p.x
     return Lattice(
         [
@@ -169,7 +169,7 @@ function Crystallography.Lattice(::PrimitiveMonoclinic, p::CellParameters, ::Axe
         true,
     )
 end
-function Crystallography.Lattice(::CCenteredMonoclinic, p::CellParameters)
+function Crystallography.Lattice(::CCenteredMonoclinic, p)
     a, b, c = p.x
     return Lattice(
         [
@@ -180,7 +180,7 @@ function Crystallography.Lattice(::CCenteredMonoclinic, p::CellParameters)
         true,
     )
 end
-function Crystallography.Lattice(::BCenteredMonoclinic, p::CellParameters)
+function Crystallography.Lattice(::BCenteredMonoclinic, p)
     a, b, c = p.x
     return Lattice(
         [
@@ -191,7 +191,7 @@ function Crystallography.Lattice(::BCenteredMonoclinic, p::CellParameters)
         true,
     )
 end
-function Crystallography.Lattice(::PrimitiveTriclinic, p::CellParameters)
+function Crystallography.Lattice(::PrimitiveTriclinic, p)
     a, b, c = p.x
     α, β, γ = p.y
     zz =
