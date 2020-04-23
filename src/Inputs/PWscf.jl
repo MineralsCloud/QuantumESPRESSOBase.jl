@@ -787,7 +787,7 @@ function Setters.preset_values(::CellParametersSetter, template)
     system = template.system
     return (
         CellParametersCard(
-            Lattice(Bravais(system), CellParameters(template.celldm...)),
+            Lattice(Bravais(system), CellParameters(system.celldm...)),
             "alat",
         ),
         0,

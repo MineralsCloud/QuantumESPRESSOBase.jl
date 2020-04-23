@@ -19,8 +19,6 @@ using OrderedCollections: OrderedDict
 using Parameters: type2dict
 using PyFortran90Namelists: fstring
 
-using ..Setters: CellParametersSetter, LensMaker
-
 import Crystallography.Arithmetics
 import ..Setters
 

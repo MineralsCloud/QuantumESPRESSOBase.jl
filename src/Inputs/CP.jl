@@ -13,7 +13,7 @@ using Unitful
 using UnitfulAtomic
 
 using ..Inputs: Namelist, Input, Card, getoption, allowed_options, qestring
-using ...Setters: VerbositySetter, CalculationSetter, LensMaker, CellParametersSetter
+using ...Setters: VerbositySetter, CalculationSetter, LensMaker
 
 import Crystallography
 import Crystallography.Arithmetics
