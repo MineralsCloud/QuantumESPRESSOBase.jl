@@ -248,7 +248,7 @@ Return the volume of the cell based on the information given in a `PWInput`, in 
 """
 function Arithmetics.cellvolume(input::PWInput)
     if isnothing(input.cell_parameters)
-        return abs(det(Bravais(input.system)()))
+        return abs(det(Bravais(input.system)))
     else
         if getoption(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
