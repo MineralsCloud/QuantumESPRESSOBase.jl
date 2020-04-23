@@ -47,6 +47,8 @@ version = "0.5.1"
 [[Crystallography]]
 deps = ["CoordinateTransformations", "EponymTuples", "LibSymspg", "LinearAlgebra", "ShiftedArrays", "StaticArrays", "Unitful"]
 git-tree-sha1 = "d735f9f95e0de2e31d7b5cfe5307d538d0bce49e"
+repo-rev = "master"
+repo-url = "git@github.com:singularitti/Crystallography.jl.git"
 uuid = "3bff3928-7a76-11e9-2089-d112443085a5"
 version = "0.1.0"
 
@@ -213,6 +215,8 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 [[Pseudopotentials]]
 deps = ["DataFrames", "JLD2", "JSON", "Parameters", "REPL"]
 git-tree-sha1 = "03f14c167f1a615e5ed7a425a38a5f7134b5865e"
+repo-rev = "master"
+repo-url = "git@github.com:MineralsCloud/Pseudopotentials.jl.git"
 uuid = "1b2dc2e6-48aa-4f00-b8f4-19d1a71d7a0e"
 version = "0.1.0"
 
@@ -225,6 +229,8 @@ version = "1.91.4"
 [[PyFortran90Namelists]]
 deps = ["Compat", "Pkg", "PyCall", "VersionParsing"]
 git-tree-sha1 = "977e16f5e271c8ea27f6bfcb3c843b782c2d047b"
+repo-rev = "master"
+repo-url = "git@github.com:singularitti/PyFortran90Namelists.jl.git"
 uuid = "e44308e6-bd5b-11e9-2850-49daf8f1ec40"
 version = "0.1.0"
 
