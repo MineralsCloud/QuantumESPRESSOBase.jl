@@ -1,14 +1,14 @@
 module CLI
 
-export PWCmd
+export PWExec
 
 # See https://stackoverflow.com/a/44446042/3260253
 """
-    PWCmd(inp; which = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
+    PWExec(inp; which = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
 
 Represent the executable for the PW calculation. Query each field for more information.
 """
-struct PWCmd <: Base.AbstractCmd
+struct PWExec
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
     inp::String
     which::String
@@ -60,7 +60,7 @@ struct PWCmd <: Base.AbstractCmd
     """
     ndiag::UInt
 end
-PWCmd(
+PWExec(
     inp;
     which = "pw.x",
     nimage = 0,
@@ -69,12 +69,12 @@ PWCmd(
     nyfft = 0,
     nband = 0,
     ndiag = 0,
-) = PWCmd(inp, which, nimage, npool, ntg, nyfft, nband, ndiag)
+) = PWExec(inp, which, nimage, npool, ntg, nyfft, nband, ndiag)
 
-function Base.convert(::Type{Cmd}, cmd::PWCmd)
+function Base.Cmd(exec::PWExec)
     options = String[]
-    for f in fieldnames(typeof(cmd))[3:end]  # Join options
-        v = getfield(cmd, f)
+    for f in fieldnames(typeof(exec))[3:end]  # Join options
+        v = getfield(exec, f)
         if iszero(v)
             push!(options, "")
         else
@@ -82,6 +82,6 @@ function Base.convert(::Type{Cmd}, cmd::PWCmd)
         end
     end
     return `$(cmd.which)$(options...) -inp $(cmd.inp)`
-end # function Base.convert
+end # function Base.Cmd
 
 end
