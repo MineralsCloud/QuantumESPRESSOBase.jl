@@ -1,31 +1,26 @@
 module CLI
 
-using Parameters: @with_kw_noshow
+export PWCmd
 
-export ParallelizationLevel, PWCmd
-
-struct ParallelizationLevel{N} end
-
-abstract type QuantumESPRESSOCmd <: Base.AbstractCmd end
-
+# See https://stackoverflow.com/a/44446042/3260253
 """
-    PWCmd(exe = "pw.x", inp, nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
+    PWCmd(inp; which = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
 
 Represent the executable for the PW calculation. Query each field for more information.
 """
-@with_kw_noshow struct PWCmd <: QuantumESPRESSOCmd
+struct PWCmd <: Base.AbstractCmd
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
-    which::String = "pw.x"
     inp::String
+    which::String
     """
     Processors can then be divided into different "images", each corresponding to a
     different self-consistent or linear-response calculation, loosely coupled to others.
     """
-    nimage::Int = 0
+    nimage::UInt
     """
     Each image can be subpartitioned into "pools", each taking care of a group of k-points.
     """
-    npool::Int = 0
+    npool::UInt
     """
     In order to allow good parallelization of the 3D FFT when the number of processors
     exceeds the number of FFT planes, FFTs on Kohn-Sham states are redistributed to "task"
@@ -33,7 +28,7 @@ Represent the executable for the PW calculation. Query each field for more infor
     Alternatively, when this is not possible, a further subdivision of FFT planes is
     performed.
     """
-    ntg::Int = 0
+    ntg::UInt
     """
     Task group paralleization and nyfft parallelization, both introduced to improve scaling
     coexist and are in part interchangeable if TG is available it's faster that NYFFT
@@ -43,13 +38,13 @@ Represent the executable for the PW calculation. Query each field for more infor
     These variables are kept separated to help understanding which operation belong to TG or
     to NYFFT. This can enable to make them different if the need arises.
     """
-    nyfft::Int = ntg
+    nyfft::UInt
     """
     Each pool is subpartitioned into "band groups", each taking care of a group of Kohn-Sham
     orbitals (also called bands, or wavefunctions). Especially useful for calculations with
     hybrid functionals.
     """
-    nband::Int = 0
+    nband::UInt
     """
     A further level of parallelization, independent on PW or k-point parallelization, is the
     parallelization of subspace diagonalization / iterative orthonormalization. Both
@@ -63,17 +58,27 @@ Represent the executable for the PW calculation. Query each field for more infor
     confused with, the iterative Davidson algorithm). The preferred option is to use ELPA
     and ScaLAPACK; alternative built-in algorithms are anyway available.
     """
-    ndiag::Int = 0
+    ndiag::UInt
 end
+PWCmd(
+    inp;
+    which = "pw.x",
+    nimage = 0,
+    npool = 0,
+    ntg = 0,
+    nyfft = 0,
+    nband = 0,
+    ndiag = 0,
+) = PWCmd(inp, which, nimage, npool, ntg, nyfft, nband, ndiag)
 
 function Base.convert(::Type{Cmd}, cmd::PWCmd)
     options = String[]
     for f in fieldnames(typeof(cmd))[3:end]  # Join options
         v = getfield(cmd, f)
-        if !iszero(v)
-            push!(options, string(" -", f, ' ', v))
-        else
+        if iszero(v)
             push!(options, "")
+        else
+            push!(options, string(" -", f, ' ', v))
         end
     end
     return `$(cmd.which)$(options...) -inp $(cmd.inp)`
