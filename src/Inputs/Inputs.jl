@@ -13,6 +13,7 @@ module Inputs
 
 using Compat: isnothing, only
 using Crystallography: Lattice
+using Crystallography.Arithmetics: cellvolume
 using Kaleido: @batchlens
 using LinearAlgebra: det
 using OrderedCollections: OrderedDict
