@@ -602,11 +602,14 @@ Crystallography.Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
 
 Return a `Lattice` from a `SystemNamelist`.
 """
-function Crystallography.Lattice(nml::SystemNamelist)
-    b = Bravais(nml)
-    return Lattice(b, CellParameters(nml.celldm...))
-end # function Crystallography.Lattice
+Crystallography.Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
 
+"""
+    cellvolume(nml::SystemNamelist)
+
+Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
+"""
+Arithmetics.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 """
     cellvolume(card)
 
@@ -625,12 +628,6 @@ function Arithmetics.cellvolume(card::AbstractCellParametersCard)
         error("information not enough! Parameter `celldm[1]` needed!")
     end
 end # function Arithmetics.cellvolume
-"""
-    cellvolume(nml::SystemNamelist)
-
-Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
-"""
-Arithmetics.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
 function Inputs.qestring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
     return join(
