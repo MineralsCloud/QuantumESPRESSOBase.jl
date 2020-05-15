@@ -27,6 +27,13 @@ _Bravais(::Val{13}) = CCenteredMonoclinic()
 _Bravais(::Val{-13}) = BCenteredMonoclinic()  # New in QE 6.5
 _Bravais(::Val{14}) = PrimitiveTriclinic()
 
+"""
+    Crystallography.Lattice(::Bravais, p[, obverse::Bool])
+
+Create a Bravais lattice from the exact lattice type and cell parameters `p` (not `celldm`!).
+
+The first elements of `p` are `a`, `b`, `c`; the last 3 are `α`, `β`, `γ` (in radians).
+"""
 Crystallography.Lattice(::PrimitiveCubic, p) = Lattice(p[1] * [
     1 0 0
     0 1 0
