@@ -27,9 +27,6 @@ _Bravais(::Val{13}) = CCenteredMonoclinic()
 _Bravais(::Val{-13}) = BCenteredMonoclinic()  # New in QE 6.5
 _Bravais(::Val{14}) = PrimitiveTriclinic()
 
-struct AxesSetting{N} end
-AxesSetting(N::Int) = AxesSetting{N}()
-
 Crystallography.Lattice(::PrimitiveCubic, p) = Lattice(p[1] * [
     1 0 0
     0 1 0
@@ -40,48 +37,50 @@ Crystallography.Lattice(::FaceCenteredCubic, p) = Lattice(p[1] / 2 * [
     0 1 1
     -1 1 0
 ])
-function Crystallography.Lattice(::BodyCenteredCubic, p, ::AxesSetting{1})
-    return Lattice(p[1] / 2 * [
-        1 1 1
-        -1 1 1
-        -1 -1 1
-    ])
-end # function Lattice
-function Crystallography.Lattice(::BodyCenteredCubic, p, ::AxesSetting{2})
-    return Lattice(p[1] / 2 * [
-        -1 1 1
-        1 -1 1
-        1 1 -1
-    ])
-end # function Lattice
+function Crystallography.Lattice(::BodyCenteredCubic, p, obverse::Bool = true)
+    if obverse
+        return Lattice(p[1] / 2 * [
+            1 1 1
+            -1 1 1
+            -1 -1 1
+        ])
+    else
+        return Lattice(p[1] / 2 * [
+            -1 1 1
+            1 -1 1
+            1 1 -1
+        ])
+    end
+end
 Crystallography.Lattice(::PrimitiveHexagonal, p) = Lattice(p[1] * [
     1 0 0
     -1 / 2 √3 / 2 0
     0 0 p[3] / p[1]
 ])
-function Crystallography.Lattice(::RCenteredHexagonal, p, ::AxesSetting{1})
-    r = cos(p[4])
-    tx = sqrt((1 - r) / 2)
-    ty = sqrt((1 - r) / 6)
-    tz = sqrt((1 + 2r) / 3)
-    return Lattice(p[1] * [
-        tx -ty tz
-        0 2ty tz
-        -tx -ty tz
-    ])
-end
-function Crystallography.Lattice(::RCenteredHexagonal, p, ::AxesSetting{2})
-    ap = p[1] / √3
-    γ = acos(p[4])
-    ty = sqrt((1 - γ) / 6)
-    tz = sqrt((1 + 2γ) / 3)
-    u = tz - 2 * √2 * ty
-    v = tz + √2 * ty
-    return Lattice(ap * [
-        u v v
-        v u v
-        v v u
-    ])
+function Crystallography.Lattice(::RCenteredHexagonal, p, obverse::Bool = true)
+    if obverse
+        r = cos(p[4])
+        tx = sqrt((1 - r) / 2)
+        ty = sqrt((1 - r) / 6)
+        tz = sqrt((1 + 2r) / 3)
+        return Lattice(p[1] * [
+            tx -ty tz
+            0 2ty tz
+            -tx -ty tz
+        ])
+    else
+        ap = p[1] / √3
+        γ = acos(p[4])
+        ty = sqrt((1 - γ) / 6)
+        tz = sqrt((1 + 2γ) / 3)
+        u = tz - 2 * √2 * ty
+        v = tz + √2 * ty
+        return Lattice(ap * [
+            u v v
+            v u v
+            v v u
+        ])
+    end
 end
 Crystallography.Lattice(::PrimitiveTetragonal, p) = Lattice(p[1] * [
     1 0 0
@@ -95,22 +94,27 @@ function Crystallography.Lattice(::BodyCenteredTetragonal, p)
         1 1 r
         -1 -1 r
     ])
-end # function Lattice
+end
 Crystallography.Lattice(::PrimitiveOrthorhombic, p) = Lattice([
     p[1] 0 0
     0 p[2] 0
     0 0 p[3]
 ])
-Crystallography.Lattice(::BCenteredOrthorhombic, p, ::AxesSetting{1}) = Lattice([
-    p[1] / 2 p[2] / 2 0
-    -p[1] / 2 p[2] / 2 0
-    0 0 p[3]
-])
-Crystallography.Lattice(::BCenteredOrthorhombic, p, ::AxesSetting{2}) = Lattice([
-    p[1] / 2 -p[2] / 2 0
-    p[1] / 2 p[2] / 2 0
-    0 0 p[3]
-])
+function Crystallography.Lattice(::BCenteredOrthorhombic, p, obverse::Bool = true)
+    if obverse
+        return Lattice([
+            p[1] / 2 p[2] / 2 0
+            -p[1] / 2 p[2] / 2 0
+            0 0 p[3]
+        ])
+    else
+        return Lattice([
+            p[1] / 2 -p[2] / 2 0
+            p[1] / 2 p[2] / 2 0
+            0 0 p[3]
+        ])
+    end
+end
 Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p) = Lattice([
     p[1] 0 0
     0 p[2] / 2 -p[3] / 2
@@ -123,7 +127,7 @@ function Crystallography.Lattice(::FaceCenteredOrthorhombic, p)
         a b 0
         0 b c
     ] / 2)
-end # function Lattice
+end
 function Crystallography.Lattice(::BodyCenteredOrthorhombic, p)
     a, b, c = p.x
     return Lattice([
@@ -132,21 +136,21 @@ function Crystallography.Lattice(::BodyCenteredOrthorhombic, p)
         -a -b c
     ] / 2)
 end
-function Crystallography.Lattice(::PrimitiveMonoclinic, p, ::AxesSetting{1})
+function Crystallography.Lattice(::PrimitiveMonoclinic, p, obverse::Bool = true)
     a, b, c = p.x
-    return Lattice([
-        a 0 0
-        b * cos(p[6]) b * sin(p[6]) 0
-        0 0 c
-    ])
-end
-function Crystallography.Lattice(::PrimitiveMonoclinic, p, ::AxesSetting{2})
-    a, b, c = p.x
-    return Lattice([
-        a 0 0
-        0 b 0
-        c * cos(p[5]) 0 c * sin(p[5])
-    ])
+    if obverse
+        return Lattice([
+            a 0 0
+            b * cos(p[6]) b * sin(p[6]) 0
+            0 0 c
+        ])
+    else
+        return Lattice([
+            a 0 0
+            0 b 0
+            c * cos(p[5]) 0 c * sin(p[5])
+        ])
+    end
 end
 function Crystallography.Lattice(::CCenteredMonoclinic, p)
     a, b, c = p.x
@@ -174,7 +178,7 @@ function Crystallography.Lattice(::PrimitiveTriclinic, p)
         b * cos(γ) b * sin(γ) 0
         c * cos(β) c * (cos(α) - cos(β) * cos(γ)) / sin(γ) zz
     ])
-end # function Lattice
+end
 
 include("Setters.jl")
 include("Inputs/Inputs.jl")
