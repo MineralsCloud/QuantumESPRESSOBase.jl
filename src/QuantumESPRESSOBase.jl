@@ -1,6 +1,23 @@
 module QuantumESPRESSOBase
 
-using Crystallography
+using Crystallography:
+    Lattice,
+    PrimitiveCubic,
+    FaceCenteredCubic,
+    BodyCenteredCubic,
+    PrimitiveHexagonal,
+    RCenteredHexagonal,
+    PrimitiveTetragonal,
+    BodyCenteredTetragonal,
+    PrimitiveOrthorhombic,
+    BCenteredOrthorhombic,
+    ACenteredOrthorhombic,
+    FaceCenteredOrthorhombic,
+    BodyCenteredOrthorhombic,
+    PrimitiveMonoclinic,
+    CCenteredMonoclinic,
+    BCenteredMonoclinic,
+    PrimitiveTriclinic
 
 import Crystallography
 
@@ -34,12 +51,12 @@ Create a Bravais lattice from the exact lattice type and cell parameters `p` (no
 
 The first elements of `p` are `a`, `b`, `c`; the last 3 are `α`, `β`, `γ` (in radians).
 """
-Crystallography.Lattice(::PrimitiveCubic, p) = Lattice(p[1] * [
+Crystallography.Lattice(::PrimitiveCubic, p, args...) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 1
 ])
-Crystallography.Lattice(::FaceCenteredCubic, p) = Lattice(p[1] / 2 * [
+Crystallography.Lattice(::FaceCenteredCubic, p, args...) = Lattice(p[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
@@ -59,7 +76,7 @@ function Crystallography.Lattice(::BodyCenteredCubic, p, obverse::Bool = true)
         ])
     end
 end
-Crystallography.Lattice(::PrimitiveHexagonal, p) = Lattice(p[1] * [
+Crystallography.Lattice(::PrimitiveHexagonal, p, args...) = Lattice(p[1] * [
     1 0 0
     -1 / 2 √3 / 2 0
     0 0 p[3] / p[1]
@@ -89,12 +106,12 @@ function Crystallography.Lattice(::RCenteredHexagonal, p, obverse::Bool = true)
         ])
     end
 end
-Crystallography.Lattice(::PrimitiveTetragonal, p) = Lattice(p[1] * [
+Crystallography.Lattice(::PrimitiveTetragonal, p, args...) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 p[3] / p[1]
 ])
-function Crystallography.Lattice(::BodyCenteredTetragonal, p)
+function Crystallography.Lattice(::BodyCenteredTetragonal, p, args...)
     r = p[3] / p[1]
     return Lattice(p[1] / 2 * [
         1 -1 r
@@ -102,7 +119,7 @@ function Crystallography.Lattice(::BodyCenteredTetragonal, p)
         -1 -1 r
     ])
 end
-Crystallography.Lattice(::PrimitiveOrthorhombic, p) = Lattice([
+Crystallography.Lattice(::PrimitiveOrthorhombic, p, args...) = Lattice([
     p[1] 0 0
     0 p[2] 0
     0 0 p[3]
@@ -123,12 +140,12 @@ function Crystallography.Lattice(::BCenteredOrthorhombic, p, obverse::Bool = tru
         ])
     end
 end
-Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p) = Lattice([
+Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p, args...) = Lattice([
     p[1] 0 0
     0 p[2] / 2 -p[3] / 2
     0 p[2] / 2 p[3] / 2
 ])  # New in QE 6.4
-function Crystallography.Lattice(::FaceCenteredOrthorhombic, p)
+function Crystallography.Lattice(::FaceCenteredOrthorhombic, p, args...)
     a, b, c = p[1:3]
     return Lattice([
         a 0 c
@@ -136,7 +153,7 @@ function Crystallography.Lattice(::FaceCenteredOrthorhombic, p)
         0 b c
     ] / 2)
 end
-function Crystallography.Lattice(::BodyCenteredOrthorhombic, p)
+function Crystallography.Lattice(::BodyCenteredOrthorhombic, p, args...)
     a, b, c = p[1:3]
     return Lattice([
         a b c
@@ -160,7 +177,7 @@ function Crystallography.Lattice(::PrimitiveMonoclinic, p, obverse::Bool = true)
         ])
     end
 end
-function Crystallography.Lattice(::CCenteredMonoclinic, p)
+function Crystallography.Lattice(::CCenteredMonoclinic, p, args...)
     a, b, c = p[1:3]
     return Lattice([
         a / 2 0 -c / 2
@@ -168,7 +185,7 @@ function Crystallography.Lattice(::CCenteredMonoclinic, p)
         a / 2 0 c / 2
     ])
 end
-function Crystallography.Lattice(::BCenteredMonoclinic, p)
+function Crystallography.Lattice(::BCenteredMonoclinic, p, args...)
     a, b, c = p[1:3]
     return Lattice([
         a / 2 b / 2 0
@@ -176,7 +193,7 @@ function Crystallography.Lattice(::BCenteredMonoclinic, p)
         c * cos(p[5]) 0 c * sin(p[5])
     ])
 end
-function Crystallography.Lattice(::PrimitiveTriclinic, p)
+function Crystallography.Lattice(::PrimitiveTriclinic, p, args...)
     a, b, c, α, β, γ = p
     δ = c * sqrt(1 + 2 * cos(α) * cos(β) * cos(γ) - cos(α)^2 - cos(β)^2 - cos(γ)^2) / sin(γ)
     return Lattice([
