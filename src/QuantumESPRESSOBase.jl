@@ -140,7 +140,7 @@ function Crystallography.Lattice(::BCenteredOrthorhombic, p, obverse::Bool = tru
         ])
     end
 end
-Crystallography.Lattice(::Tuple{Orthorhombic,BaseCentering{:A}}, p, args...) = Lattice([
+Crystallography.Lattice(::ACenteredOrthorhombic, p, args...) = Lattice([
     p[1] 0 0
     0 p[2] / 2 -p[3] / 2
     0 p[2] / 2 p[3] / 2
