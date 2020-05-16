@@ -23,7 +23,8 @@ using PyFortran90Namelists: fstring
 import Crystallography.Arithmetics
 import ..Setters
 
-export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
+export to_dict,
+    dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
 
 """
     Namelist
@@ -168,7 +169,7 @@ function Base.getindex(x::_Celldm, i::Integer)
     elseif i ∈ 2:3
         return a * x.data[i]
     elseif i ∈ 4:6
-        return acos(x.data[10 - i])
+        return acos(x.data[10-i])
     else
         throw(BoundsError(x.data, i))
     end
@@ -216,22 +217,12 @@ function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
     return content
 end
 qestring(::Nothing; args...) = ""
-function qestring(
-    nml::Namelist;
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-)
+function qestring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
     namelist_name = titleof(nml)
     content = qestring(dropdefault(nml); indent = indent, delim = delim)
     return "&$namelist_name" * newline * content * '/'
 end
-function qestring(
-    input::Input;
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-)
+function qestring(input::Input; indent = ' '^4, delim = ' ', newline = '\n')
     content = ""
     for i in 1:nfields(input)
         content *=
