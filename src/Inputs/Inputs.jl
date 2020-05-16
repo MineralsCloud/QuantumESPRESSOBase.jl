@@ -152,27 +152,48 @@ Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and
 getcards(input::T, selector::Symbol = :all) where {T<:Input} =
     (getfield(input, x) for x in _selectcards(T, Val(selector)))
 
-struct Celldm{T<:Bravais}
-    data::AbstractVector
+# Do not export this type!
+struct _Celldm{T<:Bravais}
+    data
+    function _Celldm{T}(data) where {T}
+        @assert 1 <= length(data) <= 6
+        return new(data)
+    end
 end
 
-function Base.convert(::Type{CellParameters}, x::Celldm)
-    a, r1, r2, cosγ, cosβ, cosα = x.data  # What a horrible conversion!
-    b, c = a .* (r1, r2)
-    return CellParameters(a, b, c, acos(cosα), acos(cosβ), acos(cosγ))
-end # function Base.convert
-function Base.convert(::Type{CellParameters}, x::Celldm{PrimitiveTriclinic})
-    a, r1, r2, cosα, cosβ, cosγ = x.data  # What a horrible conversion!
-    b, c = a .* (r1, r2)
-    return CellParameters(a, b, c, acos(cosα), acos(cosβ), acos(cosγ))
-end # function Base.convert
-function Base.convert(::Type{Celldm{T}}, p::CellParameters) where {T}
+function Base.getindex(x::_Celldm, i::Integer)
+    a = x.data[1]
+    if i == 1
+        return a
+    elseif i ∈ 2:3
+        return a * x.data[i]
+    elseif i ∈ 4:6
+        return acos(x.data[10 - i])
+    else
+        throw(BoundsError(x.data, i))
+    end
+end # function Base.getindex
+function Base.getindex(x::_Celldm{PrimitiveTriclinic}, i::Integer)
+    a = x.data[1]
+    if i == 1
+        return a
+    elseif i ∈ 2:3
+        return a * x.data[i]
+    elseif i ∈ 4:6
+        return acos(x.data[i])  # Note the difference!
+    else
+        throw(BoundsError(x.data, i))
+    end
+end # function Base.getindex
+Base.getindex(x::_Celldm, I) = [x[i] for i in I]
+
+function Base.convert(::Type{_Celldm{T}}, p::CellParameters) where {T}
     a, b, c, α, β, γ = p
-    return Celldm{T}([a, b / a, c / a, cos(γ), cos(β), cos(α)])  # What a horrible conversion!
+    return _Celldm{T}([a, b / a, c / a, cos(γ), cos(β), cos(α)])  # What a horrible conversion!
 end # function Base.convert
-function Base.convert(::Type{Celldm{PrimitiveTriclinic}}, p::CellParameters)
+function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
     a, b, c, α, β, γ = p
-    return Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
+    return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
 end # function Base.convert
 
 """
