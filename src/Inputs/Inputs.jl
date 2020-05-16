@@ -12,7 +12,7 @@ julia>
 module Inputs
 
 using Compat: isnothing, only
-using Crystallography: Lattice
+using Crystallography: Bravais, Lattice, CellParameters, PrimitiveTriclinic
 using Crystallography.Arithmetics: cellvolume
 using Kaleido: @batchlens
 using LinearAlgebra: det
@@ -23,7 +23,8 @@ using PyFortran90Namelists: fstring
 import Crystallography.Arithmetics
 import ..Setters
 
-export to_dict, dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
+export to_dict,
+    dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
 
 """
     Namelist
@@ -152,6 +153,50 @@ Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and
 getcards(input::T, selector::Symbol = :all) where {T<:Input} =
     (getfield(input, x) for x in _selectcards(T, Val(selector)))
 
+# Do not export this type!
+struct _Celldm{T<:Bravais}
+    data
+    function _Celldm{T}(data) where {T}
+        @assert 1 <= length(data) <= 6
+        return new(data)
+    end
+end
+
+function Base.getindex(x::_Celldm, i::Integer)
+    a = x.data[1]
+    if i == 1
+        return a
+    elseif i ∈ 2:3
+        return a * x.data[i]
+    elseif i ∈ 4:6
+        return acos(x.data[10-i])
+    else
+        throw(BoundsError(x.data, i))
+    end
+end # function Base.getindex
+function Base.getindex(x::_Celldm{PrimitiveTriclinic}, i::Integer)
+    a = x.data[1]
+    if i == 1
+        return a
+    elseif i ∈ 2:3
+        return a * x.data[i]
+    elseif i ∈ 4:6
+        return acos(x.data[i])  # Note the difference!
+    else
+        throw(BoundsError(x.data, i))
+    end
+end # function Base.getindex
+Base.getindex(x::_Celldm, I) = [x[i] for i in I]
+
+function Base.convert(::Type{_Celldm{T}}, p::CellParameters) where {T}
+    a, b, c, α, β, γ = p
+    return _Celldm{T}([a, b / a, c / a, cos(γ), cos(β), cos(α)])  # What a horrible conversion!
+end # function Base.convert
+function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
+    a, b, c, α, β, γ = p
+    return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
+end # function Base.convert
+
 """
     qestring(x; indent = ' '^4, delim = ' ')
 
@@ -172,22 +217,12 @@ function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
     return content
 end
 qestring(::Nothing; args...) = ""
-function qestring(
-    nml::Namelist;
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-)
+function qestring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
     namelist_name = titleof(nml)
     content = qestring(dropdefault(nml); indent = indent, delim = delim)
     return "&$namelist_name" * newline * content * '/'
 end
-function qestring(
-    input::Input;
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-)
+function qestring(input::Input; indent = ' '^4, delim = ' ', newline = '\n')
     content = ""
     for i in 1:nfields(input)
         content *=

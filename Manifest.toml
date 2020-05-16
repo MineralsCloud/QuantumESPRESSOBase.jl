@@ -46,7 +46,7 @@ version = "0.5.1"
 
 [[Crystallography]]
 deps = ["CoordinateTransformations", "EponymTuples", "LibSymspg", "LinearAlgebra", "StaticArrays", "Unitful"]
-git-tree-sha1 = "f87534fb3684de4a8af8f4b50cf806d6b0ebc584"
+git-tree-sha1 = "a148a345c279cc923aaff4bb808e9a10ea56450c"
 repo-rev = "master"
 repo-url = "git@github.com:singularitti/Crystallography.jl.git"
 uuid = "3bff3928-7a76-11e9-2089-d112443085a5"

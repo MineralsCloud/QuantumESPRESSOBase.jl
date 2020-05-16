@@ -25,7 +25,15 @@ using Unitful
 using UnitfulAtomic
 
 using ..Inputs:
-    InputEntry, Namelist, Input, entryname, Card, getoption, allowed_options, qestring
+    InputEntry,
+    Namelist,
+    Input,
+    entryname,
+    Card,
+    _Celldm,
+    getoption,
+    allowed_options,
+    qestring
 using ...Setters:
     AlatPressSetter,
     LensMaker,
@@ -766,7 +774,7 @@ Return a `Lattice` from a `SystemNamelist`.
 """
 function Crystallography.Lattice(nml::SystemNamelist)
     b = Bravais(nml)
-    return Lattice(b, nml.celldm)
+    return Lattice(b, _Celldm{typeof(b)}(nml.celldm))
 end # function Crystallography.Lattice
 
 """
