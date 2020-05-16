@@ -8,7 +8,7 @@ export PWExec
 
 Represent the executable for the PW calculation. Query each field for more information.
 """
-struct PWExec
+mutable struct PWExec
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
     inp::String
     which::String
@@ -81,7 +81,7 @@ function Base.Cmd(exec::PWExec)
             push!(options, string(" -", f, ' ', v))
         end
     end
-    return `$(cmd.which)$(options...) -inp $(cmd.inp)`
+    return `$(exec.which)$(options...) -inp $(exec.inp)`
 end # function Base.Cmd
 
 end
