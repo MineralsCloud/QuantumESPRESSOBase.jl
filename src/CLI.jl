@@ -73,7 +73,7 @@ PWExec(
 
 function Base.Cmd(exec::PWExec)
     options = String[]
-    for f in Iterators.drop(fieldnames(typeof(exec)), 2)  # 3 to end
+    for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)  # Make it less magical
         v = getfield(exec, f)
         if !iszero(v)
             push!(options, "-$f", string(v))
