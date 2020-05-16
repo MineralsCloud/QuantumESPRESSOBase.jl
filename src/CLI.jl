@@ -73,15 +73,13 @@ PWExec(
 
 function Base.Cmd(exec::PWExec)
     options = String[]
-    for f in fieldnames(typeof(exec))[3:end]  # Join options
+    for f in Iterators.drop(fieldnames(typeof(exec)), 2)  # 3 to end
         v = getfield(exec, f)
-        if iszero(v)
-            push!(options, "")
-        else
-            push!(options, string(" -", f, ' ', v))
+        if !iszero(v)
+            push!(options, "-$f", string(v))
         end
     end
-    return `$(exec.which)$(options...) -inp $(exec.inp)`
+    return Cmd([exec.which, options..., "-inp", exec.inp])
 end # function Base.Cmd
 
 end
