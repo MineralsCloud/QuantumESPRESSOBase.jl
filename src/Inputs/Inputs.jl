@@ -12,7 +12,7 @@ julia>
 module Inputs
 
 using Compat: isnothing, only
-using Crystallography: Lattice
+using Crystallography: Bravais, Lattice, CellParameters, PrimitiveTriclinic
 using Crystallography.Arithmetics: cellvolume
 using Kaleido: @batchlens
 using LinearAlgebra: det
@@ -151,6 +151,29 @@ Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and
 """
 getcards(input::T, selector::Symbol = :all) where {T<:Input} =
     (getfield(input, x) for x in _selectcards(T, Val(selector)))
+
+struct Celldm{T<:Bravais}
+    data::AbstractVector
+end
+
+function Base.convert(::Type{CellParameters}, x::Celldm)
+    a, r1, r2, cosγ, cosβ, cosα = x.data  # What a horrible conversion!
+    b, c = a .* (r1, r2)
+    return CellParameters(a, b, c, acos(cosα), acos(cosβ), acos(cosγ))
+end # function Base.convert
+function Base.convert(::Type{CellParameters}, x::Celldm{PrimitiveTriclinic})
+    a, r1, r2, cosα, cosβ, cosγ = x.data  # What a horrible conversion!
+    b, c = a .* (r1, r2)
+    return CellParameters(a, b, c, acos(cosα), acos(cosβ), acos(cosγ))
+end # function Base.convert
+function Base.convert(::Type{Celldm{T}}, p::CellParameters) where {T}
+    a, b, c, α, β, γ = p
+    return Celldm{T}([a, b / a, c / a, cos(γ), cos(β), cos(α)])  # What a horrible conversion!
+end # function Base.convert
+function Base.convert(::Type{Celldm{PrimitiveTriclinic}}, p::CellParameters)
+    a, b, c, α, β, γ = p
+    return Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
+end # function Base.convert
 
 """
     qestring(x; indent = ' '^4, delim = ' ')
