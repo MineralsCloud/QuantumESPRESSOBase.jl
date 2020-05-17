@@ -4,13 +4,12 @@ export PWExec
 
 # See https://stackoverflow.com/a/44446042/3260253
 """
-    PWExec(inp; which = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
+    PWExec(which = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
 
 Represent the executable for the PW calculation. Query each field for more information.
 """
 mutable struct PWExec
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
-    inp::String
     which::String
     """
     Processors can then be divided into different "images", each corresponding to a
@@ -60,18 +59,9 @@ mutable struct PWExec
     """
     ndiag::UInt
 end
-PWExec(
-    inp;
-    which = "pw.x",
-    nimage = 0,
-    npool = 0,
-    ntg = 0,
-    nyfft = 0,
-    nband = 0,
-    ndiag = 0,
-) = PWExec(inp, which, nimage, npool, ntg, nyfft, nband, ndiag)
-
-function Base.Cmd(exec::PWExec)
+PWExec(; which = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PWExec(which, nimage, npool, ntg, nyfft, nband, ndiag)
+function (exec::PWExec)(; stdin = nothing, stdout = nothing, stderr = nothing)
     options = String[]
     for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)  # Make it less magical
         v = getfield(exec, f)
@@ -79,7 +69,8 @@ function Base.Cmd(exec::PWExec)
             push!(options, "-$f", string(v))
         end
     end
-    return Cmd([exec.which, options..., "-inp", exec.inp])
-end # function Base.Cmd
+    cmd = Cmd([exec.which; options])
+    return pipeline(cmd; stdin = stdin, stdout = stdout, stderr = stderr)
+end
 
 end
