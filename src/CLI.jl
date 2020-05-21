@@ -1,15 +1,16 @@
 module CLI
 
-export PWExec
+export PWCmd
 
 # See https://stackoverflow.com/a/44446042/3260253
 """
-    PWExec(bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
+    PWCmd(bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
 
-Represent the executable for the PW calculation. Query each field for more information.
+Generate commands for PWscf calculations. Query each field for more information.
 """
-mutable struct PWExec
+mutable struct PWCmd
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
+    "The path to the PWscf executable, usually is `\"pw.x\"`. Better be an absolute path."
     bin::String
     """
     Processors can then be divided into different "images", each corresponding to a
@@ -59,17 +60,17 @@ mutable struct PWExec
     """
     ndiag::UInt
 end
-PWExec(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
-    PWExec(bin, nimage, npool, ntg, nyfft, nband, ndiag)
-function (exec::PWExec)(; stdin = nothing, stdout = nothing, stderr = nothing)
+PWCmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PWCmd(bin, nimage, npool, ntg, nyfft, nband, ndiag)
+function (x::PWCmd)(; stdin = nothing, stdout = nothing, stderr = nothing)
     options = String[]
     for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)  # Make it less magical
-        v = getfield(exec, f)
+        v = getfield(x, f)
         if !iszero(v)
             push!(options, "-$f", string(v))
         end
     end
-    cmd = Cmd([exec.bin; options])
+    cmd = Cmd([x.bin; options])
     return pipeline(cmd; stdin = stdin, stdout = stdout, stderr = stderr)
 end
 
