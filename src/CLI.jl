@@ -1,5 +1,7 @@
 module CLI
 
+using Compat: isnothing
+
 export pwcmd
 
 """
@@ -28,6 +30,7 @@ function pwcmd(;
     stdin = nothing,
     stdout = nothing,
     stderr = nothing,
+    asstring = false,
 )
     options = String[]
     for (k, v) in zip(
@@ -39,9 +42,25 @@ function pwcmd(;
             push!(options, "-$k", string(v))
         end
     end
-    cmd = Cmd([bin; options])
-    return pipeline(cmd; stdin = stdin, stdout = stdout, stderr = stderr)
+    if asstring
+        @warn "using string commands maybe error prone! Use with care!"
+        for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
+            if !isnothing(v)
+                push!(options, redir[f], "'$v'")
+            end
+        end
+        return join([bin; options], " ")
+    else
+        return pipeline(
+            Cmd([bin; options]);
+            stdin = stdin,
+            stdout = stdout,
+            stderr = stderr,
+        )
+    end
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
+
+const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
 
 end
