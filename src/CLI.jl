@@ -4,13 +4,13 @@ export PWExec
 
 # See https://stackoverflow.com/a/44446042/3260253
 """
-    PWExec(which = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
+    PWExec(bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0)
 
 Represent the executable for the PW calculation. Query each field for more information.
 """
 mutable struct PWExec
     # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
-    which::String
+    bin::String
     """
     Processors can then be divided into different "images", each corresponding to a
     different self-consistent or linear-response calculation, loosely coupled to others.
@@ -59,8 +59,8 @@ mutable struct PWExec
     """
     ndiag::UInt
 end
-PWExec(; which = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
-    PWExec(which, nimage, npool, ntg, nyfft, nband, ndiag)
+PWExec(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PWExec(bin, nimage, npool, ntg, nyfft, nband, ndiag)
 function (exec::PWExec)(; stdin = nothing, stdout = nothing, stderr = nothing)
     options = String[]
     for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)  # Make it less magical
@@ -69,7 +69,7 @@ function (exec::PWExec)(; stdin = nothing, stdout = nothing, stderr = nothing)
             push!(options, "-$f", string(v))
         end
     end
-    cmd = Cmd([exec.which; options])
+    cmd = Cmd([exec.bin; options])
     return pipeline(cmd; stdin = stdin, stdout = stdout, stderr = stderr)
 end
 
