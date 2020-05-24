@@ -13,11 +13,12 @@ module PHonon
 
 using Parameters: @with_kw
 
-using ..Inputs: Namelist, Input
+using ..Inputs: Namelist, Card, Input
+using ..Inputs.PWscf: SpecialKPoint
 
 import ..Inputs
 
-export PhInput, Q2rInput, MatdynInput, DynmatInput
+export SpecialKPoint, QPointsCard, PhInput, Q2rInput, MatdynInput, DynmatInput
 export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
@@ -160,20 +161,26 @@ Inputs.titleof(::Type{Q2rNamelist}) = "INPUT"
 Inputs.titleof(::Type{MatdynNamelist}) = "INPUT"
 Inputs.titleof(::Type{DynmatNamelist}) = "INPUT"
 
-# @with_kw struct PhInput <: Input
-#     inputph::PhNamelist = PhNamelist()
-#     q_points::Union{Nothing,KPointsCard} = nothing
-# end # struct PhInput
+struct QPointsCard <: Card
+    data::Vector{SpecialKPoint}
+end
+
+struct PhInput <: Input
+    inputph::PhNamelist
+    q_points::Union{Nothing,QPointsCard}
+end # struct PhInput
+PhInput(inputph = PhNamelist(), q_points = nothing) = PhInput(inputph, q_points)
 
 struct Q2rInput <: Input
     input::Q2rNamelist
 end # struct Q2rInput
 Q2rInput() = Q2rInput(Q2rNamelist())
 
-# @with_kw struct MatdynInput <: Input
-#     input::MatdynNamelist = MatdynNamelist()
-#     q_points::KPointsCard
-# end # struct MatdynInput
+struct MatdynInput <: Input
+    input::MatdynNamelist
+    q_points::Union{Nothing,QPointsCard}
+end # struct MatdynInput
+MatdynInput(input = MatdynNamelist(), q_points = nothing) = MatdynInput(input, q_points)
 
 struct DynmatInput <: Input
     input::DynmatNamelist
