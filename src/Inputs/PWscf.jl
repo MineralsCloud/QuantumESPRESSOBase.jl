@@ -144,7 +144,7 @@ end # struct ControlNamelist
 Represent the `SYSTEM` namelist of `pw.x`.
 """
 @with_kw struct SystemNamelist <: Namelist
-    ibrav::Int = 0  # The default value in QE's source code is -1
+    ibrav::Int = -1
     celldm::Vector{Maybe{Float64}} = zeros(6)  # Must specify
     A::Float64 = 0.0
     B::Float64 = 0.0
@@ -242,9 +242,9 @@ Represent the `SYSTEM` namelist of `pw.x`.
     block_2::Float64 = 0.55
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @assert ibrav ∈ union(0:1:14, (-3, -5, -9, 91, -12, -13))
+    @assert ibrav ∈ union(-1:1:14, (-3, -5, -9, 91, -12, -13))
     @assert(
-        if ibrav == 0
+        if ibrav ∈ -1:0
             true  # Skip the check, cannot use `nothing`
         else
             celldm[1] != 0 || A != 0  # Cannot use `iszero` to compare now!
