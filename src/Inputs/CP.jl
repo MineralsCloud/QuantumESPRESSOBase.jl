@@ -16,7 +16,6 @@ using ..Inputs: Namelist, Input, Card, getoption, allowed_options, qestring
 using ...Setters: VerbositySetter, CalculationSetter, LensMaker
 
 import Crystallography
-import Crystallography.Arithmetics
 import Pseudopotentials
 import ..Inputs
 import ...Setters
@@ -609,7 +608,7 @@ Crystallography.Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
 
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
-Arithmetics.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
+Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 """
     cellvolume(card)
 
@@ -618,7 +617,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 !!! warning
     It will throw an error if the option is `"alat"`.
 """
-function Arithmetics.cellvolume(card::AbstractCellParametersCard)
+function Crystallography.cellvolume(card::AbstractCellParametersCard)
     option = getoption(card)
     if option == "bohr"
         abs(det(card.data))
@@ -627,7 +626,7 @@ function Arithmetics.cellvolume(card::AbstractCellParametersCard)
     else  # option == "alat"
         error("information not enough! Parameter `celldm[1]` needed!")
     end
-end # function Arithmetics.cellvolume
+end # function Crystallography.cellvolume
 
 function Inputs.qestring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
     return join(
