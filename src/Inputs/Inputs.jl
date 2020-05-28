@@ -20,10 +20,10 @@ using Parameters: type2dict
 using PyFortran90Namelists: fstring
 
 import Crystallography
+import OrderedCollections
 import ..Setters
 
-export to_dict,
-    dropdefault, getnamelists, getcards, getoption, allowed_options, titleof, qestring
+export getnamelists, getcards, getoption, allowed_options, titleof, qestring
 
 """
     Namelist
@@ -62,23 +62,6 @@ true
 titleof(x::InputEntry) = titleof(typeof(x))
 
 """
-    to_dict(nml; defaultorder = true)
-
-Convert a `Namelist` to a dictionary.
-
-# Arguments
-- `nml::Namelist`: the namelist to be converted.
-- `defaultorder::Bool = true`: whether or not use the default order of parameters in QE's docs.
-"""
-function to_dict(nml::Namelist; defaultorder::Bool = true)
-    dict = (defaultorder ? OrderedDict{Symbol,Any}() : Dict{Symbol,Any}())
-    for n in propertynames(nml)
-        dict[n] = getproperty(nml, n)
-    end
-    return dict
-end
-
-"""
     dropdefault(nml::Namelist)
 
 Return an `AbstractDict` of non-default values of a `Namelist`.
@@ -86,7 +69,7 @@ Return an `AbstractDict` of non-default values of a `Namelist`.
 function dropdefault(nml::Namelist)
     default = typeof(nml)()  # Create a `Namelist` with all default values
     # Compare `default` with `nml`, discard the same values
-    result = filter!(item -> item.second != getfield(default, item.first), to_dict(nml))
+    result = filter!(item -> item.second != getfield(default, item.first), Dict(nml))
     isempty(result) && @info "Every entry in the namelist is the default value!"
     return result
 end
@@ -154,7 +137,7 @@ getcards(input::T, selector::Symbol = :all) where {T<:Input} =
 
 # Do not export this type!
 struct _Celldm{T<:Bravais}
-    data
+    data::Any
     function _Celldm{T}(data) where {T}
         @assert 1 <= length(data) <= 6
         return new(data)
@@ -195,6 +178,11 @@ function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
     a, b, c, α, β, γ = p
     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
 end # function Base.convert
+
+Base.Dict(nml::Namelist) =
+    Dict(name => getproperty(nml, name) for name in propertynames(nml))
+OrderedCollections.OrderedDict(nml::Namelist) =
+    OrderedDict(name => getproperty(nml, name) for name in propertynames(nml))
 
 """
     qestring(x; indent = ' '^4, delim = ' ')
