@@ -66,7 +66,9 @@ export ControlNamelist,
     SpecialKPoint,
     KPointsCard,
     PWInput,
-    optconvert
+    optconvert,
+    xmldir,
+    wfcfiles
 
 # From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4
 const Maybe{T} = Union{T,Nothing}
@@ -118,19 +120,17 @@ Represent the `CONTROL` namelist of `pw.x`.
     @assert iprint >= 1
     @assert disk_io ∈ ("high", "medium", "low", "none", "default")
     @assert dt >= 0
+    # @assert !(lkpoint_dir && wf_collect) "`lkpoint_dir` currently doesn't work together with `wf_collect`!"
     @assert max_seconds >= 0
     @assert etot_conv_thr >= 0
     @assert forc_conv_thr >= 0
     @assert gdir ∈ 1:3
-    @assert(
-        !all((gate, tefield, !dipfield)),
-        "`gate` cannot be used with `tefield` if dipole correction is not active!"
-    )
-    @assert(
-        !all((gate, dipfield, !tefield)),
-        "dipole correction is not active if `tefield = false`!"
-    )
+    @assert !all((gate, tefield, !dipfield)) "`gate` cannot be used with `tefield` if dipole correction is not active!"
+    @assert !all((gate, dipfield, !tefield)) "dipole correction is not active if `tefield = false`!"
 end # struct ControlNamelist
+
+xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
+wfcfiles(nml::ControlNamelist, n = 1) = [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
 
 """
     SystemNamelist <: Namelist
