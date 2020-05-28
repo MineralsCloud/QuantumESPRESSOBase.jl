@@ -12,15 +12,14 @@ julia>
 module Inputs
 
 using Compat: isnothing, only
-using Crystallography: Bravais, Lattice, CellParameters, PrimitiveTriclinic
-using Crystallography.Arithmetics: cellvolume
+using Crystallography: Bravais, Lattice, CellParameters, PrimitiveTriclinic, cellvolume
 using Kaleido: @batchlens
 using LinearAlgebra: det
 using OrderedCollections: OrderedDict
 using Parameters: type2dict
 using PyFortran90Namelists: fstring
 
-import Crystallography.Arithmetics
+import Crystallography
 import ..Setters
 
 export to_dict,
@@ -282,7 +281,7 @@ nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # 
 
 Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
 """
-function Arithmetics.cellvolume(input::PWInput)
+function Crystallography.cellvolume(input::PWInput)
     if isnothing(input.cell_parameters)
         return cellvolume(Lattice(input.system))
     else
@@ -297,6 +296,6 @@ function Arithmetics.cellvolume(input::PWInput)
             return cellvolume(input.cell_parameters)
         end
     end
-end # function Arithmetics.cellvolume
+end # function Crystallography.cellvolume
 
 end

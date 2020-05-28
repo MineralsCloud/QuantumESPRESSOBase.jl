@@ -12,8 +12,7 @@ julia>
 module PWscf
 
 using Compat: isnothing, eachrow
-using Crystallography: Bravais, Lattice, CellParameters, Cell
-using Crystallography.Arithmetics: cellvolume
+using Crystallography: Bravais, Lattice, CellParameters, Cell, cellvolume
 using Formatting: sprintf1
 using Kaleido: @batchlens
 using LinearAlgebra: det
@@ -44,7 +43,6 @@ using ...Setters:
     LensMaker
 
 import Crystallography
-import Crystallography.Arithmetics
 import Pseudopotentials
 import ..Inputs
 import ...Setters
@@ -785,7 +783,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 !!! warning
     It will throw an error if the option is `"alat"`.
 """
-function Arithmetics.cellvolume(card::AbstractCellParametersCard)
+function Crystallography.cellvolume(card::AbstractCellParametersCard)
     option = getoption(card)
     if option == "bohr"
         abs(det(card.data))
@@ -794,13 +792,13 @@ function Arithmetics.cellvolume(card::AbstractCellParametersCard)
     else  # option == "alat"
         error("information not enough! Parameter `celldm[1]` needed!")
     end
-end # function Arithmetics.cellvolume
+end # function Crystallography.cellvolume
 """
     cellvolume(nml::SystemNamelist)
 
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
-Arithmetics.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
+Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
 function Setters.make(::LensMaker{CellParametersSetter})
     return @batchlens begin
