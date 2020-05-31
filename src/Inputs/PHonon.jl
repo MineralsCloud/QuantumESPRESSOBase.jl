@@ -169,7 +169,8 @@ struct PhInput <: Input
     inputph::PhNamelist
     q_points::Union{Nothing,QPointsCard}
 end # struct PhInput
-PhInput(inputph = PhNamelist(), q_points = nothing) = PhInput(inputph, q_points)
+PhInput(inputph) = PhInput(inputph, nothing)
+PhInput() = PhInput(PhNamelist(), nothing)
 
 struct Q2rInput <: Input
     input::Q2rNamelist
@@ -180,7 +181,8 @@ struct MatdynInput <: Input
     input::MatdynNamelist
     q_points::Union{Nothing,QPointsCard}
 end # struct MatdynInput
-MatdynInput(input = MatdynNamelist(), q_points = nothing) = MatdynInput(input, q_points)
+MatdynInput(input) = MatdynInput(input, nothing)
+MatdynInput() = MatdynInput(MatdynNamelist(), nothing)
 
 struct DynmatInput <: Input
     input::DynmatNamelist
