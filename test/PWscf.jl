@@ -56,10 +56,10 @@ end # testset
     @testset "Test `pseudopot_format`" begin
         @test unique(pseudopot_format.(card.data)) == [UnifiedPseudopotentialFormat()]
     end # testset
-    @testset "Test `qestring`" begin
-        @test qestring(card) ==
+    @testset "Test `inputstring`" begin
+        @test inputstring(card) ==
               "ATOMIC_SPECIES\n     Al     24590.7655930491 Al.pbe-n-kjpaw_psl.1.0.0.UPF\n     As     68285.4024548272 As.pbe-n-kjpaw_psl.1.0.0.UPF\n     Si     25591.1924913552 Si.pbe-n-kjpaw_psl.1.0.0.UPF"
-        @test qestring(card; delim = "", indent = "") ==
+        @test inputstring(card; delim = "", indent = "") ==
               "ATOMIC_SPECIES\n Al    24590.7655930491Al.pbe-n-kjpaw_psl.1.0.0.UPF\n As    68285.4024548272As.pbe-n-kjpaw_psl.1.0.0.UPF\n Si    25591.1924913552Si.pbe-n-kjpaw_psl.1.0.0.UPF"
     end # testset
 end # testset
@@ -112,10 +112,10 @@ end # testset
     @testset "Mutual construction" begin
         @test map(x -> x.atom, AtomicSpeciesCard(card).data) == ["S", "Mo", "S"]
     end # testset
-    @testset "Test `qestring`" begin
-        @test qestring(card) ==
+    @testset "Test `inputstring`" begin
+        @test inputstring(card) ==
               "ATOMIC_POSITIONS { alat }\n      S    0.500000000    0.288675130    1.974192764\n     Mo    0.000000000    0.577350270    2.462038339\n      S    0.000000000   -0.577350270    2.950837559"
-        @test qestring(card; delim = "", indent = "") ==
+        @test inputstring(card; delim = "", indent = "") ==
               "ATOMIC_POSITIONS { alat }\n  S   0.500000000   0.288675130   1.974192764\n Mo   0.000000000   0.577350270   2.462038339\n  S   0.000000000  -0.577350270   2.950837559"
     end # testset
 end # testset
