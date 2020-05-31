@@ -23,7 +23,7 @@ import Crystallography
 import OrderedCollections
 import ..Setters
 
-export getnamelists, getcards, getoption, allowed_options, titleof, qestring
+export getnamelists, getcards, getoption, allowed_options, titleof, inputstring
 
 """
     Namelist
@@ -185,11 +185,11 @@ OrderedCollections.OrderedDict(nml::Namelist) =
     OrderedDict(name => getproperty(nml, name) for name in propertynames(nml))
 
 """
-    qestring(x; indent = ' '^4, delim = ' ')
+    inputstring(x; indent = ' '^4, delim = ' ')
 
 Return a `String` representing the object, which is valid for Quantum ESPRESSO's input.
 """
-function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
+function inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ')
     content = ""
     for (key, value) in dict
         if value isa Vector
@@ -203,17 +203,17 @@ function qestring(dict::AbstractDict; indent = ' '^4, delim = ' ')
     end
     return content
 end
-qestring(::Nothing; args...) = ""
-function qestring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
+inputstring(::Nothing; args...) = ""
+function inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
     namelist_name = titleof(nml)
-    content = qestring(dropdefault(nml); indent = indent, delim = delim)
+    content = inputstring(dropdefault(nml); indent = indent, delim = delim)
     return "&$namelist_name" * newline * content * '/'
 end
-function qestring(input::Input; indent = ' '^4, delim = ' ', newline = '\n')
+function inputstring(input::Input; indent = ' '^4, delim = ' ', newline = '\n')
     content = ""
     for i in 1:nfields(input)
         content *=
-            qestring(
+            inputstring(
                 getfield(input, i),
                 indent = indent,
                 delim = delim,
@@ -222,7 +222,7 @@ function qestring(input::Input; indent = ' '^4, delim = ' ', newline = '\n')
     end
     return content
 end
-function qestring(
+function inputstring(
     v::AbstractVector{<:InputEntry},
     indent = ' '^4,
     delim = ' ',
@@ -231,7 +231,7 @@ function qestring(
     content = ""
     for i in 1:length(v)
         content *=
-            qestring(v[i], indent = indent, delim = delim, newline = newline) * newline
+            inputstring(v[i], indent = indent, delim = delim, newline = newline) * newline
     end
     return content
 end

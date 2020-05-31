@@ -12,7 +12,7 @@ using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful
 using UnitfulAtomic
 
-using ..Inputs: Namelist, Input, Card, getoption, allowed_options, qestring
+using ..Inputs: Namelist, Input, Card, getoption, allowed_options, inputstring
 using ...Setters: VerbositySetter, CalculationSetter, LensMaker
 
 import Crystallography
@@ -628,13 +628,13 @@ function Crystallography.cellvolume(card::AbstractCellParametersCard)
     end
 end # function Crystallography.cellvolume
 
-function Inputs.qestring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
+function Inputs.inputstring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
         delim,
     )
 end
-function Inputs.qestring(
+function Inputs.inputstring(
     card::AtomicSpeciesCard;
     indent = ' '^4,
     delim = ' ',
@@ -646,13 +646,13 @@ function Inputs.qestring(
            newline *
            join(
                (
-                   indent * qestring(x; delim = delim, numfmt = numfmt)
+                   indent * inputstring(x; delim = delim, numfmt = numfmt)
                    for x in unique(card.data)
                ),
                newline,
            )
 end
-function Inputs.qestring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
+function Inputs.inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
     f(x) = x ? "" : "0"
     return join(
         [
@@ -663,7 +663,7 @@ function Inputs.qestring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", a
         delim,
     )
 end
-function Inputs.qestring(
+function Inputs.inputstring(
     card::AtomicPositionsCard;
     indent = ' '^4,
     delim = ' ',
@@ -673,11 +673,11 @@ function Inputs.qestring(
     return "ATOMIC_POSITIONS { $(getoption(card)) }" *
            newline *
            join(
-               (indent * qestring(x; delim = delim, numfmt = numfmt) for x in card.data),
+               (indent * inputstring(x; delim = delim, numfmt = numfmt) for x in card.data),
                newline,
            )
 end
-function Inputs.qestring(
+function Inputs.inputstring(
     card::CellParametersCard;
     indent = ' '^4,
     delim = ' ',

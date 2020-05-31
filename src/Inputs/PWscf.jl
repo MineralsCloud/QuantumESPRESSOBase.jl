@@ -32,7 +32,7 @@ using ..Inputs:
     _Celldm,
     getoption,
     allowed_options,
-    qestring
+    inputstring
 using ...Setters:
     AlatPressSetter,
     LensMaker,
@@ -130,7 +130,8 @@ Represent the `CONTROL` namelist of `pw.x`.
 end # struct ControlNamelist
 
 xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
-wfcfiles(nml::ControlNamelist, n = 1) = [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
+wfcfiles(nml::ControlNamelist, n = 1) =
+    [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
 
 """
     SystemNamelist <: Namelist
@@ -840,13 +841,13 @@ Inputs.titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
-function Inputs.qestring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
+function Inputs.inputstring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
         delim,
     )
 end
-function Inputs.qestring(
+function Inputs.inputstring(
     card::AtomicSpeciesCard;
     indent = ' '^4,
     delim = ' ',
@@ -858,13 +859,13 @@ function Inputs.qestring(
            newline *
            join(
                (
-                   indent * qestring(x; delim = delim, numfmt = numfmt)
+                   indent * inputstring(x; delim = delim, numfmt = numfmt)
                    for x in unique(card.data)
                ),
                newline,
            )
 end
-function Inputs.qestring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
+function Inputs.inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
     f(x) = x ? "" : "0"
     return join(
         [
@@ -875,7 +876,7 @@ function Inputs.qestring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", a
         delim,
     )
 end
-function Inputs.qestring(
+function Inputs.inputstring(
     card::AtomicPositionsCard;
     indent = ' '^4,
     delim = ' ',
@@ -885,11 +886,11 @@ function Inputs.qestring(
     return "ATOMIC_POSITIONS { $(getoption(card)) }" *
            newline *
            join(
-               (indent * qestring(x; delim = delim, numfmt = numfmt) for x in card.data),
+               (indent * inputstring(x; delim = delim, numfmt = numfmt) for x in card.data),
                newline,
            )
 end
-function Inputs.qestring(
+function Inputs.inputstring(
     card::CellParametersCard;
     indent = ' '^4,
     delim = ' ',
@@ -902,12 +903,12 @@ function Inputs.qestring(
     )
     return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
 end
-Inputs.qestring(data::GammaPoint) = ""
-Inputs.qestring(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d", args...) =
+Inputs.inputstring(data::GammaPoint) = ""
+Inputs.inputstring(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d", args...) =
     join(map(x -> sprintf1(numfmt, x), [data.grid; data.offsets]), delim)
-Inputs.qestring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
+Inputs.inputstring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
     join(map(x -> sprintf1(numfmt, x), collect(data)), delim)
-function Inputs.qestring(
+function Inputs.inputstring(
     card::KPointsCard;
     indent = ' '^4,
     delim = ' ',
@@ -916,11 +917,11 @@ function Inputs.qestring(
 )
     content = "K_POINTS { $(card.option) }" * newline
     if getoption(card) in ("gamma", "automatic")
-        content *= indent * qestring(card.data)
+        content *= indent * inputstring(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
         content *= string(length(card.data), newline)
         content *= join(
-            (indent * qestring(x; delim = delim, numfmt = numfmt) for x in card.data),
+            (indent * inputstring(x; delim = delim, numfmt = numfmt) for x in card.data),
             newline,
         )
     end
