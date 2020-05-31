@@ -130,7 +130,8 @@ Represent the `CONTROL` namelist of `pw.x`.
 end # struct ControlNamelist
 
 xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
-wfcfiles(nml::ControlNamelist, n = 1) = [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
+wfcfiles(nml::ControlNamelist, n = 1) =
+    [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
 
 """
     SystemNamelist <: Namelist
