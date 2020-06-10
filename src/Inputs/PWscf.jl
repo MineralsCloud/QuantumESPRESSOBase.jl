@@ -11,7 +11,7 @@ julia>
 """
 module PWscf
 
-using Compat: isnothing, eachrow
+using Compat: eachrow
 using Crystallography: Bravais, Lattice, CellParameters, Cell, cellvolume
 using Formatting: sprintf1
 using Kaleido: @batchlens
@@ -810,7 +810,7 @@ function Setters.make(::LensMaker{CellParametersSetter})
 end # function Setters.make
 
 function Setters.preset_values(::CellParametersSetter, template)
-    # !isnothing(template.cell_parameters) && return template
+    # template.cell_parameters !== nothing && return template
     system = template.system
     return (CellParametersCard(Lattice(system), "alat"), 0, [system.celldm[1]])
 end # function Setters.preset_values
@@ -976,7 +976,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     occupations::Union{Nothing,Float64} = nothing
     atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
     @assert(
-        !(isnothing(cell_parameters) && system.ibrav == 0),
+        !(cell_parameters === nothing && system.ibrav == 0),
         "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
     )
 end # struct PWInput

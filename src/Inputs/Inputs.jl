@@ -11,7 +11,7 @@ julia>
 """
 module Inputs
 
-using Compat: isnothing, only
+using Compat: only
 using Crystallography: Bravais, Lattice, CellParameters, PrimitiveTriclinic, cellvolume
 using Kaleido: @batchlens
 using LinearAlgebra: det
@@ -194,7 +194,7 @@ function inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ')
     for (key, value) in dict
         if value isa Vector
             for (i, x) in enumerate(value)
-                isnothing(x) && continue
+                x === nothing && continue
                 content *= indent * join(["$key($i)", "=", "$(fstring(x))\n"], delim)
             end
         else
@@ -270,12 +270,12 @@ nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # 
 Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
 """
 function Crystallography.cellvolume(input::PWInput)
-    if isnothing(input.cell_parameters)
+    if input.cell_parameters === nothing
         return cellvolume(Lattice(input.system))
     else
         if getoption(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
-            if isnothing(input.system.celldm[1])
+            if input.system.celldm[1] === nothing
                 error("`celldm[1]` is not defined!")
             else
                 return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))

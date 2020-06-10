@@ -1,6 +1,6 @@
 module CP
 
-using Compat: isnothing, eachrow
+using Compat: eachrow
 using Crystallography: Bravais, Lattice, CellParameters, Cell
 using Formatting: sprintf1
 using Kaleido: @batchlens
@@ -844,7 +844,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     plot_wannier::Union{Nothing,Float64} = nothing
     autopilot::Union{Nothing,Float64} = nothing
     @assert(
-        !(isnothing(cell_parameters) && system.ibrav == 0),
+        !(cell_parameters === nothing && system.ibrav == 0),
         "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
     )
 end # struct CPInput
