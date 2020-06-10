@@ -194,8 +194,9 @@ function inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ')
     for (key, value) in dict
         if value isa Vector
             for (i, x) in enumerate(value)
-                x === nothing && continue
-                content *= indent * join(["$key($i)", "=", "$(fstring(x))\n"], delim)
+                if x !== nothing
+                    content *= indent * join(["$key($i)", "=", "$(fstring(x))\n"], delim)
+                end
             end
         else
             content *= indent * join(["$key", "=", "$(fstring(value))\n"], delim)
