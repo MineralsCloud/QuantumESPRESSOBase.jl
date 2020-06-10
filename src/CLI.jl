@@ -1,7 +1,5 @@
 module CLI
 
-using Compat: isnothing
-
 export pwcmd
 
 """
@@ -45,7 +43,7 @@ function pwcmd(;
     if asstring
         @warn "using string commands maybe error prone! Use with care!"
         for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-            if !isnothing(v)
+            if v !== nothing
                 push!(options, redir[f], "'$v'")
             end
         end
