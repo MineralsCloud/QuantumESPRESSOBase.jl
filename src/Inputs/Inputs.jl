@@ -14,7 +14,6 @@ module Inputs
 using AbInitioSoftwareBase.Inputs: Input
 using Compat: only
 using Crystallography: Bravais, Lattice, CellParameters, PrimitiveTriclinic, cellvolume
-using Kaleido: @batchlens
 using LinearAlgebra: det
 using OrderedCollections: OrderedDict
 using Parameters: type2dict
@@ -23,7 +22,6 @@ using PyFortran90Namelists: fstring
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
 import OrderedCollections
-import ..Setters
 
 export getnamelists, getcards, getoption, allowed_options, titleof, inputstring
 

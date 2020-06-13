@@ -3,7 +3,6 @@ module CP
 using Compat: eachrow
 using Crystallography: Bravais, Lattice, CellParameters, Cell
 using Formatting: sprintf1
-using Kaleido: @batchlens
 using LinearAlgebra: det
 using Parameters: @with_kw
 using Pseudopotentials: pseudopot_format
@@ -13,12 +12,10 @@ using Unitful
 using UnitfulAtomic
 
 using ..Inputs: Namelist, QuantumESPRESSOInput, Card, getoption, allowed_options, inputstring
-using ...Setters: VerbositySetter, CalculationSetter, LensMaker
 
 import Crystallography
 import Pseudopotentials
 import ..Inputs
-import ...Setters
 
 export ControlNamelist,
     SystemNamelist,
@@ -707,27 +704,6 @@ function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
     end
     setfield!(value, name, x)  # FIXME: It is now immutable!
 end # function Base.setproperty!
-
-function Setters.make(::LensMaker{VerbositySetter,ControlNamelist})
-    return @batchlens begin
-        _.verbosity
-        _.wf_collect
-        _.tstress
-        _.tprnfor
-        _.saverho
-        _.disk_io
-    end
-end # function Setters.make
-function Setters.make(::LensMaker{<:CalculationSetter,ControlNamelist})
-    return @lens _.calculation
-end # function Setters.make
-
-Setters.preset_values(::VerbositySetter{:high}, ::ControlNamelist) =
-    ("high", true, true, true, true, "high")
-Setters.preset_values(::VerbositySetter{:low}, ::ControlNamelist) =
-    ("low", false, false, false, false, "default")
-Setters.preset_values(::CalculationSetter{T}, ::ControlNamelist) where {T} =
-    replace(string(T), "_" => "-")
 
 """
     AtomicVelocity(atom::Union{AbstractChar,String}, velocity::Vector{Float64})
