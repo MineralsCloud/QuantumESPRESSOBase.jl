@@ -14,7 +14,6 @@ module PWscf
 using Compat: eachrow
 using Crystallography: Bravais, Lattice, CellParameters, Cell, cellvolume
 using Formatting: sprintf1
-using Kaleido: @batchlens
 using LinearAlgebra: det
 using Parameters: @with_kw
 using Pseudopotentials: pseudopot_format
@@ -33,19 +32,10 @@ using ..Inputs:
     getoption,
     allowed_options,
     inputstring
-using ...Setters:
-    AlatPressSetter,
-    LensMaker,
-    VerbositySetter,
-    FiniteTemperatureSetter,
-    CellParametersSetter,
-    CalculationSetter,
-    LensMaker
 
 import Crystallography
 import Pseudopotentials
 import ..Inputs
-import ...Setters
 
 export ControlNamelist,
     SystemNamelist,
@@ -801,20 +791,6 @@ Return the volume of the cell based on the information given in a `SystemNamelis
 """
 Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
-function Setters.make(::LensMaker{CellParametersSetter})
-    return @batchlens begin
-        _.cell_parameters
-        _.system.ibrav
-        _.system.celldm
-    end
-end # function Setters.make
-
-function Setters.preset_values(::CellParametersSetter, template)
-    # template.cell_parameters !== nothing && return template
-    system = template.system
-    return (CellParametersCard(Lattice(system), "alat"), 0, [system.celldm[1]])
-end # function Setters.preset_values
-
 Inputs.getoption(::AtomicSpeciesCard) = nothing
 
 Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
@@ -982,69 +958,5 @@ Construct a `PWInput` which represents the input of program `pw.x`.
 end # struct PWInput
 PWInput(args...) =
     PWInput(; Dict(zip(map(arg -> entryname(typeof(arg), PWInput), args), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
-
-function Setters.make(::LensMaker{<:VerbositySetter,ControlNamelist})
-    return @batchlens begin
-        _.verbosity
-        _.wf_collect
-        _.tstress
-        _.tprnfor
-        _.disk_io
-    end
-end # function Setters.make
-function Setters.make(::LensMaker{<:FiniteTemperatureSetter,SystemNamelist})
-    return @batchlens begin
-        _.occupations
-        _.degauss
-        _.smearing
-    end
-end # function Setters.make
-function Setters.make(::LensMaker{<:CalculationSetter,ControlNamelist})
-    return @lens _.calculation
-end # function Setters.make
-
-Setters.preset_values(::VerbositySetter{:high}, ::ControlNamelist) =
-    ("high", true, true, true, "high")
-Setters.preset_values(::VerbositySetter{:low}, ::ControlNamelist) =
-    ("low", false, false, false, "low")
-function Setters.preset_values(::FiniteTemperatureSetter{N}, ::SystemNamelist) where {N}
-    return (
-        "smearing",
-        if N isa Real
-            N
-        else  # A quantity
-            u = unit(N) |> upreferred
-            if u == u"Ry"
-                N
-            elseif u == u"kg*m^2*s^-2"  # u"hartree", u"J", u"eV", etc..
-                uconvert(u"Ry", N)
-            elseif u == u"s^-1"  # u"Hz", u"THz", ...
-                uconvert(u"Hz", N) / 6579683920502000.0 * 2
-            elseif u == u"K"  # u"K", u"mK", u"μK", ...
-                uconvert(u"K", N) / 315775.02480407 * 2
-            elseif u == u"m^-1"  # u"m^-1", u"cm^-1", ...
-                uconvert(u"m^-1", N) / 21947463.13632 * 2
-            elseif u == u"kg"  # u"kg", u"g", ...
-                uconvert(u"kg", N) / 4.8508702095432e-35 * 2
-            else
-                error("unknown unit given!")
-            end |> ustrip
-        end,
-        "fermi-dirac",
-    )
-end # function Setters.preset_values
-Setters.preset_values(::CalculationSetter{T}, ::ControlNamelist) where {T} =
-    replace(string(T), "_" => "-")
-
-function Setters.make(::LensMaker{AlatPressSetter,PWInput})
-    return @batchlens begin
-        _.system.celldm  # Get the `template`'s `system.celldm` value
-        _.cell.press     # Get the `template`'s `cell.press` value
-        _.cell_parameters.option
-    end
-end # function Setters.make
-# function Setters.upgrade(lm::LensMaker{S,T}, ::Type{PWInput}) where {S,T<:InputEntry}
-# return PropertyLens{entryname(T)}() ∘ make(lm)
-# end # function Setters.upgrade
 
 end
