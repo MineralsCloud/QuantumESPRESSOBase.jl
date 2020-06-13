@@ -20,6 +20,7 @@ using OrderedCollections: OrderedDict
 using Parameters: type2dict
 using PyFortran90Namelists: fstring
 
+import AbInitioSoftwareBase.Inputs: inputstring
 import Crystallography
 import OrderedCollections
 import ..Setters
