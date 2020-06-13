@@ -11,6 +11,7 @@ julia>
 """
 module Inputs
 
+using AbInitioSoftwareBase.Inputs: Input
 using Compat: only
 using Crystallography: Bravais, Lattice, CellParameters, PrimitiveTriclinic, cellvolume
 using Kaleido: @batchlens
@@ -19,6 +20,7 @@ using OrderedCollections: OrderedDict
 using Parameters: type2dict
 using PyFortran90Namelists: fstring
 
+import AbInitioSoftwareBase.Inputs: inputstring
 import Crystallography
 import OrderedCollections
 import ..Setters
@@ -108,10 +110,10 @@ julia> allowed_options(KPointsCard)
 allowed_options(::Type{<:Card}) = nothing
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
-abstract type Input end
+abstract type QuantumESPRESSOInput <: Input end
 
 # This is a helper function and should not be exported.
-entryname(S::Type{<:InputEntry}, T::Type{<:Input}) =
+entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
     only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 """
@@ -121,7 +123,7 @@ Return an iterable of `Namelist`s of a `Input`. It is lazy, you may want to `col
 
 Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
 """
-getnamelists(input::T, selector::Symbol = :all) where {T<:Input} =
+getnamelists(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
     (getfield(input, x) for x in _selectnamelists(T, Val(selector)))
 
 """
@@ -132,7 +134,7 @@ Return an iterable of `Card`s of a `Input`. It is lazy, you may want to `collect
 Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
 Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
 """
-getcards(input::T, selector::Symbol = :all) where {T<:Input} =
+getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
     (getfield(input, x) for x in _selectcards(T, Val(selector)))
 
 # Do not export this type!
@@ -210,7 +212,7 @@ function inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
     content = inputstring(dropdefault(nml); indent = indent, delim = delim)
     return "&$namelist_name" * newline * content * '/'
 end
-function inputstring(input::Input; indent = ' '^4, delim = ' ', newline = '\n')
+function inputstring(input::QuantumESPRESSOInput; indent = ' '^4, delim = ' ', newline = '\n')
     content = ""
     for i in 1:nfields(input)
         content *=
@@ -246,14 +248,14 @@ include("PHonon.jl")
 using .PWscf: PWInput
 using .CP: CPInput
 
-_selectnamelists(T::Type{<:Input}, ::Val{:all}) =
+_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) =
     Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
 _selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) =
     (:control, :system, :electrons)
 _selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
     setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
 
-_selectcards(T::Type{<:Input}, ::Val{:all}) = Tuple(
+_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(
     entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing}
 )
 _selectcards(T::Type{PWInput}, ::Val{:compulsory}) =

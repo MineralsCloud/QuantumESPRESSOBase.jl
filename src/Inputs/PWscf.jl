@@ -26,7 +26,7 @@ using UnitfulAtomic
 using ..Inputs:
     InputEntry,
     Namelist,
-    Input,
+    QuantumESPRESSOInput,
     entryname,
     Card,
     _Celldm,
@@ -946,7 +946,7 @@ function Base.setproperty!(value::AtomicPosition, name::Symbol, x)
 end # function Base.setproperty!
 
 """
-    PWInput <: Input
+    PWInput <: QuantumESPRESSOInput
     PWInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
 
 Construct a `PWInput` which represents the input of program `pw.x`.
@@ -962,7 +962,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
 - `k_points::KPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
 - `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 """
-@with_kw struct PWInput <: Input
+@with_kw struct PWInput <: QuantumESPRESSOInput
     control::ControlNamelist = ControlNamelist()
     system::SystemNamelist = SystemNamelist()
     electrons::ElectronsNamelist = ElectronsNamelist()
