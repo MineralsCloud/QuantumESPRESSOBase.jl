@@ -12,7 +12,7 @@ using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful
 using UnitfulAtomic
 
-using ..Inputs: Namelist, Input, Card, getoption, allowed_options, inputstring
+using ..Inputs: Namelist, QuantumESPRESSOInput, Card, getoption, allowed_options, inputstring
 using ...Setters: VerbositySetter, CalculationSetter, LensMaker
 
 import Crystallography
@@ -825,7 +825,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
 - `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 - `ref_cell_parameters::Union{Nothing,RefCellParametersCard}`: the `REF_CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 """
-@with_kw struct CPInput <: Input
+@with_kw struct CPInput <: QuantumESPRESSOInput
     control::ControlNamelist = ControlNamelist()
     system::SystemNamelist = SystemNamelist()
     electrons::ElectronsNamelist = ElectronsNamelist()
