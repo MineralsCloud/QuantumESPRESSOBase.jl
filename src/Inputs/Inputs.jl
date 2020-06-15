@@ -189,53 +189,77 @@ OrderedCollections.OrderedDict(nml::Namelist) =
 
 Return a `String` representing the object, which is valid for Quantum ESPRESSO's input.
 """
-function inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ')
-    content = ""
-    for (key, value) in dict
-        if value isa Vector
-            for (i, x) in enumerate(value)
-                if x !== nothing
-                    content *= indent * join(["$key($i)", "=", "$(fstring(x))\n"], delim)
-                end
-            end
-        else
-            content *= indent * join(["$key", "=", "$(fstring(value))\n"], delim)
-        end
-    end
-    return content
-end
-inputstring(::Nothing; args...) = ""
-function inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
-    namelist_name = titleof(nml)
-    content = inputstring(dropdefault(nml); indent = indent, delim = delim)
-    return "&$namelist_name" * newline * content * '/'
-end
-function inputstring(input::QuantumESPRESSOInput; indent = ' '^4, delim = ' ', newline = '\n')
-    content = ""
-    for i in 1:nfields(input)
-        content *=
-            inputstring(
-                getfield(input, i),
-                indent = indent,
-                delim = delim,
-                newline = newline,
-            ) * newline
-    end
-    return content
-end
 function inputstring(
-    v::AbstractVector{<:InputEntry},
+    input::QuantumESPRESSOInput;
     indent = ' '^4,
     delim = ' ',
     newline = '\n',
 )
-    content = ""
-    for i in 1:length(v)
-        content *=
-            inputstring(v[i], indent = indent, delim = delim, newline = newline) * newline
-    end
-    return content
+    return join(
+        map(fieldnames(typeof(input))) do f
+            x = getfield(input, f)
+            if x !== nothing
+                inputstring(x; indent = indent, delim = delim, newline = newline) * newline
+            else
+                ""
+            end
+        end,
+    )
 end
+function inputstring(
+    vec::AbstractVector{<:InputEntry},
+    indent = ' '^4,
+    delim = ' ',
+    newline = '\n',
+)
+    return join(
+        map(vec) do x
+            if x !== nothing
+                inputstring(x; indent = indent, delim = delim, newline = newline) * newline
+            else
+                ""
+            end
+        end,
+    )
+end
+function inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
+    content =
+        _inputstring(dropdefault(nml); indent = indent, delim = delim, newline = newline)
+    return join(["&" * titleof(nml), content, '/'], newline)
+end
+function _inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ', newline = '\n')
+    return join(
+        map(keys(dict), values(dict)) do key, value
+            _inputstring(key, value; indent = indent, delim = delim, newline = newline)
+        end,
+        newline,
+    )
+end
+function _inputstring(
+    key,
+    value::AbstractVector;
+    indent = ' '^4,
+    delim = ' ',
+    newline = '\n',
+)
+    return join(
+        map(enumerate(value)) do (i, x)
+            if x !== nothing
+                indent * join([string(key, '(', i, ')'), "=", fstring(x)], delim)
+            else
+                ""
+            end
+        end,
+        newline,
+    )
+end
+function _inputstring(key, value::NamedTuple; indent = ' '^4, delim = ' ', newline = '\n')
+    return join(map(keys(value), values(value)) do x, y
+        indent * join([string(key, '%', x), "=", fstring(y)], delim)
+    end, newline)
+end
+_inputstring(key, value; indent = ' '^4, delim = ' ', kwargs...) =
+    indent * join([string(key), "=", fstring(value)], delim)
 
 # =============================== Modules ============================== #
 include("PWscf.jl")
