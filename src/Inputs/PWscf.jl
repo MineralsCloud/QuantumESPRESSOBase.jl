@@ -33,6 +33,7 @@ using ..Inputs:
     allowed_options,
     inputstring
 
+import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
 import Pseudopotentials
 import ..Inputs
@@ -807,41 +808,36 @@ Inputs.allowed_options(::Type{<:KPointsCard}) = (
     "crystal_c",
 )
 
-Inputs.titleof(::Type{ControlNamelist}) = "CONTROL"
-Inputs.titleof(::Type{SystemNamelist}) = "SYSTEM"
-Inputs.titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
-Inputs.titleof(::Type{IonsNamelist}) = "IONS"
-Inputs.titleof(::Type{CellNamelist}) = "CELL"
-Inputs.titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-Inputs.titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
-Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
+titleof(::Type{ControlNamelist}) = "CONTROL"
+titleof(::Type{SystemNamelist}) = "SYSTEM"
+titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
+titleof(::Type{IonsNamelist}) = "IONS"
+titleof(::Type{CellNamelist}) = "CELL"
+titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
+titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
-function Inputs.inputstring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
+function inputstring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
         delim,
     )
 end
-function Inputs.inputstring(
+function inputstring(
     card::AtomicSpeciesCard;
     indent = ' '^4,
     delim = ' ',
     numfmt = "%20.10f",
     newline = '\n',
 )
-    # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES" *
            newline *
-           join(
-               (
-                   indent * inputstring(x; delim = delim, numfmt = numfmt)
-                   for x in unique(card.data)
-               ),
-               newline,
-           )
+           join(map(unique(card.data)) do x
+               indent * inputstring(x; delim = delim, numfmt = numfmt)
+           end, newline)
 end
-function Inputs.inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
+function inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
     f(x) = x ? "" : "0"
     return join(
         [
@@ -852,7 +848,7 @@ function Inputs.inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f"
         delim,
     )
 end
-function Inputs.inputstring(
+function inputstring(
     card::AtomicPositionsCard;
     indent = ' '^4,
     delim = ' ',
@@ -861,30 +857,32 @@ function Inputs.inputstring(
 )
     return "ATOMIC_POSITIONS { $(getoption(card)) }" *
            newline *
-           join(
-               (indent * inputstring(x; delim = delim, numfmt = numfmt) for x in card.data),
-               newline,
-           )
+           join(map(card.data) do x
+               indent * inputstring(x; delim = delim, numfmt = numfmt)
+           end, newline)
 end
-function Inputs.inputstring(
+function inputstring(
     card::CellParametersCard;
     indent = ' '^4,
     delim = ' ',
     numfmt = "%14.9f",
     newline = '\n',
 )
-    it = (
-        indent * join((sprintf1(numfmt, x) for x in row), delim) for
-        row in eachrow(card.data)
-    )
-    return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
+    return "CELL_PARAMETERS { $(getoption(card)) }" *
+           newline *
+           join(map(eachrow(card.data)) do row
+               indent * join((sprintf1(numfmt, x) for x in row), delim)
+           end, newline)
 end
-Inputs.inputstring(data::GammaPoint) = ""
-Inputs.inputstring(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d", args...) =
-    join(map(x -> sprintf1(numfmt, x), [data.grid; data.offsets]), delim)
-Inputs.inputstring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
-    join(map(x -> sprintf1(numfmt, x), collect(data)), delim)
-function Inputs.inputstring(
+inputstring(data::GammaPoint) = ""
+function inputstring(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d", args...)
+    return join(map([data.grid; data.offsets]) do x
+        sprintf1(numfmt, x)
+    end, delim)
+end
+inputstring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
+    join(map(x -> sprintf1(numfmt, x), data), delim)
+function inputstring(
     card::KPointsCard;
     indent = ' '^4,
     delim = ' ',
@@ -896,10 +894,9 @@ function Inputs.inputstring(
         content *= indent * inputstring(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
         content *= string(length(card.data), newline)
-        content *= join(
-            (indent * inputstring(x; delim = delim, numfmt = numfmt) for x in card.data),
-            newline,
-        )
+        content *= join(map(card.data) do x
+            indent * inputstring(x; delim = delim, numfmt = numfmt)
+        end, newline)
     end
     return content
 end
