@@ -82,8 +82,14 @@ Represent the `INPUTPH` namelist of `ph.x`.
     modenum::Int = 0
     start_q::Int = 1
     last_q::Int = -1000
-    # dvscf_star::String = 1
-    # drho_star::String = 1
+    dvscf_star::NamedTuple{
+        (:open, :dir, :ext, :basis, :pat),
+        Tuple{Bool,String,String,String,Bool},
+    } = (open = false, dir = "./", ext = "dvscf", basis = "cartesian", pat = false)
+    drho_star::NamedTuple{
+        (:open, :dir, :ext, :basis, :pat),
+        Tuple{Bool,String,String,String,Bool},
+    } = (open = false, dir = "./", ext = "drho", basis = "modes", pat = true)
 end # struct PhNamelist
 
 # The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
