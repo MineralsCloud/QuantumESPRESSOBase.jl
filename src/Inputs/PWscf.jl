@@ -33,6 +33,7 @@ using ..Inputs:
     allowed_options,
     inputstring
 
+import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
 import Pseudopotentials
 import ..Inputs
@@ -807,23 +808,23 @@ Inputs.allowed_options(::Type{<:KPointsCard}) = (
     "crystal_c",
 )
 
-Inputs.titleof(::Type{ControlNamelist}) = "CONTROL"
-Inputs.titleof(::Type{SystemNamelist}) = "SYSTEM"
-Inputs.titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
-Inputs.titleof(::Type{IonsNamelist}) = "IONS"
-Inputs.titleof(::Type{CellNamelist}) = "CELL"
-Inputs.titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-Inputs.titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
-Inputs.titleof(::Type{<:KPointsCard}) = "K_POINTS"
+titleof(::Type{ControlNamelist}) = "CONTROL"
+titleof(::Type{SystemNamelist}) = "SYSTEM"
+titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
+titleof(::Type{IonsNamelist}) = "IONS"
+titleof(::Type{CellNamelist}) = "CELL"
+titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
+titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
-function Inputs.inputstring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
+function inputstring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
         delim,
     )
 end
-function Inputs.inputstring(
+function inputstring(
     card::AtomicSpeciesCard;
     indent = ' '^4,
     delim = ' ',
@@ -836,7 +837,7 @@ function Inputs.inputstring(
                indent * inputstring(x; delim = delim, numfmt = numfmt)
            end, newline)
 end
-function Inputs.inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
+function inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
     f(x) = x ? "" : "0"
     return join(
         [
@@ -847,7 +848,7 @@ function Inputs.inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f"
         delim,
     )
 end
-function Inputs.inputstring(
+function inputstring(
     card::AtomicPositionsCard;
     indent = ' '^4,
     delim = ' ',
@@ -860,7 +861,7 @@ function Inputs.inputstring(
                indent * inputstring(x; delim = delim, numfmt = numfmt)
            end, newline)
 end
-function Inputs.inputstring(
+function inputstring(
     card::CellParametersCard;
     indent = ' '^4,
     delim = ' ',
