@@ -873,12 +873,15 @@ function Inputs.inputstring(
                indent * join((sprintf1(numfmt, x) for x in row), delim)
            end, newline)
 end
-Inputs.inputstring(data::GammaPoint) = ""
-Inputs.inputstring(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d", args...) =
-    join(map(x -> sprintf1(numfmt, x), [data.grid; data.offsets]), delim)
-Inputs.inputstring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
-    join(map(x -> sprintf1(numfmt, x), collect(data)), delim)
-function Inputs.inputstring(
+inputstring(data::GammaPoint) = ""
+function inputstring(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d", args...)
+    return join(map([data.grid; data.offsets]) do x
+        sprintf1(numfmt, x)
+    end, delim)
+end
+inputstring(data::SpecialKPoint; delim = ' ', numfmt = "%14.9f", args...) =
+    join(map(x -> sprintf1(numfmt, x), data), delim)
+function inputstring(
     card::KPointsCard;
     indent = ' '^4,
     delim = ' ',
