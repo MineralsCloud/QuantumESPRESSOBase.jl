@@ -207,7 +207,7 @@ function inputstring(
     )
 end
 function inputstring(
-    vec::AbstractVector{<:InputEntry},
+    vec::AbstractVector{<:Union{InputEntry,Nothing}},
     indent = ' '^4,
     delim = ' ',
     newline = '\n',
@@ -225,14 +225,13 @@ end
 function inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
     content =
         _inputstring(dropdefault(nml); indent = indent, delim = delim, newline = newline)
-    return join(["&" * titleof(nml), content, '/'], newline)
+    return "&" * titleof(nml) * newline * content * '/'
 end
 function _inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ', newline = '\n')
     return join(
         map(keys(dict), values(dict)) do key, value
             _inputstring(key, value; indent = indent, delim = delim, newline = newline)
         end,
-        newline,
     )
 end
 function _inputstring(
@@ -245,12 +244,11 @@ function _inputstring(
     return join(
         map(enumerate(value)) do (i, x)
             if x !== nothing
-                indent * join([string(key, '(', i, ')'), "=", fstring(x)], delim)
+                indent * join([string(key, '(', i, ')'), "=", fstring(x)], delim) * newline
             else
                 ""
             end
         end,
-        newline,
     )
 end
 function _inputstring(key, value::NamedTuple; indent = ' '^4, delim = ' ', newline = '\n')
@@ -258,8 +256,8 @@ function _inputstring(key, value::NamedTuple; indent = ' '^4, delim = ' ', newli
         indent * join([string(key, '%', x), "=", fstring(y)], delim)
     end, newline)
 end
-_inputstring(key, value; indent = ' '^4, delim = ' ', kwargs...) =
-    indent * join([string(key), "=", fstring(value)], delim)
+_inputstring(key, value; indent = ' '^4, delim = ' ', newline = '\n') =
+    indent * join([string(key), "=", fstring(value)], delim) * newline
 
 # =============================== Modules ============================== #
 include("PWscf.jl")
