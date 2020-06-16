@@ -292,7 +292,6 @@ end # module PWscf
             AtomicPosition("Si", [0.25, 0.25, 0.25]),
         ])
         k_points = KPointsCard(
-            "tpiba",
             [
                 0.125 0.125 0.125 1.0
                 0.125 0.125 0.375 3.0
