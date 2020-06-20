@@ -180,6 +180,10 @@ function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
 end # function Base.convert
 
+include("PWscf/PWscf.jl")
+include("CP.jl")
+include("PHonon.jl")
+
 """
     inputstring(input::QuantumESPRESSOInput; indent = ' '^4, delim = ' ', newline = '\n')
 
@@ -275,9 +279,5 @@ function _inputstring(key, value::NamedTuple; indent = ' '^4, delim = ' ', newli
 end
 _inputstring(key, value; indent = ' '^4, delim = ' ', newline = '\n') =
     indent * join([string(key), "=", fstring(value)], delim) * newline
-
-include("PWscf/PWscf.jl")
-include("CP.jl")
-include("PHonon.jl")
 
 end
