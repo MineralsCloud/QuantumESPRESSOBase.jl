@@ -328,9 +328,9 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 function Crystallography.cellvolume(card::AbstractCellParametersCard)
     option = getoption(card)
     if option == "bohr"
-        abs(det(card.data))
+        return abs(det(card.data))
     elseif option == "angstrom"
-        ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
+        return ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
     else  # option == "alat"
         error("information not enough! Parameter `celldm[1]` needed!")
     end
