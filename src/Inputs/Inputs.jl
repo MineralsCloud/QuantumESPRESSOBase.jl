@@ -266,7 +266,7 @@ _inputstring(key, value; indent = ' '^4, delim = ' ', newline = '\n') =
     indent * join([string(key), "=", fstring(value)], delim) * newline
 
 # =============================== Modules ============================== #
-include("PWscf.jl")
+include("PWscf/PWscf.jl")
 include("CP.jl")
 include("PHonon.jl")
 # ============================================================================ #

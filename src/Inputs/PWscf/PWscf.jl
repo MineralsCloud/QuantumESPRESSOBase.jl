@@ -63,24 +63,7 @@ export ControlNamelist,
 include("nml.jl")
 include("card.jl")
 
-"""
-    Crystallography.Bravais(nml::SystemNamelist)
-
-Return a `Bravais` from a `SystemNamelist`.
-"""
-Crystallography.Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
-
-"""
-    Crystallography.Lattice(nml::SystemNamelist)
-
-Return a `Lattice` from a `SystemNamelist`.
-"""
-function Crystallography.Lattice(nml::SystemNamelist)
-    b = Bravais(nml)
-    return Lattice(b, _Celldm{typeof(b)}(nml.celldm))
-end # function Crystallography.Lattice
-
-Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
+Inputs.allowed_options(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 Inputs.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
 Inputs.allowed_options(::Type{<:KPointsCard}) = (
@@ -224,6 +207,23 @@ Construct a `PWInput` which represents the input of program `pw.x`.
 end # struct PWInput
 PWInput(args...) =
     PWInput(; Dict(zip(map(arg -> entryname(typeof(arg), PWInput), args), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
+
+"""
+    Crystallography.Bravais(nml::SystemNamelist)
+
+Return a `Bravais` from a `SystemNamelist`.
+"""
+Crystallography.Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
+
+"""
+    Crystallography.Lattice(nml::SystemNamelist)
+
+Return a `Lattice` from a `SystemNamelist`.
+"""
+function Crystallography.Lattice(nml::SystemNamelist)
+    b = Bravais(nml)
+    return Lattice(b, _Celldm{typeof(b)}(nml.celldm))
+end # function Crystallography.Lattice
 
 """
     cellvolume(card)
