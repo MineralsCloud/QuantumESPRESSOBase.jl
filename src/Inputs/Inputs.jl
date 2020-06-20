@@ -185,7 +185,7 @@ include("CP.jl")
 include("PHonon.jl")
 
 """
-    inputstring(input::QuantumESPRESSOInput; indent = ' '^4, delim = ' ', newline = '\n')
+    inputstring(input::QuantumESPRESSOInput; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f", intfmt = "%5d")
 
 Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRESSO's input.
 """
@@ -200,7 +200,7 @@ function inputstring(input::QuantumESPRESSOInput; newline = '\n', kwargs...)
     end)
 end
 """
-    inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = '\n')
+    inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f", intfmt = "%5d")
 
 Return a `String` representing a collection of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
 """
@@ -210,7 +210,7 @@ function inputstring(args::InputEntry...; newline = '\n', kwargs...)
     end, newline)
 end
 """
-    inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
+    inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = "\\n")
 
 Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
 """
