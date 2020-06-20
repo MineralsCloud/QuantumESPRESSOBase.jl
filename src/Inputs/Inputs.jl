@@ -105,7 +105,7 @@ julia> allowed_options(KPointsCard)
 ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 ```
 """
-allowed_options(::Type{<:Card}) = nothing
+function allowed_options end
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput <: Input end
