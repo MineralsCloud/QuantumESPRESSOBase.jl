@@ -185,9 +185,9 @@ OrderedCollections.OrderedDict(nml::Namelist) =
     OrderedDict(name => getproperty(nml, name) for name in propertynames(nml))
 
 """
-    inputstring(x; indent = ' '^4, delim = ' ')
+    inputstring(input::QuantumESPRESSOInput; indent = ' '^4, delim = ' ', newline = '\n')
 
-Return a `String` representing the object, which is valid for Quantum ESPRESSO's input.
+Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(
     input::QuantumESPRESSOInput;
@@ -206,6 +206,11 @@ function inputstring(
         end,
     )
 end
+"""
+    inputstring(vec::AbstractVector{<:Union{InputEntry,Nothing}}; indent = ' '^4, delim = ' ', newline = '\n')
+
+Return a `String` representing a vector of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
+"""
 function inputstring(
     vec::AbstractVector{<:Union{InputEntry,Nothing}},
     indent = ' '^4,
@@ -222,6 +227,11 @@ function inputstring(
         end,
     )
 end
+"""
+    inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
+
+Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
+"""
 function inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
     content =
         _inputstring(dropdefault(nml); indent = indent, delim = delim, newline = newline)
