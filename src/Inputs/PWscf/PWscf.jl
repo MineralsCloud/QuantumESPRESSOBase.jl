@@ -30,7 +30,6 @@ using ..Inputs:
     _Celldm,
     getoption,
     allowed_options,
-    inputstring,
     allnamelists,
     allcards,
     compulsory_namelists,
@@ -64,7 +63,15 @@ export ControlNamelist,
     PWInput,
     optconvert,
     xmldir,
-    wfcfiles
+    wfcfiles,
+    getoption,
+    allowed_options,
+    allnamelists,
+    allcards,
+    compulsory_namelists,
+    optional_namelists,
+    compulsory_cards,
+    optional_cards
 
 include("nml.jl")
 include("card.jl")
