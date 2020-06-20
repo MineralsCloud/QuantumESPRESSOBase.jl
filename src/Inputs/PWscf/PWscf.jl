@@ -70,6 +70,45 @@ export ControlNamelist,
 include("nml.jl")
 include("card.jl")
 
+"""
+    PWInput <: QuantumESPRESSOInput
+    PWInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
+
+Construct a `PWInput` which represents the input of program `pw.x`.
+
+# Arguments
+- `control::ControlNamelist=ControlNamelist()`: the `CONTROL` namelist of the input. Optional.
+- `system::SystemNamelist=SystemNamelist()`: the `SYSTEM` namelist of the input. Optional.
+- `electrons::ElectronsNamelist=ElectronsNamelist()`: the `ELECTRONS` namelist of the input. Optional.
+- `ions::IonsNamelist=IonsNamelist()`: the `IONS` namelist of the input. Optional.
+- `cell::CellNamelist=CellNamelist()`: the `CELL` namelist of the input. Optional.
+- `atomic_species::AtomicSpeciesCard`: the `ATOMIC_SPECIES` card of the input. Must be provided explicitly.
+- `atomic_positions::AtomicPositionsCard`: the `ATOMIC_POSITIONS` card of the input. Must be provided explicitly.
+- `k_points::KPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
+- `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
+"""
+@with_kw struct PWInput <: QuantumESPRESSOInput
+    control::ControlNamelist = ControlNamelist()
+    system::SystemNamelist = SystemNamelist()
+    electrons::ElectronsNamelist = ElectronsNamelist()
+    ions::IonsNamelist = IonsNamelist()
+    cell::CellNamelist = CellNamelist()
+    atomic_species::AtomicSpeciesCard
+    atomic_positions::AtomicPositionsCard
+    k_points::KPointsCard
+    cell_parameters::Union{Nothing,CellParametersCard} = nothing
+    constraints::Union{Union{Nothing,Float64}} = nothing
+    occupations::Union{Nothing,Float64} = nothing
+    atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
+    @assert(
+        !(cell_parameters === nothing && system.ibrav == 0),
+        "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
+    )
+end # struct PWInput
+PWInput(args::InputEntry...) = PWInput(; map(args) do arg
+    entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
+end...)
+
 allowed_options(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
@@ -227,45 +266,6 @@ function inputstring(
 end
 
 """
-    PWInput <: QuantumESPRESSOInput
-    PWInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
-
-Construct a `PWInput` which represents the input of program `pw.x`.
-
-# Arguments
-- `control::ControlNamelist=ControlNamelist()`: the `CONTROL` namelist of the input. Optional.
-- `system::SystemNamelist=SystemNamelist()`: the `SYSTEM` namelist of the input. Optional.
-- `electrons::ElectronsNamelist=ElectronsNamelist()`: the `ELECTRONS` namelist of the input. Optional.
-- `ions::IonsNamelist=IonsNamelist()`: the `IONS` namelist of the input. Optional.
-- `cell::CellNamelist=CellNamelist()`: the `CELL` namelist of the input. Optional.
-- `atomic_species::AtomicSpeciesCard`: the `ATOMIC_SPECIES` card of the input. Must be provided explicitly.
-- `atomic_positions::AtomicPositionsCard`: the `ATOMIC_POSITIONS` card of the input. Must be provided explicitly.
-- `k_points::KPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
-- `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
-"""
-@with_kw struct PWInput <: QuantumESPRESSOInput
-    control::ControlNamelist = ControlNamelist()
-    system::SystemNamelist = SystemNamelist()
-    electrons::ElectronsNamelist = ElectronsNamelist()
-    ions::IonsNamelist = IonsNamelist()
-    cell::CellNamelist = CellNamelist()
-    atomic_species::AtomicSpeciesCard
-    atomic_positions::AtomicPositionsCard
-    k_points::KPointsCard
-    cell_parameters::Union{Nothing,CellParametersCard} = nothing
-    constraints::Union{Union{Nothing,Float64}} = nothing
-    occupations::Union{Nothing,Float64} = nothing
-    atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
-    @assert(
-        !(cell_parameters === nothing && system.ibrav == 0),
-        "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
-    )
-end # struct PWInput
-PWInput(args::InputEntry...) = PWInput(; map(args) do arg
-    entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
-end...)
-
-"""
     Crystallography.Bravais(nml::SystemNamelist)
 
 Return a `Bravais` from a `SystemNamelist`.
@@ -328,9 +328,10 @@ function Crystallography.cellvolume(input::PWInput)
     end
 end # function Crystallography.cellvolume
 
-allnamelists(::Type{PWInput}) = (:control, :system, :electrons, :ions, :cell)
 allnamelists(x::PWInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
+allnamelists(::Type{PWInput}) = (:control, :system, :electrons, :ions, :cell)
 
+allcards(x::PWInput) = (getfield(x, f) for f in allcards(typeof(x)))
 allcards(::Type{PWInput}) = (
     :atomic_species,
     :atomic_positions,
@@ -340,19 +341,18 @@ allcards(::Type{PWInput}) = (
     :occupations,
     :atomic_forces,
 )
-allcards(x::PWInput) = (getfield(x, f) for f in allcards(typeof(x)))
 
-compulsory_namelists(::Type{PWInput}) = (:control, :system, :electrons)
 compulsory_namelists(x::PWInput) = (getfield(x, f) for f in compulsory_namelists(typeof(x)))
+compulsory_namelists(::Type{PWInput}) = (:control, :system, :electrons)
 
-optional_namelists(::Type{PWInput}) = (:ions, :cell)
 optional_namelists(x::PWInput) = (getfield(x, f) for f in optional_namelists(typeof(x)))
+optional_namelists(::Type{PWInput}) = (:ions, :cell)
 
-compulsory_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
 compulsory_cards(x::PWInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
+compulsory_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
 
+optional_cards(x::PWInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
 optional_cards(::Type{PWInput}) =
     (:cell_parameters, :constraints, :occupations, :atomic_forces)
-optional_cards(x::PWInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
 
 end
