@@ -22,13 +22,12 @@ using Unitful
 using UnitfulAtomic
 
 using ..Inputs:
-    InputEntry,
-    Namelist,
-    QuantumESPRESSOInput,
-    entryname,
-    Card,
-    _Celldm,
-    getoption,
+    InputEntry, Namelist, QuantumESPRESSOInput, entryname, Card, _Celldm, getoption
+
+import AbInitioSoftwareBase.Inputs: inputstring, titleof
+import Crystallography
+import Pseudopotentials
+import ..Inputs:
     allowed_options,
     allnamelists,
     allcards,
@@ -36,11 +35,6 @@ using ..Inputs:
     optional_namelists,
     compulsory_cards,
     optional_cards
-
-import AbInitioSoftwareBase.Inputs: inputstring, titleof
-import Crystallography
-import Pseudopotentials
-import ..Inputs
 
 export ControlNamelist,
     SystemNamelist,
@@ -76,10 +70,10 @@ export ControlNamelist,
 include("nml.jl")
 include("card.jl")
 
-Inputs.allowed_options(::Type{AtomicPositionsCard}) =
+allowed_options(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-Inputs.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
-Inputs.allowed_options(::Type{<:KPointsCard}) = (
+allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
+allowed_options(::Type{<:KPointsCard}) = (
     "tpiba",
     "automatic",
     "crystal",
@@ -334,10 +328,10 @@ function Crystallography.cellvolume(input::PWInput)
     end
 end # function Crystallography.cellvolume
 
-Inputs.allnamelists(::Type{PWInput}) = (:control, :system, :electrons, :ions, :cell)
-Inputs.allnamelists(x::PWInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
+allnamelists(::Type{PWInput}) = (:control, :system, :electrons, :ions, :cell)
+allnamelists(x::PWInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
 
-Inputs.allcards(::Type{PWInput}) = (
+allcards(::Type{PWInput}) = (
     :atomic_species,
     :atomic_positions,
     :k_points,
@@ -346,21 +340,19 @@ Inputs.allcards(::Type{PWInput}) = (
     :occupations,
     :atomic_forces,
 )
-Inputs.allcards(x::PWInput) = (getfield(x, f) for f in allcards(typeof(x)))
+allcards(x::PWInput) = (getfield(x, f) for f in allcards(typeof(x)))
 
-Inputs.compulsory_namelists(::Type{PWInput}) = (:control, :system, :electrons)
-Inputs.compulsory_namelists(x::PWInput) =
-    (getfield(x, f) for f in compulsory_namelists(typeof(x)))
+compulsory_namelists(::Type{PWInput}) = (:control, :system, :electrons)
+compulsory_namelists(x::PWInput) = (getfield(x, f) for f in compulsory_namelists(typeof(x)))
 
-Inputs.optional_namelists(::Type{PWInput}) = (:ions, :cell)
-Inputs.optional_namelists(x::PWInput) =
-    (getfield(x, f) for f in optional_namelists(typeof(x)))
+optional_namelists(::Type{PWInput}) = (:ions, :cell)
+optional_namelists(x::PWInput) = (getfield(x, f) for f in optional_namelists(typeof(x)))
 
-Inputs.compulsory_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
-Inputs.compulsory_cards(x::PWInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
+compulsory_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
+compulsory_cards(x::PWInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
 
-Inputs.optional_cards(::Type{PWInput}) =
+optional_cards(::Type{PWInput}) =
     (:cell_parameters, :constraints, :occupations, :atomic_forces)
-Inputs.optional_cards(x::PWInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
+optional_cards(x::PWInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
 
 end
