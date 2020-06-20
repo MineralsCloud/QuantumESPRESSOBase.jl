@@ -203,24 +203,16 @@ function inputstring(
     )
 end
 """
-    inputstring(vec::AbstractVector{<:Union{InputEntry,Nothing}}; indent = ' '^4, delim = ' ', newline = '\n')
+    inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = '\n')
 
-Return a `String` representing a vector of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
+Return a `String` representing a collection of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
 """
-function inputstring(
-    vec::AbstractVector{<:Union{InputEntry,Nothing}};
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-)
+function inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = '\n')
     return join(
-        map(vec) do x
-            if x !== nothing
-                inputstring(x; indent = indent, delim = delim, newline = newline) * newline
-            else
-                ""
-            end
+        map(args) do x
+            inputstring(x; indent = indent, delim = delim, newline = newline)
         end,
+        newline,
     )
 end
 """
