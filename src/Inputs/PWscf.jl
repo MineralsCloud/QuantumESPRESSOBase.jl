@@ -675,17 +675,17 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
 end # function optconvert
 
 """
-    MonkhorstPackGrid(grid, offsets)
+    MonkhorstPackGrid(mesh, is_shift)
 
 Represent the Monkhorst--Pack grid.
 
 # Arguments
-- `grid`: A length-three vector specifying the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst--Pack grids.
-- `offsets`: A length-three vector specifying whether the grid is displaced by half a grid step in the corresponding directions.
+- `mesh`: A length-three vector specifying the k-point grid (``nk_1 × nk_2 × nk_3``) as in Monkhorst--Pack grids.
+- `is_shift`: A length-three vector specifying whether the grid is displaced by half a grid step in the corresponding directions.
 """
 struct MonkhorstPackGrid
-    grid::SVector{3,UInt}
-    offsets::SVector{3,Bool}
+    mesh::SVector{3,UInt}
+    is_shift::SVector{3,Bool}
 end
 
 "Represent the centre of the Brillouin zone (commonly marked as the Γ point)."
@@ -861,7 +861,7 @@ function inputstring(
 end
 inputstring(data::GammaPoint) = ""
 function inputstring(data::MonkhorstPackGrid; delim = ' ', numfmt = "%5d", args...)
-    return join(map([data.grid; data.offsets]) do x
+    return join(map([data.mesh; data.is_shift]) do x
         sprintf1(numfmt, x)
     end, delim)
 end
