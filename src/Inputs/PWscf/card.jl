@@ -181,15 +181,13 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     if new_option == old_option
         return card  # No conversion is needed
     else
-        return typeof(card)(
-            if (old_option => new_option) == ("bohr" => "angstrom")
-                @. ustrip(u"angstrom", card.data * u"bohr")
-            elseif (old_option => new_option) == ("angstrom" => "bohr")
-                @. ustrip(u"bohr", card.data * u"angstrom")
-            else
-                error("unknown conversion rule $(old_option => new_option)!")
-            end,
-        )
+        typeof(card)(if (old_option => new_option) == ("bohr" => "angstrom")
+            return @. ustrip(u"angstrom", card.data * u"bohr")
+        elseif (old_option => new_option) == ("angstrom" => "bohr")
+            return @. ustrip(u"bohr", card.data * u"angstrom")
+        else
+            error("unknown conversion rule $(old_option => new_option)!")
+        end)
     end
 end # function optconvert
 
@@ -255,3 +253,7 @@ KPointsCard(data::A, option) where {A} = KPointsCard{A}(data, option)
 KPointsCard(data::AbstractVector{SpecialKPoint}) = KPointsCard(data, "tpiba")
 KPointsCard(data::GammaPoint) = KPointsCard(data, "gamma")
 KPointsCard(data::MonkhorstPackGrid) = KPointsCard(data, "automatic")
+function KPointsCard(data::AbstractMatrix, option = "tpiba")
+    @assert(size(data, 2) == 4)
+    return KPointsCard(map(SpecialKPoint, eachrow(data)), option)
+end

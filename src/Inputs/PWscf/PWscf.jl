@@ -17,8 +17,9 @@ using Formatting: sprintf1
 using LinearAlgebra: det
 using Parameters: @with_kw
 using Pseudopotentials: pseudopot_format
+using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
-using Unitful
+using Unitful: AbstractQuantity, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
 using ..Inputs:
@@ -65,7 +66,10 @@ export ControlNamelist,
     compulsory_namelists,
     optional_namelists,
     compulsory_cards,
-    optional_cards
+    optional_cards,
+    set_verbosity,
+    set_temperature,
+    set_structure
 
 include("nml.jl")
 include("card.jl")
@@ -108,6 +112,37 @@ end # struct PWInput
 PWInput(args::InputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
 end...)
+
+"""
+    set_verbosity(template::PWInput, verbosity = "high")
+
+Return a modified `PWInput`, with verbosity set.
+"""
+function set_verbosity(template::PWInput, verbosity = "high")
+    @set! template.control = set_verbosity(template.control, verbosity)
+    return template
+end # function set_verbosity
+
+"""
+    set_temperature(system::PWInput, temperature)
+
+Return a modified `PWInput`, with finite temperature set.
+
+!!! warning
+    Can be used with(out) units. If no unit is given, "Ry" is chosen.
+"""
+function set_temperature(template::PWInput, temperature)
+    @set! template.system = set_temperature(template.system, temperature)
+    return template
+end # function set_temperature
+
+function set_structure(template::PWInput, lattice::Lattice, atomic_positions = nothing)
+    @set! template.cell_parameters = CellParametersCard(lattice)
+    if atomic_positions !== nothing
+        @set! template.atomic_positions = atomic_positions
+    end
+    return template
+end # function set_structure
 
 allowed_options(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
@@ -293,9 +328,9 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 function Crystallography.cellvolume(card::AbstractCellParametersCard)
     option = getoption(card)
     if option == "bohr"
-        abs(det(card.data))
+        return abs(det(card.data))
     elseif option == "angstrom"
-        ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
+        return ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
     else  # option == "alat"
         error("information not enough! Parameter `celldm[1]` needed!")
     end
