@@ -68,7 +68,8 @@ export ControlNamelist,
     compulsory_cards,
     optional_cards,
     set_verbosity,
-    set_temperature
+    set_temperature,
+    set_structure
 
 include("nml.jl")
 include("card.jl")
@@ -121,6 +122,14 @@ function set_temperature(template::PWInput, temperature)
     @set! template.system = set_temperature(template.system, temperature)
     return template
 end # function set_temperature
+
+function set_structure(template::PWInput, lattice::Lattice, atomic_positions = nothing)
+    @set! template.cell_parameters = CellParametersCard(lattice)
+    if atomic_positions !== nothing
+        @set! template.atomic_positions = atomic_positions
+    end
+    return template
+end # function set_structure
 
 allowed_options(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
