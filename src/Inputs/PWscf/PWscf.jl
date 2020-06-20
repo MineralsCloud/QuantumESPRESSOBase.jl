@@ -19,7 +19,7 @@ using Parameters: @with_kw
 using Pseudopotentials: pseudopot_format
 using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
-using Unitful
+using Unitful: AbstractQuantity, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
 using ..Inputs:
@@ -67,7 +67,8 @@ export ControlNamelist,
     optional_namelists,
     compulsory_cards,
     optional_cards,
-    set_verbosity
+    set_verbosity,
+    set_temperature
 
 include("nml.jl")
 include("card.jl")
@@ -115,6 +116,11 @@ function set_verbosity(template::PWInput, verbosity = "high")
     @set! template.control = set_verbosity(template.control, verbosity)
     return template
 end # function set_verbosity
+
+function set_temperature(template::PWInput, temperature)
+    @set! template.system = set_temperature(template.system, temperature)
+    return template
+end # function set_temperature
 
 allowed_options(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")

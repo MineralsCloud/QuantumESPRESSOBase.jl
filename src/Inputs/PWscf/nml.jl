@@ -435,3 +435,29 @@ function set_verbosity(control::ControlNamelist, verbosity = "high")
     end
     return control
 end # function set_verbosity
+
+function set_temperature(system::SystemNamelist, temperature)
+    @set! system.occupations = "smearing"
+    @set! system.smearing = "fermi-dirac"
+    @set! system.degauss = _set_temperature(temperature)
+    return system
+end # function set_temperature
+function _set_temperature(temperature::AbstractQuantity)
+    u = upreferred(unit(temperature))
+    if u == u"Ry"
+        return temperature
+    elseif u == u"kg*m^2*s^-2"  # u"hartree", u"J", u"eV", etc..
+        return ustrip(u"Ry", temperature)
+    elseif u == u"s^-1"  # u"Hz", u"THz", ...
+        return ustrip(u"Hz", temperature) / 6579683920502000.0 * 2
+    elseif u == u"K"  # u"K", u"mK", u"μK", ...
+        return ustrip(u"K", temperature) / 315775.02480407 * 2
+    elseif u == u"m^-1"  # u"m^-1", u"cm^-1", ...
+        return ustrip(u"m^-1", temperature) / 21947463.13632 * 2
+    elseif u == u"kg"  # u"kg", u"g", ...
+        return ustrip(u"kg", temperature) / 4.8508702095432e-35 * 2
+    else
+        error("unknown unit given!")
+    end
+end # function _set_temperature
+_set_temperature(temperature::Real) = temperature  # Ry
