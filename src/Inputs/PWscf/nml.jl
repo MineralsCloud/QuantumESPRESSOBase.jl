@@ -417,6 +417,11 @@ Represent the `BANDS` namelist of `bands.x`.
     @assert spin_component ∈ 1:2
 end # struct BandsNamelist
 
+"""
+    set_verbosity(template::ControlNamelist, verbosity = "high")
+
+Return a modified `ControlNamelist`, with verbosity set.
+"""
 function set_verbosity(control::ControlNamelist, verbosity = "high")
     if verbosity == "high"
         @set! control.verbosity = "high"
@@ -436,6 +441,14 @@ function set_verbosity(control::ControlNamelist, verbosity = "high")
     return control
 end # function set_verbosity
 
+"""
+    set_temperature(system::SystemNamelist, temperature)
+
+Return a modified `SystemNamelist`, with finite temperature set.
+
+!!! warning
+    Can be used with(out) units. If no unit is given, "Ry" is chosen.
+"""
 function set_temperature(system::SystemNamelist, temperature)
     @set! system.occupations = "smearing"
     @set! system.smearing = "fermi-dirac"

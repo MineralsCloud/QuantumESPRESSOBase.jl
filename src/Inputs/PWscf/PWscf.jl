@@ -113,11 +113,24 @@ PWInput(args::InputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
 end...)
 
+"""
+    set_verbosity(template::PWInput, verbosity = "high")
+
+Return a modified `PWInput`, with verbosity set.
+"""
 function set_verbosity(template::PWInput, verbosity = "high")
     @set! template.control = set_verbosity(template.control, verbosity)
     return template
 end # function set_verbosity
 
+"""
+    set_temperature(system::PWInput, temperature)
+
+Return a modified `PWInput`, with finite temperature set.
+
+!!! warning
+    Can be used with(out) units. If no unit is given, "Ry" is chosen.
+"""
 function set_temperature(template::PWInput, temperature)
     @set! template.system = set_temperature(template.system, temperature)
     return template
