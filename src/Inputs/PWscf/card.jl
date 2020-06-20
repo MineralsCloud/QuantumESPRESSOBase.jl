@@ -255,3 +255,7 @@ KPointsCard(data::A, option) where {A} = KPointsCard{A}(data, option)
 KPointsCard(data::AbstractVector{SpecialKPoint}) = KPointsCard(data, "tpiba")
 KPointsCard(data::GammaPoint) = KPointsCard(data, "gamma")
 KPointsCard(data::MonkhorstPackGrid) = KPointsCard(data, "automatic")
+function KPointsCard(data::AbstractMatrix, option = "tpiba")
+    @assert(size(data, 2) == 4)
+    return KPointsCard(map(SpecialKPoint, eachrow(data)), option)
+end
