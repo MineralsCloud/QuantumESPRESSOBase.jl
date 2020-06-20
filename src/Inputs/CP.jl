@@ -791,10 +791,10 @@ function Base.setproperty!(value::AtomicVelocity, name::Symbol, x)
 end # function Base.setproperty!
 
 """
-    CPInput <: Input
-    CPInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
+    CPInput <: QuantumESPRESSOInput
+    CPInput(control, system, electrons, ions, cell, press_ai, wannier, atomic_species, atomic_positions, atomic_velocities, cell_parameters, ref_cell_parameters, constraints, occupations, atomic_forces, plot_wannier, autopilot)
 
-Construct a `PWInput` which represents the input of program `pw.x`.
+Construct a `CPInput` which represents the input of program `cp.x`.
 
 # Arguments
 - `control::ControlNamelist=ControlNamelist()`: the `CONTROL` namelist of the input. Optional.
