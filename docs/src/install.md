@@ -21,7 +21,7 @@ platform to explain the following steps:
    ```julia
    julia> using Pkg; Pkg.update()
 
-   julia> Pkg.add(PackageSpec(url="https://github.com/MineralsCloud/QuantumESPRESSOBase.jl.git"))
+   julia> pkg"add QuantumESPRESSOBase"
    ```
 
    and wait for its finish.

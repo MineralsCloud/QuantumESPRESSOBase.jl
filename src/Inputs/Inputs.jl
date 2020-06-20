@@ -13,17 +13,22 @@ module Inputs
 
 using AbInitioSoftwareBase.Inputs: Input
 using Compat: only
-using Crystallography: Bravais, Lattice, CellParameters, PrimitiveTriclinic, cellvolume
-using LinearAlgebra: det
-using OrderedCollections: OrderedDict
-using Parameters: type2dict
+using Crystallography: Bravais, CellParameters, PrimitiveTriclinic
 using PyFortran90Namelists: fstring
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
-import OrderedCollections
 
-export getnamelists, getcards, getoption, allowed_options, titleof, inputstring
+export getoption,
+    allowed_options,
+    titleof,
+    inputstring,
+    compulsory_namelists,
+    optional_namelists,
+    compulsory_cards,
+    optional_cards,
+    allnamelists,
+    allcards
 
 """
     Namelist
@@ -74,7 +79,11 @@ function dropdefault(nml::Namelist)
     return result
 end
 
-Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(type2dict(a), type2dict(b))
+Base.Dict(nml::Namelist) =
+    Dict(name => getproperty(nml, name) for name in propertynames(nml))
+Base.NamedTuple(nml::Namelist) =
+    (; (name => getproperty(nml, name) for name in propertynames(nml))...)
+Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(Dict(a), Dict(b))
 
 """
     getoption(x::Card)
@@ -84,7 +93,7 @@ Return the option for `Card` `x`.
 !!! warning
     A user should not use `x.option` to access a `Card`'s `option`.
 """
-getoption(card::Card) = getfield(card, :option)
+getoption(card::Card) = hasfield(typeof(card), :option) ? getfield(card, :option) : nothing
 
 """
     allowed_options(T::Type{<:Card})
@@ -105,7 +114,7 @@ julia> allowed_options(KPointsCard)
 ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 ```
 """
-allowed_options(::Type{<:Card}) = nothing
+function allowed_options end
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput <: Input end
@@ -114,26 +123,17 @@ abstract type QuantumESPRESSOInput <: Input end
 entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
     only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
-"""
-    getnamelists(input::Input, selector::Symbol = :all)
+function allnamelists end
 
-Return an iterable of `Namelist`s of a `Input`. It is lazy, you may want to `collect` it.
+function allcards end
 
-Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
-"""
-getnamelists(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
-    (getfield(input, x) for x in _selectnamelists(T, Val(selector)))
+function compulsory_namelists end
 
-"""
-    getcards(input::T, selector::Symbol = :all)
+function optional_namelists end
 
-Return an iterable of `Card`s of a `Input`. It is lazy, you may want to `collect` it.
+function compulsory_cards end
 
-Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
-Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
-"""
-getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
-    (getfield(input, x) for x in _selectcards(T, Val(selector)))
+function optional_cards end
 
 # Do not export this type!
 struct _Celldm{T<:Bravais}
@@ -179,52 +179,42 @@ function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
 end # function Base.convert
 
-Base.Dict(nml::Namelist) =
-    Dict(name => getproperty(nml, name) for name in propertynames(nml))
-OrderedCollections.OrderedDict(nml::Namelist) =
-    OrderedDict(name => getproperty(nml, name) for name in propertynames(nml))
+include("PWscf/PWscf.jl")
+include("CP.jl")
+include("PHonon.jl")
 
 """
-    inputstring(x; indent = ' '^4, delim = ' ')
+    inputstring(input::QuantumESPRESSOInput; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f", intfmt = "%5d")
 
-Return a `String` representing the object, which is valid for Quantum ESPRESSO's input.
+Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(
-    input::QuantumESPRESSOInput;
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-)
-    return join(
-        map(fieldnames(typeof(input))) do f
-            x = getfield(input, f)
-            if x !== nothing
-                inputstring(x; indent = indent, delim = delim, newline = newline) * newline
-            else
-                ""
-            end
-        end,
-    )
+function inputstring(input::QuantumESPRESSOInput; newline = '\n', kwargs...)
+    return join(map(fieldnames(typeof(input))) do f
+        x = getfield(input, f)
+        if x !== nothing
+            inputstring(x; newline = newline, kwargs...) * newline
+        else
+            ""
+        end
+    end)
 end
-function inputstring(
-    vec::AbstractVector{<:Union{InputEntry,Nothing}},
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-)
-    return join(
-        map(vec) do x
-            if x !== nothing
-                inputstring(x; indent = indent, delim = delim, newline = newline) * newline
-            else
-                ""
-            end
-        end,
-    )
+"""
+    inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f", intfmt = "%5d")
+
+Return a `String` representing a collection of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
+"""
+function inputstring(args::InputEntry...; newline = '\n', kwargs...)
+    return join(map(args) do x
+        inputstring(x; newline = newline, kwargs...)
+    end, newline)
 end
-function inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
-    content =
-        _inputstring(dropdefault(nml); indent = indent, delim = delim, newline = newline)
+"""
+    inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = "\\n")
+
+Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
+"""
+function inputstring(nml::Namelist; newline = '\n', kwargs...)
+    content = _inputstring(dropdefault(nml); newline = newline, kwargs...)
     return "&" * titleof(nml) * newline * content * '/'
 end
 function _inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ', newline = '\n')
@@ -258,55 +248,5 @@ function _inputstring(key, value::NamedTuple; indent = ' '^4, delim = ' ', newli
 end
 _inputstring(key, value; indent = ' '^4, delim = ' ', newline = '\n') =
     indent * join([string(key), "=", fstring(value)], delim) * newline
-
-# =============================== Modules ============================== #
-include("PWscf.jl")
-include("CP.jl")
-include("PHonon.jl")
-# ============================================================================ #
-
-using .PWscf: PWInput
-using .CP: CPInput
-
-_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) =
-    Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) =
-    (:control, :system, :electrons)
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
-    setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
-
-_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(
-    entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing}
-)
-_selectcards(T::Type{PWInput}, ::Val{:compulsory}) =
-    (:atomic_species, :atomic_positions, :k_points)
-_selectcards(T::Type{CPInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions)
-_selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
-    setdiff(_selectcards(T, Val(:all)), _selectcards(T, Val(:compulsory)))
-
-# Referenced from https://discourse.julialang.org/t/how-to-get-the-non-nothing-type-from-union-t-nothing/30523
-nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # Should not be exported
-
-"""
-    cellvolume(input::PWInput)
-
-Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
-"""
-function Crystallography.cellvolume(input::PWInput)
-    if input.cell_parameters === nothing
-        return cellvolume(Lattice(input.system))
-    else
-        if getoption(input.cell_parameters) == "alat"
-            # If no value of `celldm` is changed...
-            if input.system.celldm[1] === nothing
-                error("`celldm[1]` is not defined!")
-            else
-                return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
-            end
-        else  # "bohr" or "angstrom"
-            return cellvolume(input.cell_parameters)
-        end
-    end
-end # function Crystallography.cellvolume
 
 end
