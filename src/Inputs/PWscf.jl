@@ -792,8 +792,6 @@ Return the volume of the cell based on the information given in a `SystemNamelis
 """
 Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 
-Inputs.getoption(::AtomicSpeciesCard) = nothing
-
 Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 Inputs.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")

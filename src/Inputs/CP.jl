@@ -546,8 +546,6 @@ struct AtomicForcesCard <: Card
     data::Vector{AtomicForce}
 end
 
-Inputs.getoption(::AtomicSpeciesCard) = nothing
-
 Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 Inputs.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
@@ -766,7 +764,6 @@ RefCellParametersCard(data::AbstractMatrix{T}, option = "bohr") where {T} =
     RefCellParametersCard{T}(data, option)
 
 Inputs.getoption(::AtomicVelocitiesCard) = "a.u"
-Inputs.getoption(::AtomicForcesCard) = nothing
 
 Inputs.allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
 Inputs.allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")

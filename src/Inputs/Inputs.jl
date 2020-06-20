@@ -84,7 +84,7 @@ Return the option for `Card` `x`.
 !!! warning
     A user should not use `x.option` to access a `Card`'s `option`.
 """
-getoption(card::Card) = getfield(card, :option)
+getoption(card::Card) = hasfield(typeof(card), :option) ? getfield(card, :option) : nothing
 
 """
     allowed_options(T::Type{<:Card})
