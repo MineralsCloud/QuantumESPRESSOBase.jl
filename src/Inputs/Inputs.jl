@@ -14,13 +14,11 @@ module Inputs
 using AbInitioSoftwareBase.Inputs: Input
 using Compat: only
 using Crystallography: Bravais, CellParameters, PrimitiveTriclinic
-using OrderedCollections: OrderedDict
 using Parameters: type2dict
 using PyFortran90Namelists: fstring
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
-import OrderedCollections
 
 export getnamelists, getcards, getoption, allowed_options, titleof, inputstring
 
@@ -73,7 +71,11 @@ function dropdefault(nml::Namelist)
     return result
 end
 
-Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(type2dict(a), type2dict(b))
+Base.Dict(nml::Namelist) =
+    Dict(name => getproperty(nml, name) for name in propertynames(nml))
+Base.NamedTuple(nml::Namelist) =
+    (; (name => getproperty(nml, name) for name in propertynames(nml))...)
+Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(Dict(a), Dict(b))
 
 """
     getoption(x::Card)
@@ -177,11 +179,6 @@ function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
     a, b, c, α, β, γ = p
     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
 end # function Base.convert
-
-Base.Dict(nml::Namelist) =
-    Dict(name => getproperty(nml, name) for name in propertynames(nml))
-OrderedCollections.OrderedDict(nml::Namelist) =
-    OrderedDict(name => getproperty(nml, name) for name in propertynames(nml))
 
 """
     inputstring(input::QuantumESPRESSOInput; indent = ' '^4, delim = ' ', newline = '\n')
