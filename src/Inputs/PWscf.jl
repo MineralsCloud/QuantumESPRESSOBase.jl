@@ -754,31 +754,6 @@ function Crystallography.Lattice(nml::SystemNamelist)
     return Lattice(b, _Celldm{typeof(b)}(nml.celldm))
 end # function Crystallography.Lattice
 
-"""
-    cellvolume(card)
-
-Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
-
-!!! warning
-    It will throw an error if the option is `"alat"`.
-"""
-function Crystallography.cellvolume(card::AbstractCellParametersCard)
-    option = getoption(card)
-    if option == "bohr"
-        abs(det(card.data))
-    elseif option == "angstrom"
-        ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
-    else  # option == "alat"
-        error("information not enough! Parameter `celldm[1]` needed!")
-    end
-end # function Crystallography.cellvolume
-"""
-    cellvolume(nml::SystemNamelist)
-
-Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
-"""
-Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
-
 Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 Inputs.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
@@ -941,6 +916,30 @@ end # struct PWInput
 PWInput(args...) =
     PWInput(; Dict(zip(map(arg -> entryname(typeof(arg), PWInput), args), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
 
+"""
+    cellvolume(card)
+
+Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in atomic unit.
+
+!!! warning
+    It will throw an error if the option is `"alat"`.
+"""
+function Crystallography.cellvolume(card::AbstractCellParametersCard)
+    option = getoption(card)
+    if option == "bohr"
+        abs(det(card.data))
+    elseif option == "angstrom"
+        ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
+    else  # option == "alat"
+        error("information not enough! Parameter `celldm[1]` needed!")
+    end
+end # function Crystallography.cellvolume
+"""
+    cellvolume(nml::SystemNamelist)
+
+Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
+"""
+Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 """
     cellvolume(input::PWInput)
 
