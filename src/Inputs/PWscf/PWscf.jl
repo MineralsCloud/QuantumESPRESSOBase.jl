@@ -30,7 +30,13 @@ using ..Inputs:
     _Celldm,
     getoption,
     allowed_options,
-    inputstring
+    inputstring,
+    allnamelists,
+    allcards,
+    compulsory_namelists,
+    optional_namelists,
+    compulsory_cards,
+    optional_cards
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
@@ -275,5 +281,34 @@ function Crystallography.cellvolume(input::PWInput)
         end
     end
 end # function Crystallography.cellvolume
+
+Inputs.allnamelists(::Type{PWInput}) = (:control, :system, :electrons, :ions, :cell)
+Inputs.allnamelists(x::PWInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
+
+Inputs.allcards(::Type{PWInput}) = (
+    :atomic_species,
+    :atomic_positions,
+    :k_points,
+    :cell_parameters,
+    :constraints,
+    :occupations,
+    :atomic_forces,
+)
+Inputs.allcards(x::PWInput) = (getfield(x, f) for f in allcards(typeof(x)))
+
+Inputs.compulsory_namelists(::Type{PWInput}) = (:control, :system, :electrons)
+Inputs.compulsory_namelists(x::PWInput) =
+    (getfield(x, f) for f in compulsory_namelists(typeof(x)))
+
+Inputs.optional_namelists(::Type{PWInput}) = (:ions, :cell)
+Inputs.optional_namelists(x::PWInput) =
+    (getfield(x, f) for f in optional_namelists(typeof(x)))
+
+Inputs.compulsory_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
+Inputs.compulsory_cards(x::PWInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
+
+Inputs.optional_cards(::Type{PWInput}) =
+    (:cell_parameters, :constraints, :occupations, :atomic_forces)
+Inputs.optional_cards(x::PWInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
 
 end

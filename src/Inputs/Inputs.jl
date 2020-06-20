@@ -20,7 +20,16 @@ using PyFortran90Namelists: fstring
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
 
-export getnamelists, getcards, getoption, allowed_options, titleof, inputstring
+export getoption,
+    allowed_options,
+    titleof,
+    inputstring,
+    compulsory_namelists,
+    optional_namelists,
+    compulsory_cards,
+    optional_cards,
+    allnamelists,
+    allcards
 
 """
     Namelist
@@ -115,26 +124,17 @@ abstract type QuantumESPRESSOInput <: Input end
 entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
     only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
-"""
-    getnamelists(input::Input, selector::Symbol = :all)
+function allnamelists end
 
-Return an iterable of `Namelist`s of a `Input`. It is lazy, you may want to `collect` it.
+function allcards end
 
-Return an iterable of compulsory `Namelist`s of a `PWInput` or `CPInput` (`ControlNamelist`, `SystemNamelist` and `ElectronsNamelist`).
-"""
-getnamelists(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
-    (getfield(input, x) for x in _selectnamelists(T, Val(selector)))
+function compulsory_namelists end
 
-"""
-    getcards(input::T, selector::Symbol = :all)
+function optional_namelists end
 
-Return an iterable of `Card`s of a `Input`. It is lazy, you may want to `collect` it.
+function compulsory_cards end
 
-Return an iterable of compulsory `Card`s of a `PWInput` (`AtomicSpeciesCard`, `AtomicPositionsCard` and `KPointsCard`).
-Return an iterable of compulsory `Card`s of a `CPInput` (`AtomicSpeciesCard` and `AtomicPositionsCard`).
-"""
-getcards(input::T, selector::Symbol = :all) where {T<:QuantumESPRESSOInput} =
-    (getfield(input, x) for x in _selectcards(T, Val(selector)))
+function optional_cards end
 
 # Do not export this type!
 struct _Celldm{T<:Bravais}
@@ -276,32 +276,8 @@ end
 _inputstring(key, value; indent = ' '^4, delim = ' ', newline = '\n') =
     indent * join([string(key), "=", fstring(value)], delim) * newline
 
-# =============================== Modules ============================== #
 include("PWscf/PWscf.jl")
 include("CP.jl")
 include("PHonon.jl")
-# ============================================================================ #
-
-using .PWscf: PWInput
-using .CP: CPInput
-
-_selectnamelists(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) =
-    Tuple(entryname(x, T) for x in fieldtypes(T) if x <: Namelist)
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:compulsory}) =
-    (:control, :system, :electrons)
-_selectnamelists(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
-    setdiff(_selectnamelists(T, Val(:all)), _selectnamelists(T, Val(:compulsory)))
-
-_selectcards(T::Type{<:QuantumESPRESSOInput}, ::Val{:all}) = Tuple(
-    entryname(nonnothingtype(x), T) for x in fieldtypes(T) if x <: Union{Card,Nothing}
-)
-_selectcards(T::Type{PWInput}, ::Val{:compulsory}) =
-    (:atomic_species, :atomic_positions, :k_points)
-_selectcards(T::Type{CPInput}, ::Val{:compulsory}) = (:atomic_species, :atomic_positions)
-_selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
-    setdiff(_selectcards(T, Val(:all)), _selectcards(T, Val(:compulsory)))
-
-# Referenced from https://discourse.julialang.org/t/how-to-get-the-non-nothing-type-from-union-t-nothing/30523
-nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # Should not be exported
 
 end

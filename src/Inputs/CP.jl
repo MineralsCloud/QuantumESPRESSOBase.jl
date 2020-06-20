@@ -11,7 +11,19 @@ using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful
 using UnitfulAtomic
 
-using ..Inputs: Namelist, QuantumESPRESSOInput, Card, getoption, allowed_options, inputstring
+using ..Inputs:
+    Namelist,
+    QuantumESPRESSOInput,
+    Card,
+    getoption,
+    allowed_options,
+    inputstring,
+    allnamelists,
+    allcards,
+    compulsory_namelists,
+    optional_namelists,
+    compulsory_cards,
+    optional_cards
 
 import Crystallography
 import Pseudopotentials
@@ -821,5 +833,46 @@ Construct a `PWInput` which represents the input of program `pw.x`.
         "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
     )
 end # struct CPInput
+
+Inputs.allnamelists(::Type{CPInput}) =
+    (:control, :system, :electrons, :ions, :cell, :press_ai, :wannier)
+Inputs.allnamelists(x::CPInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
+
+Inputs.allcards(::Type{CPInput}) = (
+    :atomic_species,
+    :atomic_positions,
+    :atomic_velocities,
+    :cell_parameters,
+    :ref_cell_parameters,
+    :constraints,
+    :occupations,
+    :atomic_forces,
+    :plot_wannier,
+    :autopilot,
+)
+Inputs.allcards(x::CPInput) = (getfield(x, f) for f in allcards(typeof(x)))
+
+Inputs.compulsory_namelists(::Type{CPInput}) = (:control, :system, :electrons)
+Inputs.compulsory_namelists(x::CPInput) =
+    (getfield(x, f) for f in compulsory_namelists(typeof(x)))
+
+Inputs.optional_namelists(::Type{CPInput}) = (:ions, :cell, :press_ai, :wannier)
+Inputs.optional_namelists(x::CPInput) =
+    (getfield(x, f) for f in optional_namelists(typeof(x)))
+
+Inputs.compulsory_cards(::Type{CPInput}) = (:atomic_species, :atomic_positions)
+Inputs.compulsory_cards(x::CPInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
+
+Inputs.optional_cards(::Type{CPInput}) = (
+    :atomic_velocities,
+    :cell_parameters,
+    :ref_cell_parameters,
+    :constraints,
+    :occupations,
+    :atomic_forces,
+    :plot_wannier,
+    :autopilot,
+)
+Inputs.optional_cards(x::CPInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
 
 end
