@@ -17,6 +17,7 @@ using Formatting: sprintf1
 using LinearAlgebra: det
 using Parameters: @with_kw
 using Pseudopotentials: pseudopot_format
+using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful
 using UnitfulAtomic
@@ -65,7 +66,8 @@ export ControlNamelist,
     compulsory_namelists,
     optional_namelists,
     compulsory_cards,
-    optional_cards
+    optional_cards,
+    set_verbosity
 
 include("nml.jl")
 include("card.jl")
@@ -108,6 +110,11 @@ end # struct PWInput
 PWInput(args::InputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
 end...)
+
+function set_verbosity(template::PWInput, verbosity = "high")
+    @set! template.control = set_verbosity(template.control, verbosity)
+    return template
+end # function set_verbosity
 
 allowed_options(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")

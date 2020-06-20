@@ -416,3 +416,22 @@ Represent the `BANDS` namelist of `bands.x`.
     lastk::UInt = 10000000
     @assert spin_component ∈ 1:2
 end # struct BandsNamelist
+
+function set_verbosity(control::ControlNamelist, verbosity = "high")
+    if verbosity == "high"
+        @set! control.verbosity = "high"
+        @set! control.wf_collect = true
+        @set! control.tstress = true
+        @set! control.tprnfor = true
+        @set! control.disk_io = "high"
+    elseif verbosity == "low"
+        @set! control.verbosity = "low"
+        @set! control.wf_collect = false
+        @set! control.tstress = false
+        @set! control.tprnfor = false
+        @set! control.disk_io = "low"
+    else
+        error("unknown `verbosity` `$verbosity` specified!")
+    end
+    return control
+end # function set_verbosity
