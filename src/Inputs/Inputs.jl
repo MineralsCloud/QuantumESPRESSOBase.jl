@@ -14,7 +14,6 @@ module Inputs
 using AbInitioSoftwareBase.Inputs: Input
 using Compat: only
 using Crystallography: Bravais, CellParameters, PrimitiveTriclinic
-using Parameters: type2dict
 using PyFortran90Namelists: fstring
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
