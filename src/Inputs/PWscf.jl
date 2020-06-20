@@ -608,13 +608,10 @@ struct AtomicPositionsCard <: Card
         return new(data, option)
     end
 end
-AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard(
-    [
+AtomicPositionsCard(cell::Cell, option) =
+    AtomicPositionsCard(map(cell.numbers, cell.positions) do atom, pos
         AtomicPosition(string(atom), pos)
-        for (atom, pos) in zip(cell.numbers, cell.positions)
-    ],
-    option,
-)
+    end, option)
 # Introudce mutual constructors since they share the same atoms.
 
 function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
