@@ -2,16 +2,12 @@
 
 ## Download the project
 
-Similar to what we have mentioned in section "[Installation](@ref)", instead of running
+Similar to section "[Installation](@ref)", run
 
 ```julia
-julia> Pkg.add(PackageSpec(url="https://github.com/MineralsCloud/QuantumESPRESSOBase.jl.git"))
-```
+julia> using Pkg
 
-run
-
-```julia
-julia> Pkg.dev(PackageSpec(url="https://github.com/MineralsCloud/QuantumESPRESSOBase.jl.git"))
+julia> pkg"dev https://github.com/MineralsCloud/QuantumESPRESSOBase.jl.git"
 ```
 
 Then the package will be cloned to your local machine at a path. On macOS, by default is
