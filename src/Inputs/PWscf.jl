@@ -17,7 +17,6 @@ using Formatting: sprintf1
 using LinearAlgebra: det
 using Parameters: @with_kw
 using Pseudopotentials: pseudopot_format
-using Setfield: PropertyLens, get, set, @lens, @set
 using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful
 using UnitfulAtomic
@@ -613,15 +612,6 @@ AtomicPositionsCard(cell::Cell, option) =
         AtomicPosition(string(atom), pos)
     end, option)
 # Introudce mutual constructors since they share the same atoms.
-
-function validate(x::AtomicSpeciesCard, y::AtomicPositionsCard)
-    lens = @lens _.data.atom
-    @assert(
-        isempty(symdiff(map(Base.Fix2(get, lens) ∘ unique, (x, y)))),
-        "labels of the atoms are different in `ATOMIC_SPECIES` and `ATOMIC_POSITIONS` card!",
-    )
-end # function validate
-validate(y::AtomicPositionsCard, x::AtomicSpeciesCard) = validate(x, y)
 
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
 abstract type AbstractCellParametersCard <: Card end
