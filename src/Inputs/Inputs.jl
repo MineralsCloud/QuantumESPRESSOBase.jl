@@ -208,7 +208,7 @@ end
 Return a `String` representing a vector of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
 """
 function inputstring(
-    vec::AbstractVector{<:Union{InputEntry,Nothing}},
+    vec::AbstractVector{<:Union{InputEntry,Nothing}};
     indent = ' '^4,
     delim = ' ',
     newline = '\n',
