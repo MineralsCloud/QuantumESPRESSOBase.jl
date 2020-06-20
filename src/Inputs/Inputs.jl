@@ -189,63 +189,33 @@ include("PHonon.jl")
 
 Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(
-    input::QuantumESPRESSOInput;
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-    floatfmt = "%14.9f",
-    intfmt = "%5d",
-    kwargs...,
-)
-    return join(
-        map(fieldnames(typeof(input))) do f
-            x = getfield(input, f)
-            if x !== nothing
-                inputstring(x; indent = indent, delim = delim, newline = newline) * newline
-            else
-                ""
-            end
-        end,
-    )
+function inputstring(input::QuantumESPRESSOInput; newline = '\n', kwargs...)
+    return join(map(fieldnames(typeof(input))) do f
+        x = getfield(input, f)
+        if x !== nothing
+            inputstring(x; newline = newline, kwargs...) * newline
+        else
+            ""
+        end
+    end)
 end
 """
     inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = '\n')
 
 Return a `String` representing a collection of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
 """
-function inputstring(
-    args::InputEntry...;
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-    floatfmt = "%14.9f",
-    intfmt = "%5d",
-    kwargs...,
-)
-    return join(
-        map(args) do x
-            inputstring(x; indent = indent, delim = delim, newline = newline)
-        end,
-        newline,
-    )
+function inputstring(args::InputEntry...; newline = '\n', kwargs...)
+    return join(map(args) do x
+        inputstring(x; newline = newline, kwargs...)
+    end, newline)
 end
 """
     inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
 
 Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(
-    nml::Namelist;
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-    floatfmt = "%14.9f",
-    intfmt = "%5d",
-    kwargs...,
-)
-    content =
-        _inputstring(dropdefault(nml); indent = indent, delim = delim, newline = newline)
+function inputstring(nml::Namelist; newline = '\n', kwargs...)
+    content = _inputstring(dropdefault(nml); newline = newline, kwargs...)
     return "&" * titleof(nml) * newline * content * '/'
 end
 function _inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ', newline = '\n')
