@@ -87,7 +87,7 @@ titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
-function inputstring(data::AtomicSpecies; delim = ' ', floatfmt = "%14.9f", args...)
+function inputstring(data::AtomicSpecies; delim = ' ', floatfmt = "%14.9f", kwargs...)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(floatfmt, data.mass), data.pseudopot),
         delim,
@@ -99,6 +99,7 @@ function inputstring(
     delim = ' ',
     floatfmt = "%20.10f",
     newline = '\n',
+    kwargs...,
 )
     return "ATOMIC_SPECIES" *
            newline *
@@ -106,7 +107,7 @@ function inputstring(
                indent * inputstring(x; delim = delim, floatfmt = floatfmt)
            end, newline)
 end
-function inputstring(data::AtomicPosition; delim = ' ', floatfmt = "%14.9f", args...)
+function inputstring(data::AtomicPosition; delim = ' ', floatfmt = "%14.9f", kwargs...)
     f(x) = x ? "" : "0"
     return join(
         [
@@ -123,6 +124,7 @@ function inputstring(
     delim = ' ',
     floatfmt = "%14.9f",
     newline = '\n',
+    kwargs...,
 )
     return "ATOMIC_POSITIONS { $(getoption(card)) }" *
            newline *
@@ -136,6 +138,7 @@ function inputstring(
     delim = ' ',
     floatfmt = "%14.9f",
     newline = '\n',
+    kwargs...,
 )
     return "CELL_PARAMETERS { $(getoption(card)) }" *
            newline *
@@ -143,13 +146,13 @@ function inputstring(
                indent * join((sprintf1(floatfmt, x) for x in row), delim)
            end, newline)
 end
-inputstring(data::GammaPoint) = ""
-function inputstring(data::MonkhorstPackGrid; delim = ' ', intfmt = "%5d", args...)
+inputstring(data::GammaPoint; kwargs...) = ""
+function inputstring(data::MonkhorstPackGrid; delim = ' ', intfmt = "%5d", kwargs...)
     return join(map([data.mesh; data.is_shift]) do x
         sprintf1(intfmt, x)
     end, delim)
 end
-inputstring(data::SpecialKPoint; delim = ' ', floatfmt = "%14.9f", args...) =
+inputstring(data::SpecialKPoint; delim = ' ', floatfmt = "%14.9f", kwargs...) =
     join(map(x -> sprintf1(floatfmt, x), data), delim)
 function inputstring(
     card::KPointsCard;
@@ -157,6 +160,7 @@ function inputstring(
     delim = ' ',
     floatfmt = "%14.9f",
     newline = '\n',
+    kwargs...,
 )
     content = "K_POINTS { $(card.option) }" * newline
     if getoption(card) in ("gamma", "automatic")

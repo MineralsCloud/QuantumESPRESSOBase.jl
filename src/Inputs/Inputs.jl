@@ -190,6 +190,9 @@ function inputstring(
     indent = ' '^4,
     delim = ' ',
     newline = '\n',
+    floatfmt = "%14.9f",
+    intfmt = "%5d",
+    kwargs...,
 )
     return join(
         map(fieldnames(typeof(input))) do f
@@ -207,7 +210,15 @@ end
 
 Return a `String` representing a collection of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
 """
-function inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = '\n')
+function inputstring(
+    args::InputEntry...;
+    indent = ' '^4,
+    delim = ' ',
+    newline = '\n',
+    floatfmt = "%14.9f",
+    intfmt = "%5d",
+    kwargs...,
+)
     return join(
         map(args) do x
             inputstring(x; indent = indent, delim = delim, newline = newline)
@@ -220,7 +231,15 @@ end
 
 Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = '\n')
+function inputstring(
+    nml::Namelist;
+    indent = ' '^4,
+    delim = ' ',
+    newline = '\n',
+    floatfmt = "%14.9f",
+    intfmt = "%5d",
+    kwargs...,
+)
     content =
         _inputstring(dropdefault(nml); indent = indent, delim = delim, newline = newline)
     return "&" * titleof(nml) * newline * content * '/'
