@@ -954,4 +954,26 @@ end # struct PWInput
 PWInput(args...) =
     PWInput(; Dict(zip(map(arg -> entryname(typeof(arg), PWInput), args), args))...)  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/6
 
+"""
+    cellvolume(input::PWInput)
+
+Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
+"""
+function Crystallography.cellvolume(input::PWInput)
+    if input.cell_parameters === nothing
+        return cellvolume(Lattice(input.system))
+    else
+        if getoption(input.cell_parameters) == "alat"
+            # If no value of `celldm` is changed...
+            if input.system.celldm[1] === nothing
+                error("`celldm[1]` is not defined!")
+            else
+                return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
+            end
+        else  # "bohr" or "angstrom"
+            return cellvolume(input.cell_parameters)
+        end
+    end
+end # function Crystallography.cellvolume
+
 end

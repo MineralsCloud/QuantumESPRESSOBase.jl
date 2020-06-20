@@ -13,8 +13,7 @@ module Inputs
 
 using AbInitioSoftwareBase.Inputs: Input
 using Compat: only
-using Crystallography: Bravais, Lattice, CellParameters, PrimitiveTriclinic, cellvolume
-using LinearAlgebra: det
+using Crystallography: Bravais, CellParameters, PrimitiveTriclinic
 using OrderedCollections: OrderedDict
 using Parameters: type2dict
 using PyFortran90Namelists: fstring
@@ -296,27 +295,5 @@ _selectcards(T::Union{Type{PWInput},Type{CPInput}}, ::Val{:optional}) =
 
 # Referenced from https://discourse.julialang.org/t/how-to-get-the-non-nothing-type-from-union-t-nothing/30523
 nonnothingtype(::Type{T}) where {T} = Core.Compiler.typesubtract(T, Nothing)  # Should not be exported
-
-"""
-    cellvolume(input::PWInput)
-
-Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
-"""
-function Crystallography.cellvolume(input::PWInput)
-    if input.cell_parameters === nothing
-        return cellvolume(Lattice(input.system))
-    else
-        if getoption(input.cell_parameters) == "alat"
-            # If no value of `celldm` is changed...
-            if input.system.celldm[1] === nothing
-                error("`celldm[1]` is not defined!")
-            else
-                return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
-            end
-        else  # "bohr" or "angstrom"
-            return cellvolume(input.cell_parameters)
-        end
-    end
-end # function Crystallography.cellvolume
 
 end
