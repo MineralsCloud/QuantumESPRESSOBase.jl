@@ -73,8 +73,8 @@ export ControlNamelist,
     set_structure,
     inputstring
 
-include("nml.jl")
-include("card.jl")
+include("namelists.jl")
+include("cards.jl")
 
 """
     PWInput <: QuantumESPRESSOInput
