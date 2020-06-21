@@ -17,7 +17,6 @@ using ..Inputs:
     Card,
     getoption,
     allowed_options,
-    inputstring,
     allnamelists,
     allcards,
     compulsory_namelists,
@@ -25,6 +24,7 @@ using ..Inputs:
     compulsory_cards,
     optional_cards
 
+import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
 import Pseudopotentials
 import ..Inputs

@@ -182,7 +182,7 @@ end # function Base.convert
 include("Formats.jl")
 using .Formats: delimiter, newline, indent
 include("PWscf/PWscf.jl")
-include("CP.jl")
+include("CP/CP.jl")
 include("PHonon.jl")
 
 """
