@@ -127,8 +127,8 @@ struct AtomicPositionsCard <: Card
     end
 end
 AtomicPositionsCard(cell::Cell, option) =
-    AtomicPositionsCard(map(cell.numbers, cell.positions) do atom, pos
-        AtomicPosition(string(atom), pos)
+    AtomicPositionsCard(map(cell.atompos) do atompos
+        AtomicPosition(string(atompos.atom), atompos.pos)
     end, option)
 # Introudce mutual constructors since they share the same atoms.
 
