@@ -418,11 +418,11 @@ Represent the `BANDS` namelist of `bands.x`.
 end # struct BandsNamelist
 
 """
-    set_verbosity(template::ControlNamelist, verbosity = "high")
+    set_verbosity(template::ControlNamelist, verbosity)
 
 Return a modified `ControlNamelist`, with verbosity set.
 """
-function set_verbosity(control::ControlNamelist, verbosity = "high")
+function set_verbosity(control::ControlNamelist, verbosity)
     if verbosity == "high"
         @set! control.verbosity = "high"
         @set! control.wf_collect = true

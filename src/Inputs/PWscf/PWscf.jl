@@ -114,11 +114,11 @@ PWInput(args::InputEntry...) = PWInput(; map(args) do arg
 end...)
 
 """
-    set_verbosity(template::PWInput, verbosity = "high")
+    set_verbosity(template::PWInput, verbosity)
 
 Return a modified `PWInput`, with verbosity set.
 """
-function set_verbosity(template::PWInput, verbosity = "high")
+function set_verbosity(template::PWInput, verbosity)
     @set! template.control = set_verbosity(template.control, verbosity)
     return template
 end # function set_verbosity
