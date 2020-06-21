@@ -2,19 +2,14 @@ module Formats
 
 export delimiter, newline, indent, floatfmt, intfmt
 
-delimiter() = ' '
-delimiter(x) = delimiter()
+function delimiter end
 
-newline() = '\n'
-newline(x) = newline()
+function newline end
 
-indent() = ' '^4
-indent(x) = indent()
+function indent end
 
-floatfmt() = "%14.9f"
-floatfmt(x) = floatfmt()
+function floatfmt end
 
-intfmt() = "%5d"
-intfmt(x) = intfmt()
+function intfmt end
 
 end
