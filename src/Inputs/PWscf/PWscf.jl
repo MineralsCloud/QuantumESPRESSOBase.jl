@@ -144,12 +144,25 @@ function set_temperature(template::PWInput, temperature)
     return template
 end # function set_temperature
 
-function set_structure(template::PWInput, lattice::Lattice, atomic_positions = nothing)
-    @set! template.cell_parameters = CellParametersCard(lattice)
+function set_structure(
+    template::PWInput,
+    cell_parameters::Union{Nothing,CellParametersCard} = nothing,
+    atomic_positions::Union{Nothing,AtomicPositionsCard} = nothing,
+)
+    if cell_parameters !== nothing
+        @set! template.cell_parameters = cell_parameters
+    end
     if atomic_positions !== nothing
         @set! template.atomic_positions = atomic_positions
     end
     return template
+end # function set_structure
+function set_structure(template::PWInput, cell::Cell, option1, option2)
+    return set_structure(
+        template,
+        CellParametersCard(cell, option1),
+        AtomicPositionsCard(cell, option2),
+    )
 end # function set_structure
 
 allowed_options(::Type{AtomicPositionsCard}) =
