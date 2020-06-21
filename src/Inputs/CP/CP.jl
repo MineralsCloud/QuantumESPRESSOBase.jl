@@ -61,6 +61,50 @@ include("namelists.jl")
 include("cards.jl")
 
 """
+    CPInput <: QuantumESPRESSOInput
+    CPInput(control, system, electrons, ions, cell, press_ai, wannier, atomic_species, atomic_positions, atomic_velocities, cell_parameters, ref_cell_parameters, constraints, occupations, atomic_forces, plot_wannier, autopilot)
+
+Construct a `CPInput` which represents the input of program `cp.x`.
+
+# Arguments
+- `control::ControlNamelist=ControlNamelist()`: the `CONTROL` namelist of the input. Optional.
+- `system::SystemNamelist=SystemNamelist()`: the `SYSTEM` namelist of the input. Optional.
+- `electrons::ElectronsNamelist=ElectronsNamelist()`: the `ELECTRONS` namelist of the input. Optional.
+- `ions::IonsNamelist=IonsNamelist()`: the `IONS` namelist of the input. Optional.
+- `cell::CellNamelist=CellNamelist()`: the `CELL` namelist of the input. Optional.
+- `press_ai::PressAiNamelist=PressAiNamelist()`: the `PRESS_AI` namelist of the input. Optional.
+- `wannier::WannierNamelist=WannierNamelist()`: the `WANNIER` namelist of the input. Optional.
+- `atomic_species::AtomicSpeciesCard`: the `ATOMIC_SPECIES` card of the input. Must be provided explicitly.
+- `atomic_positions::AtomicPositionsCard`: the `ATOMIC_POSITIONS` card of the input. Must be provided explicitly.
+- `atomic_velocities::AtomicVelocitiesCard`: the `ATOMIC_VELOCITIES` card of the input. Must be provided explicitly.
+- `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
+- `ref_cell_parameters::Union{Nothing,RefCellParametersCard}`: the `REF_CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
+"""
+@with_kw struct CPInput <: QuantumESPRESSOInput
+    control::ControlNamelist = ControlNamelist()
+    system::SystemNamelist = SystemNamelist()
+    electrons::ElectronsNamelist = ElectronsNamelist()
+    ions::IonsNamelist = IonsNamelist()
+    cell::CellNamelist = CellNamelist()
+    press_ai::PressAiNamelist = PressAiNamelist()
+    wannier::WannierNamelist = WannierNamelist()
+    atomic_species::AtomicSpeciesCard
+    atomic_positions::AtomicPositionsCard
+    atomic_velocities::AtomicVelocitiesCard
+    cell_parameters::Union{Nothing,CellParametersCard} = nothing
+    ref_cell_parameters::Union{Nothing,RefCellParametersCard} = nothing
+    constraints::Union{Nothing,Float64} = nothing
+    occupations::Union{Nothing,Float64} = nothing
+    atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
+    plot_wannier::Union{Nothing,Float64} = nothing
+    autopilot::Union{Nothing,Float64} = nothing
+    @assert(
+        !(cell_parameters === nothing && system.ibrav == 0),
+        "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
+    )
+end # struct CPInput
+
+"""
     optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
 
 Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom", or its reverse.
@@ -196,66 +240,6 @@ function inputstring(
     return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
 end
 
-"""
-    AtomicVelocity(atom::Union{AbstractChar,String}, velocity::Vector{Float64})
-    AtomicVelocity(x::AtomicPosition, velocity)
-
-Represent each line of the `ATOMIC_VELOCITIES` card in QE's `CP` package.
-
-The `atom` field accepts at most 3 characters.
-
-# Examples
-```jldoctest
-julia> using QuantumESPRESSOBase.Cards.CP
-
-julia> AtomicVelocity("H", [0.140374e-04, -0.333683e-04, 0.231834e-04])
-AtomicVelocity("H", [1.40374e-5, -3.33683e-5, 2.31834e-5])
-```
-"""
-struct AtomicVelocity
-    atom::String
-    velocity::SVector{3,Float64}
-    function AtomicVelocity(atom::Union{AbstractChar,AbstractString}, velocity)
-        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
-        return new(string(atom), velocity)
-    end
-end
-AtomicVelocity(x::AtomicSpecies, velocity) = AtomicVelocity(x.atom, velocity)
-AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
-# Introudce mutual constructors since they share the same atoms.
-"""
-    AtomicSpecies(x::AtomicVelocity, mass, pseudopot)
-
-Construct an `AtomicSpecies` from an `AtomicVelocity` instance.
-"""
-AtomicSpecies(x::AtomicVelocity, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
-"""
-    AtomicPosition(x::AtomicVelocity, pos, if_pos)
-
-Construct an `AtomicPosition` from an `AtomicVelocity` instance.
-"""
-AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
-
-"""
-    AtomicVelocitiesCard <: Card
-
-Represent the `ATOMIC_VELOCITIES` card in QE's `CP` package which does not have an "option".
-"""
-struct AtomicVelocitiesCard <: Card
-    data::Vector{AtomicVelocity}
-end
-
-struct RefCellParametersCard{T<:Real} <: AbstractCellParametersCard
-    data::SMatrix{3,3,T}
-    option::String
-    function RefCellParametersCard{T}(data, option = "bohr") where {T<:Real}
-        @assert option ∈ allowed_options(RefCellParametersCard)
-        return new(data, option)
-    end
-end
-RefCellParametersCard(data::AbstractMatrix{T}, option = "bohr") where {T} =
-    RefCellParametersCard{T}(data, option)
-
 getoption(::AtomicVelocitiesCard) = "a.u"
 
 allowed_options(::Type{<:AtomicPositionsCard}) =
@@ -273,50 +257,6 @@ function Base.setproperty!(value::AtomicVelocity, name::Symbol, x)
     end
     setfield!(value, name, x)
 end # function Base.setproperty!
-
-"""
-    CPInput <: QuantumESPRESSOInput
-    CPInput(control, system, electrons, ions, cell, press_ai, wannier, atomic_species, atomic_positions, atomic_velocities, cell_parameters, ref_cell_parameters, constraints, occupations, atomic_forces, plot_wannier, autopilot)
-
-Construct a `CPInput` which represents the input of program `cp.x`.
-
-# Arguments
-- `control::ControlNamelist=ControlNamelist()`: the `CONTROL` namelist of the input. Optional.
-- `system::SystemNamelist=SystemNamelist()`: the `SYSTEM` namelist of the input. Optional.
-- `electrons::ElectronsNamelist=ElectronsNamelist()`: the `ELECTRONS` namelist of the input. Optional.
-- `ions::IonsNamelist=IonsNamelist()`: the `IONS` namelist of the input. Optional.
-- `cell::CellNamelist=CellNamelist()`: the `CELL` namelist of the input. Optional.
-- `press_ai::PressAiNamelist=PressAiNamelist()`: the `PRESS_AI` namelist of the input. Optional.
-- `wannier::WannierNamelist=WannierNamelist()`: the `WANNIER` namelist of the input. Optional.
-- `atomic_species::AtomicSpeciesCard`: the `ATOMIC_SPECIES` card of the input. Must be provided explicitly.
-- `atomic_positions::AtomicPositionsCard`: the `ATOMIC_POSITIONS` card of the input. Must be provided explicitly.
-- `atomic_velocities::AtomicVelocitiesCard`: the `ATOMIC_VELOCITIES` card of the input. Must be provided explicitly.
-- `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
-- `ref_cell_parameters::Union{Nothing,RefCellParametersCard}`: the `REF_CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
-"""
-@with_kw struct CPInput <: QuantumESPRESSOInput
-    control::ControlNamelist = ControlNamelist()
-    system::SystemNamelist = SystemNamelist()
-    electrons::ElectronsNamelist = ElectronsNamelist()
-    ions::IonsNamelist = IonsNamelist()
-    cell::CellNamelist = CellNamelist()
-    press_ai::PressAiNamelist = PressAiNamelist()
-    wannier::WannierNamelist = WannierNamelist()
-    atomic_species::AtomicSpeciesCard
-    atomic_positions::AtomicPositionsCard
-    atomic_velocities::AtomicVelocitiesCard
-    cell_parameters::Union{Nothing,CellParametersCard} = nothing
-    ref_cell_parameters::Union{Nothing,RefCellParametersCard} = nothing
-    constraints::Union{Nothing,Float64} = nothing
-    occupations::Union{Nothing,Float64} = nothing
-    atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
-    plot_wannier::Union{Nothing,Float64} = nothing
-    autopilot::Union{Nothing,Float64} = nothing
-    @assert(
-        !(cell_parameters === nothing && system.ibrav == 0),
-        "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
-    )
-end # struct CPInput
 
 allnamelists(::Type{CPInput}) =
     (:control, :system, :electrons, :ions, :cell, :press_ai, :wannier)

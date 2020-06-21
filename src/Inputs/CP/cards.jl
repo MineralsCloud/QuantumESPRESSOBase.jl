@@ -179,3 +179,63 @@ end
 struct AtomicForcesCard <: Card
     data::Vector{AtomicForce}
 end
+
+"""
+    AtomicVelocity(atom::Union{AbstractChar,String}, velocity::Vector{Float64})
+    AtomicVelocity(x::AtomicPosition, velocity)
+
+Represent each line of the `ATOMIC_VELOCITIES` card in QE's `CP` package.
+
+The `atom` field accepts at most 3 characters.
+
+# Examples
+```jldoctest
+julia> using QuantumESPRESSOBase.Cards.CP
+
+julia> AtomicVelocity("H", [0.140374e-04, -0.333683e-04, 0.231834e-04])
+AtomicVelocity("H", [1.40374e-5, -3.33683e-5, 2.31834e-5])
+```
+"""
+struct AtomicVelocity
+    atom::String
+    velocity::SVector{3,Float64}
+    function AtomicVelocity(atom::Union{AbstractChar,AbstractString}, velocity)
+        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        return new(string(atom), velocity)
+    end
+end
+AtomicVelocity(x::AtomicSpecies, velocity) = AtomicVelocity(x.atom, velocity)
+AtomicVelocity(x::AtomicPosition, velocity) = AtomicVelocity(x.atom, velocity)
+# Introudce mutual constructors since they share the same atoms.
+"""
+    AtomicSpecies(x::AtomicVelocity, mass, pseudopot)
+
+Construct an `AtomicSpecies` from an `AtomicVelocity` instance.
+"""
+AtomicSpecies(x::AtomicVelocity, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
+"""
+    AtomicPosition(x::AtomicVelocity, pos, if_pos)
+
+Construct an `AtomicPosition` from an `AtomicVelocity` instance.
+"""
+AtomicPosition(x::AtomicVelocity, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
+
+"""
+    AtomicVelocitiesCard <: Card
+
+Represent the `ATOMIC_VELOCITIES` card in QE's `CP` package which does not have an "option".
+"""
+struct AtomicVelocitiesCard <: Card
+    data::Vector{AtomicVelocity}
+end
+
+struct RefCellParametersCard{T<:Real} <: AbstractCellParametersCard
+    data::SMatrix{3,3,T}
+    option::String
+    function RefCellParametersCard{T}(data, option = "bohr") where {T<:Real}
+        @assert option ∈ allowed_options(RefCellParametersCard)
+        return new(data, option)
+    end
+end
+RefCellParametersCard(data::AbstractMatrix{T}, option = "bohr") where {T} =
+    RefCellParametersCard{T}(data, option)
