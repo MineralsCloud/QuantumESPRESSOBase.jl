@@ -36,6 +36,7 @@ import ..Inputs:
     optional_namelists,
     compulsory_cards,
     optional_cards
+using ..Formats: delimiter, newline, indent, floatfmt, intfmt
 
 export ControlNamelist,
     SystemNamelist,
@@ -177,67 +178,40 @@ function Crystallography.cellvolume(card::AbstractCellParametersCard)
     end
 end # function Crystallography.cellvolume
 
-function inputstring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
+function inputstring(data::AtomicSpecies)
     return join(
-        (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
-        delim,
+        (sprintf1("%3s", data.atom), sprintf1(floatfmt(data), data.mass), data.pseudopot),
+        delimiter(data),
     )
 end
-function inputstring(
-    card::AtomicSpeciesCard;
-    indent = ' '^4,
-    delim = ' ',
-    numfmt = "%20.10f",
-    newline = '\n',
-)
+function inputstring(card::AtomicSpeciesCard)
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES" *
-           newline *
-           join(
-               (
-                   indent * inputstring(x; delim = delim, numfmt = numfmt)
-                   for x in unique(card.data)
-               ),
-               newline,
-           )
+           newline(card) *
+           join((indent(card) * inputstring(x) for x in unique(card.data)), newline(card))
 end
-function inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
+function inputstring(data::AtomicPosition)
     f(x) = x ? "" : "0"
     return join(
         [
             sprintf1("%3s", data.atom)
-            map(x -> sprintf1(numfmt, x), data.pos)
+            map(x -> sprintf1(floatfmt(data), x), data.pos)
             map(f, data.if_pos)
         ],
-        delim,
+        delimiter(data),
     )
 end
-function inputstring(
-    card::AtomicPositionsCard;
-    indent = ' '^4,
-    delim = ' ',
-    numfmt = "%14.9f",
-    newline = '\n',
-)
+function inputstring(card::AtomicPositionsCard)
     return "ATOMIC_POSITIONS { $(getoption(card)) }" *
-           newline *
-           join(
-               (indent * inputstring(x; delim = delim, numfmt = numfmt) for x in card.data),
-               newline,
-           )
+           newline(card) *
+           join((indent(card) * inputstring(x) for x in card.data), newline(card))
 end
-function inputstring(
-    card::CellParametersCard;
-    indent = ' '^4,
-    delim = ' ',
-    numfmt = "%14.9f",
-    newline = '\n',
-)
+function inputstring(card::CellParametersCard)
     it = (
-        indent * join((sprintf1(numfmt, x) for x in row), delim) for
+        indent * join((sprintf1(floatfmt(card), x) for x in row), delimiter(card)) for
         row in eachrow(card.data)
     )
-    return "CELL_PARAMETERS { $(getoption(card)) }" * newline * join(it, newline)
+    return "CELL_PARAMETERS { $(getoption(card)) }" * newline(card) * join(it, newline)
 end
 
 getoption(::AtomicVelocitiesCard) = "a.u"
