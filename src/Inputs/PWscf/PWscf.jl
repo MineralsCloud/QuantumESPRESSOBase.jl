@@ -204,15 +204,12 @@ end
 Return a `String` representing a `AtomicPosition`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(data::AtomicPosition; delim = ' ', floatfmt = "%14.9f", kwargs...)
-    f(x) = x ? "" : "0"
-    return join(
-        [
-            sprintf1("%3s", data.atom)
-            map(x -> sprintf1(floatfmt, x), data.pos)
-            map(f, data.if_pos)
-        ],
-        delim,
-    )
+    content =
+        join([sprintf1("%3s", data.atom); map(x -> sprintf1(floatfmt, x), data.pos)], delim)
+    if !all(data.if_pos)
+        content *= delim * join(map(Int, data.if_pos), delim)
+    end
+    return content
 end
 """
     inputstring(card::AtomicPositionsCard; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f")
