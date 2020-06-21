@@ -167,7 +167,7 @@ end # function set_structure
 
 allowed_options(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
+allowed_options(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
 allowed_options(::Type{<:KPointsCard}) = (
     "tpiba",
     "automatic",
@@ -186,7 +186,7 @@ titleof(::Type{IonsNamelist}) = "IONS"
 titleof(::Type{CellNamelist}) = "CELL"
 titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
+titleof(::Type{CellParametersCard}) = "CELL_PARAMETERS"
 titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
