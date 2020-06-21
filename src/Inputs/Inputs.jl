@@ -12,7 +12,7 @@ julia>
 module Inputs
 
 using AbInitioSoftwareBase.Inputs: Input
-using Compat: only
+using Compat: only, isnothing
 using Crystallography: Bravais, CellParameters, PrimitiveTriclinic
 using PyFortran90Namelists: fstring
 
@@ -189,25 +189,20 @@ include("PHonon.jl")
 Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(input::QuantumESPRESSOInput; newline = '\n', kwargs...)
-    return join(map(fieldnames(typeof(input))) do f
-        x = getfield(input, f)
-        if x !== nothing
-            inputstring(x; newline = newline, kwargs...) * newline
-        else
-            ""
-        end
-    end)
+    return join(
+        map(Iterators.filter(!isnothing, getfield(input, i) for i = 1:nfields(input))) do f
+            inputstring(f; newline = newline, kwargs...)
+        end,
+        newline,
+    )
 end
 """
     inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f", intfmt = "%5d")
 
 Return a `String` representing a collection of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
 """
-function inputstring(args::InputEntry...; newline = '\n', kwargs...)
-    return join(map(args) do x
-        inputstring(x; newline = newline, kwargs...)
-    end, newline)
-end
+inputstring(args::InputEntry...; newline = '\n', kwargs...) =
+    join(map(x -> inputstring(x; newline = newline, kwargs...), args), newline)
 """
     inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = "\\n")
 
