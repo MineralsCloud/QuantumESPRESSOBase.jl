@@ -23,7 +23,13 @@ using Unitful: AbstractQuantity, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
 using ..Inputs:
-    InputEntry, Namelist, QuantumESPRESSOInput, entryname, Card, _Celldm, getoption
+    QuantumESPRESSOInputEntry,
+    Namelist,
+    QuantumESPRESSOInput,
+    entryname,
+    Card,
+    _Celldm,
+    getoption
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
@@ -111,7 +117,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
         "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
     )
 end # struct PWInput
-PWInput(args::InputEntry...) = PWInput(; map(args) do arg
+PWInput(args::QuantumESPRESSOInputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
 end...)
 

@@ -30,25 +30,24 @@ export getoption,
     allnamelists,
     allcards
 
+abstract type QuantumESPRESSOInputEntry end
+
 """
-    Namelist
+    Namelist <: QuantumESPRESSOInputEntry
 
 The abstraction of an component of a `Input`, a basic Fortran data structure.
 """
-abstract type Namelist end
+abstract type Namelist <: QuantumESPRESSOInputEntry end
 
 """
-    Card
+    Card <: QuantumESPRESSOInputEntry
 
 The abstraction of all components of a `Input` that is not a `Namelist`.
 """
-abstract type Card end
-
-const InputEntry = Union{Namelist,Card}
+abstract type Card <: QuantumESPRESSOInputEntry end
 
 """
-    titleof(::Type{<:InputEntry})
-    titleof(::InputEntry)
+    titleof(::Union{Namelist,Card})
 
 Return the title of the input entry in Quantum ESPRESSO.
 
@@ -64,7 +63,7 @@ julia> titleof(ControlNamelist()) == titleof(ControlNamelist) == "CONTROL"
 true
 ```
 """
-titleof(x::InputEntry) = titleof(typeof(x))
+titleof(x::QuantumESPRESSOInputEntry) = titleof(typeof(x))
 
 """
     dropdefault(nml::Namelist)
@@ -120,7 +119,7 @@ function allowed_options end
 abstract type QuantumESPRESSOInput <: Input end
 
 # This is a helper function and should not be exported.
-entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
+entryname(S::Type{<:QuantumESPRESSOInputEntry}, T::Type{<:QuantumESPRESSOInput}) =
     only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 function allnamelists end
