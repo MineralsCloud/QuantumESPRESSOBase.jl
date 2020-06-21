@@ -179,6 +179,8 @@ function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
 end # function Base.convert
 
+include("Formatting.jl")
+using .Fortmatting: delimiter, newline, indent, floatfmt, intfmt
 include("PWscf/PWscf.jl")
 include("CP.jl")
 include("PHonon.jl")
@@ -188,12 +190,12 @@ include("PHonon.jl")
 
 Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(input::QuantumESPRESSOInput; newline = '\n', kwargs...)
+function inputstring(input::QuantumESPRESSOInput)
     return join(
         map(Iterators.filter(!isnothing, getfield(input, i) for i = 1:nfields(input))) do f
-            inputstring(f; newline = newline, kwargs...)
+            inputstring(f)
         end,
-        newline,
+        newline(input),
     )
 end
 """
@@ -201,45 +203,39 @@ end
 
 Return a `String` representing a collection of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
 """
-inputstring(args::InputEntry...; newline = '\n', kwargs...) =
-    join(map(x -> inputstring(x; newline = newline, kwargs...), args), newline)
+inputstring(args::InputEntry...) = join(map(inputstring, args), newline())
 """
     inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = "\\n")
 
 Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(nml::Namelist; newline = '\n', kwargs...)
-    content = _inputstring(dropdefault(nml); newline = newline, kwargs...)
-    return join(filter(!isempty, ("&" * titleof(nml), content, '/')), newline)
+function inputstring(nml::Namelist)
+    content = _inputstring(dropdefault(nml))
+    return join(filter(!isempty, ("&" * titleof(nml), content, '/')), newline(nml))
 end
-function _inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ', newline = '\n')
-    return join(
-        map(keys(dict), values(dict)) do key, value
-            _inputstring(key, value; indent = indent, delim = delim, newline = newline)
-        end,
-        newline,
-    )
+function _inputstring(dict::AbstractDict)
+    return join(map(keys(dict), values(dict)) do key, value
+        _inputstring(key, value)
+    end, newline(dict))
 end
-function _inputstring(
-    key,
-    value::AbstractVector;
-    indent = ' '^4,
-    delim = ' ',
-    newline = '\n',
-)
+function _inputstring(key, value::AbstractVector;)
     return join(
         map(Iterators.filter(!isnothing, enumerate(value))) do (i, x)
-            indent * join([string(key, '(', i, ')'), "=", fstring(x)], delim)
+            indent(value) *
+            join([string(key, '(', i, ')'), "=", fstring(x)], delimiter(value))
         end,
-        newline,
+        newline(value),
     )
 end
-function _inputstring(key, value::NamedTuple; indent = ' '^4, delim = ' ', newline = '\n')
-    return join(map(keys(value), values(value)) do x, y
-        indent * join([string(key, '%', x), "=", fstring(y)], delim)
-    end, newline)
+function _inputstring(key, value::NamedTuple)
+    return join(
+        map(keys(value), values(value)) do x, y
+            indent(value) * join([string(key, '%', x), "=", fstring(y)], delimiter(value))
+        end,
+        newline(value),
+    )
 end
-_inputstring(key, value; indent = ' '^4, delim = ' ', newline = '\n') =
-    indent * join([string(key), "=", fstring(value)], delim)
+_inputstring(key, value) =
+    indent(value) * join([string(key), "=", fstring(value)], delimiter(value))
 
 end
