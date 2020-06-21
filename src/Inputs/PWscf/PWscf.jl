@@ -170,7 +170,7 @@ titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
-    inputstring(data::AtomicSpecies; delim = ' ', floatfmt = "%14.9f")
+    inputstring(data::AtomicSpecies)
 
 Return a `String` representing a `AtomicSpecies`, valid for Quantum ESPRESSO's input.
 """
@@ -181,7 +181,7 @@ function inputstring(data::AtomicSpecies)
     )
 end
 """
-    inputstring(card::AtomicSpeciesCard; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f")
+    inputstring(card::AtomicSpeciesCard)
 
 Return a `String` representing a `AtomicSpeciesCard`, valid for Quantum ESPRESSO's input.
 """
@@ -193,7 +193,7 @@ function inputstring(card::AtomicSpeciesCard)
            end, newline)
 end
 """
-    inputstring(data::AtomicPosition; delim = ' ', floatfmt = "%14.9f")
+    inputstring(data::AtomicPosition)
 
 Return a `String` representing a `AtomicPosition`, valid for Quantum ESPRESSO's input.
 """
@@ -208,7 +208,7 @@ function inputstring(data::AtomicPosition)
     return content
 end
 """
-    inputstring(card::AtomicPositionsCard; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f")
+    inputstring(card::AtomicPositionsCard)
 
 Return a `String` representing a `AtomicPositionsCard`, valid for Quantum ESPRESSO's input.
 """
@@ -220,7 +220,7 @@ function inputstring(card::AtomicPositionsCard)
            end, newline(card))
 end
 """
-    inputstring(card::CellParametersCard; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f")
+    inputstring(card::CellParametersCard)
 
 Return a `String` representing a `CellParametersCard`, valid for Quantum ESPRESSO's input.
 """
@@ -242,7 +242,7 @@ Return a `String` representing a `GammaPoint`, valid for Quantum ESPRESSO's inpu
 """
 inputstring(data::GammaPoint) = ""
 """
-    inputstring(data::MonkhorstPackGrid; delim = ' ', intfmt = "%5d")
+    inputstring(data::MonkhorstPackGrid)
 
 Return a `String` representing a `MonkhorstPackGrid`, valid for Quantum ESPRESSO's input.
 """
@@ -252,14 +252,14 @@ function inputstring(data::MonkhorstPackGrid)
     end, delimiter(data))
 end
 """
-    inputstring(data::SpecialKPoint; delim = ' ', floatfmt = "%14.9f")
+    inputstring(data::SpecialKPoint)
 
 Return a `String` representing a `SpecialKPoint`, valid for Quantum ESPRESSO's input.
 """
 inputstring(data::SpecialKPoint) =
     join(map(x -> sprintf1(floatfmt(data), x), data), delimiter(data))
 """
-    inputstring(card::KPointsCard; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f")
+    inputstring(card::KPointsCard)
 
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
