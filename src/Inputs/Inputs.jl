@@ -199,12 +199,6 @@ function inputstring(input::QuantumESPRESSOInput)
     )
 end
 """
-    inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f", intfmt = "%5d")
-
-Return a `String` representing a collection of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
-"""
-inputstring(args::InputEntry...) = join(map(inputstring, args), newline())
-"""
     inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = "\\n")
 
 Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
