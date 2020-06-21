@@ -179,67 +179,93 @@ function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
 end # function Base.convert
 
+include("Formats.jl")
+import .Formats: delimiter, newline, indent
 include("PWscf/PWscf.jl")
-include("CP.jl")
+include("CP/CP.jl")
 include("PHonon.jl")
 
 """
-    inputstring(input::QuantumESPRESSOInput; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f", intfmt = "%5d")
+    inputstring(input::QuantumESPRESSOInput)
 
 Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(input::QuantumESPRESSOInput; newline = '\n', kwargs...)
+function inputstring(input::QuantumESPRESSOInput)
     return join(
         map(Iterators.filter(!isnothing, getfield(input, i) for i = 1:nfields(input))) do f
-            inputstring(f; newline = newline, kwargs...)
+            inputstring(f)
         end,
-        newline,
+        newline(input),
     )
 end
 """
-    inputstring(args::InputEntry...; indent = ' '^4, delim = ' ', newline = "\\n", floatfmt = "%14.9f", intfmt = "%5d")
-
-Return a `String` representing a collection of `QuantumESPRESSOInput` fields, valid for Quantum ESPRESSO's input.
-"""
-inputstring(args::InputEntry...; newline = '\n', kwargs...) =
-    join(map(x -> inputstring(x; newline = newline, kwargs...), args), newline)
-"""
-    inputstring(nml::Namelist; indent = ' '^4, delim = ' ', newline = "\\n")
+    inputstring(nml::Namelist)
 
 Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(nml::Namelist; newline = '\n', kwargs...)
-    content = _inputstring(dropdefault(nml); newline = newline, kwargs...)
-    return join(filter(!isempty, ("&" * titleof(nml), content, '/')), newline)
+function inputstring(nml::Namelist)
+    content = _nmlinputstring(
+        dropdefault(nml);
+        indent = indent(nml),
+        delimiter = delimiter(nml),
+        newline = newline(nml),
+    )
+    return join(filter(!isempty, ("&" * titleof(nml), content, '/')), newline(nml))
 end
-function _inputstring(dict::AbstractDict; indent = ' '^4, delim = ' ', newline = '\n')
+function _nmlinputstring(
+    dict::AbstractDict;
+    indent = ' '^4,
+    delimiter = ' ',
+    newline = '\n',
+)
     return join(
         map(keys(dict), values(dict)) do key, value
-            _inputstring(key, value; indent = indent, delim = delim, newline = newline)
+            _nmlinputstring(
+                key,
+                value;
+                indent = indent,
+                delimiter = delimiter,
+                newline = newline,
+            )
         end,
         newline,
     )
 end
-function _inputstring(
+function _nmlinputstring(
     key,
     value::AbstractVector;
     indent = ' '^4,
-    delim = ' ',
+    delimiter = ' ',
     newline = '\n',
 )
     return join(
         map(Iterators.filter(!isnothing, enumerate(value))) do (i, x)
-            indent * join([string(key, '(', i, ')'), "=", fstring(x)], delim)
+            indent * join((string(key, '(', i, ')'), "=", fstring(x)), delimiter)
         end,
         newline,
     )
 end
-function _inputstring(key, value::NamedTuple; indent = ' '^4, delim = ' ', newline = '\n')
-    return join(map(keys(value), values(value)) do x, y
-        indent * join([string(key, '%', x), "=", fstring(y)], delim)
-    end, newline)
+function _nmlinputstring(
+    key,
+    value::NamedTuple;
+    indent = ' '^4,
+    delimiter = ' ',
+    newline = '\n',
+)
+    return join(
+        map(keys(value), values(value)) do x, y
+            indent * join((string(key, '%', x), "=", fstring(y)), delimiter)
+        end,
+        newline,
+    )
 end
-_inputstring(key, value; indent = ' '^4, delim = ' ', newline = '\n') =
-    indent * join([string(key), "=", fstring(value)], delim)
+_nmlinputstring(key, value; indent = ' '^4, delimiter = ' ', newline = '\n') =
+    indent * join((string(key), "=", fstring(value)), delimiter)
+
+newline(::Union{QuantumESPRESSOInput,Namelist,Card}) = '\n'
+
+indent(::Namelist) = ' '^4
+
+delimiter(::Namelist) = ' '
 
 end
