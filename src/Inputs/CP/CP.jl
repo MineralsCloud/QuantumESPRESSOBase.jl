@@ -27,7 +27,15 @@ using ..Inputs:
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
 import Pseudopotentials
-import ..Inputs
+import ..Inputs:
+    allowed_options,
+    allnamelists,
+    allcards,
+    getoption,
+    compulsory_namelists,
+    optional_namelists,
+    compulsory_cards,
+    optional_cards
 
 export ControlNamelist,
     SystemNamelist,
@@ -51,10 +59,6 @@ export ControlNamelist,
 
 include("namelists.jl")
 include("cards.jl")
-
-Inputs.allowed_options(::Type{<:AtomicPositionsCard}) =
-    ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-Inputs.allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
 
 """
     optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
@@ -81,14 +85,14 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     end
 end # function optconvert
 
-Inputs.titleof(::Type{ControlNamelist}) = "CONTROL"
-Inputs.titleof(::Type{SystemNamelist}) = "SYSTEM"
-Inputs.titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
-Inputs.titleof(::Type{IonsNamelist}) = "IONS"
-Inputs.titleof(::Type{CellNamelist}) = "CELL"
-Inputs.titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-Inputs.titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-Inputs.titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
+titleof(::Type{ControlNamelist}) = "CONTROL"
+titleof(::Type{SystemNamelist}) = "SYSTEM"
+titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
+titleof(::Type{IonsNamelist}) = "IONS"
+titleof(::Type{CellNamelist}) = "CELL"
+titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 
 """
     Crystallography.Bravais(nml::SystemNamelist)
@@ -129,13 +133,13 @@ function Crystallography.cellvolume(card::AbstractCellParametersCard)
     end
 end # function Crystallography.cellvolume
 
-function Inputs.inputstring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
+function inputstring(data::AtomicSpecies; delim = ' ', numfmt = "%14.9f", args...)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(numfmt, data.mass), data.pseudopot),
         delim,
     )
 end
-function Inputs.inputstring(
+function inputstring(
     card::AtomicSpeciesCard;
     indent = ' '^4,
     delim = ' ',
@@ -153,7 +157,7 @@ function Inputs.inputstring(
                newline,
            )
 end
-function Inputs.inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
+function inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f", args...)
     f(x) = x ? "" : "0"
     return join(
         [
@@ -164,7 +168,7 @@ function Inputs.inputstring(data::AtomicPosition; delim = ' ', numfmt = "%14.9f"
         delim,
     )
 end
-function Inputs.inputstring(
+function inputstring(
     card::AtomicPositionsCard;
     indent = ' '^4,
     delim = ' ',
@@ -178,7 +182,7 @@ function Inputs.inputstring(
                newline,
            )
 end
-function Inputs.inputstring(
+function inputstring(
     card::CellParametersCard;
     indent = ' '^4,
     delim = ' ',
@@ -252,10 +256,13 @@ end
 RefCellParametersCard(data::AbstractMatrix{T}, option = "bohr") where {T} =
     RefCellParametersCard{T}(data, option)
 
-Inputs.getoption(::AtomicVelocitiesCard) = "a.u"
+getoption(::AtomicVelocitiesCard) = "a.u"
 
-Inputs.allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
-Inputs.allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
+allowed_options(::Type{<:AtomicPositionsCard}) =
+    ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
+allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
+allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
+allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 
 function Base.setproperty!(value::AtomicVelocity, name::Symbol, x)
     x = if name == :atom
@@ -311,11 +318,11 @@ Construct a `CPInput` which represents the input of program `cp.x`.
     )
 end # struct CPInput
 
-Inputs.allnamelists(::Type{CPInput}) =
+allnamelists(::Type{CPInput}) =
     (:control, :system, :electrons, :ions, :cell, :press_ai, :wannier)
-Inputs.allnamelists(x::CPInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
+allnamelists(x::CPInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
 
-Inputs.allcards(::Type{CPInput}) = (
+allcards(::Type{CPInput}) = (
     :atomic_species,
     :atomic_positions,
     :atomic_velocities,
@@ -327,20 +334,18 @@ Inputs.allcards(::Type{CPInput}) = (
     :plot_wannier,
     :autopilot,
 )
-Inputs.allcards(x::CPInput) = (getfield(x, f) for f in allcards(typeof(x)))
+allcards(x::CPInput) = (getfield(x, f) for f in allcards(typeof(x)))
 
-Inputs.compulsory_namelists(::Type{CPInput}) = (:control, :system, :electrons)
-Inputs.compulsory_namelists(x::CPInput) =
-    (getfield(x, f) for f in compulsory_namelists(typeof(x)))
+compulsory_namelists(::Type{CPInput}) = (:control, :system, :electrons)
+compulsory_namelists(x::CPInput) = (getfield(x, f) for f in compulsory_namelists(typeof(x)))
 
-Inputs.optional_namelists(::Type{CPInput}) = (:ions, :cell, :press_ai, :wannier)
-Inputs.optional_namelists(x::CPInput) =
-    (getfield(x, f) for f in optional_namelists(typeof(x)))
+optional_namelists(::Type{CPInput}) = (:ions, :cell, :press_ai, :wannier)
+optional_namelists(x::CPInput) = (getfield(x, f) for f in optional_namelists(typeof(x)))
 
-Inputs.compulsory_cards(::Type{CPInput}) = (:atomic_species, :atomic_positions)
-Inputs.compulsory_cards(x::CPInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
+compulsory_cards(::Type{CPInput}) = (:atomic_species, :atomic_positions)
+compulsory_cards(x::CPInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
 
-Inputs.optional_cards(::Type{CPInput}) = (
+optional_cards(::Type{CPInput}) = (
     :atomic_velocities,
     :cell_parameters,
     :ref_cell_parameters,
@@ -350,6 +355,6 @@ Inputs.optional_cards(::Type{CPInput}) = (
     :plot_wannier,
     :autopilot,
 )
-Inputs.optional_cards(x::CPInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
+optional_cards(x::CPInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
 
 end
