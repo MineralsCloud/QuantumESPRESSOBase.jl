@@ -70,7 +70,8 @@ export ControlNamelist,
     optional_cards,
     set_verbosity,
     set_temperature,
-    set_structure
+    set_structure,
+    inputstring
 
 include("nml.jl")
 include("card.jl")
