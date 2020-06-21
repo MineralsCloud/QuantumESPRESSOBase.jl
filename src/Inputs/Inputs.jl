@@ -210,32 +210,62 @@ inputstring(args::InputEntry...) = join(map(inputstring, args), newline())
 Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(nml::Namelist)
-    content = _inputstring(dropdefault(nml))
+    content = _nmlinputstring(
+        dropdefault(nml);
+        indent = indent(nml),
+        delimiter = delimiter(nml),
+        newline = newline(nml),
+    )
     return join(filter(!isempty, ("&" * titleof(nml), content, '/')), newline(nml))
 end
-function _inputstring(dict::AbstractDict)
-    return join(map(keys(dict), values(dict)) do key, value
-        _inputstring(key, value)
-    end, newline(dict))
+function _nmlinputstring(
+    dict::AbstractDict;
+    indent = ' '^4,
+    delimiter = ' ',
+    newline = '\n',
+)
+    return join(
+        map(keys(dict), values(dict)) do key, value
+            _nmlinputstring(
+                key,
+                value;
+                indent = indent,
+                delimiter = delimiter,
+                newline = newline,
+            )
+        end,
+        newline,
+    )
 end
-function _inputstring(key, value::AbstractVector;)
+function _nmlinputstring(
+    key,
+    value::AbstractVector;
+    indent = ' '^4,
+    delimiter = ' ',
+    newline = '\n',
+)
     return join(
         map(Iterators.filter(!isnothing, enumerate(value))) do (i, x)
-            indent(value) *
-            join([string(key, '(', i, ')'), "=", fstring(x)], delimiter(value))
+            indent * join([string(key, '(', i, ')'), "=", fstring(x)], delimiter)
         end,
-        newline(value),
+        newline,
     )
 end
-function _inputstring(key, value::NamedTuple)
+function _nmlinputstring(
+    key,
+    value::NamedTuple;
+    indent = ' '^4,
+    delimiter = ' ',
+    newline = '\n',
+)
     return join(
         map(keys(value), values(value)) do x, y
-            indent(value) * join([string(key, '%', x), "=", fstring(y)], delimiter(value))
+            indent * join([string(key, '%', x), "=", fstring(y)], delimiter)
         end,
-        newline(value),
+        newline,
     )
 end
-_inputstring(key, value) =
-    indent(value) * join([string(key), "=", fstring(value)], delimiter(value))
+_nmlinputstring(key, value; indent = ' '^4, delimiter = ' ', newline = '\n') =
+    indent * join([string(key), "=", fstring(value)], delimiter)
 
 end
