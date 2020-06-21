@@ -24,7 +24,6 @@ using UnitfulAtomic
 
 using ..Inputs:
     InputEntry, Namelist, QuantumESPRESSOInput, entryname, Card, _Celldm, getoption
-using ..Formats: delimiter, newline, indent, floatfmt, intfmt
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
@@ -37,6 +36,7 @@ import ..Inputs:
     optional_namelists,
     compulsory_cards,
     optional_cards
+import ..Formats: delimiter, newline, indent, floatfmt, intfmt
 
 export ControlNamelist,
     SystemNamelist,
@@ -176,7 +176,12 @@ Return a `String` representing a `AtomicSpecies`, valid for Quantum ESPRESSO's i
 """
 function inputstring(data::AtomicSpecies)
     return join(
-        (sprintf1("%3s", data.atom), sprintf1(floatfmt(data), data.mass), data.pseudopot),
+        (
+            indent(data),
+            sprintf1("%3s", data.atom),
+            sprintf1(floatfmt(data), data.mass),
+            data.pseudopot,
+        ),
         delimiter(data),
     )
 end
@@ -185,13 +190,8 @@ end
 
 Return a `String` representing a `AtomicSpeciesCard`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(card::AtomicSpeciesCard)
-    return "ATOMIC_SPECIES" *
-           newline(card) *
-           join(map(unique(card.data)) do x
-               indent(card) * inputstring(x)
-           end, newline)
-end
+inputstring(card::AtomicSpeciesCard) =
+    join(("ATOMIC_SPECIES", map(inputstring, unique(card.data))...), newline(card))
 """
     inputstring(data::AtomicPosition)
 
@@ -199,55 +199,57 @@ Return a `String` representing a `AtomicPosition`, valid for Quantum ESPRESSO's 
 """
 function inputstring(data::AtomicPosition)
     content = join(
-        [sprintf1("%3s", data.atom); map(x -> sprintf1(floatfmt(data), x), data.pos)],
+        (
+            indent(data),
+            sprintf1("%3s", data.atom),
+            map(x -> sprintf1(floatfmt(data), x), data.pos)...,
+        ),
         delimiter(data),
     )
     if !all(data.if_pos)
-        content *= delimiter(data) * join(map(Int, data.if_pos), delimiter(data))
+        return join((content, map(Int, data.if_pos)...), delimiter(data))
+    else
+        return content
     end
-    return content
 end
 """
     inputstring(card::AtomicPositionsCard)
 
 Return a `String` representing a `AtomicPositionsCard`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(card::AtomicPositionsCard)
-    return "ATOMIC_POSITIONS { $(getoption(card)) }" *
-           newline(card) *
-           join(map(card.data) do x
-               indent(card) * inputstring(x)
-           end, newline(card))
-end
+inputstring(card::AtomicPositionsCard) = join(
+    ("ATOMIC_POSITIONS { $(getoption(card)) }", map(inputstring, card.data)...),
+    newline(card),
+)
 """
     inputstring(card::CellParametersCard)
 
 Return a `String` representing a `CellParametersCard`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(card::CellParametersCard)
-    return "CELL_PARAMETERS { $(getoption(card)) }" *
-           newline(card) *
-           join(
-               map(eachrow(card.data)) do row
-                   indent(card) *
-                   join((sprintf1(floatfmt, x) for x in row), delimiter(card))
-               end,
-               newline(card),
-           )
+    return join(
+        (
+            "CELL_PARAMETERS { $(getoption(card)) }",
+            map(eachrow(card.data)) do row
+                join((sprintf1(floatfmt, x) for x in row))
+            end...,
+        ),
+        newline(card),
+    )
 end
 """
     inputstring(data::GammaPoint)
 
 Return a `String` representing a `GammaPoint`, valid for Quantum ESPRESSO's input.
 """
-inputstring(data::GammaPoint) = ""
+inputstring(data::GammaPoint) = indent(data)
 """
     inputstring(data::MonkhorstPackGrid)
 
 Return a `String` representing a `MonkhorstPackGrid`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(data::MonkhorstPackGrid)
-    return join(map([data.mesh; data.is_shift]) do x
+    return indent(data) * join(map([data.mesh; data.is_shift]) do x
         sprintf1(intfmt(data), x)
     end, delimiter(data))
 end
@@ -257,23 +259,22 @@ end
 Return a `String` representing a `SpecialKPoint`, valid for Quantum ESPRESSO's input.
 """
 inputstring(data::SpecialKPoint) =
-    join(map(x -> sprintf1(floatfmt(data), x), data), delimiter(data))
+    indent(data) * join(map(x -> sprintf1(floatfmt(data), x), data), delimiter(data))
 """
     inputstring(card::KPointsCard)
 
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(card::KPointsCard)
-    content = "K_POINTS { $(card.option) }" * newline(card)
+    content = "K_POINTS { $(card.option) }"
     if getoption(card) in ("gamma", "automatic")
-        content *= indent(card) * inputstring(card.data)
+        return content * inputstring(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-        content *= string(length(card.data), newline(card))
-        content *= join(map(card.data) do x
-            indent(card) * inputstring(x)
-        end, newline(card))
+        return join(
+            (content, length(card.data), map(inputstring, card.data)...),
+            newline(card),
+        )
     end
-    return content
 end
 
 """
@@ -365,5 +366,32 @@ compulsory_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_poin
 optional_cards(x::PWInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
 optional_cards(::Type{PWInput}) =
     (:cell_parameters, :constraints, :occupations, :atomic_forces)
+
+indent(
+    ::Union{
+        AtomicSpecies,
+        AtomicPosition,
+        GammaPoint,
+        SpecialKPoint,
+        MonkhorstPackGrid,
+        AtomicForce,
+    },
+) = ' '^4
+
+delimiter(
+    ::Union{
+        AtomicSpecies,
+        AtomicPosition,
+        GammaPoint,
+        SpecialKPoint,
+        MonkhorstPackGrid,
+        AtomicForce,
+    },
+) = ' '
+
+floatfmt(::Union{AtomicSpecies,AtomicPosition,SpecialKPoint}) = "%14.9f"
+floatfmt(::CellParametersCard) = "%14.9f"
+
+infmt(::MonkhorstPackGrid) = "%5d"
 
 end

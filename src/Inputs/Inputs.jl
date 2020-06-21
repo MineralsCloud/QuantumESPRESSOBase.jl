@@ -180,7 +180,7 @@ function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
 end # function Base.convert
 
 include("Formats.jl")
-using .Formats: delimiter, newline, indent
+import .Formats: delimiter, newline, indent
 include("PWscf/PWscf.jl")
 include("CP/CP.jl")
 include("PHonon.jl")
@@ -240,7 +240,7 @@ function _nmlinputstring(
 )
     return join(
         map(Iterators.filter(!isnothing, enumerate(value))) do (i, x)
-            indent * join([string(key, '(', i, ')'), "=", fstring(x)], delimiter)
+            indent * join((string(key, '(', i, ')'), "=", fstring(x)), delimiter)
         end,
         newline,
     )
@@ -254,12 +254,18 @@ function _nmlinputstring(
 )
     return join(
         map(keys(value), values(value)) do x, y
-            indent * join([string(key, '%', x), "=", fstring(y)], delimiter)
+            indent * join((string(key, '%', x), "=", fstring(y)), delimiter)
         end,
         newline,
     )
 end
 _nmlinputstring(key, value; indent = ' '^4, delimiter = ' ', newline = '\n') =
-    indent * join([string(key), "=", fstring(value)], delimiter)
+    indent * join((string(key), "=", fstring(value)), delimiter)
+
+newline(::Union{QuantumESPRESSOInput,Namelist,Card}) = '\n'
+
+indent(::Namelist) = ' '^4
+
+delimiter(::Namelist) = ' '
 
 end
