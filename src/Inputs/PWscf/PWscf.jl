@@ -206,9 +206,8 @@ Return a `String` representing a `AtomicPosition`, valid for Quantum ESPRESSO's 
 function inputstring(data::AtomicPosition; delim = ' ', floatfmt = "%14.9f", kwargs...)
     content =
         join([sprintf1("%3s", data.atom); map(x -> sprintf1(floatfmt, x), data.pos)], delim)
-    if !any(data.if_pos)
-        f = x -> x ? "" : "0"
-        content *= join(map(f, data.if_pos), delim)
+    if !all(data.if_pos)
+        content *= delim * join(map(Int, data.if_pos), delim)
     end
     return content
 end
