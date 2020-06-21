@@ -126,10 +126,9 @@ struct AtomicPositionsCard <: Card
         return new(data, option)
     end
 end
-AtomicPositionsCard(cell::Cell, option) =
-    AtomicPositionsCard(map(cell.atompos) do atompos
-        AtomicPosition(string(atompos.atom), atompos.pos)
-    end, option)
+AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard(map(cell.atompos) do atompos
+    AtomicPosition(string(atompos.atom), atompos.pos)
+end, option)
 # Introudce mutual constructors since they share the same atoms.
 
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
@@ -141,16 +140,16 @@ abstract type AbstractCellParametersCard <: Card end
 
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
-struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
-    data::SMatrix{3,3,T}
+struct CellParametersCard <: AbstractCellParametersCard
+    data::SMatrix{3,3,Float64}
     option::String
-    function CellParametersCard{T}(data, option = "alat") where {T<:Real}
+    function CellParametersCard(data, option = "alat")
         @assert option ∈ allowed_options(CellParametersCard)
         return new(data, option)
     end
 end
-CellParametersCard(data::AbstractMatrix{T}, option = "alat") where {T} =
-    CellParametersCard{T}(data, option)
+CellParametersCard(data::AbstractMatrix{<:AbstractQuantity}) =
+    CellParametersCard(ustrip.(u"bohr", data), "bohr")
 CellParametersCard(lattice::Lattice{T}, option) where {T} =
     CellParametersCard(convert(Matrix{T}, lattice), option)
 CellParametersCard(cell::Cell, option) = CellParametersCard(cell.lattice, option)

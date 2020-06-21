@@ -229,13 +229,13 @@ struct AtomicVelocitiesCard <: Card
     data::Vector{AtomicVelocity}
 end
 
-struct RefCellParametersCard{T<:Real} <: AbstractCellParametersCard
-    data::SMatrix{3,3,T}
+struct RefCellParametersCard <: AbstractCellParametersCard
+    data::SMatrix{3,3,Float64}
     option::String
-    function RefCellParametersCard{T}(data, option = "bohr") where {T<:Real}
+    function RefCellParametersCard(data, option = "bohr")
         @assert option ∈ allowed_options(RefCellParametersCard)
         return new(data, option)
     end
 end
-RefCellParametersCard(data::AbstractMatrix{T}, option = "bohr") where {T} =
-    RefCellParametersCard{T}(data, option)
+RefCellParametersCard(data::AbstractMatrix, option = "bohr") =
+    RefCellParametersCard(data, option)
