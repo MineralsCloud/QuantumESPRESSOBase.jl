@@ -248,16 +248,6 @@ allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
 allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
 allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 
-function Base.setproperty!(value::AtomicVelocity, name::Symbol, x)
-    x = if name == :atom
-        @assert(length(x) <= 3, "the max length of `atom` cannot exceed 3 characters!")
-        x = string(x)  # Make sure it is a `String`
-    elseif name == :velocity && x isa AbstractVector
-        SVector{3}(x)
-    end
-    setfield!(value, name, x)
-end # function Base.setproperty!
-
 allnamelists(::Type{CPInput}) =
     (:control, :system, :electrons, :ions, :cell, :press_ai, :wannier)
 allnamelists(x::CPInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
