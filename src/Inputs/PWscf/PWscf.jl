@@ -82,6 +82,20 @@ export ControlNamelist,
 include("namelists.jl")
 include("cards.jl")
 
+function iscompatible(system::SystemNamelist, cell_parameters::CellParametersCard)
+    ibrav, celldm = system.ibrav, system.celldm
+    if iszero(ibrav)
+        if getoption(cell_parameters) ∈ ("bohr", "angstrom")
+            return all(iszero, celldm)
+        else  # "alat"
+            return !iszero(first(celldm))  # first(celldm) != 0
+        end
+    else
+        return false
+    end
+end # function iscompatible
+iscompatible(x::CellParametersCard, y::SystemNamelist) = iscompatible(y, x)
+
 """
     PWInput <: QuantumESPRESSOInput
     PWInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
@@ -112,10 +126,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     constraints::Union{Union{Nothing,Float64}} = nothing
     occupations::Union{Nothing,Float64} = nothing
     atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
-    @assert(
-        !(cell_parameters === nothing && system.ibrav == 0),
-        "Cannot specify an empty `cell_parameters` with `ibrav = 0`!"
-    )
+    @assert cell_parameters !== nothing || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
 end # struct PWInput
 PWInput(args::QuantumESPRESSOInputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
