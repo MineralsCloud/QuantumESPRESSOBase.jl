@@ -161,6 +161,30 @@ function set_structure(
     atomic_positions::Union{Nothing,AtomicPositionsCard} = nothing,
 )
     if cell_parameters !== nothing
+        if template.cell_parameters === nothing
+            if getoption(cell_parameters) ∈ ("bohr", "angstrom")
+                alat = template.system.celldm[1]
+                @set! template.system.celldm = [alat]
+                cell_parameters = CellParametersCard(cell_parameters.data / alat, "alat")
+            else
+                @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
+            end
+        else
+            if getoption(template.cell_parameters) == "alat"
+                if getoption(cell_parameters) ∈ ("bohr", "angstrom")
+                    alat = template.system.celldm[1]
+                    @set! template.system.celldm = [alat]
+                    cell_parameters =
+                        CellParametersCard(cell_parameters.data / alat, "alat")
+                else  # "alat"
+                    @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
+                end
+            else
+                if getoption(cell_parameters) == "alat"
+                    error("not right!")
+                end
+            end
+        end
         @set! template.cell_parameters = cell_parameters
     end
     if atomic_positions !== nothing
