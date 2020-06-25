@@ -39,12 +39,6 @@ function (x::PWCmd)(; stdin = nothing, stdout = nothing, stderr = nothing, asstr
             push!(options, "-$k", string(v))
         end
     end
-    # options = map((:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)) do k
-    #     v = getfield(x, k)
-    #     if !iszero(v)
-    #         push!(options, "-$k", string(v))
-    #     end
-    # end
     if asstring
         @warn "using string commands maybe error prone! Use with care!"
         for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
