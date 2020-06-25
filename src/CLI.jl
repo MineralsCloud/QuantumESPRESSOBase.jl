@@ -1,6 +1,18 @@
 module CLI
 
-export pwcmd
+export PWCmd
+
+struct PWCmd
+    bin
+    nimage::UInt
+    npool::UInt
+    ntg::UInt
+    nyfft::UInt
+    nband::UInt
+    ndiag::UInt
+end
+PWCmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PWCmd(bin, nimage, npool, ntg, nyfft, nband, ndiag)
 
 """
     pwcmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
@@ -17,29 +29,20 @@ export pwcmd
 - `stdout = nothing`: output
 - `stderr = nothing`: error
 """
-function pwcmd(;
-    bin = "pw.x",
-    nimage = 0,
-    npool = 0,
-    ntg = 0,
-    nyfft = 0,
-    nband = 0,
-    ndiag = 0,
-    stdin = nothing,
-    stdout = nothing,
-    stderr = nothing,
-    asstring = false,
-)
+function (x::PWCmd)(; stdin = nothing, stdout = nothing, stderr = nothing, asstring = false)
     options = String[]
-    for (k, v) in zip(
-        (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag),
-        (nimage, npool, ntg, nyfft, nband, ndiag),
-    )
-        @assert v >= 0
+    for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
+        v = getfield(x, k)
         if !iszero(v)
             push!(options, "-$k", string(v))
         end
     end
+    # options = map((:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)) do k
+    #     v = getfield(x, k)
+    #     if !iszero(v)
+    #         push!(options, "-$k", string(v))
+    #     end
+    # end
     if asstring
         @warn "using string commands maybe error prone! Use with care!"
         for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
@@ -47,10 +50,10 @@ function pwcmd(;
                 push!(options, redir[f], "'$v'")
             end
         end
-        return join([bin; options], " ")
+        return join((x.bin, options...), " ")
     else
         return pipeline(
-            Cmd([bin; options]);
+            Cmd([x.bin; options]);
             stdin = stdin,
             stdout = stdout,
             stderr = stderr,
