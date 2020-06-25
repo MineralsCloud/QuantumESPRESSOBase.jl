@@ -1,6 +1,8 @@
 module CLI
 
-export PWCmd
+using AbInitioSoftwareBase.CLI: MpiCmd
+
+export MpiCmd, PWCmd
 
 struct PWCmd
     bin
@@ -63,5 +65,40 @@ end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
 
 const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
+
+function Base.:∘(mpi::MpiCmd, pw::PWCmd)
+    function (; stdin = nothing, stdout = nothing, stderr = nothing, asstring = false)
+        args = String[]
+        for f in (:host, :arch, :wdir, :file, :configfile)
+            v = getfield(mpi, f)
+            if !isempty(v)
+                push!(args, "-$f", v)
+            end
+        end
+        push!(args, pw.bin)
+        for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
+            v = getfield(pw, f)
+            if !iszero(v)
+                push!(args, "-$f", string(v))
+            end
+        end
+        if asstring
+            @warn "using string commands maybe error prone! Use with care!"
+            for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
+                if v !== nothing
+                    push!(args, redir[f], "'$v'")
+                end
+            end
+            return join((mpi.bin, "-n", mpi.n, args...), " ")
+        else
+            return pipeline(
+                Cmd([mpi.bin, "-n", string(mpi.n), args...]),
+                stdin = stdin,
+                stdout = stdout,
+                stderr = stderr,
+            )
+        end
+    end
+end
 
 end
