@@ -1,6 +1,20 @@
 module CLI
 
-export pwcmd
+using AbInitioSoftwareBase.CLI: MpiCmd
+
+export MpiCmd, PWCmd
+
+struct PWCmd
+    bin
+    nimage::UInt
+    npool::UInt
+    ntg::UInt
+    nyfft::UInt
+    nband::UInt
+    ndiag::UInt
+end
+PWCmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PWCmd(bin, nimage, npool, ntg, nyfft, nband, ndiag)
 
 """
     pwcmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
@@ -17,25 +31,10 @@ export pwcmd
 - `stdout = nothing`: output
 - `stderr = nothing`: error
 """
-function pwcmd(;
-    bin = "pw.x",
-    nimage = 0,
-    npool = 0,
-    ntg = 0,
-    nyfft = 0,
-    nband = 0,
-    ndiag = 0,
-    stdin = nothing,
-    stdout = nothing,
-    stderr = nothing,
-    asstring = false,
-)
+function (x::PWCmd)(; stdin = nothing, stdout = nothing, stderr = nothing, asstring = false)
     options = String[]
-    for (k, v) in zip(
-        (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag),
-        (nimage, npool, ntg, nyfft, nband, ndiag),
-    )
-        @assert v >= 0
+    for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
+        v = getfield(x, k)
         if !iszero(v)
             push!(options, "-$k", string(v))
         end
@@ -47,10 +46,10 @@ function pwcmd(;
                 push!(options, redir[f], "'$v'")
             end
         end
-        return join([bin; options], " ")
+        return join((x.bin, options...), " ")
     else
         return pipeline(
-            Cmd([bin; options]);
+            Cmd([x.bin; options]);
             stdin = stdin,
             stdout = stdout,
             stderr = stderr,
@@ -60,5 +59,40 @@ end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
 
 const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
+
+function Base.:∘(mpi::MpiCmd, pw::PWCmd)
+    function (; stdin = nothing, stdout = nothing, stderr = nothing, asstring = false)
+        args = String[]
+        for f in (:host, :arch, :wdir, :file, :configfile)
+            v = getfield(mpi, f)
+            if !isempty(v)
+                push!(args, "-$f", v)
+            end
+        end
+        push!(args, pw.bin)
+        for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
+            v = getfield(pw, f)
+            if !iszero(v)
+                push!(args, "-$f", string(v))
+            end
+        end
+        if asstring
+            @warn "using string commands maybe error prone! Use with care!"
+            for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
+                if v !== nothing
+                    push!(args, redir[f], "'$v'")
+                end
+            end
+            return join((mpi.bin, "-n", mpi.n, args...), " ")
+        else
+            return pipeline(
+                Cmd([mpi.bin, "-n", string(mpi.n), args...]),
+                stdin = stdin,
+                stdout = stdout,
+                stderr = stderr,
+            )
+        end
+    end
+end
 
 end
