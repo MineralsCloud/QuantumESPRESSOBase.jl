@@ -238,7 +238,7 @@ function _nmlinputstring(
     newline = '\n',
 )
     return join(
-        map(Iterators.filter(!isnothing, enumerate(value))) do (i, x)
+        map(Iterators.filter(x -> x[2] !== nothing, enumerate(value))) do (i, x)
             indent * join((string(key, '(', i, ')'), "=", fstring(x)), delimiter)
         end,
         newline,
