@@ -321,7 +321,7 @@ inputstring(data::SpecialKPoint) =
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(card::KPointsCard)
-    content = "K_POINTS { $(card.option) }"
+    content = "K_POINTS { $(card.option) }" * newline(card)
     if getoption(card) in ("gamma", "automatic")
         return content * inputstring(card.data)
     else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
