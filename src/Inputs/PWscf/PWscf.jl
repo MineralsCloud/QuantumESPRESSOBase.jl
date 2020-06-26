@@ -447,6 +447,6 @@ delimiter(
 floatfmt(::Union{AtomicSpecies,AtomicPosition,SpecialKPoint}) = "%14.9f"
 floatfmt(::CellParametersCard) = "%14.9f"
 
-infmt(::MonkhorstPackGrid) = "%5d"
+intfmt(::MonkhorstPackGrid) = "%5d"
 
 end
