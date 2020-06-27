@@ -31,7 +31,13 @@ PWCmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndia
 - `stdout = nothing`: output
 - `stderr = nothing`: error
 """
-function (x::PWCmd)(; stdin = nothing, stdout = nothing, stderr = nothing, asstring = false)
+function (x::PWCmd)(;
+    stdin = nothing,
+    stdout = nothing,
+    stderr = nothing,
+    asstring = false,
+    input_redirect = false,
+)
     options = String[]
     for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
         v = getfield(x, k)
@@ -48,20 +54,35 @@ function (x::PWCmd)(; stdin = nothing, stdout = nothing, stderr = nothing, asstr
         end
         return join((x.bin, options...), " ")
     else
-        return pipeline(
-            Cmd([x.bin; options]);
-            stdin = stdin,
-            stdout = stdout,
-            stderr = stderr,
-        )
+        if input_redirect
+            return pipeline(
+                Cmd([x.bin; options]);
+                stdin = stdin,
+                stdout = stdout,
+                stderr = stderr,
+            )
+        else
+            return pipeline(
+                Cmd([x.bin, options..., "-inp", "\"$stdin\""]);
+                stdout = stdout,
+                stderr = stderr,
+            )
+        end
     end
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
 
 const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
+# See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
 
 function Base.:∘(mpi::MpiCmd, pw::PWCmd)
-    function (; stdin = nothing, stdout = nothing, stderr = nothing, asstring = false)
+    function (;
+        stdin = nothing,
+        stdout = nothing,
+        stderr = nothing,
+        asstring = false,
+        input_redirect = false,
+    )
         args = String[]
         for f in (:host, :arch, :wdir, :file, :configfile)
             v = getfield(mpi, f)
@@ -85,12 +106,20 @@ function Base.:∘(mpi::MpiCmd, pw::PWCmd)
             end
             return join((mpi.bin, "-n", mpi.n, args...), " ")
         else
-            return pipeline(
-                Cmd([mpi.bin, "-n", string(mpi.n), args...]),
-                stdin = stdin,
-                stdout = stdout,
-                stderr = stderr,
-            )
+            if input_redirect
+                return pipeline(
+                    Cmd([mpi.bin, "-n", string(mpi.n), args...]);
+                    stdin = stdin,
+                    stdout = stdout,
+                    stderr = stderr,
+                )
+            else
+                return pipeline(
+                    Cmd([mpi.bin, "-n", string(mpi.n), args..., "-inp", "\"$stdin\""]);
+                    stdout = stdout,
+                    stderr = stderr,
+                )
+            end
         end
     end
 end
