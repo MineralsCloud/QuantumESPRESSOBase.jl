@@ -63,7 +63,7 @@ function (x::PWCmd)(;
             )
         else
             return pipeline(
-                Cmd([x.bin, options..., "-inp", "\"$stdin\""]);
+                Cmd([x.bin, options..., "-inp", "$stdin"]);
                 stdout = stdout,
                 stderr = stderr,
             )
@@ -115,7 +115,7 @@ function Base.:∘(mpi::MpiCmd, pw::PWCmd)
                 )
             else
                 return pipeline(
-                    Cmd([mpi.bin, "-n", string(mpi.n), args..., "-inp", "\"$stdin\""]);
+                    Cmd([mpi.bin, "-n", string(mpi.n), args..., "-inp", "$stdin"]);
                     stdout = stdout,
                     stderr = stderr,
                 )
