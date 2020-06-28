@@ -19,7 +19,7 @@ using Parameters: @with_kw
 using Pseudopotentials: pseudopot_format
 using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
-using Unitful: AbstractQuantity, upreferred, unit, ustrip, @u_str
+using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
 using ..Inputs:
@@ -77,6 +77,7 @@ export ControlNamelist,
     set_verbosity,
     set_temperature,
     set_structure,
+    set_press_vol,
     inputstring
 
 include("namelists.jl")
@@ -154,6 +155,19 @@ function set_temperature(template::PWInput, temperature)
     @set! template.system = set_temperature(template.system, temperature)
     return template
 end # function set_temperature
+
+function set_press_vol(template::PWInput, pressure, volume)
+    @set! template.cell.press = ustrip(u"kbar", pressure)
+    factor = cbrt(volume / (cellvolume(template) * u"bohr^3")) |> NoUnits  # This is dimensionless and `cbrt` works with units.
+    if template.cell_parameters === nothing || getoption(template.cell_parameters) == "alat"
+        @set! template.system.celldm[1] *= factor
+    else
+        @set! template.system.celldm = zeros(6)
+        @set! template.cell_parameters =
+            optconvert("bohr", CellParametersCard(template.cell_parameters.data * factor))
+    end
+    return template
+end # function set_press_vol
 
 function set_structure(
     template::PWInput,
