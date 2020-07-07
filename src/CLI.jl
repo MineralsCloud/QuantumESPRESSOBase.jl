@@ -104,18 +104,47 @@ function Base.:∘(mpi::MpiCmd, pw::PWCmd)
                     push!(args, redir[f], "'$v'")
                 end
             end
-            return join((mpi.bin, "-n", mpi.n, args...), " ")
+            return join(
+                (
+                    mpi.bin,
+                    "-n",
+                    mpi.n,
+                    "--mca",
+                    "btl_vader_single_copy_mechanism",
+                    "none",
+                    args...,
+                ),
+                " ",
+            )
         else
             if input_redirect
                 return pipeline(
-                    Cmd([mpi.bin, "-n", string(mpi.n), args...]);
+                    Cmd([
+                        mpi.bin,
+                        "-n",
+                        string(mpi.n),
+                        "--mca",
+                        "btl_vader_single_copy_mechanism",
+                        "none",
+                        args...,
+                    ]);
                     stdin = stdin,
                     stdout = stdout,
                     stderr = stderr,
                 )
             else
                 return pipeline(
-                    Cmd([mpi.bin, "-n", string(mpi.n), args..., "-inp", "$stdin"]);
+                    Cmd([
+                        mpi.bin,
+                        "-n",
+                        string(mpi.n),
+                        args...,
+                        "--mca",
+                        "btl_vader_single_copy_mechanism",
+                        "none",
+                        "-inp",
+                        "$stdin",
+                    ]);
                     stdout = stdout,
                     stderr = stderr,
                 )
