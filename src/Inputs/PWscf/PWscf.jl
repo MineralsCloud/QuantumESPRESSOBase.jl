@@ -177,19 +177,20 @@ function set_structure(
     if cell_parameters !== nothing
         if template.cell_parameters === nothing
             if getoption(cell_parameters) ∈ ("bohr", "angstrom")
-                alat = template.system.celldm[1]
-                @set! template.system.celldm = [alat]
-                cell_parameters = CellParametersCard(cell_parameters.data / alat, "alat")
+                cell_parameters = CellParametersCard(
+                    cell_parameters.data / template.system.celldm[1],
+                    "alat",
+                )
             else
                 @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
             end
         else
             if getoption(template.cell_parameters) == "alat"
                 if getoption(cell_parameters) ∈ ("bohr", "angstrom")
-                    alat = template.system.celldm[1]
-                    @set! template.system.celldm = [alat]
-                    cell_parameters =
-                        CellParametersCard(cell_parameters.data / alat, "alat")
+                    cell_parameters = CellParametersCard(
+                        cell_parameters.data / template.system.celldm[1],
+                        "alat",
+                    )
                 else  # "alat"
                     @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
                 end
