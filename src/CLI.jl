@@ -17,7 +17,7 @@ PWCmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndia
     PWCmd(bin, nimage, npool, ntg, nyfft, nband, ndiag)
 
 """
-    pwcmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
+    (::PWCmd)(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
 
 # Arguments
 - `bin`: the path to the PWscf executable, usually is `\"pw.x\"`. Better be an absolute path.
