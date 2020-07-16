@@ -77,7 +77,7 @@ export ControlNamelist,
     set_verbosity,
     set_temperature,
     set_structure,
-    set_press_vol,
+    set_pressure_volume,
     inputstring
 
 include("namelists.jl")
@@ -156,7 +156,7 @@ function set_temperature(template::PWInput, temperature)
     return template
 end # function set_temperature
 
-function set_press_vol(template::PWInput, pressure, volume)
+function set_pressure_volume(template::PWInput, pressure, volume)
     @set! template.cell.press = ustrip(u"kbar", pressure)
     factor = cbrt(volume / (cellvolume(template) * u"bohr^3")) |> NoUnits  # This is dimensionless and `cbrt` works with units.
     if template.cell_parameters === nothing || getoption(template.cell_parameters) == "alat"
@@ -167,7 +167,7 @@ function set_press_vol(template::PWInput, pressure, volume)
             optconvert("bohr", CellParametersCard(template.cell_parameters.data * factor))
     end
     return template
-end # function set_press_vol
+end # function set_pressure_volume
 
 function set_structure(
     template::PWInput,
