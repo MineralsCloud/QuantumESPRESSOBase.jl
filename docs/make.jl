@@ -13,11 +13,8 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        "Manual" => Any[
-            "Installation" => "install.md",
-            "Development" => "develop.md",
-        ],
-        "API by modules" => Any[
+        "Manual" => ["Installation" => "install.md", "Development" => "develop.md"],
+        "API by module" => [
             "`QuantumESPRESSOBase` module" => "api/api.md",
             "`Inputs` module" => "api/Inputs.md",
             "`CLI` module" => "api/CLI.md",
