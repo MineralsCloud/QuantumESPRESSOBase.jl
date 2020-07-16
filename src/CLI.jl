@@ -1,8 +1,8 @@
 module CLI
 
-using AbInitioSoftwareBase.CLI: MpiCmd
+using AbInitioSoftwareBase.CLI: MpiLauncher
 
-export MpiCmd, PWCmd
+export MpiLauncher, PWCmd
 
 struct PWCmd
     bin
@@ -75,7 +75,7 @@ end
 const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
 
-function Base.:∘(mpi::MpiCmd, pw::PWCmd)
+function Base.:∘(mpi::MpiLauncher, pw::PWCmd)
     function (;
         stdin = nothing,
         stdout = nothing,
@@ -84,11 +84,14 @@ function Base.:∘(mpi::MpiCmd, pw::PWCmd)
         input_redirect = false,
     )
         args = String[]
-        for f in (:host, :arch, :wdir, :file, :configfile)
+        for f in (:host, :hostfile)
             v = getfield(mpi, f)
             if !isempty(v)
                 push!(args, "-$f", v)
             end
+        end
+        for (k, v) in mpi.args
+            push!(args, "-$k", string(v))
         end
         push!(args, pw.bin)
         for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
