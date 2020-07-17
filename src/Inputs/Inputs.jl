@@ -178,8 +178,6 @@ function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
 end # function Base.convert
 
-include("Formats.jl")
-import .Formats: delimiter, newline, indent
 include("PWscf/PWscf.jl")
 # include("CP/CP.jl")
 include("PHonon.jl")
