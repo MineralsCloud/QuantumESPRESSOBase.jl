@@ -169,44 +169,39 @@ function set_pressure_volume(template::PWInput, pressure, volume)
     return template
 end # function set_pressure_volume
 
-function set_structure(
-    template::PWInput,
-    cell_parameters::Union{Nothing,CellParametersCard} = nothing,
-    atomic_positions::Union{Nothing,AtomicPositionsCard} = nothing,
-)
-    if cell_parameters !== nothing
-        if template.cell_parameters === nothing
+function set_structure(template::PWInput, cell_parameters::CellParametersCard)
+    if template.cell_parameters === nothing
+        if getoption(cell_parameters) ∈ ("bohr", "angstrom")
+            cell_parameters =
+                CellParametersCard(cell_parameters.data / template.system.celldm[1], "alat")
+        else
+            @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
+        end
+    else
+        if getoption(template.cell_parameters) == "alat"
             if getoption(cell_parameters) ∈ ("bohr", "angstrom")
                 cell_parameters = CellParametersCard(
                     cell_parameters.data / template.system.celldm[1],
                     "alat",
                 )
-            else
+            else  # "alat"
                 @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
             end
         else
-            if getoption(template.cell_parameters) == "alat"
-                if getoption(cell_parameters) ∈ ("bohr", "angstrom")
-                    cell_parameters = CellParametersCard(
-                        cell_parameters.data / template.system.celldm[1],
-                        "alat",
-                    )
-                else  # "alat"
-                    @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
-                end
-            else
-                if getoption(cell_parameters) == "alat"
-                    error("not right!")
-                end
+            if getoption(cell_parameters) == "alat"
+                error("not right!")
             end
         end
-        @set! template.cell_parameters = cell_parameters
     end
-    if atomic_positions !== nothing
-        @set! template.atomic_positions = atomic_positions
-    end
+    @set! template.cell_parameters = cell_parameters
     return template
 end # function set_structure
+function set_structure(template::PWInput, atomic_positions::AtomicPositionsCard)
+    @set! template.atomic_positions = atomic_positions
+    return template
+end # function set_structure
+set_structure(template::PWInput, c::CellParametersCard, a::AtomicPositionsCard) =
+    set_structure(set_structure(template, c), a)
 function set_structure(template::PWInput, cell::Cell, option1, option2)
     return set_structure(
         template,
