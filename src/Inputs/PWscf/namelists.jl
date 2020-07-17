@@ -170,14 +170,6 @@ Represent the `SYSTEM` namelist of `pw.x`.
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
     @assert ibrav ∈ union(-1:1:14, (-3, -5, -9, 91, -12, -13))
-    @assert(
-        if ibrav ∈ -1:0
-            true  # Skip the check, cannot use `nothing`
-        else
-            celldm[1] != 0 || A != 0  # Cannot use `iszero` to compare now!
-        end,
-        "invalid lattice parameters (`celldm` $celldm or `A` $A)!"
-    )
     @assert(ntyp <= 10, "`ntyp` $ntyp is larger than 10!")
     @assert ntyp <= nat
     @assert(

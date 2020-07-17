@@ -172,7 +172,8 @@ end # function set_pressure_volume
 function set_structure(template::PWInput, cell_parameters::CellParametersCard)
     if template.cell_parameters === nothing
         if getoption(cell_parameters) ∈ ("bohr", "angstrom")
-            @set! template.system.celldm = [norm(cell_parameters.data[1, :])]  # First vector norm
+            @set! template.system.ibrav = 0
+            @set! template.system.celldm = zeros(6)
         else
             @set! template.system.celldm = [template.system.celldm[1]]
             @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
