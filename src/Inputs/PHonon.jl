@@ -172,11 +172,13 @@ struct QPointsCard <: Card
 end
 
 struct PhInput <: QuantumESPRESSOInput
+    title_line::String
     inputph::PhNamelist
     q_points::Union{Nothing,QPointsCard}
 end # struct PhInput
-PhInput(inputph) = PhInput(inputph, nothing)
-PhInput() = PhInput(PhNamelist(), nothing)
+PhInput(inputph::PhNamelist, qpts::QPointsCard) = PhInput(inputph.prefix, inputph, qpts)
+PhInput(inputph::PhNamelist) = PhInput(inputph.prefix, inputph, nothing)
+PhInput() = PhInput(PhNamelist().prefix, PhNamelist(), nothing)
 
 struct Q2rInput <: QuantumESPRESSOInput
     input::Q2rNamelist
