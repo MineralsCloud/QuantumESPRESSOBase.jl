@@ -210,6 +210,7 @@ function inputstring(nml::Namelist)
     )
     return join(filter(!isempty, ("&" * titleof(nml), content, '/')), newline(nml))
 end
+inputstring(x::AbstractString) = string(x)
 function _nmlinputstring(
     dict::AbstractDict;
     indent = ' '^4,
