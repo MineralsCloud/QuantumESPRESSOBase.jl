@@ -296,7 +296,7 @@ function inputstring(card::CellParametersCard)
         (
             "CELL_PARAMETERS { $(getoption(card)) }",
             map(eachrow(card.data)) do row
-                join((sprintf1(floatfmt, x) for x in row))
+                join((sprintf1(floatfmt(card), x) for x in row))
             end...,
         ),
         newline(card),
