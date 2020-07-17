@@ -32,6 +32,7 @@ using ..Inputs:
     getoption
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
+import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography
 import Pseudopotentials
 import ..Inputs:
@@ -42,7 +43,6 @@ import ..Inputs:
     optional_namelists,
     compulsory_cards,
     optional_cards
-import ..Formats: delimiter, newline, indent, floatfmt, intfmt
 
 export ControlNamelist,
     SystemNamelist,
@@ -296,7 +296,7 @@ function inputstring(card::CellParametersCard)
         (
             "CELL_PARAMETERS { $(getoption(card)) }",
             map(eachrow(card.data)) do row
-                join((sprintf1(floatfmt, x) for x in row))
+                join((sprintf1(floatfmt(card), x) for x in row))
             end...,
         ),
         newline(card),
