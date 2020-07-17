@@ -14,7 +14,7 @@ module PWscf
 using Compat: eachrow
 using Crystallography: Bravais, Lattice, CellParameters, Cell, cellvolume
 using Formatting: sprintf1
-using LinearAlgebra: det
+using LinearAlgebra: det, norm
 using Parameters: @with_kw
 using Pseudopotentials: pseudopot_format
 using Setfield: @set!
@@ -172,7 +172,7 @@ end # function set_pressure_volume
 function set_structure(template::PWInput, cell_parameters::CellParametersCard)
     if template.cell_parameters === nothing
         if getoption(cell_parameters) ∈ ("bohr", "angstrom")
-            @set! template.system.celldm = zeros(6)
+            @set! template.system.celldm = [norm(cell_parameters.data[1, :])]  # First vector norm
         else
             @set! template.system.celldm = [template.system.celldm[1]]
             @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
