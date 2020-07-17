@@ -172,14 +172,15 @@ end # function set_pressure_volume
 function set_structure(template::PWInput, cell_parameters::CellParametersCard)
     if template.cell_parameters === nothing
         if getoption(cell_parameters) ∈ ("bohr", "angstrom")
-            cell_parameters =
-                CellParametersCard(cell_parameters.data / template.system.celldm[1], "alat")
+            @set! template.system.celldm = zeros(6)
         else
+            @set! template.system.celldm = [template.system.celldm[1]]
             @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
         end
     else
         if getoption(template.cell_parameters) == "alat"
             if getoption(cell_parameters) ∈ ("bohr", "angstrom")
+                @set! template.system.celldm = [template.system.celldm[1]]
                 cell_parameters = CellParametersCard(
                     cell_parameters.data / template.system.celldm[1],
                     "alat",
@@ -189,7 +190,7 @@ function set_structure(template::PWInput, cell_parameters::CellParametersCard)
             end
         else
             if getoption(cell_parameters) == "alat"
-                error("not right!")
+                error("not matched!")
             end
         end
     end

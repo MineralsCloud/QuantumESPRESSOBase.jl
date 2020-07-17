@@ -178,20 +178,6 @@ Represent the `SYSTEM` namelist of `pw.x`.
         end,
         "invalid lattice parameters (`celldm` $celldm or `A` $A)!"
     )
-    @assert(
-        if ibrav == 14
-            length(celldm) == 6
-        elseif ibrav ∈ (5, -5, 12, 13)
-            4 <= length(celldm) <= 6
-        elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 91, 10, 11)  # `91` is new from QE 6.4
-            3 <= length(celldm) <= 6
-        elseif ibrav == -13  # `-13` is new from QE 6.4
-            5 <= length(celldm) <= 6
-        else
-            1 <= length(celldm) <= 6
-        end,
-        "`celldm` must have length between 1 to 6! See `ibrav`'s doc!"
-    )
     @assert(ntyp <= 10, "`ntyp` $ntyp is larger than 10!")
     @assert ntyp <= nat
     @assert(
