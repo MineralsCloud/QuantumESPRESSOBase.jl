@@ -2,7 +2,7 @@ module CLI
 
 using AbInitioSoftwareBase.CLI: MpiLauncher
 
-export MpiLauncher, PWCmd
+export MpiLauncher, PWCmd, PhCmd
 
 struct PWCmd
     bin
@@ -15,6 +15,11 @@ struct PWCmd
 end
 PWCmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
     PWCmd(bin, nimage, npool, ntg, nyfft, nband, ndiag)
+
+struct PhCmd
+    bin
+end
+PhCmd(; bin = "ph.x") = PhCmd(bin)
 
 """
     (::PWCmd)(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
@@ -72,6 +77,40 @@ function (x::PWCmd)(;
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
 
+function (x::PhCmd)(;
+    stdin = nothing,
+    stdout = nothing,
+    stderr = nothing,
+    asstring = false,
+    input_redirect = false,
+)
+    options = String[]
+    if asstring
+        @warn "using string commands maybe error prone! Use with care!"
+        for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
+            if v !== nothing
+                push!(options, redir[f], "'$v'")
+            end
+        end
+        return join((x.bin, options...), " ")
+    else
+        if input_redirect
+            return pipeline(
+                Cmd([x.bin; options]);
+                stdin = stdin,
+                stdout = stdout,
+                stderr = stderr,
+            )
+        else
+            return pipeline(
+                Cmd([x.bin, options..., "-inp", "$stdin"]);
+                stdout = stdout,
+                stderr = stderr,
+            )
+        end
+    end
+end
+
 const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
 
@@ -100,6 +139,80 @@ function Base.:∘(mpi::MpiLauncher, pw::PWCmd)
                 push!(args, "-$f", string(v))
             end
         end
+        if asstring
+            @warn "using string commands maybe error prone! Use with care!"
+            for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
+                if v !== nothing
+                    push!(args, redir[f], "'$v'")
+                end
+            end
+            return join(
+                (
+                    mpi.bin,
+                    "-n",
+                    mpi.n,
+                    "--mca",
+                    "btl_vader_single_copy_mechanism",
+                    "none",
+                    args...,
+                ),
+                " ",
+            )
+        else
+            if input_redirect
+                return pipeline(
+                    Cmd([
+                        mpi.bin,
+                        "-n",
+                        string(mpi.n),
+                        "--mca",
+                        "btl_vader_single_copy_mechanism",
+                        "none",
+                        args...,
+                    ]);
+                    stdin = stdin,
+                    stdout = stdout,
+                    stderr = stderr,
+                )
+            else
+                return pipeline(
+                    Cmd([
+                        mpi.bin,
+                        "-n",
+                        string(mpi.n),
+                        args...,
+                        "--mca",
+                        "btl_vader_single_copy_mechanism",
+                        "none",
+                        "-inp",
+                        "$stdin",
+                    ]);
+                    stdout = stdout,
+                    stderr = stderr,
+                )
+            end
+        end
+    end
+end
+function Base.:∘(mpi::MpiLauncher, ph::PhCmd)
+    function (;
+        stdin = nothing,
+        stdout = nothing,
+        stderr = nothing,
+        asstring = false,
+        input_redirect = false,
+    )
+        args = String[]
+        for f in (:host, :hostfile)
+            v = getfield(mpi, f)
+            if !isempty(v)
+                push!(args, "-$f", v)
+            end
+        end
+        for (k, v) in mpi.args
+            push!(args, "-$k", string(v))
+        end
+        push!(args, ph.bin)
         if asstring
             @warn "using string commands maybe error prone! Use with care!"
             for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
