@@ -1,8 +1,8 @@
 module CLI
 
-using AbInitioSoftwareBase.CLI: MpiLauncher
+using AbInitioSoftwareBase.CLI: MpiExec
 
-export MpiLauncher, PWCmd, PhCmd
+export MpiExec, PWCmd, PhCmd
 
 struct PWCmd
     bin
@@ -114,7 +114,7 @@ end
 const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
 
-function Base.:∘(mpi::MpiLauncher, pw::PWCmd)
+function Base.:∘(mpi::MpiExec, pw::PWCmd)
     function (;
         stdin = nothing,
         stdout = nothing,
@@ -194,7 +194,7 @@ function Base.:∘(mpi::MpiLauncher, pw::PWCmd)
         end
     end
 end
-function Base.:∘(mpi::MpiLauncher, ph::PhCmd)
+function Base.:∘(mpi::MpiExec, ph::PhCmd)
     function (;
         stdin = nothing,
         stdout = nothing,
