@@ -150,7 +150,7 @@ function Base.:∘(mpi::MpiExec, pw::PWCmd)
                 (
                     mpi.bin,
                     "-n",
-                    mpi.n,
+                    mpi.np,
                     "--mca",
                     "btl_vader_single_copy_mechanism",
                     "none",
@@ -164,7 +164,7 @@ function Base.:∘(mpi::MpiExec, pw::PWCmd)
                     Cmd([
                         mpi.bin,
                         "-n",
-                        string(mpi.n),
+                        string(mpi.np),
                         "--mca",
                         "btl_vader_single_copy_mechanism",
                         "none",
@@ -179,7 +179,7 @@ function Base.:∘(mpi::MpiExec, pw::PWCmd)
                     Cmd([
                         mpi.bin,
                         "-n",
-                        string(mpi.n),
+                        string(mpi.np),
                         args...,
                         "--mca",
                         "btl_vader_single_copy_mechanism",
@@ -224,7 +224,7 @@ function Base.:∘(mpi::MpiExec, ph::PhCmd)
                 (
                     mpi.bin,
                     "-n",
-                    mpi.n,
+                    mpi.np,
                     "--mca",
                     "btl_vader_single_copy_mechanism",
                     "none",
@@ -238,7 +238,7 @@ function Base.:∘(mpi::MpiExec, ph::PhCmd)
                     Cmd([
                         mpi.bin,
                         "-n",
-                        string(mpi.n),
+                        string(mpi.np),
                         "--mca",
                         "btl_vader_single_copy_mechanism",
                         "none",
@@ -253,7 +253,7 @@ function Base.:∘(mpi::MpiExec, ph::PhCmd)
                     Cmd([
                         mpi.bin,
                         "-n",
-                        string(mpi.n),
+                        string(mpi.np),
                         args...,
                         "--mca",
                         "btl_vader_single_copy_mechanism",
