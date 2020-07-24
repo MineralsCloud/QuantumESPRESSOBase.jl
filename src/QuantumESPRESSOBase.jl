@@ -125,7 +125,7 @@ Crystallography.Lattice(::PrimitiveOrthorhombic, p, args...) = Lattice([
     0 0 p[3]
 ])
 function Crystallography.Lattice(::BCenteredOrthorhombic, p, obverse::Bool = true)
-    a, b, c = Iterators.take(p, 3)
+    a, b, c = p[1:3]
     if obverse
         return Lattice([
             a / 2 b / 2 0
@@ -146,7 +146,7 @@ Crystallography.Lattice(::ACenteredOrthorhombic, p, args...) = Lattice([
     0 p[2] / 2 p[3] / 2
 ])  # New in QE 6.4
 function Crystallography.Lattice(::FaceCenteredOrthorhombic, p, args...)
-    a, b, c = Iterators.take(p, 3)
+    a, b, c = p[1:3]
     return Lattice([
         a 0 c
         a b 0
@@ -154,7 +154,7 @@ function Crystallography.Lattice(::FaceCenteredOrthorhombic, p, args...)
     ] / 2)
 end
 function Crystallography.Lattice(::BodyCenteredOrthorhombic, p, args...)
-    a, b, c = Iterators.take(p, 3)  # Every `p` that is an iterable can be used
+    a, b, c = p[1:3]
     return Lattice([
         a b c
         -a b c
@@ -162,7 +162,7 @@ function Crystallography.Lattice(::BodyCenteredOrthorhombic, p, args...)
     ] / 2)
 end
 function Crystallography.Lattice(::PrimitiveMonoclinic, p, obverse::Bool = true)
-    a, b, c, _, β, γ = p
+    a, b, c, _, β, γ = p[1:6]
     if obverse
         return Lattice([
             a 0 0
@@ -178,7 +178,7 @@ function Crystallography.Lattice(::PrimitiveMonoclinic, p, obverse::Bool = true)
     end
 end
 function Crystallography.Lattice(::CCenteredMonoclinic, p, args...)
-    a, b, c = Iterators.take(p, 3)
+    a, b, c = p[1:3]
     return Lattice([
         a / 2 0 -c / 2
         b * cos(p[6]) b * sin(p[6]) 0
@@ -186,7 +186,7 @@ function Crystallography.Lattice(::CCenteredMonoclinic, p, args...)
     ])
 end
 function Crystallography.Lattice(::BCenteredMonoclinic, p, args...)
-    a, b, c = Iterators.take(p, 3)
+    a, b, c = p[1:3]
     return Lattice([
         a / 2 b / 2 0
         -a / 2 b / 2 0
