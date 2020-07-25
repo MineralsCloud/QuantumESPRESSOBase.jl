@@ -34,10 +34,10 @@ Represent the `CONTROL` namelist of `cp.x`.
     tefield::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
     @assert(
-        calculation ∈
+        calculation in
         ("cp", "scf", "nscf", "relax", "vc-relax", "vc-cp", "cp-wf", "vc-cp-wf")
     )
-    @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
+    @assert verbosity in ("high", "low", "debug", "medium", "default", "minimal")
     @assert isave >= 1
     @assert nstep >= 0
     @assert iprint >= 1
@@ -48,7 +48,7 @@ Represent the `CONTROL` namelist of `cp.x`.
     @assert etot_conv_thr >= 0
     @assert forc_conv_thr >= 0
     @assert ekin_conv_thr >= 0
-    @assert memory ∈ ("small", "default", "large")
+    @assert memory in ("small", "default", "large")
 end # struct ControlNamelist
 
 """
@@ -100,9 +100,9 @@ Represent the `SYSTEM` namelist of `cp.x`.
     ts_vdw_isolated::Bool = false
     assume_isolated::String = "none"
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @assert ibrav ∈ union(-1:1:14, (-3, -5, -9, -12, -13))
+    @assert ibrav in union(-1:1:14, (-3, -5, -9, -12, -13))
     @assert(
-        if ibrav ∈ -1:0
+        if ibrav in -1:0
             true  # Skip the check, cannot use `nothing`
         else
             celldm[1] != 0 || A != 0  # Cannot use `iszero` to compare now!
@@ -112,9 +112,9 @@ Represent the `SYSTEM` namelist of `cp.x`.
     @assert(
         if ibrav == 14
             length(celldm) == 6
-        elseif ibrav ∈ (5, -5, 12, 13)
+        elseif ibrav in (5, -5, 12, 13)
             4 <= length(celldm) <= 6
-        elseif ibrav ∈ (4, 6, 7, 8, 9, -9, 10, 11)
+        elseif ibrav in (4, 6, 7, 8, 9, -9, 10, 11)
             3 <= length(celldm) <= 6
         elseif ibrav == -13  # `-13` is new from QE 6.4
             5 <= length(celldm) <= 6
@@ -125,7 +125,7 @@ Represent the `SYSTEM` namelist of `cp.x`.
     )
     @assert nat >= 0
     @assert(0 <= ntyp <= 10, "`ntyp` $ntyp is either less than zero or too large!")
-    @assert nspin ∈ (1, 2, 4)
+    @assert nspin in (1, 2, 4)
     @assert ecutwfc >= 0
     @assert ecutrho >= 0
     @assert(iszero(degauss), "`degauss` is not used in CP!")
@@ -167,17 +167,17 @@ Represent the `ELECTRONS` namelist of `cp.x`.
     grease::Float64 = 1.0
     ampre::Float64 = 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
-    @assert electron_dynamics ∈ ("none", "sd", "damp", "verlet", "cg")  # Different from code
+    @assert electron_dynamics in ("none", "sd", "damp", "verlet", "cg")  # Different from code
     @assert emass > 0
     @assert emass_cutoff > 0
-    @assert orthogonalization ∈ ("ortho", "Gram-Schmidt")
+    @assert orthogonalization in ("ortho", "Gram-Schmidt")
     @assert ortho_eps > 0
     @assert ortho_max >= 1
-    @assert electron_velocities ∈ ("zero", "default", "change_step")  # New in 6.4
-    @assert electron_temperature ∈ ("nose", "rescaling", "not_controlled")
+    @assert electron_velocities in ("zero", "default", "change_step")  # New in 6.4
+    @assert electron_temperature in ("nose", "rescaling", "not_controlled")
     @assert ekincw > 0
     @assert fnosee > 0
-    @assert startingwfc ∈ ("atomic", "random")
+    @assert startingwfc in ("atomic", "random")
 end # struct ElectronsNamelist
 
 """
@@ -209,11 +209,11 @@ Input this namelist only if `calculation` is `"cp"`, `"relax"`, `"vc-relax"`, `"
     amprp::Vector{Union{Nothing,Float64}} = zeros(1)
     greasp::Float64 = 1.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
-    @assert ion_dynamics ∈ ("none", "sd", "cg", "damp", "verlet")
-    @assert ion_positions ∈ ("default", "from_input")
-    @assert ion_velocities ∈ ("default", "change_step", "random", "from_input", "zero")
+    @assert ion_dynamics in ("none", "sd", "cg", "damp", "verlet")
+    @assert ion_positions in ("default", "from_input")
+    @assert ion_velocities in ("default", "change_step", "random", "from_input", "zero")
     @assert ion_nstepe > 0
-    @assert ion_temperature ∈ ("nose", "rescaling", "not_controlled")
+    @assert ion_temperature in ("nose", "rescaling", "not_controlled")
     @assert tempw > 0
     @assert fnosep > 0
     @assert 0 <= nhpcl <= 4
@@ -240,13 +240,13 @@ Input this namelist only if `calculation` is `"vc-relax"`, `"vc-cp"`, or `"vc-cp
     greash::Float64 = 1.0
     cell_dofree::String = "all"
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
-    @assert cell_parameters ∈ ("default", "from_input")
-    @assert cell_dynamics ∈ ("none", "sd", "damp-pr", "pr")
-    @assert cell_velocities ∈ ("zero", "default")
+    @assert cell_parameters in ("default", "from_input")
+    @assert cell_dynamics in ("none", "sd", "damp-pr", "pr")
+    @assert cell_velocities in ("zero", "default")
     @assert wmass >= 0
-    @assert cell_temperature ∈ ("nose", "rescaling", "not_controlled")
+    @assert cell_temperature in ("nose", "rescaling", "not_controlled")
     @assert(
-        cell_dofree ∈ (
+        cell_dofree in (
             "all",
             "x",
             "y",

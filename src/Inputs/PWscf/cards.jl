@@ -144,7 +144,7 @@ struct CellParametersCard <: AbstractCellParametersCard
     data::SMatrix{3,3,Float64}
     option::String
     function CellParametersCard(data, option = "alat")
-        @assert option ∈ allowed_options(CellParametersCard)
+        @assert option in allowed_options(CellParametersCard)
         return new(data, option)
     end
 end
@@ -237,12 +237,12 @@ struct KPointsCard{A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialK
         data,
         option,
     ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}}
-        @assert option ∈ allowed_options(KPointsCard)
+        @assert option in allowed_options(KPointsCard)
         @assert if option == "automatic"
             typeof(data) <: MonkhorstPackGrid
         elseif option == "gamma"
             typeof(data) <: GammaPoint
-        else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+        else  # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
             eltype(data) <: SpecialKPoint
         end
         return new(data, option)

@@ -42,24 +42,24 @@ Represent the `CONTROL` namelist of `pw.x`.
     lfcpopt::Bool = false
     gate::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
-    @assert calculation ∈ ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
-    @assert verbosity ∈ ("high", "low", "debug", "medium", "default", "minimal")
-    @assert restart_mode ∈ ("from_scratch", "restart")
+    @assert calculation in ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
+    @assert verbosity in ("high", "low", "debug", "medium", "default", "minimal")
+    @assert restart_mode in ("from_scratch", "restart")
     @assert iprint >= 1
-    @assert disk_io ∈ ("high", "medium", "low", "none", "default")
+    @assert disk_io in ("high", "medium", "low", "none", "default")
     @assert dt >= 0
     # @assert !(lkpoint_dir && wf_collect) "`lkpoint_dir` currently doesn't work together with `wf_collect`!"
     @assert max_seconds >= 0
     @assert etot_conv_thr >= 0
     @assert forc_conv_thr >= 0
-    @assert gdir ∈ 1:3
+    @assert gdir in 1:3
     @assert !all((gate, tefield, !dipfield)) "`gate` cannot be used with `tefield` if dipole correction is not active!"
     @assert !all((gate, dipfield, !tefield)) "dipole correction is not active if `tefield = false`!"
 end # struct ControlNamelist
 
 xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
 wfcfiles(nml::ControlNamelist, n = 1) =
-    [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
+    [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i = 1:n]
 
 """
     SystemNamelist <: Namelist
@@ -169,11 +169,11 @@ Represent the `SYSTEM` namelist of `pw.x`.
     block_2::Float64 = 0.55
     block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @assert ibrav ∈ union(-1:1:14, (-3, -5, -9, 91, -12, -13))
+    @assert ibrav in union(-1:1:14, (-3, -5, -9, 91, -12, -13))
     @assert(ntyp <= 10, "`ntyp` $ntyp is larger than 10!")
     @assert ntyp <= nat
     @assert(
-        smearing ∈ (
+        smearing in (
             "gaussian",
             "gauss",
             "methfessel-paxton",
@@ -188,15 +188,15 @@ Represent the `SYSTEM` namelist of `pw.x`.
             "fd",
         )
     )
-    @assert nspin ∈ (1, 2, 4)
+    @assert nspin in (1, 2, 4)
     @assert ecutwfc >= 0
     @assert ecutrho >= 0
     @assert ecfixed >= 0
     @assert qcutz >= 0
     @assert q2sigma >= 0
-    @assert lda_plus_u_kind ∈ 0:1
-    @assert edir ∈ 1:3
-    @assert origin_choice ∈ 1:2
+    @assert lda_plus_u_kind in 0:1
+    @assert edir in 1:3
+    @assert origin_choice in 1:2
     @assert length(starting_charge) <= ntyp
     @assert length(starting_magnetization) <= ntyp
     @assert length(Hubbard_U) <= ntyp
@@ -210,11 +210,11 @@ Represent the `SYSTEM` namelist of `pw.x`.
     @assert length(london_c6) <= ntyp
     @assert length(london_rvdw) <= ntyp
     @assert(
-        exxdiv_treatment ∈
+        exxdiv_treatment in
         ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none")
     )
     @assert(
-        !(x_gamma_extrapolation && exxdiv_treatment ∈ ("vcut_ws", "vcut_spherical")),
+        !(x_gamma_extrapolation && exxdiv_treatment in ("vcut_ws", "vcut_spherical")),
         "`x_gamma_extrapolation` cannot be used with `vcut`!"
     )
 end # struct SystemNamelist
@@ -252,11 +252,11 @@ Represent the `ELECTRONS` namelist of `pw.x`.
     startingwfc::String = "atomic+random"  # This depends on `calculation`
     tqr::Bool = false
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
-    @assert mixing_mode ∈ ("plain", "TF", "local-TF")
-    @assert diagonalization ∈ ("david", "cg", "cg-serial", "david-serial", "ppcg")  # Different from docs
-    @assert efield_phase ∈ ("read", "write", "none")
-    @assert startingpot ∈ ("atomic", "file")
-    @assert startingwfc ∈ ("atomic", "atomic+random", "random", "file")
+    @assert mixing_mode in ("plain", "TF", "local-TF")
+    @assert diagonalization in ("david", "cg", "cg-serial", "david-serial", "ppcg")  # Different from docs
+    @assert efield_phase in ("read", "write", "none")
+    @assert startingpot in ("atomic", "file")
+    @assert startingwfc in ("atomic", "atomic+random", "random", "file")
 end # struct ElectronsNamelist
 
 """
@@ -291,14 +291,14 @@ Input this namelist only if `calculation` is `"relax"`, `"md"`, `"vc-relax"`, or
     w_2::Float64 = 0.5
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
     @assert(
-        ion_dynamics ∈
+        ion_dynamics in
         ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman")
     )
-    @assert ion_positions ∈ ("default", "from_input")
-    @assert pot_extrapolation ∈ ("none", "atomic", "first_order", "second_order")
-    @assert wfc_extrapolation ∈ ("none", "first_order", "second_order")
+    @assert ion_positions in ("default", "from_input")
+    @assert pot_extrapolation in ("none", "atomic", "first_order", "second_order")
+    @assert wfc_extrapolation in ("none", "first_order", "second_order")
     @assert(
-        ion_temperature ∈ (
+        ion_temperature in (
             "rescaling",
             "rescale-v",
             "rescale-T",
@@ -331,10 +331,10 @@ Input this namelist only if `calculation` is `"vc-relax"` or `"vc-md"`.
     press_conv_thr::Float64 = 0.5
     cell_dofree::String = "all"
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
-    @assert cell_dynamics ∈ ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w")
+    @assert cell_dynamics in ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w")
     @assert wmass >= 0
     @assert(
-        cell_dofree ∈ (
+        cell_dofree in (
             "all",
             "ibrav",
             "x",
@@ -370,7 +370,7 @@ Represent the `DOS` namelist of `dos.x`.
     Emax::Float64 = 1000000.0
     DeltaE::Float64 = 0.01
     fildos::String = "$(prefix).dos"
-    @assert ngauss ∈ (0, 1, -1, -99)
+    @assert ngauss in (0, 1, -1, -99)
 end # struct DosNamelist
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
@@ -392,7 +392,7 @@ Represent the `BANDS` namelist of `bands.x`.
     plot_2d::Bool = false
     firstk::UInt = 0
     lastk::UInt = 10000000
-    @assert spin_component ∈ 1:2
+    @assert spin_component in 1:2
 end # struct BandsNamelist
 
 """

@@ -86,7 +86,7 @@ include("cards.jl")
 function iscompatible(system::SystemNamelist, cell_parameters::CellParametersCard)
     ibrav, celldm = system.ibrav, system.celldm
     if iszero(ibrav)
-        if getoption(cell_parameters) ∈ ("bohr", "angstrom")
+        if getoption(cell_parameters) in ("bohr", "angstrom")
             return all(iszero, celldm)
         else  # "alat"
             return !iszero(first(celldm))  # first(celldm) != 0
@@ -171,7 +171,7 @@ end # function set_pressure_volume
 
 function set_structure(template::PWInput, cell_parameters::CellParametersCard)
     if template.cell_parameters === nothing
-        if getoption(cell_parameters) ∈ ("bohr", "angstrom")
+        if getoption(cell_parameters) in ("bohr", "angstrom")
             @set! template.cell_parameters = cell_parameters
             @set! template.system.ibrav = 0
             @set! template.system.celldm = zeros(6)
@@ -181,7 +181,7 @@ function set_structure(template::PWInput, cell_parameters::CellParametersCard)
         end
     else
         if getoption(template.cell_parameters) == "alat"
-            if getoption(cell_parameters) ∈ ("bohr", "angstrom")
+            if getoption(cell_parameters) in ("bohr", "angstrom")
                 @set! template.system.celldm = [template.system.celldm[1]]
                 cell_parameters = CellParametersCard(
                     cell_parameters.data / template.system.celldm[1],
