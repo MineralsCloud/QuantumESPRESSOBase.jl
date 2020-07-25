@@ -111,7 +111,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
 - `cell::CellNamelist=CellNamelist()`: the `CELL` namelist of the input. Optional.
 - `atomic_species::AtomicSpeciesCard`: the `ATOMIC_SPECIES` card of the input. Must be provided explicitly.
 - `atomic_positions::AtomicPositionsCard`: the `ATOMIC_POSITIONS` card of the input. Must be provided explicitly.
-- `k_points::KPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
+- `k_points::AbstractKPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
 - `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 """
 struct PWInput <: QuantumESPRESSOInput
@@ -122,7 +122,7 @@ struct PWInput <: QuantumESPRESSOInput
     cell::CellNamelist
     atomic_species::AtomicSpeciesCard
     atomic_positions::AtomicPositionsCard
-    k_points::KPointsCard
+    k_points::AbstractKPointsCard
     cell_parameters::Union{Nothing,CellParametersCard}
     constraints::Union{Union{Nothing,Float64}}
     occupations::Union{Nothing,Float64}
@@ -245,16 +245,10 @@ end # function set_structure
 allowed_options(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 allowed_options(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
-allowed_options(::Type{<:KPointsCard}) = (
-    "tpiba",
-    "automatic",
-    "crystal",
-    "gamma",
-    "tpiba_b",
-    "crystal_b",
-    "tpiba_c",
-    "crystal_c",
-)
+allowed_options(::Type{AutomaticKPointsCard}) = ("automatic",)
+allowed_options(::Type{GammaPointCard}) = ("gamma",)
+allowed_options(::Type{KPointsCard}) =
+    ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 
 titleof(::Type{ControlNamelist}) = "CONTROL"
 titleof(::Type{SystemNamelist}) = "SYSTEM"
@@ -264,7 +258,7 @@ titleof(::Type{CellNamelist}) = "CELL"
 titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 titleof(::Type{CellParametersCard}) = "CELL_PARAMETERS"
-titleof(::Type{<:KPointsCard}) = "K_POINTS"
+titleof(::Type{<:AbstractKPointsCard}) = "K_POINTS"
 
 """
     inputstring(data::AtomicSpecies)
@@ -363,15 +357,13 @@ inputstring(data::SpecialKPoint) =
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(card::KPointsCard)
-    content = "K_POINTS { $(card.option) }" * newline(card)
-    if getoption(card) in ("gamma", "automatic")
-        return content * inputstring(card.data)
-    else  # ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-        return join(
-            (content, length(card.data), map(inputstring, card.data)...),
-            newline(card),
-        )
-    end
+    content = "K_POINTS { $(getoption(card)) }" * newline(card)
+    return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
+end
+inputstring(card::GammaPointCard) = "K_POINTS { gamme }" * newline(card)
+function inputstring(card::AutomaticKPointsCard)
+    content = "K_POINTS { $(getoption(card)) }" * newline(card)
+    return content * inputstring(card.data)
 end
 
 """
