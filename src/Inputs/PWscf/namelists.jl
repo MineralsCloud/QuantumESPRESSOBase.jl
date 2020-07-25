@@ -11,51 +11,117 @@ const Maybe{T} = Union{T,Nothing}
 
 Represent the `CONTROL` namelist of `pw.x`.
 """
-@with_kw struct ControlNamelist <: Namelist
-    calculation::String = "scf"
-    title::String = " "
-    verbosity::String = "low"
-    restart_mode::String = "from_scratch"
-    wf_collect::Bool = true
-    nstep::UInt = 50
-    iprint::UInt = 100000
-    tstress::Bool = false
-    tprnfor::Bool = false
-    dt::Float64 = 20.0
-    outdir::String = "./"
-    wfcdir::String = "./"
-    prefix::String = "pwscf"
-    lkpoint_dir::Bool = true
-    max_seconds::Float64 = 10000000.0
-    etot_conv_thr::Float64 = 1e-4
-    forc_conv_thr::Float64 = 1e-3
-    disk_io::String = ifelse(calculation == "scf", "low", "medium")
-    pseudo_dir::String = raw"$HOME/espresso/pseudo/"
-    tefield::Bool = false
-    dipfield::Bool = false
-    lelfield::Bool = false
-    nberrycyc::UInt = 1
-    lorbm::Bool = false
-    lberry::Bool = false
-    gdir::UInt = 1  # The QE default value is `0`!
-    nppstr::UInt = 0
-    lfcpopt::Bool = false
-    gate::Bool = false
-    # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
-    @assert calculation in ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
-    @assert verbosity in ("high", "low", "debug", "medium", "default", "minimal")
-    @assert restart_mode in ("from_scratch", "restart")
-    @assert iprint >= 1
-    @assert disk_io in ("high", "medium", "low", "none", "default")
-    @assert dt >= 0
-    # @assert !(lkpoint_dir && wf_collect) "`lkpoint_dir` currently doesn't work together with `wf_collect`!"
-    @assert max_seconds >= 0
-    @assert etot_conv_thr >= 0
-    @assert forc_conv_thr >= 0
-    @assert gdir in 1:3
-    @assert !all((gate, tefield, !dipfield)) "`gate` cannot be used with `tefield` if dipole correction is not active!"
-    @assert !all((gate, dipfield, !tefield)) "dipole correction is not active if `tefield = false`!"
+struct ControlNamelist <: Namelist
+    calculation::String
+    title::String
+    verbosity::String
+    restart_mode::String
+    wf_collect::Bool
+    nstep::UInt
+    iprint::UInt
+    tstress::Bool
+    tprnfor::Bool
+    dt::Float64
+    outdir::String
+    wfcdir::String
+    prefix::String
+    lkpoint_dir::Bool
+    max_seconds::Float64
+    etot_conv_thr::Float64
+    forc_conv_thr::Float64
+    disk_io::String
+    pseudo_dir::String
+    tefield::Bool
+    dipfield::Bool
+    lelfield::Bool
+    nberrycyc::UInt
+    lorbm::Bool
+    lberry::Bool
+    gdir::UInt
+    nppstr::UInt
+    lfcpopt::Bool
+    gate::Bool
 end # struct ControlNamelist
+function ControlNamelist(;
+    calculation = "scf",
+    title = " ",
+    verbosity = "low",
+    restart_mode = "from_scratch",
+    wf_collect = true,
+    nstep = 50,
+    iprint = 100000,
+    tstress = false,
+    tprnfor = false,
+    dt = 20.0,
+    outdir = "./",
+    wfcdir = "./",
+    prefix = "pwscf",
+    lkpoint_dir = true,
+    max_seconds = 10000000.0,
+    etot_conv_thr = 1e-4,
+    forc_conv_thr = 1e-3,
+    disk_io = ifelse(calculation == "scf", "low", "medium"),
+    pseudo_dir = raw"$HOME/espresso/pseudo/",
+    tefield = false,
+    dipfield = false,
+    lelfield = false,
+    nberrycyc = 1,
+    lorbm = false,
+    lberry = false,
+    gdir = 1,  # The QE default value is `0`!
+    nppstr = 0,
+    lfcpopt = false,
+    gate = false,
+)
+    # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
+    @argcheck calculation in ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
+    @argcheck verbosity in ("high", "low", "debug", "medium", "default", "minimal")
+    @argcheck restart_mode in ("from_scratch", "restart")
+    @argcheck iprint >= 1
+    @argcheck disk_io in ("high", "medium", "low", "none", "default")
+    @argcheck dt >= 0
+    # @argcheck !(lkpoint_dir && wf_collect) "`lkpoint_dir` currently doesn't work together with `wf_collect`!"
+    @argcheck max_seconds >= 0
+    @argcheck etot_conv_thr >= 0
+    @argcheck forc_conv_thr >= 0
+    @argcheck gdir in 1:3
+    @argcheck !all((gate, tefield, !dipfield)) "`gate` cannot be used with `tefield` if dipole correction is not active!"
+    @argcheck !all((gate, dipfield, !tefield)) "dipole correction is not active if `tefield = false`!"
+    return ControlNamelist(
+        calculation,
+        title,
+        verbosity,
+        restart_mode,
+        wf_collect,
+        nstep,
+        iprint,
+        tstress,
+        tprnfor,
+        dt,
+        outdir,
+        wfcdir,
+        prefix,
+        lkpoint_dir,
+        max_seconds,
+        etot_conv_thr,
+        forc_conv_thr,
+        disk_io,
+        pseudo_dir,
+        tefield,
+        dipfield,
+        lelfield,
+        nberrycyc,
+        lorbm,
+        lberry,
+        gdir,
+        nppstr,
+        lfcpopt,
+        gate,
+    )
+end
+ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml, kwargs...)
+ControlNamelist(nml::ControlNamelist, t::NamedTuple) = setproperties(nml, t)
+ControlNamelist(nml::ControlNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
 wfcfiles(nml::ControlNamelist, n = 1) =
