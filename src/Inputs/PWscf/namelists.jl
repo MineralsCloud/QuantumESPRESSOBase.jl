@@ -589,25 +589,46 @@ Represent the `IONS` namelist of `pw.x`.
 
 Input this namelist only if `calculation` is `"relax"`, `"md"`, `"vc-relax"`, or `"vc-md"`.
 """
-@with_kw struct IonsNamelist <: Namelist
-    ion_dynamics::String = "none"
-    ion_positions::String = "default"
-    pot_extrapolation::String = "atomic"
-    wfc_extrapolation::String = "none"
-    remove_rigid_rot::Bool = false
-    ion_temperature::String = "not_controlled"
-    tempw::Float64 = 300.0
-    tolp::Float64 = 100.0
-    delta_t::Float64 = 1.0
-    nraise::UInt = 1
-    refold_pos::Bool = false
-    upscale::Float64 = 100.0
-    bfgs_ndim::UInt = 1
-    trust_radius_max::Float64 = 0.8
-    trust_radius_min::Float64 = 1e-3  # The default value in QE's source code is 0.0001
-    trust_radius_ini::Float64 = 0.5
-    w_1::Float64 = 0.01
-    w_2::Float64 = 0.5
+struct IonsNamelist <: Namelist
+    ion_dynamics::String
+    ion_positions::String
+    pot_extrapolation::String
+    wfc_extrapolation::String
+    remove_rigid_rot::Bool
+    ion_temperature::String
+    tempw::Float64
+    tolp::Float64
+    delta_t::Float64
+    nraise::UInt
+    refold_pos::Bool
+    upscale::Float64
+    bfgs_ndim::UInt
+    trust_radius_max::Float64
+    trust_radius_min::Float64  # The default value in QE's source code is 0.0001
+    trust_radius_ini::Float64
+    w_1::Float64
+    w_2::Float64
+end # struct IonsNamelist
+function IonsNamelist(;
+    ion_dynamics = "none",
+    ion_positions = "default",
+    pot_extrapolation = "atomic",
+    wfc_extrapolation = "none",
+    remove_rigid_rot = false,
+    ion_temperature = "not_controlled",
+    tempw = 300.0,
+    tolp = 100.0,
+    delta_t = 1.0,
+    nraise = 1,
+    refold_pos = false,
+    upscale = 100.0,
+    bfgs_ndim = 1,
+    trust_radius_max = 0.8,
+    trust_radius_min = 1e-3,  # The default value in QE's source code is 0.0001
+    trust_radius_ini = 0.5,
+    w_1 = 0.01,
+    w_2 = 0.5,
+)
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
     @assert(
         ion_dynamics in
@@ -629,7 +650,30 @@ Input this namelist only if `calculation` is `"relax"`, `"md"`, `"vc-relax"`, or
         )
     )
     @assert tempw > 0
-end # struct IonsNamelist
+    return IonsNamelist(
+        ion_dynamics,
+        ion_positions,
+        pot_extrapolation,
+        wfc_extrapolation,
+        remove_rigid_rot,
+        ion_temperature,
+        tempw,
+        tolp,
+        delta_t,
+        nraise,
+        refold_pos,
+        upscale,
+        bfgs_ndim,
+        trust_radius_max,
+        trust_radius_min,
+        trust_radius_ini,
+        w_1,
+        w_2,
+    )
+end
+IonsNamelist(nml::IonsNamelist; kwargs...) = setproperties(nml, kwargs...)
+IonsNamelist(nml::IonsNamelist, t::NamedTuple) = setproperties(nml, t)
+IonsNamelist(nml::IonsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     CellNamelist <: Namelist
@@ -642,13 +686,22 @@ Represent the `CELL` namelist of `pw.x`.
 
 Input this namelist only if `calculation` is `"vc-relax"` or `"vc-md"`.
 """
-@with_kw struct CellNamelist <: Namelist
-    cell_dynamics::String = "none"
-    press::Float64 = 0.0
-    wmass::Float64 = 0.0
-    cell_factor::Float64 = 0.0
-    press_conv_thr::Float64 = 0.5
-    cell_dofree::String = "all"
+struct CellNamelist <: Namelist
+    cell_dynamics::String
+    press::Float64
+    wmass::Float64
+    cell_factor::Float64
+    press_conv_thr::Float64
+    cell_dofree::String
+end # struct CellNamelist
+function CellNamelist(;
+    cell_dynamics = "none",
+    press = 0.0,
+    wmass = 0.0,
+    cell_factor = 0.0,
+    press_conv_thr = 0.5,
+    cell_dofree = "all",
+)
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
     @assert cell_dynamics in ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w")
     @assert wmass >= 0
@@ -672,7 +725,18 @@ Input this namelist only if `calculation` is `"vc-relax"` or `"vc-md"`.
             "epitaxial_bc",  # New in 6.4
         )
     )
-end # struct CellNamelist
+    return CellNamelist(
+        cell_dynamics,
+        press,
+        wmass,
+        cell_factor,
+        press_conv_thr,
+        cell_dofree,
+    )
+end
+CellNamelist(nml::CellNamelist; kwargs...) = setproperties(nml, kwargs...)
+CellNamelist(nml::CellNamelist, t::NamedTuple) = setproperties(nml, t)
+CellNamelist(nml::CellNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 # The following default values are picked from `<QE source>/PP/src/dos.f90`
 """
@@ -680,17 +744,32 @@ end # struct CellNamelist
 
 Represent the `DOS` namelist of `dos.x`.
 """
-@with_kw struct DosNamelist <: Namelist
-    prefix::String = "pwscf"
-    outdir::String = "./"
-    ngauss::Int = 0
-    degauss::Float64 = 0.0
-    Emin::Float64 = -1000000.0
-    Emax::Float64 = 1000000.0
-    DeltaE::Float64 = 0.01
-    fildos::String = "$(prefix).dos"
-    @assert ngauss in (0, 1, -1, -99)
+struct DosNamelist <: Namelist
+    prefix::String
+    outdir::String
+    ngauss::Int
+    degauss::Float64
+    Emin::Float64
+    Emax::Float64
+    DeltaE::Float64
+    fildos::String
 end # struct DosNamelist
+function DosNamelist(;
+    prefix = "pwscf",
+    outdir = "./",
+    ngauss = 0,
+    degauss = 0.0,
+    Emin = -1000000.0,
+    Emax = 1000000.0,
+    DeltaE = 0.01,
+    fildos = "$(prefix).dos",
+)
+    @assert ngauss in (0, 1, -1, -99)
+    return DosNamelist(prefix, outdir, ngauss, degauss, Emin, Emax, DeltaE, fildos)
+end
+DosNamelist(nml::DosNamelist; kwargs...) = setproperties(nml, kwargs...)
+DosNamelist(nml::DosNamelist, t::NamedTuple) = setproperties(nml, t)
+DosNamelist(nml::DosNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
 """
@@ -698,21 +777,53 @@ end # struct DosNamelist
 
 Represent the `BANDS` namelist of `bands.x`.
 """
-@with_kw struct BandsNamelist <: Namelist
-    prefix::String = "pwscf"
-    outdir::String = "./"
-    filband::String = "bands.out"
-    spin_component::Int = 1
-    lsigma::Vector{Maybe{Bool}} = falses(3)  # The default value in QE's source code is just one `false`
-    lp::Bool = false
-    filp::String = "p_avg.dat"
-    lsym::Bool = true
-    no_overlap::Bool = true
-    plot_2d::Bool = false
-    firstk::UInt = 0
-    lastk::UInt = 10000000
-    @assert spin_component in 1:2
+struct BandsNamelist <: Namelist
+    prefix::String
+    outdir::String
+    filband::String
+    spin_component::Int
+    lsigma::Vector{Maybe{Bool}}  # The default value in QE's source code is just one `false`
+    lp::Bool
+    filp::String
+    lsym::Bool
+    no_overlap::Bool
+    plot_2d::Bool
+    firstk::UInt
+    lastk::UInt
 end # struct BandsNamelist
+function BandsNamelist(;
+    prefix = "pwscf",
+    outdir = "./",
+    filband = "bands.out",
+    spin_component = 1,
+    lsigma = falses(3),  # The default value in QE's source code is just one `false`
+    lp = false,
+    filp = "p_avg.dat",
+    lsym = true,
+    no_overlap = true,
+    plot_2d = false,
+    firstk = 0,
+    lastk = 10000000,
+)
+    @assert spin_component in 1:2
+    return BandsNamelist(
+        prefix,
+        outdir,
+        filband,
+        spin_component,
+        lsigma,
+        lp,
+        filp,
+        lsym,
+        no_overlap,
+        plot_2d,
+        firstk,
+        lastk,
+    )
+end
+BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml, kwargs...)
+BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
+BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     set_verbosity(template::ControlNamelist, verbosity)
