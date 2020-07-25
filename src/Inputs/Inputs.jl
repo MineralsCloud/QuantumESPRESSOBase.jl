@@ -14,6 +14,7 @@ module Inputs
 using AbInitioSoftwareBase.Inputs: Input
 using Compat: only, isnothing
 using Crystallography: Bravais, CellParameters, PrimitiveTriclinic
+using OptionalArgChecks: @argcheck
 using PyFortran90Namelists: fstring
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
@@ -139,7 +140,7 @@ function optional_cards end
 struct _Celldm{T<:Bravais}
     data::Any
     function _Celldm{T}(data) where {T}
-        @assert 1 <= length(data) <= 6
+        @argcheck 1 <= length(data) <= 6
         return new(data)
     end
 end
