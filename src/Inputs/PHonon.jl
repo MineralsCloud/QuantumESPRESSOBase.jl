@@ -11,7 +11,7 @@ julia>
 """
 module PHonon
 
-using Parameters: @with_kw
+using ConstructionBase: setproperties
 
 using ..Inputs: Namelist, Card, QuantumESPRESSOInput
 using ..Inputs.PWscf: SpecialKPoint
@@ -27,70 +27,196 @@ export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 Represent the `INPUTPH` namelist of `ph.x`.
 """
-@with_kw struct PhNamelist <: Namelist
-    amass::Vector{Union{Nothing,Float64}} = [0.0]
-    outdir::String = "./"
-    prefix::String = "pwscf"
-    niter_ph::Int = 100
-    tr2_ph::Float64 = 1e-12
-    alpha_mix::Vector{Union{Nothing,Float64}} = 0.7 * ones(niter_ph)
-    nmix_ph::Int = 4
-    verbosity::String = "default"
-    reduce_io::Bool = false
-    max_seconds::Float64 = 1e7
-    fildyn::String = "matdyn"
-    fildrho::String = " "
-    fildvscf::String = " "
-    epsil::Bool = false
-    lrpa::Bool = false
-    lnoloc::Bool = false
-    trans::Bool = true
-    lraman::Bool = false
-    eth_rps::Float64 = 1e-9
-    eth_ns::Float64 = 1e-12
-    dek::Float64 = 1e-3
-    recover::Bool = false
-    low_directory_check::Bool = false
-    only_init::Bool = false
-    qplot::Bool = false
-    q2d::Bool = false
-    q_in_band_form::Bool = false
-    electron_phonon::String = " "
-    lshift_q::Bool = false
-    zeu::Bool = epsil  # The default value in QE's source code is `true`
-    zue::Bool = false
-    elop::Bool = false
-    fpol::Bool = false
-    ldisp::Bool = false
-    nogg::Bool = false
-    asr::Bool = false
-    ldiag::Bool = false
-    lqdir::Bool = false
-    search_sym::Bool = true
-    nq1::Int = 0
-    nq2::Int = 0
-    nq3::Int = 0
-    nk1::Int = 0
-    nk2::Int = 0
-    nk3::Int = 0
-    k1::Int = 0
-    k2::Int = 0
-    k3::Int = 0
-    start_irr::Int = 1  # The default value in QE's source code is 0
-    last_irr::Int = -1000
-    nat_todo::Int = 0
-    modenum::Int = 0
-    start_q::Int = 1
-    last_q::Int = -1000
+struct PhNamelist <: Namelist
+    amass::Vector{Union{Nothing,Float64}}
+    outdir::String
+    prefix::String
+    niter_ph::Int
+    tr2_ph::Float64
+    alpha_mix::Vector{Union{Nothing,Float64}}
+    nmix_ph::Int
+    verbosity::String
+    reduce_io::Bool
+    max_seconds::Float64
+    fildyn::String
+    fildrho::String
+    fildvscf::String
+    epsil::Bool
+    lrpa::Bool
+    lnoloc::Bool
+    trans::Bool
+    lraman::Bool
+    eth_rps::Float64
+    eth_ns::Float64
+    dek::Float64
+    recover::Bool
+    low_directory_check::Bool
+    only_init::Bool
+    qplot::Bool
+    q2d::Bool
+    q_in_band_form::Bool
+    electron_phonon::String
+    lshift_q::Bool
+    zeu::Bool  # The default value in QE's source code is `true`
+    zue::Bool
+    elop::Bool
+    fpol::Bool
+    ldisp::Bool
+    nogg::Bool
+    asr::Bool
+    ldiag::Bool
+    lqdir::Bool
+    search_sym::Bool
+    nq1::Int
+    nq2::Int
+    nq3::Int
+    nk1::Int
+    nk2::Int
+    nk3::Int
+    k1::Int
+    k2::Int
+    k3::Int
+    start_irr::Int  # The default value in QE's source code is 0
+    last_irr::Int
+    nat_todo::Int
+    modenum::Int
+    start_q::Int
+    last_q::Int
     dvscf_star::NamedTuple{
         (:open, :dir, :ext, :basis, :pat),
         Tuple{Bool,String,String,String,Bool},
-    } = (open = false, dir = "./", ext = "dvscf", basis = "cartesian", pat = false)
+    }
     drho_star::NamedTuple{
         (:open, :dir, :ext, :basis, :pat),
         Tuple{Bool,String,String,String,Bool},
-    } = (open = false, dir = "./", ext = "drho", basis = "modes", pat = true)
+    }
 end # struct PhNamelist
+function PhNamelist(;
+    amass = [0.0],
+    outdir = "./",
+    prefix = "pwscf",
+    niter_ph = 100,
+    tr2_ph = 1e-12,
+    alpha_mix = 0.7 * ones(niter_ph),
+    nmix_ph = 4,
+    verbosity = "default",
+    reduce_io = false,
+    max_seconds = 1e7,
+    fildyn = "matdyn",
+    fildrho = " ",
+    fildvscf = " ",
+    epsil = false,
+    lrpa = false,
+    lnoloc = false,
+    trans = true,
+    lraman = false,
+    eth_rps = 1e-9,
+    eth_ns = 1e-12,
+    dek = 1e-3,
+    recover = false,
+    low_directory_check = false,
+    only_init = false,
+    qplot = false,
+    q2d = false,
+    q_in_band_form = false,
+    electron_phonon = " ",
+    lshift_q = false,
+    zeu = epsil,  # The default value in QE's source code is `true`
+    zue = false,
+    elop = false,
+    fpol = false,
+    ldisp = false,
+    nogg = false,
+    asr = false,
+    ldiag = false,
+    lqdir = false,
+    search_sym = true,
+    nq1 = 0,
+    nq2 = 0,
+    nq3 = 0,
+    nk1 = 0,
+    nk2 = 0,
+    nk3 = 0,
+    k1 = 0,
+    k2 = 0,
+    k3 = 0,
+    start_irr = 1,  # The default value in QE's source code is 0
+    last_irr = -1000,
+    nat_todo = 0,
+    modenum = 0,
+    start_q = 1,
+    last_q = -1000,
+    dvscf_star = (
+        open = false,
+        dir = "./",
+        ext = "dvscf",
+        basis = "cartesian",
+        pat = false,
+    ),
+    drho_star = (open = false, dir = "./", ext = "drho", basis = "modes", pat = true),
+)
+    return PhNamelist(
+        amass,
+        outdir,
+        prefix,
+        niter_ph,
+        tr2_ph,
+        alpha_mix,
+        nmix_ph,
+        verbosity,
+        reduce_io,
+        max_seconds,
+        fildyn,
+        fildrho,
+        fildvscf,
+        epsil,
+        lrpa,
+        lnoloc,
+        trans,
+        lraman,
+        eth_rps,
+        eth_ns,
+        dek,
+        recover,
+        low_directory_check,
+        only_init,
+        qplot,
+        q2d,
+        q_in_band_form,
+        electron_phonon,
+        lshift_q,
+        zeu,
+        zue,
+        elop,
+        fpol,
+        ldisp,
+        nogg,
+        asr,
+        ldiag,
+        lqdir,
+        search_sym,
+        nq1,
+        nq2,
+        nq3,
+        nk1,
+        nk2,
+        nk3,
+        k1,
+        k2,
+        k3,
+        start_irr,
+        last_irr,
+        nat_todo,
+        modenum,
+        start_q,
+        last_q,
+        dvscf_star,
+        drho_star,
+    )
+end
+PhNamelist(nml::PhNamelist; kwargs...) = setproperties(nml, kwargs...)
+PhNamelist(nml::PhNamelist, t::NamedTuple) = setproperties(nml, t)
+PhNamelist(nml::PhNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 # The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
 """
@@ -98,12 +224,18 @@ end # struct PhNamelist
 
 Represent the `INPUT` namelist of `q2r.x`.
 """
-@with_kw struct Q2rNamelist <: Namelist
-    fildyn::String = " "
-    flfrc::String = " "
-    loto_2d::Bool = false
-    zasr::String = "no"
+struct Q2rNamelist <: Namelist
+    fildyn::String
+    flfrc::String
+    loto_2d::Bool
+    zasr::String
 end # struct Q2rNamelist
+function Q2rNamelist(; fildyn = " ", flfrc = " ", loto_2d = false, zasr = "no")
+    return Q2rNamelist(fildyn, flfrc, loto_2d, zasr)
+end
+Q2rNamelist(nml::Q2rNamelist; kwargs...) = setproperties(nml, kwargs...)
+Q2rNamelist(nml::Q2rNamelist, t::NamedTuple) = setproperties(nml, t)
+Q2rNamelist(nml::Q2rNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
 """
@@ -111,56 +243,152 @@ end # struct Q2rNamelist
 
 Represent the `INPUT` namelist of `matdyn.x`.
 """
-@with_kw struct MatdynNamelist <: Namelist
-    dos::Bool = false
-    deltaE::Float64 = 1.0
-    ndos::Int = 1
-    nk1::Int = 0
-    nk2::Int = 0
-    nk3::Int = 0
-    asr::String = "no"
-    readtau::Bool = false
-    flfrc::String = " "
-    fldos::String = "matdyn.dos"
-    flfrq::String = "matdyn.freq"
-    flvec::String = "matdyn.modes"
-    fleig::String = "matdyn.eig"
-    fldyn::String = " "
-    fltau::String = " "
-    amass::Vector{Union{Nothing,Float64}} = zeros(1)
-    at::Matrix{Union{Nothing,Float64}} = zeros(3, 3)  # FIXME: not very sure
-    ntyp::Int = 0
-    l1::Int = 1
-    l2::Int = 1
-    l3::Int = 1
-    la2F::Bool = false
-    q_in_band_form::Bool = false
-    eigen_similarity::Bool = false
-    q_in_cryst_coord::Bool = false
-    na_ifc::Bool = false
-    fd::Bool = false
-    nosym::Bool = false
-    loto_2d::Bool = false
+struct MatdynNamelist <: Namelist
+    dos::Bool
+    deltaE::Float64
+    ndos::Int
+    nk1::Int
+    nk2::Int
+    nk3::Int
+    asr::String
+    readtau::Bool
+    flfrc::String
+    fldos::String
+    flfrq::String
+    flvec::String
+    fleig::String
+    fldyn::String
+    fltau::String
+    amass::Vector{Union{Nothing,Float64}}
+    at::Matrix{Union{Nothing,Float64}}  # FIXME: not very sure
+    ntyp::Int
+    l1::Int
+    l2::Int
+    l3::Int
+    la2F::Bool
+    q_in_band_form::Bool
+    eigen_similarity::Bool
+    q_in_cryst_coord::Bool
+    na_ifc::Bool
+    fd::Bool
+    nosym::Bool
+    loto_2d::Bool
 end # struct MatdynNamelist
+function MatdynNamelist(;
+    dos = false,
+    deltaE = 1.0,
+    ndos = 1,
+    nk1 = 0,
+    nk2 = 0,
+    nk3 = 0,
+    asr = "no",
+    readtau = false,
+    flfrc = " ",
+    fldos = "matdyn.dos",
+    flfrq = "matdyn.freq",
+    flvec = "matdyn.modes",
+    fleig = "matdyn.eig",
+    fldyn = " ",
+    fltau = " ",
+    amass = zeros(1),
+    at = zeros(3, 3),  # FIXME: not very sure
+    ntyp = 0,
+    l1 = 1,
+    l2 = 1,
+    l3 = 1,
+    la2F = false,
+    q_in_band_form = false,
+    eigen_similarity = false,
+    q_in_cryst_coord = false,
+    na_ifc = false,
+    fd = false,
+    nosym = false,
+    loto_2d = false,
+)
+    return MatdynNamelist(
+        dos,
+        deltaE,
+        ndos,
+        nk1,
+        nk2,
+        nk3,
+        asr,
+        readtau,
+        flfrc,
+        fldos,
+        flfrq,
+        flvec,
+        fleig,
+        fldyn,
+        fltau,
+        amass,
+        at,
+        ntyp,
+        l1,
+        l2,
+        l3,
+        la2F,
+        q_in_band_form,
+        eigen_similarity,
+        q_in_cryst_coord,
+        na_ifc,
+        fd,
+        nosym,
+        loto_2d,
+    )
+end
+MatdynNamelist(nml::MatdynNamelist; kwargs...) = setproperties(nml, kwargs...)
+MatdynNamelist(nml::MatdynNamelist, t::NamedTuple) = setproperties(nml, t)
+MatdynNamelist(nml::MatdynNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     DynmatNamelist <: Namelist
 
 Represent the `INPUT` namelist of `dynmat.x`.
 """
-@with_kw struct DynmatNamelist <: Namelist
-    asr::String = "no"
-    axis::Int = 3
-    fildyn::String = "matdyn"
-    filout::String = "dynmat.out"
-    filmol::String = "dynmat.mold"
-    filxsf::String = "dynmat.axsf"
-    fileig::String = " "
-    amass::Vector{Union{Nothing,Float64}} = zeros(1)
-    q::Vector{Union{Nothing,Float64}} = zeros(3)
-    lperm::Bool = false
-    lplasma::Bool = false
+struct DynmatNamelist <: Namelist
+    asr::String
+    axis::Int
+    fildyn::String
+    filout::String
+    filmol::String
+    filxsf::String
+    fileig::String
+    amass::Vector{Union{Nothing,Float64}}
+    q::Vector{Union{Nothing,Float64}}
+    lperm::Bool
+    lplasma::Bool
 end # struct DynmatNamelist
+function DynmatNamelist(;
+    asr = "no",
+    axis = 3,
+    fildyn = "matdyn",
+    filout = "dynmat.out",
+    filmol = "dynmat.mold",
+    filxsf = "dynmat.axsf",
+    fileig = " ",
+    amass = zeros(1),
+    q = zeros(3),
+    lperm = false,
+    lplasma = false,
+)
+    return DynmatNamelist(
+        asr,
+        axis,
+        fildyn,
+        filout,
+        filmol,
+        filxsf,
+        fileig,
+        amass,
+        q,
+        lperm,
+        lplasma,
+    )
+end
+DynmatNamelist(nml::DynmatNamelist; kwargs...) = setproperties(nml, kwargs...)
+DynmatNamelist(nml::DynmatNamelist, t::NamedTuple) = setproperties(nml, t)
+DynmatNamelist(nml::DynmatNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 Inputs.titleof(::Type{PhNamelist}) = "INPUTPH"
 Inputs.titleof(::Type{Q2rNamelist}) = "INPUT"
