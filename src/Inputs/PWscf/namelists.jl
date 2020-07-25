@@ -495,36 +495,88 @@ SystemNamelist(nml::SystemNamelist, dict::AbstractDict) = setproperties(nml, dic
 
 Represent the `ELECTRONS` namelist of `pw.x`.
 """
-@with_kw struct ElectronsNamelist <: Namelist
-    electron_maxstep::UInt = 100
-    scf_must_converge::Bool = true
-    conv_thr::Float64 = 1e-6
-    adaptive_thr::Bool = false
-    conv_thr_init::Float64 = 1e-3
-    conv_thr_multi::Float64 = 0.1
-    mixing_mode::String = "plain"
-    mixing_beta::Float64 = 0.7
-    mixing_ndim::UInt = 8
-    mixing_fixed_ns::UInt = 0
-    diagonalization::String = "david"
-    ortho_para::UInt = 0
-    diago_thr_init::Float64 = 0.0
-    diago_cg_maxiter::UInt = 20
-    diago_david_ndim::UInt = 4
-    diago_full_acc::Bool = false
-    efield::Float64 = 0.0
-    efield_cart::Vector{Maybe{Float64}} = zeros(3)
-    efield_phase::String = "none"
-    startingpot::String = "atomic"  # This depends on `calculation`
-    startingwfc::String = "atomic+random"  # This depends on `calculation`
-    tqr::Bool = false
+struct ElectronsNamelist <: Namelist
+    electron_maxstep::UInt
+    scf_must_converge::Bool
+    conv_thr::Float64
+    adaptive_thr::Bool
+    conv_thr_init::Float64
+    conv_thr_multi::Float64
+    mixing_mode::String
+    mixing_beta::Float64
+    mixing_ndim::UInt
+    mixing_fixed_ns::UInt
+    diagonalization::String
+    ortho_para::UInt
+    diago_thr_init::Float64
+    diago_cg_maxiter::UInt
+    diago_david_ndim::UInt
+    diago_full_acc::Bool
+    efield::Float64
+    efield_cart::Vector{Maybe{Float64}}
+    efield_phase::String
+    startingpot::String  # This depends on `calculation`
+    startingwfc::String  # This depends on `calculation`
+    tqr::Bool
+end # struct ElectronsNamelist
+function ElectronsNamelist(;
+    electron_maxstep = 100,
+    scf_must_converge = true,
+    conv_thr = 1e-6,
+    adaptive_thr = false,
+    conv_thr_init = 1e-3,
+    conv_thr_multi = 0.1,
+    mixing_mode = "plain",
+    mixing_beta = 0.7,
+    mixing_ndim = 8,
+    mixing_fixed_ns = 0,
+    diagonalization = "david",
+    ortho_para = 0,
+    diago_thr_init = 0.0,
+    diago_cg_maxiter = 20,
+    diago_david_ndim = 4,
+    diago_full_acc = false,
+    efield = 0.0,
+    efield_cart = zeros(3),
+    efield_phase = "none",
+    startingpot = "atomic",  # This depends on `calculation`
+    startingwfc = "atomic+random",  # This depends on `calculation`
+    tqr = false,
+)
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
     @assert mixing_mode in ("plain", "TF", "local-TF")
     @assert diagonalization in ("david", "cg", "cg-serial", "david-serial", "ppcg")  # Different from docs
     @assert efield_phase in ("read", "write", "none")
     @assert startingpot in ("atomic", "file")
     @assert startingwfc in ("atomic", "atomic+random", "random", "file")
-end # struct ElectronsNamelist
+    return ElectronsNamelist(
+        electron_maxstep,
+        scf_must_converge,
+        conv_thr,
+        adaptive_thr,
+        conv_thr_init,
+        conv_thr_multi,
+        mixing_mode,
+        mixing_beta,
+        mixing_ndim,
+        mixing_fixed_ns,
+        diagonalization,
+        ortho_para,
+        diago_thr_init,
+        diago_cg_maxiter,
+        diago_david_ndim,
+        diago_full_acc,
+        efield,
+        efield_cart,
+        efield_phase,
+        startingpot,
+        startingwfc,
+        tqr,
+    )
+end
+ElectronsNamelist(nml::ElectronsNamelist; kwargs...) = setproperties(nml, kwargs...)
+ElectronsNamelist(nml::ElectronsNamelist, t::NamedTuple) = setproperties(nml, t)
+ElectronsNamelist(nml::ElectronsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     IonsNamelist <: Namelist
