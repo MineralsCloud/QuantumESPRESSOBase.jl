@@ -41,7 +41,7 @@ struct AtomicSpecies
     """
     pseudopot::String
     function AtomicSpecies(atom::Union{AbstractChar,AbstractString}, mass, pseudopot)
-        @assert(length(atom) <= 3, "Max total length of `atom` cannot exceed 3 characters!")
+        @argcheck length(atom) <= 3 "`atom` can have at most 3 characters!"
         return new(string(atom), mass, pseudopot)
     end
 end
@@ -100,7 +100,7 @@ struct AtomicPosition
     """
     if_pos::SVector{3,Bool}
     function AtomicPosition(atom::Union{AbstractChar,AbstractString}, pos, if_pos)
-        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        @argcheck length(atom) <= 3 "`atom` can have at most 3 characters!"
         return new(string(atom), pos, if_pos)
     end
 end
@@ -122,7 +122,7 @@ struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
     option::String
     function AtomicPositionsCard(data, option = "alat")
-        @assert option ∈ allowed_options(AtomicPositionsCard)
+        @argcheck option in allowed_options(AtomicPositionsCard)
         return new(data, option)
     end
 end
@@ -144,7 +144,7 @@ struct CellParametersCard <: AbstractCellParametersCard
     data::SMatrix{3,3,Float64}
     option::String
     function CellParametersCard(data, option = "alat")
-        @assert option ∈ allowed_options(CellParametersCard)
+        @argcheck option in allowed_options(CellParametersCard)
         return new(data, option)
     end
 end
@@ -158,7 +158,7 @@ struct AtomicForce
     atom::String
     force::SVector{3,Float64}
     function AtomicForce(atom::Union{AbstractChar,AbstractString}, force)
-        @assert(length(atom) <= 3, "the max length of `atom` cannot exceed 3 characters!")
+        @argcheck length(atom) <= 3 "`atom` can have at most 3 characters!"
         return new(string(atom), force)
     end
 end
@@ -237,12 +237,12 @@ struct KPointsCard{A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialK
         data,
         option,
     ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}}
-        @assert option ∈ allowed_options(KPointsCard)
-        @assert if option == "automatic"
+        @argcheck option in allowed_options(KPointsCard)
+        @argcheck if option == "automatic"
             typeof(data) <: MonkhorstPackGrid
         elseif option == "gamma"
             typeof(data) <: GammaPoint
-        else  # option ∈ ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+        else  # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
             eltype(data) <: SpecialKPoint
         end
         return new(data, option)
@@ -253,6 +253,6 @@ KPointsCard(data::AbstractVector{SpecialKPoint}) = KPointsCard(data, "tpiba")
 KPointsCard(data::GammaPoint) = KPointsCard(data, "gamma")
 KPointsCard(data::MonkhorstPackGrid) = KPointsCard(data, "automatic")
 function KPointsCard(data::AbstractMatrix, option = "tpiba")
-    @assert(size(data, 2) == 4)
+    @argcheck size(data, 2) == 4
     return KPointsCard(map(SpecialKPoint, eachrow(data)), option)
 end

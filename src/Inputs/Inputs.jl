@@ -14,6 +14,7 @@ module Inputs
 using AbInitioSoftwareBase.Inputs: Input
 using Compat: only, isnothing
 using Crystallography: Bravais, CellParameters, PrimitiveTriclinic
+using OptionalArgChecks: @argcheck
 using PyFortran90Namelists: fstring
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
@@ -139,7 +140,7 @@ function optional_cards end
 struct _Celldm{T<:Bravais}
     data::Any
     function _Celldm{T}(data) where {T}
-        @assert 1 <= length(data) <= 6
+        @argcheck 1 <= length(data) <= 6
         return new(data)
     end
 end
@@ -148,9 +149,9 @@ function Base.getindex(x::_Celldm, i::Integer)
     a = x.data[1]
     if i == 1
         return a
-    elseif i ∈ 2:3
+    elseif i in 2:3
         return a * x.data[i]
-    elseif i ∈ 4:6
+    elseif i in 4:6
         return acos(x.data[10-i])
     else
         throw(BoundsError(x.data, i))
@@ -160,9 +161,9 @@ function Base.getindex(x::_Celldm{PrimitiveTriclinic}, i::Integer)
     a = x.data[1]
     if i == 1
         return a
-    elseif i ∈ 2:3
+    elseif i in 2:3
         return a * x.data[i]
-    elseif i ∈ 4:6
+    elseif i in 4:6
         return acos(x.data[i])  # Note the difference!
     else
         throw(BoundsError(x.data, i))
