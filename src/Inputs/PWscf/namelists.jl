@@ -335,54 +335,47 @@ function SystemNamelist(;
     block_height = 0.1,  # The default value in QE's source code is 0.0
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @assert ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13))
-    @assert(ntyp <= 10, "`ntyp` $ntyp is larger than 10!")
-    @assert ntyp <= nat
-    @assert(
-        smearing in (
-            "gaussian",
-            "gauss",
-            "methfessel-paxton",
-            "m-p",
-            "mp",
-            "marzari-vanderbilt",
-            "cold",
-            "m-v",
-            "mv",
-            "fermi-dirac",
-            "f-d",
-            "fd",
-        )
+    @argcheck ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13))
+    @argcheck ntyp <= 10 "`ntyp` $ntyp is larger than 10!"
+    @argcheck ntyp <= nat
+    @argcheck smearing in (
+        "gaussian",
+        "gauss",
+        "methfessel-paxton",
+        "m-p",
+        "mp",
+        "marzari-vanderbilt",
+        "cold",
+        "m-v",
+        "mv",
+        "fermi-dirac",
+        "f-d",
+        "fd",
     )
-    @assert nspin in (1, 2, 4)
-    @assert ecutwfc >= 0
-    @assert ecutrho >= 0
-    @assert ecfixed >= 0
-    @assert qcutz >= 0
-    @assert q2sigma >= 0
-    @assert lda_plus_u_kind in 0:1
-    @assert edir in 1:3
-    @assert origin_choice in 1:2
-    @assert length(starting_charge) <= ntyp
-    @assert length(starting_magnetization) <= ntyp
-    @assert length(Hubbard_U) <= ntyp
-    @assert length(Hubbard_J0) <= ntyp
-    @assert length(Hubbard_alpha) <= ntyp
-    @assert length(Hubbard_beta) <= ntyp
-    # @assert all(length(x) <= ntyp for x in Hubbard_J)
-    @assert length(angle1) <= ntyp
-    @assert length(angle2) <= ntyp
-    @assert length(fixed_magnetization) <= 3
-    @assert length(london_c6) <= ntyp
-    @assert length(london_rvdw) <= ntyp
-    @assert(
-        exxdiv_treatment in
-        ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none")
-    )
-    @assert(
-        !(x_gamma_extrapolation && exxdiv_treatment in ("vcut_ws", "vcut_spherical")),
-        "`x_gamma_extrapolation` cannot be used with `vcut`!"
-    )
+    @argcheck nspin in (1, 2, 4)
+    @argcheck ecutwfc >= 0
+    @argcheck ecutrho >= 0
+    @argcheck ecfixed >= 0
+    @argcheck qcutz >= 0
+    @argcheck q2sigma >= 0
+    @argcheck lda_plus_u_kind in 0:1
+    @argcheck edir in 1:3
+    @argcheck origin_choice in 1:2
+    @argcheck length(starting_charge) <= ntyp
+    @argcheck length(starting_magnetization) <= ntyp
+    @argcheck length(Hubbard_U) <= ntyp
+    @argcheck length(Hubbard_J0) <= ntyp
+    @argcheck length(Hubbard_alpha) <= ntyp
+    @argcheck length(Hubbard_beta) <= ntyp
+    # @argcheck all(length(x) <= ntyp for x in Hubbard_J)
+    @argcheck length(angle1) <= ntyp
+    @argcheck length(angle2) <= ntyp
+    @argcheck length(fixed_magnetization) <= 3
+    @argcheck length(london_c6) <= ntyp
+    @argcheck length(london_rvdw) <= ntyp
+    @argcheck exxdiv_treatment in
+              ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none")
+    @argcheck !(x_gamma_extrapolation && exxdiv_treatment in ("vcut_ws", "vcut_spherical")) "`x_gamma_extrapolation` cannot be used with `vcut`!"
     return SystemNamelist(
         ibrav,
         celldm,
@@ -544,11 +537,11 @@ function ElectronsNamelist(;
     tqr = false,
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
-    @assert mixing_mode in ("plain", "TF", "local-TF")
-    @assert diagonalization in ("david", "cg", "cg-serial", "david-serial", "ppcg")  # Different from docs
-    @assert efield_phase in ("read", "write", "none")
-    @assert startingpot in ("atomic", "file")
-    @assert startingwfc in ("atomic", "atomic+random", "random", "file")
+    @argcheck mixing_mode in ("plain", "TF", "local-TF")
+    @argcheck diagonalization in ("david", "cg", "cg-serial", "david-serial", "ppcg")  # Different from docs
+    @argcheck efield_phase in ("read", "write", "none")
+    @argcheck startingpot in ("atomic", "file")
+    @argcheck startingwfc in ("atomic", "atomic+random", "random", "file")
     return ElectronsNamelist(
         electron_maxstep,
         scf_must_converge,
@@ -630,26 +623,22 @@ function IonsNamelist(;
     w_2 = 0.5,
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
-    @assert(
-        ion_dynamics in
-        ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman")
+    @argcheck ion_dynamics in
+              ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman")
+    @argcheck ion_positions in ("default", "from_input")
+    @argcheck pot_extrapolation in ("none", "atomic", "first_order", "second_order")
+    @argcheck wfc_extrapolation in ("none", "first_order", "second_order")
+    @argcheck ion_temperature in (
+        "rescaling",
+        "rescale-v",
+        "rescale-T",
+        "reduce-T",
+        "berendsen",
+        "andersen",
+        "initial",
+        "not_controlled",
     )
-    @assert ion_positions in ("default", "from_input")
-    @assert pot_extrapolation in ("none", "atomic", "first_order", "second_order")
-    @assert wfc_extrapolation in ("none", "first_order", "second_order")
-    @assert(
-        ion_temperature in (
-            "rescaling",
-            "rescale-v",
-            "rescale-T",
-            "reduce-T",
-            "berendsen",
-            "andersen",
-            "initial",
-            "not_controlled",
-        )
-    )
-    @assert tempw > 0
+    @argcheck tempw > 0
     return IonsNamelist(
         ion_dynamics,
         ion_positions,
@@ -703,27 +692,25 @@ function CellNamelist(;
     cell_dofree = "all",
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
-    @assert cell_dynamics in ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w")
-    @assert wmass >= 0
-    @assert(
-        cell_dofree in (
-            "all",
-            "ibrav",
-            "x",
-            "y",
-            "z",
-            "xy",
-            "xz",
-            "yz",
-            "xyz",
-            "shape",
-            "volume",
-            "2Dxy",
-            "2Dshape",
-            "epitaxial_ab",  # New in 6.4
-            "epitaxial_ac",  # New in 6.4
-            "epitaxial_bc",  # New in 6.4
-        )
+    @argcheck cell_dynamics in ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w")
+    @argcheck wmass >= 0
+    @argcheck cell_dofree in (
+        "all",
+        "ibrav",
+        "x",
+        "y",
+        "z",
+        "xy",
+        "xz",
+        "yz",
+        "xyz",
+        "shape",
+        "volume",
+        "2Dxy",
+        "2Dshape",
+        "epitaxial_ab",  # New in 6.4
+        "epitaxial_ac",  # New in 6.4
+        "epitaxial_bc",  # New in 6.4
     )
     return CellNamelist(
         cell_dynamics,
@@ -764,7 +751,7 @@ function DosNamelist(;
     DeltaE = 0.01,
     fildos = "$(prefix).dos",
 )
-    @assert ngauss in (0, 1, -1, -99)
+    @argcheck ngauss in (0, 1, -1, -99)
     return DosNamelist(prefix, outdir, ngauss, degauss, Emin, Emax, DeltaE, fildos)
 end
 DosNamelist(nml::DosNamelist; kwargs...) = setproperties(nml, kwargs...)
@@ -805,7 +792,7 @@ function BandsNamelist(;
     firstk = 0,
     lastk = 10000000,
 )
-    @assert spin_component in 1:2
+    @argcheck spin_component in 1:2
     return BandsNamelist(
         prefix,
         outdir,
