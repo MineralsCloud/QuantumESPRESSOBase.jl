@@ -220,6 +220,14 @@ struct SpecialKPoint <: FieldVector{4,Float64}
 end
 SpecialKPoint(::GammaPoint) = SpecialKPoint(0.0, 0.0, 0.0, 1.0)
 
+abstract type AbstractKPointsCard <: Card end
+
+struct AutomaticKPointsCard <: AbstractKPointsCard
+    data::MonkhorstPackGrid
+end
+
+struct GammaPointCard <: AbstractKPointsCard end
+
 """
     struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <: Card
 
@@ -229,29 +237,14 @@ Represent the `K_POINTS` card in QE.
 - `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
-struct KPointsCard{A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <:
-       Card
-    data::A
+struct KPointsCard <: AbstractKPointsCard
+    data::Vector{SpecialKPoint}
     option::String
-    function KPointsCard{A}(
-        data,
-        option,
-    ) where {A<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}}
+    function KPointsCard(data, option = "tpiba")
         @argcheck option in allowed_options(KPointsCard)
-        @argcheck if option == "automatic"
-            typeof(data) <: MonkhorstPackGrid
-        elseif option == "gamma"
-            typeof(data) <: GammaPoint
-        else  # option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-            eltype(data) <: SpecialKPoint
-        end
         return new(data, option)
     end
 end
-KPointsCard(data::A, option) where {A} = KPointsCard{A}(data, option)
-KPointsCard(data::AbstractVector{SpecialKPoint}) = KPointsCard(data, "tpiba")
-KPointsCard(data::GammaPoint) = KPointsCard(data, "gamma")
-KPointsCard(data::MonkhorstPackGrid) = KPointsCard(data, "automatic")
 function KPointsCard(data::AbstractMatrix, option = "tpiba")
     @argcheck size(data, 2) == 4
     return KPointsCard(map(SpecialKPoint, eachrow(data)), option)
