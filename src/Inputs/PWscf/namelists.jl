@@ -136,106 +136,206 @@ wfcfiles(nml::ControlNamelist, n = 1) =
 
 Represent the `SYSTEM` namelist of `pw.x`.
 """
-@with_kw struct SystemNamelist <: Namelist
-    ibrav::Int = -1
-    celldm::Vector{Maybe{Float64}} = zeros(6)  # Must specify
-    A::Float64 = 0.0
-    B::Float64 = 0.0
-    C::Float64 = 0.0
-    cosAB::Float64 = 0.0
-    cosAC::Float64 = 0.0
-    cosBC::Float64 = 0.0
-    nat::UInt = 0
-    ntyp::UInt = 0
-    nbnd::UInt = 0
-    tot_charge::Float64 = 0.0
-    starting_charge::Vector{Maybe{Float64}} = []
-    tot_magnetization::Float64 = -1.0
-    starting_magnetization::Vector{Maybe{Float64}} = []
-    ecutwfc::Float64 = 0.0
-    ecutrho::Float64 = 0.0
-    ecutfock::Float64 = 0.0
-    nr1::UInt = 0
-    nr2::UInt = 0
-    nr3::UInt = 0
-    nr1s::UInt = 0
-    nr2s::UInt = 0
-    nr3s::UInt = 0
-    nosym::Bool = false
-    nosym_evc::Bool = false
-    noinv::Bool = false
-    no_t_rev::Bool = false
-    force_symmorphic::Bool = false
-    use_all_frac::Bool = false
-    occupations::String = "fixed"
-    one_atom_occupations::Bool = false
-    starting_spin_angle::Bool = false
-    degauss::Float64 = 0.0
-    smearing::String = "gaussian"
-    nspin::UInt = 1
-    noncolin::Bool = false
-    ecfixed::Float64 = 0.0
-    qcutz::Float64 = 0.0
-    q2sigma::Float64 = 0.1  # The default value in QE's source code is 0.01
-    input_dft::String = "none"
-    exx_fraction::Float64 = 0.25
-    screening_parameter::Float64 = 0.106
-    exxdiv_treatment::String = "gygi-baldereschi"
-    x_gamma_extrapolation::Bool = true
-    ecutvcut::Float64 = 0.0
-    nqx1::UInt = 1
-    nqx2::UInt = 1
-    nqx3::UInt = 1
-    localization_thr::Float64 = 0.0  # This is only for QE 6.4
-    lda_plus_u::Bool = false
-    lda_plus_u_kind::UInt = 0
-    Hubbard_U::Vector{Maybe{Float64}} = []
-    Hubbard_J0::Vector{Maybe{Float64}} = []
-    Hubbard_alpha::Vector{Maybe{Float64}} = []
-    Hubbard_beta::Vector{Maybe{Float64}} = []
-    # Hubbard_J::Vector{Vector{Maybe{Float64}}} = [zeros(ntyp)]  # The default value in QE's source code is just one 0.0
-    starting_ns_eigenvalue::Float64 = -1.0  # It's actually a multidimensional array.
-    U_projection_type::String = "atomic"
-    edir::UInt = 1
-    emaxpos::Float64 = 0.5
-    eopreg::Float64 = 0.1
-    eamp::Float64 = 0.001  # The default value in QE's source code is 0.0
-    angle1::Vector{Maybe{Float64}} = []
-    angle2::Vector{Maybe{Float64}} = []
-    constrained_magnetization::String = "none"
-    fixed_magnetization::Vector{Maybe{Float64}} = zeros(3)  # The default value in QE's source code is just one 0.0
-    lambda::Float64 = 1.0
-    report::UInt = 100
-    lspinorb::Bool = false
-    assume_isolated::String = "none"
-    esm_bc::String = "pbc"
-    esm_w::Float64 = 0.0
-    esm_efield::Float64 = 0.0
-    esm_nfit::UInt = 4
-    fcp_mu::Float64 = 0.0
-    vdw_corr::String = "none"
-    london::Bool = false
-    london_s6::Float64 = 0.75
-    london_c6::Vector{Maybe{Float64}} = []
-    london_rvdw::Vector{Maybe{Float64}} = []
-    london_rcut::Float64 = 200.0
-    ts_vdw_econv_thr::Float64 = 1e-06
-    ts_vdw_isolated::Bool = false
-    xdm::Bool = false
-    xdm_a1::Float64 = 0.6836  # The default value in QE's source code is 0.0
-    xdm_a2::Float64 = 1.5045  # The default value in QE's source code is 0.0
-    space_group::UInt = 0
-    uniqueb::Bool = false
-    origin_choice::UInt = 1
-    rhombohedral::Bool = true
-    zgate::Float64 = 0.5
-    relaxz::Bool = false
-    block::Bool = false
-    block_1::Float64 = 0.45
-    block_2::Float64 = 0.55
-    block_height::Float64 = 0.1  # The default value in QE's source code is 0.0
+struct SystemNamelist <: Namelist
+    ibrav::UInt
+    celldm::Vector{Maybe{Float64}}
+    A::Float64
+    B::Float64
+    C::Float64
+    cosAB::Float64
+    cosAC::Float64
+    cosBC::Float64
+    nat::UInt
+    ntyp::UInt
+    nbnd::UInt
+    tot_charge::Float64
+    starting_charge::Vector{Maybe{Float64}}
+    tot_magnetization::Float64
+    starting_magnetization::Vector{Maybe{Float64}}
+    ecutwfc::Float64
+    ecutrho::Float64
+    ecutfock::Float64
+    nr1::UInt
+    nr2::UInt
+    nr3::UInt
+    nr1s::UInt
+    nr2s::UInt
+    nr3s::UInt
+    nosym::Bool
+    nosym_evc::Bool
+    noinv::Bool
+    no_t_rev::Bool
+    force_symmorphic::Bool
+    use_all_frac::Bool
+    occupations::String
+    one_atom_occupations::Bool
+    starting_spin_angle::Bool
+    degauss::Float64
+    smearing::String
+    nspin::UInt
+    noncolin::Bool
+    ecfixed::Float64
+    qcutz::Float64
+    q2sigma::Float64
+    input_dft::String
+    exx_fraction::Float64
+    screening_parameter::Float64
+    exxdiv_treatment::String
+    x_gamma_extrapolation::Bool
+    ecutvcut::Float64
+    nqx1::UInt
+    nqx2::UInt
+    nqx3::UInt
+    localization_thr::Float64
+    lda_plus_u::Bool
+    lda_plus_u_kind::UInt
+    Hubbard_U::Vector{Maybe{Float64}}
+    Hubbard_J0::Vector{Maybe{Float64}}
+    Hubbard_alpha::Vector{Maybe{Float64}}
+    Hubbard_beta::Vector{Maybe{Float64}}
+    # Hubbard_J::Vector{Vector{Maybe{Float64}}}
+    starting_ns_eigenvalue::Float64
+    U_projection_type::String
+    edir::UInt
+    emaxpos::Float64
+    eopreg::Float64
+    eamp::Float64
+    angle1::Vector{Maybe{Float64}}
+    angle2::Vector{Maybe{Float64}}
+    constrained_magnetization::String
+    fixed_magnetization::Vector{Maybe{Float64}}
+    lambda::Float64
+    report::UInt
+    lspinorb::Bool
+    assume_isolated::String
+    esm_bc::String
+    esm_w::Float64
+    esm_efield::Float64
+    esm_nfit::UInt
+    fcp_mu::Float64
+    vdw_corr::String
+    london::Bool
+    london_s6::Float64
+    london_c6::Vector{Maybe{Float64}}
+    london_rvdw::Vector{Maybe{Float64}}
+    london_rcut::Float64
+    ts_vdw_econv_thr::Float64
+    ts_vdw_isolated::Bool
+    xdm::Bool
+    xdm_a1::Float64
+    xdm_a2::Float64
+    space_group::UInt
+    uniqueb::Bool
+    origin_choice::UInt
+    rhombohedral::Bool
+    zgate::Float64
+    relaxz::Bool
+    block::Bool
+    block_1::Float64
+    block_2::Float64
+    block_height::Float64
+end # struct SystemNamelist
+function SystemNamelist(;
+    ibrav,
+    celldm = zeros(6),  # Must specify
+    A = 0.0,
+    B = 0.0,
+    C = 0.0,
+    cosAB = 0.0,
+    cosAC = 0.0,
+    cosBC = 0.0,
+    nat = 0,
+    ntyp = 0,
+    nbnd = 0,
+    tot_charge = 0.0,
+    starting_charge = [],
+    tot_magnetization = -1.0,
+    starting_magnetization = [],
+    ecutwfc = 0.0,
+    ecutrho = 0.0,
+    ecutfock = 0.0,
+    nr1 = 0,
+    nr2 = 0,
+    nr3 = 0,
+    nr1s = 0,
+    nr2s = 0,
+    nr3s = 0,
+    nosym = false,
+    nosym_evc = false,
+    noinv = false,
+    no_t_rev = false,
+    force_symmorphic = false,
+    use_all_frac = false,
+    occupations = "fixed",
+    one_atom_occupations = false,
+    starting_spin_angle = false,
+    degauss = 0.0,
+    smearing = "gaussian",
+    nspin = 1,
+    noncolin = false,
+    ecfixed = 0.0,
+    qcutz = 0.0,
+    q2sigma = 0.1,  # The default value in QE's source code is 0.01
+    input_dft = "none",
+    exx_fraction = 0.25,
+    screening_parameter = 0.106,
+    exxdiv_treatment = "gygi-baldereschi",
+    x_gamma_extrapolation = true,
+    ecutvcut = 0.0,
+    nqx1 = 1,
+    nqx2 = 1,
+    nqx3 = 1,
+    localization_thr = 0.0,  # This is only for QE 6.4
+    lda_plus_u = false,
+    lda_plus_u_kind = 0,
+    Hubbard_U = [],
+    Hubbard_J0 = [],
+    Hubbard_alpha = [],
+    Hubbard_beta = [],
+    # Hubbard_J = [zeros(ntyp)]  ,  # The default value in QE's source code is just one 0.0
+    starting_ns_eigenvalue = -1.0,  # It's actually a multidimensional array.
+    U_projection_type = "atomic",
+    edir = 1,
+    emaxpos = 0.5,
+    eopreg = 0.1,
+    eamp = 0.001,  # The default value in QE's source code is 0.0
+    angle1 = [],
+    angle2 = [],
+    constrained_magnetization = "none",
+    fixed_magnetization = zeros(3),  # The default value in QE's source code is just one 0.0
+    lambda = 1.0,
+    report = 100,
+    lspinorb = false,
+    assume_isolated = "none",
+    esm_bc = "pbc",
+    esm_w = 0.0,
+    esm_efield = 0.0,
+    esm_nfit = 4,
+    fcp_mu = 0.0,
+    vdw_corr = "none",
+    london = false,
+    london_s6 = 0.75,
+    london_c6 = [],
+    london_rvdw = [],
+    london_rcut = 200.0,
+    ts_vdw_econv_thr = 1e-06,
+    ts_vdw_isolated = false,
+    xdm = false,
+    xdm_a1 = 0.6836,  # The default value in QE's source code is 0.0
+    xdm_a2 = 1.5045,  # The default value in QE's source code is 0.0
+    space_group = 0,
+    uniqueb = false,
+    origin_choice = 1,
+    rhombohedral = true,
+    zgate = 0.5,
+    relaxz = false,
+    block = false,
+    block_1 = 0.45,
+    block_2 = 0.55,
+    block_height = 0.1,  # The default value in QE's source code is 0.0
+)
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @assert ibrav in union(-1:1:14, (-3, -5, -9, 91, -12, -13))
+    @assert ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13))
     @assert(ntyp <= 10, "`ntyp` $ntyp is larger than 10!")
     @assert ntyp <= nat
     @assert(
@@ -283,7 +383,108 @@ Represent the `SYSTEM` namelist of `pw.x`.
         !(x_gamma_extrapolation && exxdiv_treatment in ("vcut_ws", "vcut_spherical")),
         "`x_gamma_extrapolation` cannot be used with `vcut`!"
     )
-end # struct SystemNamelist
+    return SystemNamelist(
+        ibrav,
+        celldm,
+        A,
+        B,
+        C,
+        cosAB,
+        cosAC,
+        cosBC,
+        nat,
+        ntyp,
+        nbnd,
+        tot_charge,
+        starting_charge,
+        tot_magnetization,
+        starting_magnetization,
+        ecutwfc,
+        ecutrho,
+        ecutfock,
+        nr1,
+        nr2,
+        nr3,
+        nr1s,
+        nr2s,
+        nr3s,
+        nosym,
+        nosym_evc,
+        noinv,
+        no_t_rev,
+        force_symmorphic,
+        use_all_frac,
+        occupations,
+        one_atom_occupations,
+        starting_spin_angle,
+        degauss,
+        smearing,
+        nspin,
+        noncolin,
+        ecfixed,
+        qcutz,
+        q2sigma,
+        input_dft,
+        exx_fraction,
+        screening_parameter,
+        exxdiv_treatment,
+        x_gamma_extrapolation,
+        ecutvcut,
+        nqx1,
+        nqx2,
+        nqx3,
+        localization_thr,
+        lda_plus_u,
+        lda_plus_u_kind,
+        Hubbard_U,
+        Hubbard_J0,
+        Hubbard_alpha,
+        Hubbard_beta,
+        starting_ns_eigenvalue,
+        U_projection_type,
+        edir,
+        emaxpos,
+        eopreg,
+        eamp,
+        angle1,
+        angle2,
+        constrained_magnetization,
+        fixed_magnetization,
+        lambda,
+        report,
+        lspinorb,
+        assume_isolated,
+        esm_bc,
+        esm_w,
+        esm_efield,
+        esm_nfit,
+        fcp_mu,
+        vdw_corr,
+        london,
+        london_s6,
+        london_c6,
+        london_rvdw,
+        london_rcut,
+        ts_vdw_econv_thr,
+        ts_vdw_isolated,
+        xdm,
+        xdm_a1,
+        xdm_a2,
+        space_group,
+        uniqueb,
+        origin_choice,
+        rhombohedral,
+        zgate,
+        relaxz,
+        block,
+        block_1,
+        block_2,
+        block_height,
+    )
+end
+SystemNamelist(nml::SystemNamelist; kwargs...) = setproperties(nml, kwargs...)
+SystemNamelist(nml::SystemNamelist, t::NamedTuple) = setproperties(nml, t)
+SystemNamelist(nml::SystemNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     ElectronsNamelist <: Namelist
