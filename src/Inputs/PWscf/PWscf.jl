@@ -15,7 +15,7 @@ using Compat: eachrow
 using Crystallography: Bravais, Lattice, CellParameters, Cell, cellvolume
 using Formatting: sprintf1
 using LinearAlgebra: det, norm
-using Parameters: @with_kw
+using OptionalArgChecks: @argcheck
 using Pseudopotentials: pseudopot_format
 using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
@@ -114,21 +114,50 @@ Construct a `PWInput` which represents the input of program `pw.x`.
 - `k_points::KPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
 - `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 """
-@with_kw struct PWInput <: QuantumESPRESSOInput
-    control::ControlNamelist = ControlNamelist()
-    system::SystemNamelist = SystemNamelist()
-    electrons::ElectronsNamelist = ElectronsNamelist()
-    ions::IonsNamelist = IonsNamelist()
-    cell::CellNamelist = CellNamelist()
+struct PWInput <: QuantumESPRESSOInput
+    control::ControlNamelist
+    system::SystemNamelist
+    electrons::ElectronsNamelist
+    ions::IonsNamelist
+    cell::CellNamelist
     atomic_species::AtomicSpeciesCard
     atomic_positions::AtomicPositionsCard
     k_points::KPointsCard
-    cell_parameters::Union{Nothing,CellParametersCard} = nothing
-    constraints::Union{Union{Nothing,Float64}} = nothing
-    occupations::Union{Nothing,Float64} = nothing
-    atomic_forces::Union{Nothing,AtomicForcesCard} = nothing
-    @assert cell_parameters !== nothing || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
+    cell_parameters::Union{Nothing,CellParametersCard}
+    constraints::Union{Union{Nothing,Float64}}
+    occupations::Union{Nothing,Float64}
+    atomic_forces::Union{Nothing,AtomicForcesCard}
 end # struct PWInput
+function PWInput(;
+    control = ControlNamelist(),
+    system,
+    electrons = ElectronsNamelist(),
+    ions = IonsNamelist(),
+    cell = CellNamelist(),
+    atomic_species,
+    atomic_positions,
+    k_points,
+    cell_parameters = nothing,
+    constraints = nothing,
+    occupations = nothing,
+    atomic_forces = nothing,
+)
+    @argcheck cell_parameters !== nothing || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
+    return PWInput(
+        control,
+        system,
+        electrons,
+        ions,
+        cell,
+        atomic_species,
+        atomic_positions,
+        k_points,
+        cell_parameters,
+        constraints,
+        occupations,
+        atomic_forces,
+    )
+end
 PWInput(args::QuantumESPRESSOInputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
 end...)
