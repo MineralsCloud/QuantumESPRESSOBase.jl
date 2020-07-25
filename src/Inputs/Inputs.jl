@@ -112,7 +112,7 @@ julia> allowed_options(CellParametersCard)
 ("alat", "bohr", "angstrom")
 
 julia> allowed_options(KPointsCard)
-("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 ```
 """
 function allowed_options end
