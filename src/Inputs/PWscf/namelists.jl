@@ -353,8 +353,8 @@ function SystemNamelist(;
         "fd",
     )
     @argcheck nspin in (1, 2, 4)
-    @argcheck ecutwfc >= 0
-    @argcheck ecutrho >= 0
+    @argcheck ecutwfc >= 0  # From `set_cutoff` in https://github.com/QEF/q-e/blob/7573301/PW/src/input.f90#L1597-L1639
+    @argcheck ecutrho >= ecutwfc # From `set_cutoff`
     @argcheck ecfixed >= 0
     @argcheck qcutz >= 0
     @argcheck q2sigma >= 0
