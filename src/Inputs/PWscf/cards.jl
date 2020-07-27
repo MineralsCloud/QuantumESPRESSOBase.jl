@@ -249,3 +249,7 @@ function SpecialKPointsCard(data::AbstractMatrix, option = "tpiba")
     @argcheck size(data, 2) == 4
     return SpecialKPointsCard(map(SpecialKPoint, eachrow(data)), option)
 end
+
+KPointsCard(x::MonkhorstPackGrid) = MonkhorstPackGridCard(x)
+KPointsCard(::GammaPoint) = GammaPointCard()
+KPointsCard(data::AbstractVecOrMat, option = "tpiba") = SpecialKPointsCard(data, option)
