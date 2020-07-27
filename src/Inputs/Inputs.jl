@@ -22,7 +22,7 @@ import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent
 import Crystallography
 
 export getoption,
-    allowed_options,
+    optionpool,
     titleof,
     inputstring,
     compulsory_namelists,
@@ -97,7 +97,7 @@ Return the option for `Card` `x`.
 getoption(card::Card) = hasfield(typeof(card), :option) ? getfield(card, :option) : nothing
 
 """
-    allowed_options(T::Type{<:Card})
+    optionpool(T::Type{<:Card})
 
 Return the allowed options for `Card` `T`.
 
@@ -105,17 +105,17 @@ Return the allowed options for `Card` `T`.
 ```jldoctest
 julia> using QuantumESPRESSOBase.Cards, QuantumESPRESSOBase.Cards.PWscf
 
-julia> allowed_options(AtomicPositionsCard)
+julia> optionpool(AtomicPositionsCard)
 ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 
-julia> allowed_options(CellParametersCard)
+julia> optionpool(CellParametersCard)
 ("alat", "bohr", "angstrom")
 
-julia> allowed_options(KPointsCard)
+julia> optionpool(KPointsCard)
 ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 ```
 """
-function allowed_options end
+function optionpool end
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput <: Input end

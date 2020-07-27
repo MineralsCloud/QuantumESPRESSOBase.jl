@@ -36,7 +36,7 @@ import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt
 import Crystallography
 import Pseudopotentials
 import ..Inputs:
-    allowed_options,
+    optionpool,
     allnamelists,
     allcards,
     compulsory_namelists,
@@ -67,7 +67,7 @@ export ControlNamelist,
     xmldir,
     wfcfiles,
     getoption,
-    allowed_options,
+    optionpool,
     allnamelists,
     allcards,
     compulsory_namelists,
@@ -242,12 +242,12 @@ function set_structure(template::PWInput, cell::Cell, option1, option2)
     )
 end # function set_structure
 
-allowed_options(::Type{AtomicPositionsCard}) =
+optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-allowed_options(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
-allowed_options(::Type{AutomaticKPointsCard}) = ("automatic",)
-allowed_options(::Type{GammaPointCard}) = ("gamma",)
-allowed_options(::Type{KPointsCard}) =
+optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
+optionpool(::Type{AutomaticKPointsCard}) = ("automatic",)
+optionpool(::Type{GammaPointCard}) = ("gamma",)
+optionpool(::Type{KPointsCard}) =
     ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 
 titleof(::Type{ControlNamelist}) = "CONTROL"

@@ -16,7 +16,7 @@ using ..Inputs:
     QuantumESPRESSOInput,
     Card,
     getoption,
-    allowed_options,
+    optionpool,
     allnamelists,
     allcards,
     compulsory_namelists,
@@ -28,7 +28,7 @@ import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
 import Pseudopotentials
 import ..Inputs:
-    allowed_options,
+    optionpool,
     allnamelists,
     allcards,
     getoption,
@@ -216,11 +216,11 @@ end
 
 getoption(::AtomicVelocitiesCard) = "a.u"
 
-allowed_options(::Type{<:AtomicPositionsCard}) =
+optionpool(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
-allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
-allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
+optionpool(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
+optionpool(::Type{<:AtomicVelocity}) = ("a.u",)
+optionpool(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 
 allnamelists(::Type{CPInput}) =
     (:control, :system, :electrons, :ions, :cell, :press_ai, :wannier)

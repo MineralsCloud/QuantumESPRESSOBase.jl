@@ -122,7 +122,7 @@ struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
     option::String
     function AtomicPositionsCard(data, option = "alat")
-        @argcheck option in allowed_options(AtomicPositionsCard)
+        @argcheck option in optionpool(AtomicPositionsCard)
         return new(data, option)
     end
 end
@@ -144,7 +144,7 @@ struct CellParametersCard <: AbstractCellParametersCard
     data::SMatrix{3,3,Float64}
     option::String
     function CellParametersCard(data, option = "alat")
-        @argcheck option in allowed_options(CellParametersCard)
+        @argcheck option in optionpool(CellParametersCard)
         return new(data, option)
     end
 end
@@ -241,7 +241,7 @@ struct KPointsCard <: AbstractKPointsCard
     data::Vector{SpecialKPoint}
     option::String
     function KPointsCard(data, option = "tpiba")
-        @argcheck option in allowed_options(KPointsCard)
+        @argcheck option in optionpool(KPointsCard)
         return new(data, option)
     end
 end
