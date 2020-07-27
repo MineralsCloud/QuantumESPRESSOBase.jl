@@ -15,7 +15,7 @@ using ..Inputs:
     Namelist,
     QuantumESPRESSOInput,
     Card,
-    getoption,
+    optionof,
     optionpool,
     allnamelists,
     allcards,
@@ -31,7 +31,7 @@ import ..Inputs:
     optionpool,
     allnamelists,
     allcards,
-    getoption,
+    optionof,
     required_namelists,
     optional_namelists,
     required_cards,
@@ -114,7 +114,7 @@ Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom",
     It does not support conversion between `"alat"` and the others.
 """
 function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
-    old_option = getoption(card)
+    old_option = optionof(card)
     if new_option == old_option
         return card  # No conversion is needed
     else
@@ -168,7 +168,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
     It will throw an error if the option is `"alat"`.
 """
 function Crystallography.cellvolume(card::AbstractCellParametersCard)
-    option = getoption(card)
+    option = optionof(card)
     if option == "bohr"
         abs(det(card.data))
     elseif option == "angstrom"
@@ -202,7 +202,7 @@ function inputstring(data::AtomicPosition)
     )
 end
 function inputstring(card::AtomicPositionsCard)
-    return "ATOMIC_POSITIONS { $(getoption(card)) }" *
+    return "ATOMIC_POSITIONS { $(optionof(card)) }" *
            newline(card) *
            join((indent(card) * inputstring(x) for x in card.data), newline(card))
 end
@@ -211,10 +211,10 @@ function inputstring(card::CellParametersCard)
         indent * join((sprintf1(floatfmt(card), x) for x in row), delimiter(card)) for
         row in eachrow(card.data)
     )
-    return "CELL_PARAMETERS { $(getoption(card)) }" * newline(card) * join(it, newline)
+    return "CELL_PARAMETERS { $(optionof(card)) }" * newline(card) * join(it, newline)
 end
 
-getoption(::AtomicVelocitiesCard) = "a.u"
+optionof(::AtomicVelocitiesCard) = "a.u"
 
 optionpool(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")

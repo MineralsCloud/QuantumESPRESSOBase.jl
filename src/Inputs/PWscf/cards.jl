@@ -176,7 +176,7 @@ Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom",
     It does not support conversion between `"alat"` and the others.
 """
 function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
-    old_option = getoption(card)
+    old_option = optionof(card)
     if new_option == old_option
         return card  # No conversion is needed
     else

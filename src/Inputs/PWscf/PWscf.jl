@@ -29,7 +29,7 @@ using ..Inputs:
     entryname,
     Card,
     _Celldm,
-    getoption
+    optionof
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
@@ -66,7 +66,7 @@ export ControlNamelist,
     optconvert,
     xmldir,
     wfcfiles,
-    getoption,
+    optionof,
     optionpool,
     allnamelists,
     allcards,
@@ -86,7 +86,7 @@ include("cards.jl")
 function iscompatible(system::SystemNamelist, cell_parameters::CellParametersCard)
     ibrav, celldm = system.ibrav, system.celldm
     if iszero(ibrav)
-        if getoption(cell_parameters) in ("bohr", "angstrom")
+        if optionof(cell_parameters) in ("bohr", "angstrom")
             return all(iszero, celldm)
         else  # "alat"
             return !iszero(first(celldm))  # first(celldm) != 0
@@ -188,7 +188,7 @@ end # function set_temperature
 function set_pressure_volume(template::PWInput, pressure, volume)
     @set! template.cell.press = ustrip(u"kbar", pressure)
     factor = cbrt(volume / (cellvolume(template) * u"bohr^3")) |> NoUnits  # This is dimensionless and `cbrt` works with units.
-    if template.cell_parameters === nothing || getoption(template.cell_parameters) == "alat"
+    if template.cell_parameters === nothing || optionof(template.cell_parameters) == "alat"
         @set! template.system.celldm[1] *= factor
     else
         @set! template.system.celldm = zeros(6)
@@ -200,7 +200,7 @@ end # function set_pressure_volume
 
 function set_structure(template::PWInput, cell_parameters::CellParametersCard)
     if template.cell_parameters === nothing
-        if getoption(cell_parameters) in ("bohr", "angstrom")
+        if optionof(cell_parameters) in ("bohr", "angstrom")
             @set! template.cell_parameters = cell_parameters
             @set! template.system.ibrav = 0
             @set! template.system.celldm = zeros(6)
@@ -209,8 +209,8 @@ function set_structure(template::PWInput, cell_parameters::CellParametersCard)
             @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
         end
     else
-        if getoption(template.cell_parameters) == "alat"
-            if getoption(cell_parameters) in ("bohr", "angstrom")
+        if optionof(template.cell_parameters) == "alat"
+            if optionof(cell_parameters) in ("bohr", "angstrom")
                 @set! template.system.celldm = [template.system.celldm[1]]
                 cell_parameters = CellParametersCard(
                     cell_parameters.data / template.system.celldm[1],
@@ -220,7 +220,7 @@ function set_structure(template::PWInput, cell_parameters::CellParametersCard)
                 @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
             end
         else
-            if getoption(cell_parameters) == "alat"
+            if optionof(cell_parameters) == "alat"
                 error("not matched!")
             end
         end
@@ -309,7 +309,7 @@ end
 Return a `String` representing a `AtomicPositionsCard`, valid for Quantum ESPRESSO's input.
 """
 inputstring(card::AtomicPositionsCard) = join(
-    ("ATOMIC_POSITIONS { $(getoption(card)) }", map(inputstring, card.data)...),
+    ("ATOMIC_POSITIONS { $(optionof(card)) }", map(inputstring, card.data)...),
     newline(card),
 )
 """
@@ -320,7 +320,7 @@ Return a `String` representing a `CellParametersCard`, valid for Quantum ESPRESS
 function inputstring(card::CellParametersCard)
     return join(
         (
-            "CELL_PARAMETERS { $(getoption(card)) }",
+            "CELL_PARAMETERS { $(optionof(card)) }",
             map(eachrow(card.data)) do row
                 join((sprintf1(floatfmt(card), x) for x in row))
             end...,
@@ -357,12 +357,12 @@ inputstring(data::SpecialKPoint) =
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(card::KPointsCard)
-    content = "K_POINTS { $(getoption(card)) }" * newline(card)
+    content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
 end
 inputstring(card::GammaPointCard) = "K_POINTS { gamme }" * newline(card)
 function inputstring(card::AutomaticKPointsCard)
-    content = "K_POINTS { $(getoption(card)) }" * newline(card)
+    content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return content * inputstring(card.data)
 end
 
@@ -392,7 +392,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
     It will throw an error if the option is `"alat"`.
 """
 function Crystallography.cellvolume(card::AbstractCellParametersCard)
-    option = getoption(card)
+    option = optionof(card)
     if option == "bohr"
         return abs(det(card.data))
     elseif option == "angstrom"
@@ -416,7 +416,7 @@ function Crystallography.cellvolume(input::PWInput)
     if input.cell_parameters === nothing
         return cellvolume(Lattice(input.system))
     else
-        if getoption(input.cell_parameters) == "alat"
+        if optionof(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
             if input.system.celldm[1] === nothing
                 error("`celldm[1]` is not defined!")

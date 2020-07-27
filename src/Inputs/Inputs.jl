@@ -21,7 +21,7 @@ import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent
 import Crystallography
 
-export getoption,
+export optionof,
     optionpool,
     titleof,
     inputstring,
@@ -87,14 +87,14 @@ Base.NamedTuple(nml::Namelist) =
 Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(Dict(a), Dict(b))
 
 """
-    getoption(x::Card)
+    optionof(x::Card)
 
 Return the option for `Card` `x`.
 
 !!! warning
     A user should not use `x.option` to access a `Card`'s `option`.
 """
-getoption(card::Card) = hasfield(typeof(card), :option) ? getfield(card, :option) : nothing
+optionof(card::Card) = hasfield(typeof(card), :option) ? getfield(card, :option) : nothing
 
 """
     optionpool(T::Type{<:Card})
