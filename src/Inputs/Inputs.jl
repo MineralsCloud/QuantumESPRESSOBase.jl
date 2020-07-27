@@ -144,40 +144,41 @@ struct _Celldm{T<:Bravais}
     end
 end
 
-function Base.getindex(x::_Celldm, i::Integer)
-    a = x.data[1]
-    if i == 1
-        return a
-    elseif i in 2:3
-        return a * x.data[i]
-    elseif i in 4:6
-        return acos(x.data[10-i])
-    else
-        throw(BoundsError(x.data, i))
-    end
-end # function Base.getindex
-function Base.getindex(x::_Celldm{PrimitiveTriclinic}, i::Integer)
-    a = x.data[1]
-    if i == 1
-        return a
-    elseif i in 2:3
-        return a * x.data[i]
-    elseif i in 4:6
-        return acos(x.data[i])  # Note the difference!
-    else
-        throw(BoundsError(x.data, i))
-    end
-end # function Base.getindex
-Base.getindex(x::_Celldm, I) = [x[i] for i in I]
+Base.getindex(x::_Celldm, i) = getindex(x.data, i)
+# function Base.getindex(x::_Celldm, i::Integer)
+#     a = x.data[1]
+#     if i == 1
+#         return a
+#     elseif i in 2:3
+#         return a * x.data[i]
+#     elseif i in 4:6
+#         return acos(x.data[10-i])
+#     else
+#         throw(BoundsError(x.data, i))
+#     end
+# end # function Base.getindex
+# function Base.getindex(x::_Celldm{PrimitiveTriclinic}, i::Integer)
+#     a = x.data[1]
+#     if i == 1
+#         return a
+#     elseif i in 2:3
+#         return a * x.data[i]
+#     elseif i in 4:6
+#         return acos(x.data[i])  # Note the difference!
+#     else
+#         throw(BoundsError(x.data, i))
+#     end
+# end # function Base.getindex
+# Base.getindex(x::_Celldm, I) = [x[i] for i in I]
 
-function Base.convert(::Type{_Celldm{T}}, p::CellParameters) where {T}
-    a, b, c, α, β, γ = p
-    return _Celldm{T}([a, b / a, c / a, cos(γ), cos(β), cos(α)])  # What a horrible conversion!
-end # function Base.convert
-function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
-    a, b, c, α, β, γ = p
-    return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
-end # function Base.convert
+# function Base.convert(::Type{_Celldm{T}}, p::CellParameters) where {T}
+#     a, b, c, α, β, γ = p
+#     return _Celldm{T}([a, b / a, c / a, cos(γ), cos(β), cos(α)])  # What a horrible conversion!
+# end # function Base.convert
+# function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
+#     a, b, c, α, β, γ = p
+#     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
+# end # function Base.convert
 
 include("PWscf/PWscf.jl")
 # include("CP/CP.jl")
