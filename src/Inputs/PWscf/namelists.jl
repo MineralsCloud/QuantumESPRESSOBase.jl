@@ -137,7 +137,7 @@ wfcfiles(nml::ControlNamelist, n = 1) =
 Represent the `SYSTEM` namelist of `pw.x`.
 """
 @auto_hash_equals struct SystemNamelist <: Namelist
-    ibrav::UInt8
+    ibrav::Int8
     celldm::Vector{Maybe{Float64}}
     A::Float64
     B::Float64
@@ -236,7 +236,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
     block_height::Float64
 end # struct SystemNamelist
 function SystemNamelist(;
-    ibrav,
+    ibrav = 127,
     celldm = zeros(6),  # Must specify
     A = 0.0,
     B = 0.0,
@@ -335,7 +335,7 @@ function SystemNamelist(;
     block_height = 0.1,  # The default value in QE's source code is 0.0
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @argcheck ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13))
+    @argcheck ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13), 127)
     @argcheck ntyp <= 10 && ntyp <= nat
     @argcheck smearing in (
         "gaussian",
