@@ -37,7 +37,7 @@ struct AtomicSpecies
     """
     File containing pseudopotential for this species.
 
-    See also: [`pseudopot_format`](@ref)
+    See also: [`pseudoformat`](@ref)
     """
     pseudopot::String
     function AtomicSpecies(atom::Union{AbstractChar,AbstractString}, mass, pseudopot)
@@ -47,11 +47,11 @@ struct AtomicSpecies
 end
 
 """
-    pseudopot_format(data::AtomicSpecies)
+    pseudoformat(data::AtomicSpecies)
 
 Return the pseudopotential format of the `AtomicSpecies`.
 """
-Pseudopotentials.pseudopot_format(data::AtomicSpecies) = pseudopot_format(data.pseudopot)
+pseudoformat(data::AtomicSpecies) = pseudoformat(data.pseudopot)
 
 """
     AtomicSpeciesCard <: Card
@@ -122,7 +122,7 @@ struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
     option::String
     function AtomicPositionsCard(data, option = "alat")
-        @assert option in allowed_options(AtomicPositionsCard)
+        @assert option in optionpool(AtomicPositionsCard)
         return new(data, option)
     end
 end
@@ -157,7 +157,7 @@ struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     data::SMatrix{3,3,T}
     option::String
     function CellParametersCard{T}(data, option = "alat") where {T<:Real}
-        @assert option in allowed_options(CellParametersCard)
+        @assert option in optionpool(CellParametersCard)
         return new(data, option)
     end
 end
@@ -233,7 +233,7 @@ struct RefCellParametersCard <: AbstractCellParametersCard
     data::SMatrix{3,3,Float64}
     option::String
     function RefCellParametersCard(data, option = "bohr")
-        @assert option in allowed_options(RefCellParametersCard)
+        @assert option in optionpool(RefCellParametersCard)
         return new(data, option)
     end
 end

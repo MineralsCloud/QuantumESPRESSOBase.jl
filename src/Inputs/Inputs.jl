@@ -19,15 +19,14 @@ using PyFortran90Namelists: fstring
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent
-import Crystallography
 
-export getoption,
-    allowed_options,
+export optionof,
+    optionpool,
     titleof,
     inputstring,
-    compulsory_namelists,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards,
     allnamelists,
     allcards
@@ -87,17 +86,17 @@ Base.NamedTuple(nml::Namelist) =
 Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(Dict(a), Dict(b))
 
 """
-    getoption(x::Card)
+    optionof(x::Card)
 
-Return the option for `Card` `x`.
+Return a `String` representing the option for `Card` `x`.
 
 !!! warning
-    A user should not use `x.option` to access a `Card`'s `option`.
+    Do not use `x.option` to access a `Card`'s `option`.
 """
-getoption(card::Card) = hasfield(typeof(card), :option) ? getfield(card, :option) : nothing
+optionof(card::Card) = hasfield(typeof(card), :option) ? getfield(card, :option) : nothing
 
 """
-    allowed_options(T::Type{<:Card})
+    optionpool(T::Type{<:Card})
 
 Return the allowed options for `Card` `T`.
 
@@ -105,17 +104,17 @@ Return the allowed options for `Card` `T`.
 ```jldoctest
 julia> using QuantumESPRESSOBase.Cards, QuantumESPRESSOBase.Cards.PWscf
 
-julia> allowed_options(AtomicPositionsCard)
+julia> optionpool(AtomicPositionsCard)
 ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 
-julia> allowed_options(CellParametersCard)
+julia> optionpool(CellParametersCard)
 ("alat", "bohr", "angstrom")
 
-julia> allowed_options(KPointsCard)
+julia> optionpool(KPointsCard)
 ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 ```
 """
-function allowed_options end
+function optionpool end
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput <: Input end
@@ -128,11 +127,11 @@ function allnamelists end
 
 function allcards end
 
-function compulsory_namelists end
+function required_namelists end
 
 function optional_namelists end
 
-function compulsory_cards end
+function required_cards end
 
 function optional_cards end
 

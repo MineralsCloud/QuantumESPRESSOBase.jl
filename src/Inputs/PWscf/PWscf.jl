@@ -12,11 +12,10 @@ julia>
 module PWscf
 
 using Compat: eachrow
-using Crystallography: Bravais, Lattice, CellParameters, Cell, cellvolume
+using Crystallography: Cell
 using Formatting: sprintf1
 using LinearAlgebra: det, norm
 using OptionalArgChecks: @argcheck
-using Pseudopotentials: pseudopot_format
 using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
@@ -29,19 +28,19 @@ using ..Inputs:
     entryname,
     Card,
     _Celldm,
-    getoption
+    optionof
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
-import Crystallography
-import Pseudopotentials
+import Crystallography: Bravais, Lattice, cellvolume
+import Pseudopotentials: pseudoformat
 import ..Inputs:
-    allowed_options,
+    optionpool,
     allnamelists,
     allcards,
-    compulsory_namelists,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards
 
 export ControlNamelist,
@@ -66,13 +65,13 @@ export ControlNamelist,
     optconvert,
     xmldir,
     wfcfiles,
-    getoption,
-    allowed_options,
+    optionof,
+    optionpool,
     allnamelists,
     allcards,
-    compulsory_namelists,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards,
     set_verbosity,
     set_temperature,
@@ -86,7 +85,7 @@ include("cards.jl")
 function iscompatible(system::SystemNamelist, cell_parameters::CellParametersCard)
     ibrav, celldm = system.ibrav, system.celldm
     if iszero(ibrav)
-        if getoption(cell_parameters) in ("bohr", "angstrom")
+        if optionof(cell_parameters) in ("bohr", "angstrom")
             return all(iszero, celldm)
         else  # "alat"
             return !iszero(first(celldm))  # first(celldm) != 0
@@ -188,7 +187,7 @@ end # function set_temperature
 function set_pressure_volume(template::PWInput, pressure, volume)
     @set! template.cell.press = ustrip(u"kbar", pressure)
     factor = cbrt(volume / (cellvolume(template) * u"bohr^3")) |> NoUnits  # This is dimensionless and `cbrt` works with units.
-    if template.cell_parameters === nothing || getoption(template.cell_parameters) == "alat"
+    if template.cell_parameters === nothing || optionof(template.cell_parameters) == "alat"
         @set! template.system.celldm[1] *= factor
     else
         @set! template.system.celldm = zeros(6)
@@ -200,7 +199,7 @@ end # function set_pressure_volume
 
 function set_structure(template::PWInput, cell_parameters::CellParametersCard)
     if template.cell_parameters === nothing
-        if getoption(cell_parameters) in ("bohr", "angstrom")
+        if optionof(cell_parameters) in ("bohr", "angstrom")
             @set! template.cell_parameters = cell_parameters
             @set! template.system.ibrav = 0
             @set! template.system.celldm = zeros(6)
@@ -209,8 +208,8 @@ function set_structure(template::PWInput, cell_parameters::CellParametersCard)
             @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
         end
     else
-        if getoption(template.cell_parameters) == "alat"
-            if getoption(cell_parameters) in ("bohr", "angstrom")
+        if optionof(template.cell_parameters) == "alat"
+            if optionof(cell_parameters) in ("bohr", "angstrom")
                 @set! template.system.celldm = [template.system.celldm[1]]
                 cell_parameters = CellParametersCard(
                     cell_parameters.data / template.system.celldm[1],
@@ -220,7 +219,7 @@ function set_structure(template::PWInput, cell_parameters::CellParametersCard)
                 @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
             end
         else
-            if getoption(cell_parameters) == "alat"
+            if optionof(cell_parameters) == "alat"
                 error("not matched!")
             end
         end
@@ -242,12 +241,12 @@ function set_structure(template::PWInput, cell::Cell, option1, option2)
     )
 end # function set_structure
 
-allowed_options(::Type{AtomicPositionsCard}) =
+optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-allowed_options(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
-allowed_options(::Type{AutomaticKPointsCard}) = ("automatic",)
-allowed_options(::Type{GammaPointCard}) = ("gamma",)
-allowed_options(::Type{KPointsCard}) =
+optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
+optionpool(::Type{AutomaticKPointsCard}) = ("automatic",)
+optionpool(::Type{GammaPointCard}) = ("gamma",)
+optionpool(::Type{KPointsCard}) =
     ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 
 titleof(::Type{ControlNamelist}) = "CONTROL"
@@ -309,7 +308,7 @@ end
 Return a `String` representing a `AtomicPositionsCard`, valid for Quantum ESPRESSO's input.
 """
 inputstring(card::AtomicPositionsCard) = join(
-    ("ATOMIC_POSITIONS { $(getoption(card)) }", map(inputstring, card.data)...),
+    ("ATOMIC_POSITIONS { $(optionof(card)) }", map(inputstring, card.data)...),
     newline(card),
 )
 """
@@ -320,7 +319,7 @@ Return a `String` representing a `CellParametersCard`, valid for Quantum ESPRESS
 function inputstring(card::CellParametersCard)
     return join(
         (
-            "CELL_PARAMETERS { $(getoption(card)) }",
+            "CELL_PARAMETERS { $(optionof(card)) }",
             map(eachrow(card.data)) do row
                 join((sprintf1(floatfmt(card), x) for x in row))
             end...,
@@ -357,31 +356,31 @@ inputstring(data::SpecialKPoint) =
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
 function inputstring(card::KPointsCard)
-    content = "K_POINTS { $(getoption(card)) }" * newline(card)
+    content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
 end
 inputstring(card::GammaPointCard) = "K_POINTS { gamme }" * newline(card)
 function inputstring(card::AutomaticKPointsCard)
-    content = "K_POINTS { $(getoption(card)) }" * newline(card)
+    content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return content * inputstring(card.data)
 end
 
 """
-    Crystallography.Bravais(nml::SystemNamelist)
+    Bravais(nml::SystemNamelist)
 
 Return a `Bravais` from a `SystemNamelist`.
 """
-Crystallography.Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
+Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
 
 """
-    Crystallography.Lattice(nml::SystemNamelist)
+    Lattice(nml::SystemNamelist)
 
 Return a `Lattice` from a `SystemNamelist`.
 """
-function Crystallography.Lattice(nml::SystemNamelist)
+function Lattice(nml::SystemNamelist)
     b = Bravais(nml)
     return Lattice(b, _Celldm{typeof(b)}(nml.celldm))
-end # function Crystallography.Lattice
+end # function Lattice
 
 """
     cellvolume(card)
@@ -391,8 +390,8 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 !!! warning
     It will throw an error if the option is `"alat"`.
 """
-function Crystallography.cellvolume(card::AbstractCellParametersCard)
-    option = getoption(card)
+function cellvolume(card::AbstractCellParametersCard)
+    option = optionof(card)
     if option == "bohr"
         return abs(det(card.data))
     elseif option == "angstrom"
@@ -400,23 +399,23 @@ function Crystallography.cellvolume(card::AbstractCellParametersCard)
     else  # option == "alat"
         error("information not enough! Parameter `celldm[1]` needed!")
     end
-end # function Crystallography.cellvolume
+end # function cellvolume
 """
     cellvolume(nml::SystemNamelist)
 
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
-Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
+cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 """
     cellvolume(input::PWInput)
 
 Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
 """
-function Crystallography.cellvolume(input::PWInput)
+function cellvolume(input::PWInput)
     if input.cell_parameters === nothing
         return cellvolume(Lattice(input.system))
     else
-        if getoption(input.cell_parameters) == "alat"
+        if optionof(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
             if input.system.celldm[1] === nothing
                 error("`celldm[1]` is not defined!")
@@ -427,13 +426,23 @@ function Crystallography.cellvolume(input::PWInput)
             return cellvolume(input.cell_parameters)
         end
     end
-end # function Crystallography.cellvolume
+end # function cellvolume
 
-allnamelists(x::PWInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
-allnamelists(::Type{PWInput}) = (:control, :system, :electrons, :ions, :cell)
+"""
+    allnamelists(x::PWInput)
 
-allcards(x::PWInput) = (getfield(x, f) for f in allcards(typeof(x)))
-allcards(::Type{PWInput}) = (
+Return an iterator of all `Namelist`s from a `PWInput`. You may want to `collect` them.
+"""
+allnamelists(x::PWInput) = (getfield(x, f) for f in _allnamelists(typeof(x)))
+_allnamelists(::Type{PWInput}) = (:control, :system, :electrons, :ions, :cell)
+
+"""
+    allcards(x::PWInput)
+
+Get all `Card`s from a `PWInput`.
+"""
+allcards(x::PWInput) = (getfield(x, f) for f in _allcards(typeof(x)))
+_allcards(::Type{PWInput}) = (
     :atomic_species,
     :atomic_positions,
     :k_points,
@@ -443,17 +452,37 @@ allcards(::Type{PWInput}) = (
     :atomic_forces,
 )
 
-compulsory_namelists(x::PWInput) = (getfield(x, f) for f in compulsory_namelists(typeof(x)))
-compulsory_namelists(::Type{PWInput}) = (:control, :system, :electrons)
+"""
+    required_namelists(x::PWInput)
 
-optional_namelists(x::PWInput) = (getfield(x, f) for f in optional_namelists(typeof(x)))
-optional_namelists(::Type{PWInput}) = (:ions, :cell)
+Return an iterator of required `Namelist`s from a `PWInput`. You may want to `collect` them.
+"""
+required_namelists(x::PWInput) = (getfield(x, f) for f in _required_namelists(typeof(x)))
+_required_namelists(::Type{PWInput}) = (:control, :system, :electrons)
 
-compulsory_cards(x::PWInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
-compulsory_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
+"""
+    optional_namelists(x::PWInput)
 
-optional_cards(x::PWInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
-optional_cards(::Type{PWInput}) =
+Return an iterator of optional `Namelist`s from a `PWInput`. You may want to `collect` them.
+"""
+optional_namelists(x::PWInput) = (getfield(x, f) for f in _optional_namelists(typeof(x)))
+_optional_namelists(::Type{PWInput}) = (:ions, :cell)
+
+"""
+    required_cards(x::PWInput)
+
+Return an iterator of required `Card`s from a `PWInput`. You may want to `collect` them.
+"""
+required_cards(x::PWInput) = (getfield(x, f) for f in _required_cards(typeof(x)))
+_required_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
+
+"""
+    optional_cards(x::PWInput)
+
+Return an iterator of optional `Card`s from a `PWInput`. You may want to `collect` them.
+"""
+optional_cards(x::PWInput) = (getfield(x, f) for f in _optional_cards(typeof(x)))
+_optional_cards(::Type{PWInput}) =
     (:cell_parameters, :constraints, :occupations, :atomic_forces)
 
 indent(

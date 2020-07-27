@@ -1,11 +1,9 @@
 module CP
 
 using Compat: eachrow
-using Crystallography: Bravais, Lattice, CellParameters, Cell
 using Formatting: sprintf1
 using LinearAlgebra: det
 using Parameters: @with_kw
-using Pseudopotentials: pseudopot_format
 using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful
@@ -15,26 +13,26 @@ using ..Inputs:
     Namelist,
     QuantumESPRESSOInput,
     Card,
-    getoption,
-    allowed_options,
+    optionof,
+    optionpool,
     allnamelists,
     allcards,
-    compulsory_namelists,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
-import Crystallography
-import Pseudopotentials
+import Crystallography: Bravais, Lattice
+import Pseudopotentials: pseudoformat
 import ..Inputs:
-    allowed_options,
+    optionpool,
     allnamelists,
     allcards,
-    getoption,
-    compulsory_namelists,
+    optionof,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards
 using ..Formats: delimiter, newline, indent, floatfmt, intfmt
 
@@ -114,7 +112,7 @@ Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom",
     It does not support conversion between `"alat"` and the others.
 """
 function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
-    old_option = getoption(card)
+    old_option = optionof(card)
     if new_option == old_option
         return card  # No conversion is needed
     else
@@ -140,25 +138,25 @@ titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 
 """
-    Crystallography.Bravais(nml::SystemNamelist)
+    Bravais(nml::SystemNamelist)
 
 Return a `Bravais` from a `SystemNamelist`.
 """
-Crystallography.Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
+Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
 
 """
-    Crystallography.Lattice(nml::SystemNamelist)
+    Lattice(nml::SystemNamelist)
 
 Return a `Lattice` from a `SystemNamelist`.
 """
-Crystallography.Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
+Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
 
 """
     cellvolume(nml::SystemNamelist)
 
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
-Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
+cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 """
     cellvolume(card)
 
@@ -167,8 +165,8 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 !!! warning
     It will throw an error if the option is `"alat"`.
 """
-function Crystallography.cellvolume(card::AbstractCellParametersCard)
-    option = getoption(card)
+function cellvolume(card::AbstractCellParametersCard)
+    option = optionof(card)
     if option == "bohr"
         abs(det(card.data))
     elseif option == "angstrom"
@@ -176,7 +174,7 @@ function Crystallography.cellvolume(card::AbstractCellParametersCard)
     else  # option == "alat"
         error("information not enough! Parameter `celldm[1]` needed!")
     end
-end # function Crystallography.cellvolume
+end # function cellvolume
 
 function inputstring(data::AtomicSpecies)
     return join(
@@ -202,7 +200,7 @@ function inputstring(data::AtomicPosition)
     )
 end
 function inputstring(card::AtomicPositionsCard)
-    return "ATOMIC_POSITIONS { $(getoption(card)) }" *
+    return "ATOMIC_POSITIONS { $(optionof(card)) }" *
            newline(card) *
            join((indent(card) * inputstring(x) for x in card.data), newline(card))
 end
@@ -211,16 +209,16 @@ function inputstring(card::CellParametersCard)
         indent * join((sprintf1(floatfmt(card), x) for x in row), delimiter(card)) for
         row in eachrow(card.data)
     )
-    return "CELL_PARAMETERS { $(getoption(card)) }" * newline(card) * join(it, newline)
+    return "CELL_PARAMETERS { $(optionof(card)) }" * newline(card) * join(it, newline)
 end
 
-getoption(::AtomicVelocitiesCard) = "a.u"
+optionof(::AtomicVelocitiesCard) = "a.u"
 
-allowed_options(::Type{<:AtomicPositionsCard}) =
+optionpool(::Type{<:AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-allowed_options(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
-allowed_options(::Type{<:AtomicVelocity}) = ("a.u",)
-allowed_options(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
+optionpool(::Type{<:CellParametersCard}) = ("alat", "bohr", "angstrom")
+optionpool(::Type{<:AtomicVelocity}) = ("a.u",)
+optionpool(::Type{<:RefCellParametersCard}) = ("bohr", "angstrom")
 
 allnamelists(::Type{CPInput}) =
     (:control, :system, :electrons, :ions, :cell, :press_ai, :wannier)
@@ -240,14 +238,14 @@ allcards(::Type{CPInput}) = (
 )
 allcards(x::CPInput) = (getfield(x, f) for f in allcards(typeof(x)))
 
-compulsory_namelists(::Type{CPInput}) = (:control, :system, :electrons)
-compulsory_namelists(x::CPInput) = (getfield(x, f) for f in compulsory_namelists(typeof(x)))
+required_namelists(::Type{CPInput}) = (:control, :system, :electrons)
+required_namelists(x::CPInput) = (getfield(x, f) for f in required_namelists(typeof(x)))
 
 optional_namelists(::Type{CPInput}) = (:ions, :cell, :press_ai, :wannier)
 optional_namelists(x::CPInput) = (getfield(x, f) for f in optional_namelists(typeof(x)))
 
-compulsory_cards(::Type{CPInput}) = (:atomic_species, :atomic_positions)
-compulsory_cards(x::CPInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
+required_cards(::Type{CPInput}) = (:atomic_species, :atomic_positions)
+required_cards(x::CPInput) = (getfield(x, f) for f in required_cards(typeof(x)))
 
 optional_cards(::Type{CPInput}) = (
     :atomic_velocities,
