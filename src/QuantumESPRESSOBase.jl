@@ -20,28 +20,49 @@ using Crystallography:
 
 import Crystallography: Bravais, Lattice
 
-Bravais(ibrav::Integer) = _Bravais(Val(ibrav))
-# These are helper methods and should not be exported!
-_Bravais(::Val{N}) where {N} = error("Bravais lattice undefined for `ibrav = $N`!")
-_Bravais(::Val{1}) = PrimitiveCubic()
-_Bravais(::Val{2}) = FaceCenteredCubic()
-_Bravais(::Val{3}) = BodyCenteredCubic()
-_Bravais(::Val{4}) = PrimitiveHexagonal()
-_Bravais(::Val{5}) = RCenteredHexagonal()
-_Bravais(::Val{-5}) = RCenteredHexagonal()
-_Bravais(::Val{6}) = PrimitiveTetragonal()
-_Bravais(::Val{7}) = BodyCenteredTetragonal()
-_Bravais(::Val{8}) = PrimitiveOrthorhombic()
-_Bravais(::Val{9}) = BCenteredOrthorhombic()
-_Bravais(::Val{-9}) = BCenteredOrthorhombic()
-_Bravais(::Val{91}) = ACenteredOrthorhombic()  # New in QE 6.5
-_Bravais(::Val{10}) = FaceCenteredOrthorhombic()
-_Bravais(::Val{11}) = BodyCenteredOrthorhombic()
-_Bravais(::Val{12}) = PrimitiveMonoclinic()
-_Bravais(::Val{-12}) = PrimitiveMonoclinic()
-_Bravais(::Val{13}) = CCenteredMonoclinic()
-_Bravais(::Val{-13}) = BCenteredMonoclinic()  # New in QE 6.5
-_Bravais(::Val{14}) = PrimitiveTriclinic()
+function Bravais(ibrav::Integer)
+    if ibrav == 1
+        return PrimitiveCubic()
+    elseif ibrav == 2
+        return FaceCenteredCubic()
+    elseif ibrav == 3
+        return BodyCenteredCubic()
+    elseif ibrav == 4
+        return PrimitiveHexagonal()
+    elseif ibrav == 5
+        return RCenteredHexagonal()
+    elseif ibrav == -5
+        return RCenteredHexagonal()
+    elseif ibrav == 6
+        return PrimitiveTetragonal()
+    elseif ibrav == 7
+        return BodyCenteredTetragonal()
+    elseif ibrav == 8
+        return PrimitiveOrthorhombic()
+    elseif ibrav == 9
+        return BCenteredOrthorhombic()
+    elseif ibrav == -9
+        return BCenteredOrthorhombic()
+    elseif ibrav == 91
+        return ACenteredOrthorhombic()  # New in QE 6.5
+    elseif ibrav == 10
+        return FaceCenteredOrthorhombic()
+    elseif ibrav == 11
+        return BodyCenteredOrthorhombic()
+    elseif ibrav == 12
+        return PrimitiveMonoclinic()
+    elseif ibrav == -12
+        return PrimitiveMonoclinic()
+    elseif ibrav == 13
+        return CCenteredMonoclinic()
+    elseif ibrav == -13
+        return BCenteredMonoclinic()  # New in QE 6.5
+    elseif ibrav == 14
+        return PrimitiveTriclinic()
+    else
+        error("Bravais lattice undefined for `ibrav = $ibrav`!")
+    end
+end
 
 """
     Lattice(::Bravais, p[, obverse::Bool])
