@@ -220,16 +220,16 @@ struct SpecialKPoint <: FieldVector{4,Float64}
 end
 SpecialKPoint(::GammaPoint) = SpecialKPoint(0.0, 0.0, 0.0, 1.0)
 
-abstract type AbstractKPointsCard <: Card end
+abstract type KPointsCard <: Card end
 
-struct AutomaticKPointsCard <: AbstractKPointsCard
+struct MonkhorstPackGridCard <: KPointsCard
     data::MonkhorstPackGrid
 end
 
-struct GammaPointCard <: AbstractKPointsCard end
+struct GammaPointCard <: KPointsCard end
 
 """
-    struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <: Card
+    SpecialKPointsCard(data, option)
 
 Represent the `K_POINTS` card in QE.
 
@@ -237,15 +237,19 @@ Represent the `K_POINTS` card in QE.
 - `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
-struct KPointsCard <: AbstractKPointsCard
+struct SpecialKPointsCard <: KPointsCard
     data::Vector{SpecialKPoint}
     option::String
-    function KPointsCard(data, option = "tpiba")
-        @argcheck option in optionpool(KPointsCard)
+    function SpecialKPointsCard(data, option = "tpiba")
+        @argcheck option in optionpool(SpecialKPointsCard)
         return new(data, option)
     end
 end
-function KPointsCard(data::AbstractMatrix, option = "tpiba")
+function SpecialKPointsCard(data::AbstractMatrix, option = "tpiba")
     @argcheck size(data, 2) == 4
-    return KPointsCard(map(SpecialKPoint, eachrow(data)), option)
+    return SpecialKPointsCard(map(SpecialKPoint, eachrow(data)), option)
 end
+
+KPointsCard(x::MonkhorstPackGrid) = MonkhorstPackGridCard(x)
+KPointsCard(::GammaPoint) = GammaPointCard()
+KPointsCard(data::AbstractVecOrMat, option = "tpiba") = SpecialKPointsCard(data, option)

@@ -61,6 +61,9 @@ export ControlNamelist,
     GammaPoint,
     SpecialKPoint,
     KPointsCard,
+    MonkhorstPackGridCard,
+    GammaPointCard,
+    SpecialKPointsCard,
     PWInput,
     optconvert,
     xmldir,
@@ -121,7 +124,7 @@ struct PWInput <: QuantumESPRESSOInput
     cell::CellNamelist
     atomic_species::AtomicSpeciesCard
     atomic_positions::AtomicPositionsCard
-    k_points::AbstractKPointsCard
+    k_points::KPointsCard
     cell_parameters::Union{Nothing,CellParametersCard}
     constraints::Union{Union{Nothing,Float64}}
     occupations::Union{Nothing,Float64}
@@ -244,9 +247,9 @@ end # function set_structure
 optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
-optionpool(::Type{AutomaticKPointsCard}) = ("automatic",)
+optionpool(::Type{MonkhorstPackGridCard}) = ("automatic",)
 optionpool(::Type{GammaPointCard}) = ("gamma",)
-optionpool(::Type{KPointsCard}) =
+optionpool(::Type{SpecialKPointsCard}) =
     ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 
 titleof(::Type{ControlNamelist}) = "CONTROL"
@@ -257,7 +260,7 @@ titleof(::Type{CellNamelist}) = "CELL"
 titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 titleof(::Type{CellParametersCard}) = "CELL_PARAMETERS"
-titleof(::Type{<:AbstractKPointsCard}) = "K_POINTS"
+titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
     inputstring(data::AtomicSpecies)
@@ -355,12 +358,12 @@ inputstring(data::SpecialKPoint) =
 
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(card::KPointsCard)
+function inputstring(card::SpecialKPointsCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
 end
 inputstring(card::GammaPointCard) = "K_POINTS { gamme }" * newline(card)
-function inputstring(card::AutomaticKPointsCard)
+function inputstring(card::MonkhorstPackGridCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return content * inputstring(card.data)
 end
