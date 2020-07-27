@@ -220,16 +220,16 @@ struct SpecialKPoint <: FieldVector{4,Float64}
 end
 SpecialKPoint(::GammaPoint) = SpecialKPoint(0.0, 0.0, 0.0, 1.0)
 
-abstract type AbstractKPointsCard <: Card end
+abstract type KPointsCard <: Card end
 
-struct AutomaticKPointsCard <: AbstractKPointsCard
+struct AutomaticKPointsCard <: KPointsCard
     data::MonkhorstPackGrid
 end
 
-struct GammaPointCard <: AbstractKPointsCard end
+struct GammaPointCard <: KPointsCard end
 
 """
-    struct KPointsCard{<:Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}} <: Card
+    SpecialKPointsCard(data, option)
 
 Represent the `K_POINTS` card in QE.
 

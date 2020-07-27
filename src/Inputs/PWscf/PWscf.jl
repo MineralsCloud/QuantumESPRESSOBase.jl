@@ -121,7 +121,7 @@ struct PWInput <: QuantumESPRESSOInput
     cell::CellNamelist
     atomic_species::AtomicSpeciesCard
     atomic_positions::AtomicPositionsCard
-    k_points::AbstractKPointsCard
+    k_points::KPointsCard
     cell_parameters::Union{Nothing,CellParametersCard}
     constraints::Union{Union{Nothing,Float64}}
     occupations::Union{Nothing,Float64}
@@ -257,7 +257,7 @@ titleof(::Type{CellNamelist}) = "CELL"
 titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 titleof(::Type{CellParametersCard}) = "CELL_PARAMETERS"
-titleof(::Type{<:AbstractKPointsCard}) = "K_POINTS"
+titleof(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
     inputstring(data::AtomicSpecies)
