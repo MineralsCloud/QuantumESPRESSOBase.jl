@@ -870,8 +870,6 @@ function _set_temperature(temperature::AbstractQuantity)
 end # function _set_temperature
 _set_temperature(temperature::Real) = temperature  # Ry
 
-_default(::SystemNamelist) = SystemNamelist(ibrav = 0)
-
 # _coupledargs(::Type{ControlNamelist}) = (:calculation => :disk_io,)
 # _coupledargs(::Type{SystemNamelist}) = (:ecutwfc => :ecutrho, :ecutrho => :ecutfock)
 # _coupledargs(::Type{DosNamelist}) = (:prefix => :fildos,)
