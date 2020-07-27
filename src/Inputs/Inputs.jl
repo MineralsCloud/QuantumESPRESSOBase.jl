@@ -75,9 +75,16 @@ function dropdefault(nml::Namelist)
     default = typeof(nml)()  # Create a `Namelist` with all default values
     # Compare `default` with `nml`, discard the same values
     result = filter!(item -> item.second != getfield(default, item.first), Dict(nml))
-    isempty(result) && @info "Every entry in the namelist is the default value!"
+    # for (drivingarg, passivearg) in _coupledargs(typeof(nml))
+    # rule
+    # end
+    if isempty(result)
+        @info "Every entry in the namelist is the default value!"
+    end
     return result
 end
+
+# _coupledargs(::Type{<:Namelist}) = ()
 
 Base.Dict(nml::Namelist) =
     Dict(name => getproperty(nml, name) for name in propertynames(nml))

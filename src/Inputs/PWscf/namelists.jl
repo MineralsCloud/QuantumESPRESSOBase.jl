@@ -37,7 +37,7 @@ Represent the `CONTROL` namelist of `pw.x`.
     nberrycyc::UInt
     lorbm::Bool
     lberry::Bool
-    gdir::UInt
+    gdir::UInt8
     nppstr::UInt
     lfcpopt::Bool
     gate::Bool
@@ -137,7 +137,7 @@ wfcfiles(nml::ControlNamelist, n = 1) =
 Represent the `SYSTEM` namelist of `pw.x`.
 """
 @auto_hash_equals struct SystemNamelist <: Namelist
-    ibrav::UInt
+    ibrav::Int8
     celldm::Vector{Maybe{Float64}}
     A::Float64
     B::Float64
@@ -146,7 +146,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
     cosAC::Float64
     cosBC::Float64
     nat::UInt
-    ntyp::UInt
+    ntyp::UInt8
     nbnd::UInt
     tot_charge::Float64
     starting_charge::Vector{Maybe{Float64}}
@@ -172,7 +172,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
     starting_spin_angle::Bool
     degauss::Float64
     smearing::String
-    nspin::UInt
+    nspin::UInt8
     noncolin::Bool
     ecfixed::Float64
     qcutz::Float64
@@ -188,7 +188,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
     nqx3::UInt
     localization_thr::Float64
     lda_plus_u::Bool
-    lda_plus_u_kind::UInt
+    lda_plus_u_kind::UInt8
     Hubbard_U::Vector{Maybe{Float64}}
     Hubbard_J0::Vector{Maybe{Float64}}
     Hubbard_alpha::Vector{Maybe{Float64}}
@@ -196,7 +196,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
     # Hubbard_J::Vector{Vector{Maybe{Float64}}}
     starting_ns_eigenvalue::Float64
     U_projection_type::String
-    edir::UInt
+    edir::UInt8
     emaxpos::Float64
     eopreg::Float64
     eamp::Float64
@@ -224,9 +224,9 @@ Represent the `SYSTEM` namelist of `pw.x`.
     xdm::Bool
     xdm_a1::Float64
     xdm_a2::Float64
-    space_group::UInt
+    space_group::UInt8
     uniqueb::Bool
-    origin_choice::UInt
+    origin_choice::UInt8
     rhombohedral::Bool
     zgate::Float64
     relaxz::Bool
@@ -236,7 +236,7 @@ Represent the `SYSTEM` namelist of `pw.x`.
     block_height::Float64
 end # struct SystemNamelist
 function SystemNamelist(;
-    ibrav,
+    ibrav = 127,
     celldm = zeros(6),  # Must specify
     A = 0.0,
     B = 0.0,
@@ -335,9 +335,8 @@ function SystemNamelist(;
     block_height = 0.1,  # The default value in QE's source code is 0.0
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @argcheck ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13))
-    @argcheck ntyp <= 10 "`ntyp` $ntyp is larger than 10!"
-    @argcheck ntyp <= nat
+    @argcheck ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13), 127)
+    @argcheck ntyp <= 10 && ntyp <= nat
     @argcheck smearing in (
         "gaussian",
         "gauss",
@@ -360,6 +359,7 @@ function SystemNamelist(;
     @argcheck q2sigma >= 0
     @argcheck lda_plus_u_kind in 0:1
     @argcheck edir in 1:3
+    @argcheck space_group in 0:230
     @argcheck origin_choice in 1:2
     @argcheck length(starting_charge) <= ntyp
     @argcheck length(starting_magnetization) <= ntyp
@@ -768,7 +768,7 @@ Represent the `BANDS` namelist of `bands.x`.
     prefix::String
     outdir::String
     filband::String
-    spin_component::Int
+    spin_component::UInt8
     lsigma::Vector{Maybe{Bool}}  # The default value in QE's source code is just one `false`
     lp::Bool
     filp::String
@@ -869,3 +869,7 @@ function _set_temperature(temperature::AbstractQuantity)
     end
 end # function _set_temperature
 _set_temperature(temperature::Real) = temperature  # Ry
+
+# _coupledargs(::Type{ControlNamelist}) = (:calculation => :disk_io,)
+# _coupledargs(::Type{SystemNamelist}) = (:ecutwfc => :ecutrho, :ecutrho => :ecutfock)
+# _coupledargs(::Type{DosNamelist}) = (:prefix => :fildos,)
