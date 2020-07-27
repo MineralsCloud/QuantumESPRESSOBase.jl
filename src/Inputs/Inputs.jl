@@ -82,7 +82,7 @@ end
 Base.Dict(nml::Namelist) =
     Dict(name => getproperty(nml, name) for name in propertynames(nml))
 Base.NamedTuple(nml::Namelist) =
-    (; (name => getproperty(nml, name) for name in propertynames(nml))...)
+    NamedTuple{propertynames(nml)}(getproperty(nml, name) for name in propertynames(nml))
 Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(Dict(a), Dict(b))
 
 """
