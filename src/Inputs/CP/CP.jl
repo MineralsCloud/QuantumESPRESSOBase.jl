@@ -5,7 +5,6 @@ using Crystallography: Bravais, Lattice, CellParameters, Cell
 using Formatting: sprintf1
 using LinearAlgebra: det
 using Parameters: @with_kw
-using Pseudopotentials: pseudoformat
 using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful
@@ -26,7 +25,7 @@ using ..Inputs:
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography
-import Pseudopotentials
+import Pseudopotentials: pseudoformat
 import ..Inputs:
     optionpool,
     allnamelists,

@@ -16,7 +16,6 @@ using Crystallography: Bravais, Lattice, CellParameters, Cell, cellvolume
 using Formatting: sprintf1
 using LinearAlgebra: det, norm
 using OptionalArgChecks: @argcheck
-using Pseudopotentials: pseudoformat
 using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
@@ -34,7 +33,7 @@ using ..Inputs:
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography
-import Pseudopotentials
+import Pseudopotentials: pseudoformat
 import ..Inputs:
     optionpool,
     allnamelists,

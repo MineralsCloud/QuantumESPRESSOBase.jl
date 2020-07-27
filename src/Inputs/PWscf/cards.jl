@@ -51,7 +51,7 @@ end
 
 Return the pseudopotential format of the `AtomicSpecies`.
 """
-Pseudopotentials.pseudoformat(data::AtomicSpecies) = pseudoformat(data.pseudopot)
+pseudoformat(data::AtomicSpecies) = pseudoformat(data.pseudopot)
 
 """
     AtomicSpeciesCard <: Card
