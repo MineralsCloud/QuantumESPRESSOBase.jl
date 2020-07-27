@@ -362,7 +362,7 @@ function inputstring(card::SpecialKPointsCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
 end
-inputstring(card::GammaPointCard) = "K_POINTS { gamme }" * newline(card)
+inputstring(card::GammaPointCard) = "K_POINTS { gamma }" * newline(card)
 function inputstring(card::MonkhorstPackGridCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return content * inputstring(card.data)
