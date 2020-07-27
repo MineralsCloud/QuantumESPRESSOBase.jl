@@ -1,7 +1,6 @@
 module CP
 
 using Compat: eachrow
-using Crystallography: Bravais, Lattice, CellParameters, Cell
 using Formatting: sprintf1
 using LinearAlgebra: det
 using Parameters: @with_kw
@@ -24,7 +23,7 @@ using ..Inputs:
     optional_cards
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
-import Crystallography
+import Crystallography: Bravais, Lattice
 import Pseudopotentials: pseudoformat
 import ..Inputs:
     optionpool,
@@ -139,25 +138,25 @@ titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 
 """
-    Crystallography.Bravais(nml::SystemNamelist)
+    Bravais(nml::SystemNamelist)
 
 Return a `Bravais` from a `SystemNamelist`.
 """
-Crystallography.Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
+Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
 
 """
-    Crystallography.Lattice(nml::SystemNamelist)
+    Lattice(nml::SystemNamelist)
 
 Return a `Lattice` from a `SystemNamelist`.
 """
-Crystallography.Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
+Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
 
 """
     cellvolume(nml::SystemNamelist)
 
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
-Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
+cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 """
     cellvolume(card)
 
@@ -166,7 +165,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 !!! warning
     It will throw an error if the option is `"alat"`.
 """
-function Crystallography.cellvolume(card::AbstractCellParametersCard)
+function cellvolume(card::AbstractCellParametersCard)
     option = optionof(card)
     if option == "bohr"
         abs(det(card.data))
@@ -175,7 +174,7 @@ function Crystallography.cellvolume(card::AbstractCellParametersCard)
     else  # option == "alat"
         error("information not enough! Parameter `celldm[1]` needed!")
     end
-end # function Crystallography.cellvolume
+end # function cellvolume
 
 function inputstring(data::AtomicSpecies)
     return join(

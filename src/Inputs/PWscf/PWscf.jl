@@ -12,7 +12,7 @@ julia>
 module PWscf
 
 using Compat: eachrow
-using Crystallography: Bravais, Lattice, CellParameters, Cell, cellvolume
+using Crystallography: Cell
 using Formatting: sprintf1
 using LinearAlgebra: det, norm
 using OptionalArgChecks: @argcheck
@@ -32,7 +32,7 @@ using ..Inputs:
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
-import Crystallography
+import Crystallography: Bravais, Lattice, cellvolume
 import Pseudopotentials: pseudoformat
 import ..Inputs:
     optionpool,
@@ -366,21 +366,21 @@ function inputstring(card::AutomaticKPointsCard)
 end
 
 """
-    Crystallography.Bravais(nml::SystemNamelist)
+    Bravais(nml::SystemNamelist)
 
 Return a `Bravais` from a `SystemNamelist`.
 """
-Crystallography.Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
+Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
 
 """
-    Crystallography.Lattice(nml::SystemNamelist)
+    Lattice(nml::SystemNamelist)
 
 Return a `Lattice` from a `SystemNamelist`.
 """
-function Crystallography.Lattice(nml::SystemNamelist)
+function Lattice(nml::SystemNamelist)
     b = Bravais(nml)
     return Lattice(b, _Celldm{typeof(b)}(nml.celldm))
-end # function Crystallography.Lattice
+end # function Lattice
 
 """
     cellvolume(card)
@@ -390,7 +390,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 !!! warning
     It will throw an error if the option is `"alat"`.
 """
-function Crystallography.cellvolume(card::AbstractCellParametersCard)
+function cellvolume(card::AbstractCellParametersCard)
     option = optionof(card)
     if option == "bohr"
         return abs(det(card.data))
@@ -399,19 +399,19 @@ function Crystallography.cellvolume(card::AbstractCellParametersCard)
     else  # option == "alat"
         error("information not enough! Parameter `celldm[1]` needed!")
     end
-end # function Crystallography.cellvolume
+end # function cellvolume
 """
     cellvolume(nml::SystemNamelist)
 
 Return the volume of the cell based on the information given in a `SystemNamelist`, in atomic unit.
 """
-Crystallography.cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
+cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 """
     cellvolume(input::PWInput)
 
 Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
 """
-function Crystallography.cellvolume(input::PWInput)
+function cellvolume(input::PWInput)
     if input.cell_parameters === nothing
         return cellvolume(Lattice(input.system))
     else
@@ -426,7 +426,7 @@ function Crystallography.cellvolume(input::PWInput)
             return cellvolume(input.cell_parameters)
         end
     end
-end # function Crystallography.cellvolume
+end # function cellvolume
 
 """
     allnamelists(x::PWInput)

@@ -19,7 +19,6 @@ using PyFortran90Namelists: fstring
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent
-import Crystallography
 
 export optionof,
     optionpool,
