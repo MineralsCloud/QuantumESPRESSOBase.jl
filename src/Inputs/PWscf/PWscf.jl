@@ -60,7 +60,7 @@ export ControlNamelist,
     MonkhorstPackGrid,
     GammaPoint,
     SpecialKPoint,
-    KPointsCard,
+    SpecialKPointsCard,
     PWInput,
     optconvert,
     xmldir,
@@ -246,7 +246,7 @@ optionpool(::Type{AtomicPositionsCard}) =
 optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
 optionpool(::Type{AutomaticKPointsCard}) = ("automatic",)
 optionpool(::Type{GammaPointCard}) = ("gamma",)
-optionpool(::Type{KPointsCard}) =
+optionpool(::Type{SpecialKPointsCard}) =
     ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 
 titleof(::Type{ControlNamelist}) = "CONTROL"
@@ -355,7 +355,7 @@ inputstring(data::SpecialKPoint) =
 
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(card::KPointsCard)
+function inputstring(card::SpecialKPointsCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
 end

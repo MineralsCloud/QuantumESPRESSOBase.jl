@@ -237,15 +237,15 @@ Represent the `K_POINTS` card in QE.
 - `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
-struct KPointsCard <: AbstractKPointsCard
+struct SpecialKPointsCard <: KPointsCard
     data::Vector{SpecialKPoint}
     option::String
-    function KPointsCard(data, option = "tpiba")
-        @argcheck option in optionpool(KPointsCard)
+    function SpecialKPointsCard(data, option = "tpiba")
+        @argcheck option in optionpool(SpecialKPointsCard)
         return new(data, option)
     end
 end
-function KPointsCard(data::AbstractMatrix, option = "tpiba")
+function SpecialKPointsCard(data::AbstractMatrix, option = "tpiba")
     @argcheck size(data, 2) == 4
-    return KPointsCard(map(SpecialKPoint, eachrow(data)), option)
+    return SpecialKPointsCard(map(SpecialKPoint, eachrow(data)), option)
 end

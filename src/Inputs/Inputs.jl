@@ -110,7 +110,7 @@ julia> optionpool(AtomicPositionsCard)
 julia> optionpool(CellParametersCard)
 ("alat", "bohr", "angstrom")
 
-julia> optionpool(KPointsCard)
+julia> optionpool(SpecialKPointsCard)
 ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 ```
 """
