@@ -11,6 +11,7 @@ julia>
 """
 module PHonon
 
+using AutoHashEquals: @auto_hash_equals
 using ConstructionBase: setproperties
 
 using ..Inputs: Namelist, Card, QuantumESPRESSOInput
@@ -27,7 +28,7 @@ export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 Represent the `INPUTPH` namelist of `ph.x`.
 """
-struct PhNamelist <: Namelist
+@auto_hash_equals struct PhNamelist <: Namelist
     amass::Vector{Union{Nothing,Float64}}
     outdir::String
     prefix::String
@@ -224,7 +225,7 @@ PhNamelist(nml::PhNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 Represent the `INPUT` namelist of `q2r.x`.
 """
-struct Q2rNamelist <: Namelist
+@auto_hash_equals struct Q2rNamelist <: Namelist
     fildyn::String
     flfrc::String
     loto_2d::Bool
@@ -243,7 +244,7 @@ Q2rNamelist(nml::Q2rNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 Represent the `INPUT` namelist of `matdyn.x`.
 """
-struct MatdynNamelist <: Namelist
+@auto_hash_equals struct MatdynNamelist <: Namelist
     dos::Bool
     deltaE::Float64
     ndos::Int
@@ -346,7 +347,7 @@ MatdynNamelist(nml::MatdynNamelist, dict::AbstractDict) = setproperties(nml, dic
 
 Represent the `INPUT` namelist of `dynmat.x`.
 """
-struct DynmatNamelist <: Namelist
+@auto_hash_equals struct DynmatNamelist <: Namelist
     asr::String
     axis::Int
     fildyn::String
