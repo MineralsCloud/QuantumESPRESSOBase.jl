@@ -25,9 +25,9 @@ export getoption,
     optionpool,
     titleof,
     inputstring,
-    compulsory_namelists,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards,
     allnamelists,
     allcards
@@ -128,11 +128,11 @@ function allnamelists end
 
 function allcards end
 
-function compulsory_namelists end
+function required_namelists end
 
 function optional_namelists end
 
-function compulsory_cards end
+function required_cards end
 
 function optional_cards end
 

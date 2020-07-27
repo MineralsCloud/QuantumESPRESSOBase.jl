@@ -19,9 +19,9 @@ using ..Inputs:
     optionpool,
     allnamelists,
     allcards,
-    compulsory_namelists,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
@@ -32,9 +32,9 @@ import ..Inputs:
     allnamelists,
     allcards,
     getoption,
-    compulsory_namelists,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards
 using ..Formats: delimiter, newline, indent, floatfmt, intfmt
 
@@ -240,14 +240,14 @@ allcards(::Type{CPInput}) = (
 )
 allcards(x::CPInput) = (getfield(x, f) for f in allcards(typeof(x)))
 
-compulsory_namelists(::Type{CPInput}) = (:control, :system, :electrons)
-compulsory_namelists(x::CPInput) = (getfield(x, f) for f in compulsory_namelists(typeof(x)))
+required_namelists(::Type{CPInput}) = (:control, :system, :electrons)
+required_namelists(x::CPInput) = (getfield(x, f) for f in required_namelists(typeof(x)))
 
 optional_namelists(::Type{CPInput}) = (:ions, :cell, :press_ai, :wannier)
 optional_namelists(x::CPInput) = (getfield(x, f) for f in optional_namelists(typeof(x)))
 
-compulsory_cards(::Type{CPInput}) = (:atomic_species, :atomic_positions)
-compulsory_cards(x::CPInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
+required_cards(::Type{CPInput}) = (:atomic_species, :atomic_positions)
+required_cards(x::CPInput) = (getfield(x, f) for f in required_cards(typeof(x)))
 
 optional_cards(::Type{CPInput}) = (
     :atomic_velocities,

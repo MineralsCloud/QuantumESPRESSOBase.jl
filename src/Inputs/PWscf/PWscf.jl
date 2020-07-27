@@ -39,9 +39,9 @@ import ..Inputs:
     optionpool,
     allnamelists,
     allcards,
-    compulsory_namelists,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards
 
 export ControlNamelist,
@@ -70,9 +70,9 @@ export ControlNamelist,
     optionpool,
     allnamelists,
     allcards,
-    compulsory_namelists,
+    required_namelists,
     optional_namelists,
-    compulsory_cards,
+    required_cards,
     optional_cards,
     set_verbosity,
     set_temperature,
@@ -443,14 +443,14 @@ allcards(::Type{PWInput}) = (
     :atomic_forces,
 )
 
-compulsory_namelists(x::PWInput) = (getfield(x, f) for f in compulsory_namelists(typeof(x)))
-compulsory_namelists(::Type{PWInput}) = (:control, :system, :electrons)
+required_namelists(x::PWInput) = (getfield(x, f) for f in required_namelists(typeof(x)))
+required_namelists(::Type{PWInput}) = (:control, :system, :electrons)
 
 optional_namelists(x::PWInput) = (getfield(x, f) for f in optional_namelists(typeof(x)))
 optional_namelists(::Type{PWInput}) = (:ions, :cell)
 
-compulsory_cards(x::PWInput) = (getfield(x, f) for f in compulsory_cards(typeof(x)))
-compulsory_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
+required_cards(x::PWInput) = (getfield(x, f) for f in required_cards(typeof(x)))
+required_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
 
 optional_cards(x::PWInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
 optional_cards(::Type{PWInput}) =
