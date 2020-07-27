@@ -429,9 +429,19 @@ function Crystallography.cellvolume(input::PWInput)
     end
 end # function Crystallography.cellvolume
 
+"""
+    allnamelists(x::PWInput)
+
+Return an iterator of all `Namelist`s from a `PWInput`. You may want to `collect` them.
+"""
 allnamelists(x::PWInput) = (getfield(x, f) for f in allnamelists(typeof(x)))
 allnamelists(::Type{PWInput}) = (:control, :system, :electrons, :ions, :cell)
 
+"""
+    allcards(x::PWInput)
+
+Get all `Card`s from a `PWInput`.
+"""
 allcards(x::PWInput) = (getfield(x, f) for f in allcards(typeof(x)))
 allcards(::Type{PWInput}) = (
     :atomic_species,
@@ -443,15 +453,35 @@ allcards(::Type{PWInput}) = (
     :atomic_forces,
 )
 
+"""
+    required_namelists(x::PWInput)
+
+Return an iterator of required `Namelist`s from a `PWInput`. You may want to `collect` them.
+"""
 required_namelists(x::PWInput) = (getfield(x, f) for f in required_namelists(typeof(x)))
 required_namelists(::Type{PWInput}) = (:control, :system, :electrons)
 
+"""
+    optional_namelists(x::PWInput)
+
+Return an iterator of optional `Namelist`s from a `PWInput`. You may want to `collect` them.
+"""
 optional_namelists(x::PWInput) = (getfield(x, f) for f in optional_namelists(typeof(x)))
 optional_namelists(::Type{PWInput}) = (:ions, :cell)
 
+"""
+    required_cards(x::PWInput)
+
+Return an iterator of required `Card`s from a `PWInput`. You may want to `collect` them.
+"""
 required_cards(x::PWInput) = (getfield(x, f) for f in required_cards(typeof(x)))
 required_cards(::Type{PWInput}) = (:atomic_species, :atomic_positions, :k_points)
 
+"""
+    optional_cards(x::PWInput)
+
+Return an iterator of optional `Card`s from a `PWInput`. You may want to `collect` them.
+"""
 optional_cards(x::PWInput) = (getfield(x, f) for f in optional_cards(typeof(x)))
 optional_cards(::Type{PWInput}) =
     (:cell_parameters, :constraints, :occupations, :atomic_forces)
