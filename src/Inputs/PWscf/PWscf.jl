@@ -244,7 +244,7 @@ end # function set_structure
 optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
-optionpool(::Type{AutomaticKPointsCard}) = ("automatic",)
+optionpool(::Type{MonkhorstPackGridCard}) = ("automatic",)
 optionpool(::Type{GammaPointCard}) = ("gamma",)
 optionpool(::Type{SpecialKPointsCard}) =
     ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
@@ -360,7 +360,7 @@ function inputstring(card::SpecialKPointsCard)
     return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
 end
 inputstring(card::GammaPointCard) = "K_POINTS { gamme }" * newline(card)
-function inputstring(card::AutomaticKPointsCard)
+function inputstring(card::MonkhorstPackGridCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return content * inputstring(card.data)
 end

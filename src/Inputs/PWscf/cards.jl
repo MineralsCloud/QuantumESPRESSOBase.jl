@@ -222,7 +222,7 @@ SpecialKPoint(::GammaPoint) = SpecialKPoint(0.0, 0.0, 0.0, 1.0)
 
 abstract type KPointsCard <: Card end
 
-struct AutomaticKPointsCard <: KPointsCard
+struct MonkhorstPackGridCard <: KPointsCard
     data::MonkhorstPackGrid
 end
 
