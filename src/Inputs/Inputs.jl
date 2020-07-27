@@ -31,7 +31,7 @@ export optionof,
     allnamelists,
     allcards
 
-abstract type QuantumESPRESSOInputEntry end
+abstract type QuantumESPRESSOInputEntry end  # Define this to make the `eltype` not `Any` if both `Namelist` & `Card` exist.
 
 """
     Namelist <: QuantumESPRESSOInputEntry

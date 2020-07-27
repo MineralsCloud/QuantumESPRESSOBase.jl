@@ -11,6 +11,7 @@ julia>
 """
 module PWscf
 
+using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow
 using Crystallography: Cell
 using Formatting: sprintf1
