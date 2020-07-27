@@ -42,9 +42,8 @@ import ..Inputs:
     required_namelists,
     optional_namelists,
     required_cards,
-    optional_cards,
+    optional_cards
     # _coupledargs
-    _default
 
 export ControlNamelist,
     SystemNamelist,
