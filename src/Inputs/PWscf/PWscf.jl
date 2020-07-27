@@ -28,8 +28,7 @@ using ..Inputs:
     QuantumESPRESSOInput,
     entryname,
     Card,
-    _Celldm,
-    optionof
+    _Celldm
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
@@ -37,6 +36,7 @@ import Crystallography: Bravais, Lattice, cellvolume
 import Pseudopotentials: pseudoformat
 import ..Inputs:
     optionpool,
+    optionof,
     allnamelists,
     allcards,
     required_namelists,
@@ -364,7 +364,7 @@ function inputstring(card::SpecialKPointsCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
 end
-inputstring(card::GammaPointCard) = "K_POINTS { gamma }" * newline(card)
+inputstring(card::GammaPointCard) = "K_POINTS { $(optionof(card)) }" * newline(card)
 function inputstring(card::MonkhorstPackGridCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return content * inputstring(card.data)

@@ -253,3 +253,6 @@ end
 KPointsCard(x::MonkhorstPackGrid) = MonkhorstPackGridCard(x)
 KPointsCard(::GammaPoint) = GammaPointCard()
 KPointsCard(data::AbstractVecOrMat, option = "tpiba") = SpecialKPointsCard(data, option)
+
+optionof(::MonkhorstPackGridCard) = "automatic"
+optionof(::GammaPointCard) = "gamma"
