@@ -2,7 +2,7 @@ module PWscf
 
 using Test
 
-using Pseudopotentials: UnifiedPseudopotentialFormat, pseudopot_format
+using Pseudopotentials: UnifiedPseudopotentialFormat, pseudoformat
 using Setfield
 using StructArrays: StructArray
 
@@ -53,8 +53,8 @@ end # testset
     @testset "Mutual construction" begin
         @test map(x -> x.atom, AtomicPositionsCard("alat", card).data) == ["Al", "As", "Si"]
     end # testset
-    @testset "Test `pseudopot_format`" begin
-        @test unique(pseudopot_format.(card.data)) == [UnifiedPseudopotentialFormat()]
+    @testset "Test `pseudoformat`" begin
+        @test unique(pseudoformat.(card.data)) == [UnifiedPseudopotentialFormat()]
     end # testset
     @testset "Test `inputstring`" begin
         @test inputstring(card) ==

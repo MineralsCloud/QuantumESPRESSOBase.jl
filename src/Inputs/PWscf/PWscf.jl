@@ -16,7 +16,7 @@ using Crystallography: Bravais, Lattice, CellParameters, Cell, cellvolume
 using Formatting: sprintf1
 using LinearAlgebra: det, norm
 using OptionalArgChecks: @argcheck
-using Pseudopotentials: pseudopot_format
+using Pseudopotentials: pseudoformat
 using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str

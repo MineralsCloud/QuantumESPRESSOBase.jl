@@ -5,7 +5,7 @@ using Crystallography: Bravais, Lattice, CellParameters, Cell
 using Formatting: sprintf1
 using LinearAlgebra: det
 using Parameters: @with_kw
-using Pseudopotentials: pseudopot_format
+using Pseudopotentials: pseudoformat
 using Setfield: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful

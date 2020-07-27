@@ -37,7 +37,7 @@ struct AtomicSpecies
     """
     File containing pseudopotential for this species.
 
-    See also: [`pseudopot_format`](@ref)
+    See also: [`pseudoformat`](@ref)
     """
     pseudopot::String
     function AtomicSpecies(atom::Union{AbstractChar,AbstractString}, mass, pseudopot)
@@ -47,11 +47,11 @@ struct AtomicSpecies
 end
 
 """
-    pseudopot_format(data::AtomicSpecies)
+    pseudoformat(data::AtomicSpecies)
 
 Return the pseudopotential format of the `AtomicSpecies`.
 """
-Pseudopotentials.pseudopot_format(data::AtomicSpecies) = pseudopot_format(data.pseudopot)
+Pseudopotentials.pseudoformat(data::AtomicSpecies) = pseudoformat(data.pseudopot)
 
 """
     AtomicSpeciesCard <: Card
