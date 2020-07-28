@@ -344,17 +344,17 @@ Create a Bravais lattice from the exact lattice type and cell parameters `p` (no
 
 The first elements of `p` are `a`, `b`, `c`; the last 3 are `α`, `β`, `γ` (in radians).
 """
-Lattice(::PrimitiveCubic, p, args...) = Lattice(p[1] * [
+Lattice(::PrimitiveCubic, p::_Celldm, args...) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 1
 ])
-Lattice(::FaceCenteredCubic, p, args...) = Lattice(p[1] / 2 * [
+Lattice(::FaceCenteredCubic, p::_Celldm, args...) = Lattice(p[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
 ])
-function Lattice(::BodyCenteredCubic, p, obverse::Bool = true)
+function Lattice(::BodyCenteredCubic, p::_Celldm, obverse::Bool = true)
     if obverse
         return Lattice(p[1] / 2 * [
             1 1 1
@@ -374,25 +374,22 @@ Lattice(::PrimitiveHexagonal, p::_Celldm, args...) = Lattice(p[1] * [
     -1 / 2 √3 / 2 0
     0 0 p[3]
 ])
-function Lattice(::RCenteredHexagonal, p, obverse::Bool = true)
+function Lattice(::RCenteredHexagonal, p::_Celldm, obverse::Bool = true)
+    cosγ = p[4]
+    ty = sqrt((1 - cosγ) / 6)
+    tz = sqrt((1 + 2cosγ) / 3)
     if obverse
-        r = p[4]
-        tx = sqrt((1 - r) / 2)
-        ty = sqrt((1 - r) / 6)
-        tz = sqrt((1 + 2r) / 3)
+        tx = sqrt((1 - cosγ) / 2)
         return Lattice(p[1] * [
             tx -ty tz
             0 2ty tz
             -tx -ty tz
         ])
     else  # -5
-        ap = p[1] / √3
-        γ = acos(p[4])
-        ty = sqrt((1 - γ) / 6)
-        tz = sqrt((1 + 2γ) / 3)
+        a′ = p[1] / √3
         u = tz - 2 * √2 * ty
         v = tz + √2 * ty
-        return Lattice(ap * [
+        return Lattice(a′ * [
             u v v
             v u v
             v v u
@@ -433,11 +430,11 @@ function Lattice(::BCenteredOrthorhombic, p::_Celldm, obverse::Bool = true)
         ])
     end
 end
-Lattice(::ACenteredOrthorhombic, p, args...) = Lattice([
-    p[1] 0 0
-    0 p[2] / 2 -p[3] / 2
-    0 p[2] / 2 p[3] / 2
-])  # New in QE 6.4
+# Lattice(::ACenteredOrthorhombic, p, args...) = Lattice([
+#     p[1] 0 0
+#     0 p[2] / 2 -p[3] / 2
+#     0 p[2] / 2 p[3] / 2
+# ])  # New in QE 6.4
 function Lattice(::FaceCenteredOrthorhombic, p::_Celldm, args...)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     return Lattice([
