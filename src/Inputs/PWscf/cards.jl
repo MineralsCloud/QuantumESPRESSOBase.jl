@@ -246,8 +246,5 @@ function SpecialPointsCard(data::AbstractMatrix, option = "tpiba")
     return SpecialPointsCard(map(SpecialPoint, eachrow(data)), option)
 end
 
-KPointsCard(x::MonkhorstPackGrid) = MonkhorstPackGridCard(x)
-KPointsCard(data::AbstractVecOrMat, option = "tpiba") = SpecialPointsCard(data, option)
-
 optionof(::MonkhorstPackGridCard) = "automatic"
 optionof(::GammaPointCard) = "gamma"
