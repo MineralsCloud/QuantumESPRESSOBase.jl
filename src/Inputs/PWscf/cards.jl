@@ -204,25 +204,21 @@ struct MonkhorstPackGrid
     is_shift::SVector{3,Bool}
 end
 
-"Represent the centre of the Brillouin zone (commonly marked as the Γ point)."
-struct GammaPoint end
-
 """
     SpecialKPoint(coord, weight)
 
 Represent a special point of the 3D Brillouin zone. Each of them has a weight.
 """
-struct SpecialKPoint <: FieldVector{4,Float64}
+struct SpecialPoint <: FieldVector{4,Float64}
     x::Float64
     y::Float64
     z::Float64
     w::Float64
 end
-SpecialKPoint(::GammaPoint) = SpecialKPoint(0.0, 0.0, 0.0, 1.0)
 
 abstract type KPointsCard <: Card end
 
-struct MonkhorstPackGridCard <: KPointsCard
+struct KMeshCard <: KPointsCard
     data::MonkhorstPackGrid
 end
 
@@ -237,22 +233,18 @@ Represent the `K_POINTS` card in QE.
 - `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
-struct SpecialKPointsCard <: KPointsCard
-    data::Vector{SpecialKPoint}
+struct SpecialPointsCard <: KPointsCard
+    data::Vector{SpecialPoint}
     option::String
-    function SpecialKPointsCard(data, option = "tpiba")
-        @argcheck option in optionpool(SpecialKPointsCard)
+    function SpecialPointsCard(data, option = "tpiba")
+        @argcheck option in optionpool(SpecialPointsCard)
         return new(data, option)
     end
 end
-function SpecialKPointsCard(data::AbstractMatrix, option = "tpiba")
+function SpecialPointsCard(data::AbstractMatrix, option = "tpiba")
     @argcheck size(data, 2) == 4
-    return SpecialKPointsCard(map(SpecialKPoint, eachrow(data)), option)
+    return SpecialPointsCard(map(SpecialPoint, eachrow(data)), option)
 end
 
-KPointsCard(x::MonkhorstPackGrid) = MonkhorstPackGridCard(x)
-KPointsCard(::GammaPoint) = GammaPointCard()
-KPointsCard(data::AbstractVecOrMat, option = "tpiba") = SpecialKPointsCard(data, option)
-
-optionof(::MonkhorstPackGridCard) = "automatic"
+optionof(::KMeshCard) = "automatic"
 optionof(::GammaPointCard) = "gamma"

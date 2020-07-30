@@ -60,12 +60,11 @@ export ControlNamelist,
     AtomicForce,
     AtomicForcesCard,
     MonkhorstPackGrid,
-    GammaPoint,
-    SpecialKPoint,
+    SpecialPoint,
     KPointsCard,
-    MonkhorstPackGridCard,
+    KMeshCard,
     GammaPointCard,
-    SpecialKPointsCard,
+    SpecialPointsCard,
     PWInput,
     optconvert,
     xmldir,
@@ -249,9 +248,9 @@ end # function set_structure
 optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
-optionpool(::Type{MonkhorstPackGridCard}) = ("automatic",)
+optionpool(::Type{KMeshCard}) = ("automatic",)
 optionpool(::Type{GammaPointCard}) = ("gamma",)
-optionpool(::Type{SpecialKPointsCard}) =
+optionpool(::Type{SpecialPointsCard}) =
     ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 
 titleof(::Type{ControlNamelist}) = "CONTROL"
@@ -333,12 +332,6 @@ function inputstring(card::CellParametersCard)
     )
 end
 """
-    inputstring(data::GammaPoint)
-
-Return a `String` representing a `GammaPoint`, valid for Quantum ESPRESSO's input.
-"""
-inputstring(data::GammaPoint) = indent(data)
-"""
     inputstring(data::MonkhorstPackGrid)
 
 Return a `String` representing a `MonkhorstPackGrid`, valid for Quantum ESPRESSO's input.
@@ -353,19 +346,19 @@ end
 
 Return a `String` representing a `SpecialKPoint`, valid for Quantum ESPRESSO's input.
 """
-inputstring(data::SpecialKPoint) =
+inputstring(data::SpecialPoint) =
     indent(data) * join(map(x -> sprintf1(floatfmt(data), x), data), delimiter(data))
 """
     inputstring(card::KPointsCard)
 
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(card::SpecialKPointsCard)
+function inputstring(card::SpecialPointsCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
 end
 inputstring(card::GammaPointCard) = "K_POINTS { $(optionof(card)) }" * newline(card)
-function inputstring(card::MonkhorstPackGridCard)
+function inputstring(card::KMeshCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return content * inputstring(card.data)
 end
@@ -494,8 +487,7 @@ indent(
     ::Union{
         AtomicSpecies,
         AtomicPosition,
-        GammaPoint,
-        SpecialKPoint,
+        SpecialPoint,
         MonkhorstPackGrid,
         AtomicForce,
     },
@@ -505,14 +497,13 @@ delimiter(
     ::Union{
         AtomicSpecies,
         AtomicPosition,
-        GammaPoint,
-        SpecialKPoint,
+        SpecialPoint,
         MonkhorstPackGrid,
         AtomicForce,
     },
 ) = ' '
 
-floatfmt(::Union{AtomicSpecies,AtomicPosition,SpecialKPoint}) = "%14.9f"
+floatfmt(::Union{AtomicSpecies,AtomicPosition,SpecialPoint}) = "%14.9f"
 floatfmt(::CellParametersCard) = "%14.9f"
 
 intfmt(::MonkhorstPackGrid) = "%5d"
