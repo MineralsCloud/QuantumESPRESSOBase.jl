@@ -19,7 +19,7 @@ using ..Inputs.PWscf: SpecialPoint
 
 import ..Inputs
 
-export SpecialKPoint, QPointsCard, PhInput, Q2rInput, MatdynInput, DynmatInput
+export SpecialPoint, QPointsCard, PhInput, Q2rInput, MatdynInput, DynmatInput
 export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
@@ -397,7 +397,7 @@ Inputs.titleof(::Type{MatdynNamelist}) = "INPUT"
 Inputs.titleof(::Type{DynmatNamelist}) = "INPUT"
 
 struct QPointsCard <: Card
-    data::Vector{SpecialKPoint}
+    data::Vector{SpecialPoint}
 end
 
 struct PhInput <: QuantumESPRESSOInput
