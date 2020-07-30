@@ -204,9 +204,6 @@ struct MonkhorstPackGrid
     is_shift::SVector{3,Bool}
 end
 
-"Represent the centre of the Brillouin zone (commonly marked as the Γ point)."
-struct GammaPoint end
-
 """
     SpecialKPoint(coord, weight)
 
@@ -218,7 +215,6 @@ struct SpecialKPoint <: FieldVector{4,Float64}
     z::Float64
     w::Float64
 end
-SpecialKPoint(::GammaPoint) = SpecialKPoint(0.0, 0.0, 0.0, 1.0)
 
 abstract type KPointsCard <: Card end
 
@@ -251,7 +247,6 @@ function SpecialKPointsCard(data::AbstractMatrix, option = "tpiba")
 end
 
 KPointsCard(x::MonkhorstPackGrid) = MonkhorstPackGridCard(x)
-KPointsCard(::GammaPoint) = GammaPointCard()
 KPointsCard(data::AbstractVecOrMat, option = "tpiba") = SpecialKPointsCard(data, option)
 
 optionof(::MonkhorstPackGridCard) = "automatic"

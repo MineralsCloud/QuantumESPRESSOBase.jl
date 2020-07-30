@@ -60,7 +60,6 @@ export ControlNamelist,
     AtomicForce,
     AtomicForcesCard,
     MonkhorstPackGrid,
-    GammaPoint,
     SpecialKPoint,
     KPointsCard,
     MonkhorstPackGridCard,
@@ -333,12 +332,6 @@ function inputstring(card::CellParametersCard)
     )
 end
 """
-    inputstring(data::GammaPoint)
-
-Return a `String` representing a `GammaPoint`, valid for Quantum ESPRESSO's input.
-"""
-inputstring(data::GammaPoint) = indent(data)
-"""
     inputstring(data::MonkhorstPackGrid)
 
 Return a `String` representing a `MonkhorstPackGrid`, valid for Quantum ESPRESSO's input.
@@ -494,7 +487,6 @@ indent(
     ::Union{
         AtomicSpecies,
         AtomicPosition,
-        GammaPoint,
         SpecialKPoint,
         MonkhorstPackGrid,
         AtomicForce,
@@ -505,7 +497,6 @@ delimiter(
     ::Union{
         AtomicSpecies,
         AtomicPosition,
-        GammaPoint,
         SpecialKPoint,
         MonkhorstPackGrid,
         AtomicForce,
