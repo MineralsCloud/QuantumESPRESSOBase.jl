@@ -62,7 +62,7 @@ export ControlNamelist,
     MonkhorstPackGrid,
     SpecialPoint,
     KPointsCard,
-    MonkhorstPackGridCard,
+    KMeshCard,
     GammaPointCard,
     SpecialPointsCard,
     PWInput,
@@ -248,7 +248,7 @@ end # function set_structure
 optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
-optionpool(::Type{MonkhorstPackGridCard}) = ("automatic",)
+optionpool(::Type{KMeshCard}) = ("automatic",)
 optionpool(::Type{GammaPointCard}) = ("gamma",)
 optionpool(::Type{SpecialPointsCard}) =
     ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
@@ -358,7 +358,7 @@ function inputstring(card::SpecialPointsCard)
     return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
 end
 inputstring(card::GammaPointCard) = "K_POINTS { $(optionof(card)) }" * newline(card)
-function inputstring(card::MonkhorstPackGridCard)
+function inputstring(card::KMeshCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
     return content * inputstring(card.data)
 end

@@ -218,7 +218,7 @@ end
 
 abstract type KPointsCard <: Card end
 
-struct MonkhorstPackGridCard <: KPointsCard
+struct KMeshCard <: KPointsCard
     data::MonkhorstPackGrid
 end
 
@@ -246,5 +246,5 @@ function SpecialPointsCard(data::AbstractMatrix, option = "tpiba")
     return SpecialPointsCard(map(SpecialPoint, eachrow(data)), option)
 end
 
-optionof(::MonkhorstPackGridCard) = "automatic"
+optionof(::KMeshCard) = "automatic"
 optionof(::GammaPointCard) = "gamma"
