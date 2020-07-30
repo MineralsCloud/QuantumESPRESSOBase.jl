@@ -15,7 +15,7 @@ using AutoHashEquals: @auto_hash_equals
 using ConstructionBase: setproperties
 
 using ..Inputs: Namelist, Card, QuantumESPRESSOInput
-using ..Inputs.PWscf: SpecialKPoint
+using ..Inputs.PWscf: SpecialPoint
 
 import ..Inputs
 
