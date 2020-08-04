@@ -19,8 +19,17 @@ using ..Inputs.PWscf: SpecialPoint
 
 import ..Inputs
 
-export SpecialPoint, QPointsCard, PhInput, Q2rInput, MatdynInput, DynmatInput
-export PhNamelist, Q2rNamelist, MatdynNamelist, DynmatNamelist
+export SpecialPoint,
+    QPointsCard,
+    PhInput,
+    Q2rInput,
+    MatdynInput,
+    DynmatInput,
+    PhNamelist,
+    Q2rNamelist,
+    MatdynNamelist,
+    DynmatNamelist
+export relayinfo
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
 """
@@ -427,55 +436,55 @@ end # struct DynmatInput
 DynmatInput() = DynmatInput(DynmatNamelist())
 
 """
-    relay(from::PWInput, to::PhInput)
+    relayinfo(from::PWInput, to::PhInput)
 
 Relay shared information from a `PWInput` to a `PhInput`.
 
 A `PWInput` before a `PhInput` has the information of `outdir` and `prefix`. They must keep the same in a
 phonon calculation.
 """
-function relay(pw::PWInput, ph::PhInput)
+function relayinfo(pw::PWInput, ph::PhInput)
     @set! ph.inputph.outdir = pw.control.outdir
     @set! ph.inputph.prefix = pw.control.prefix
     return ph
-end # function relay
+end # function relayinfo
 """
-    relay(from::PhInput, to::Q2rInput)
+    relayinfo(from::PhInput, to::Q2rInput)
 
 Relay shared information from a `PhInput` to a `Q2rInput`.
 
 A `PhInput` before a `Q2rInput` has the information of `fildyn`. It must keep the same in a q2r calculation.
 """
-function relay(ph::PhInput, q2r::Q2rInput)
+function relayinfo(ph::PhInput, q2r::Q2rInput)
     @set! q2r.input.fildyn = ph.inputph.fildyn
     return q2r
-end # function relay
+end # function relayinfo
 """
-    relay(from::Q2rInput, to::MatdynInput)
+    relayinfo(from::Q2rInput, to::MatdynInput)
 
 Relay shared information from a `Q2rInput` to a `MatdynInput`.
 
 A `Q2rInput` before a `MatdynInput` has the information of `fildyn`, `flfrc` and `loto_2d`. They must keep the same
 in a matdyn calculation.
 """
-function relay(q2r::Q2rInput, matdyn::MatdynInput)
+function relayinfo(q2r::Q2rInput, matdyn::MatdynInput)
     @set! matdyn.input.flfrc = q2r.input.flfrc
     @set! matdyn.input.loto_2d = q2r.input.loto_2d
     return matdyn
-end # function relay
+end # function relayinfo
 """
-    relay(from::PhInput, to::DynmatInput)
+    relayinfo(from::PhInput, to::DynmatInput)
 
 Relay shared information from a `PhInput` to a `DynmatInput`.
 
 A `PhInput` before a `DynmatInput` has the information of `asr`, `fildyn` and `amass`. They must keep the same
 in a dynmat calculation.
 """
-function relay(ph::PhInput, dynmat::DynmatInput)
+function relayinfo(ph::PhInput, dynmat::DynmatInput)
     # @set! dynmat.input.asr = ph.inputph.asr  # TODO
     @set! dynmat.input.fildyn = ph.inputph.fildyn
     @set! dynmat.input.amass = ph.inputph.amass
     return dynmat
-end # function relay
+end # function relayinfo
 
 end
