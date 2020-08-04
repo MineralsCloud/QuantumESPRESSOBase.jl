@@ -473,6 +473,11 @@ function relayinfo(q2r::Q2rInput, matdyn::MatdynInput)
     @set! matdyn.input.loto_2d = q2r.input.loto_2d
     return matdyn
 end # function relayinfo
+function relayinfo(ph::PhInput, matdyn::MatdynInput)
+    @set! matdyn.input.amass = ph.inputph.amass
+    @set! matdyn.input.q_in_band_form = ph.inputph.q_in_band_form
+    return matdyn
+end # function relayinfo
 """
     relayinfo(from::PhInput, to::DynmatInput)
 
