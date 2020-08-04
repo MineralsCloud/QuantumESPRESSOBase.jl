@@ -13,9 +13,10 @@ module PHonon
 
 using AutoHashEquals: @auto_hash_equals
 using ConstructionBase: setproperties
+using Setfield: @set!
 
 using ..Inputs: Namelist, Card, QuantumESPRESSOInput
-using ..Inputs.PWscf: SpecialPoint
+using ..Inputs.PWscf: SpecialPoint, PWInput
 
 import ..Inputs
 
