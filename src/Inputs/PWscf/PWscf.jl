@@ -23,14 +23,10 @@ using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
 using ..Inputs:
-    QuantumESPRESSOInputEntry,
-    Namelist,
-    QuantumESPRESSOInput,
-    entryname,
-    Card,
-    _Celldm
+    QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entryname, Card, _Celldm
 
-import AbInitioSoftwareBase.Inputs: inputstring, titleof
+import AbInitioSoftwareBase.Inputs:
+    inputstring, titleof, set_verbosity, set_temperature, set_pressure_volume, set_structure
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
 import Pseudopotentials: pseudoformat
@@ -43,7 +39,7 @@ import ..Inputs:
     optional_namelists,
     required_cards,
     optional_cards
-    # _coupledargs
+# _coupledargs
 
 export ControlNamelist,
     SystemNamelist,
@@ -483,24 +479,11 @@ optional_cards(x::PWInput) = (getfield(x, f) for f in _optional_cards(typeof(x))
 _optional_cards(::Type{PWInput}) =
     (:cell_parameters, :constraints, :occupations, :atomic_forces)
 
-indent(
-    ::Union{
-        AtomicSpecies,
-        AtomicPosition,
-        SpecialPoint,
-        MonkhorstPackGrid,
-        AtomicForce,
-    },
-) = ' '^4
+indent(::Union{AtomicSpecies,AtomicPosition,SpecialPoint,MonkhorstPackGrid,AtomicForce}) =
+    ' '^4
 
 delimiter(
-    ::Union{
-        AtomicSpecies,
-        AtomicPosition,
-        SpecialPoint,
-        MonkhorstPackGrid,
-        AtomicForce,
-    },
+    ::Union{AtomicSpecies,AtomicPosition,SpecialPoint,MonkhorstPackGrid,AtomicForce},
 ) = ' '
 
 floatfmt(::Union{AtomicSpecies,AtomicPosition,SpecialPoint}) = "%14.9f"
