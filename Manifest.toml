@@ -2,7 +2,7 @@
 
 [[AbInitioSoftwareBase]]
 deps = ["FilePathsBase", "JSON", "Pkg", "YAML"]
-git-tree-sha1 = "3381b462c15c331fc5cda0486514bd17ad806d01"
+git-tree-sha1 = "2e29c0cc41c4bece3a17d56bef48c3db6772ea10"
 repo-rev = "master"
 repo-url = "git@github.com:MineralsCloud/AbInitioSoftwareBase.jl.git"
 uuid = "df5135bc-470e-46c6-b451-292e27ca5b84"
@@ -64,7 +64,7 @@ version = "0.6.0"
 
 [[Crystallography]]
 deps = ["CoordinateTransformations", "EponymTuples", "LibSymspg", "LinearAlgebra", "StaticArrays", "Unitful"]
-git-tree-sha1 = "a87639b85d5cf4385bce7dc959037a410c0ddd95"
+git-tree-sha1 = "9257a342d2d9f7664c08705a65bf65a1db209abe"
 repo-rev = "master"
 repo-url = "git@github.com:MineralsCloud/Crystallography.jl.git"
 uuid = "3bff3928-7a76-11e9-2089-d112443085a5"
@@ -77,15 +77,15 @@ version = "1.3.0"
 
 [[DataFrames]]
 deps = ["CategoricalArrays", "Compat", "DataAPI", "Future", "InvertedIndices", "IteratorInterfaceExtensions", "Missings", "PooledArrays", "Printf", "REPL", "Reexport", "SortingAlgorithms", "Statistics", "TableTraits", "Tables", "Unicode"]
-git-tree-sha1 = "7721fa8c42ccb8f1ea7f99f6c2e94686892dd3b7"
+git-tree-sha1 = "4fe99dbfb5201c5766d20d32a65209434347fd58"
 uuid = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
-version = "0.21.5"
+version = "0.21.6"
 
 [[DataStructures]]
 deps = ["InteractiveUtils", "OrderedCollections"]
-git-tree-sha1 = "edad9434967fdc0a2631a65d902228400642120c"
+git-tree-sha1 = "88d48e133e6d3dd68183309877eac74393daa7eb"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-version = "0.17.19"
+version = "0.17.20"
 
 [[DataValueInterfaces]]
 git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"

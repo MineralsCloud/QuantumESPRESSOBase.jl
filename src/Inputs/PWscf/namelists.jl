@@ -125,7 +125,7 @@ ControlNamelist(nml::ControlNamelist, dict::AbstractDict) = setproperties(nml, d
 
 xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
 wfcfiles(nml::ControlNamelist, n = 1) =
-    [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i = 1:n]
+    [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
 
 """
     SystemNamelist <: Namelist
@@ -813,11 +813,11 @@ BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
 BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
-    set_verbosity(template::ControlNamelist, verbosity)
+    setverbosity(template::ControlNamelist, verbosity)
 
 Return a modified `ControlNamelist`, with verbosity set.
 """
-function set_verbosity(control::ControlNamelist, verbosity)
+function setverbosity(control::ControlNamelist, verbosity)
     if verbosity == "high"
         @set! control.verbosity = "high"
         @set! control.wf_collect = true
@@ -834,41 +834,39 @@ function set_verbosity(control::ControlNamelist, verbosity)
         error("unknown `verbosity` `$verbosity` specified!")
     end
     return control
-end # function set_verbosity
+end # function setverbosity
 
 """
-    set_temperature(system::SystemNamelist, temperature)
+    set_elec_temp(system::SystemNamelist, temperature)
 
 Return a modified `SystemNamelist`, with finite temperature set.
 
 !!! warning
     Can be used with(out) units. If no unit is given, "Ry" is chosen.
 """
-function set_temperature(system::SystemNamelist, temperature)
+function set_elec_temp(system::SystemNamelist, temperature)
     @set! system.occupations = "smearing"
     @set! system.smearing = "fermi-dirac"
-    @set! system.degauss = _set_temperature(temperature)
+    @set! system.degauss = _tconvert(temperature)
     return system
-end # function set_temperature
-function _set_temperature(temperature::AbstractQuantity)
-    u = upreferred(unit(temperature))
-    if u == u"Ry"
-        return temperature
-    elseif u == u"kg*m^2*s^-2"  # u"hartree", u"J", u"eV", etc..
+end # function set_elec_temp
+function _tconvert(temperature::AbstractQuantity)
+    dim = dimension(unit(temperature))
+    if dim == dimension(u"Ry")  # u"hartree", u"J", u"eV", etc..
         return ustrip(u"Ry", temperature)
-    elseif u == u"s^-1"  # u"Hz", u"THz", ...
+    elseif dim == dimension(u"Hz")  # u"Hz", u"THz", ...
         return ustrip(u"Hz", temperature) / 6579683920502000.0 * 2
-    elseif u == u"K"  # u"K", u"mK", u"μK", ...
+    elseif dim == dimension(u"K")  # u"K", u"mK", u"μK", ...
         return ustrip(u"K", temperature) / 315775.02480407 * 2
-    elseif u == u"m^-1"  # u"m^-1", u"cm^-1", ...
+    elseif dim == dimension(u"m^-1")  # u"m^-1", u"cm^-1", ...
         return ustrip(u"m^-1", temperature) / 21947463.13632 * 2
-    elseif u == u"kg"  # u"kg", u"g", ...
+    elseif dim == dimension(u"kg")  # u"kg", u"g", ...
         return ustrip(u"kg", temperature) / 4.8508702095432e-35 * 2
     else
         error("unknown unit given!")
     end
-end # function _set_temperature
-_set_temperature(temperature::Real) = temperature  # Ry
+end
+_tconvert(temperature::Real) = temperature  # Ry
 
 # _coupledargs(::Type{ControlNamelist}) = (:calculation => :disk_io,)
 # _coupledargs(::Type{SystemNamelist}) = (:ecutwfc => :ecutrho, :ecutrho => :ecutfock)
