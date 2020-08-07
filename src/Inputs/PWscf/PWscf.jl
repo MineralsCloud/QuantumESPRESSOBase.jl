@@ -172,7 +172,7 @@ function set_verbosity(template::PWInput, verbosity)
 end # function set_verbosity
 
 """
-    set_temperature(system::PWInput, temperature)
+    set_temperature(system::PWInput, temperature::Union{Real,AbstractQuantity})
 
 Return a modified `PWInput`, with finite temperature set.
 
@@ -184,9 +184,9 @@ function set_temperature(template::PWInput, temperature)
     return template
 end # function set_temperature
 
-function set_pressure_volume(template::PWInput, pressure, volume)
-    @set! template.cell.press = ustrip(u"kbar", pressure)
-    factor = cbrt(volume / (cellvolume(template) * u"bohr^3")) |> NoUnits  # This is dimensionless and `cbrt` works with units.
+function set_pressure_volume(template::PWInput, pressure::Real, volume::Real)
+    @set! template.cell.press = pressure
+    factor = cbrt(volume / cellvolume(template))
     if template.cell_parameters === nothing || optionof(template.cell_parameters) == "alat"
         @set! template.system.celldm[1] *= factor
     else
@@ -196,6 +196,11 @@ function set_pressure_volume(template::PWInput, pressure, volume)
     end
     return template
 end # function set_pressure_volume
+set_pressure_volume(
+    template::PWInput,
+    pressure::AbstractQuantity,
+    volume::AbstractQuantity,
+) = set_pressure_volume(template, ustrip(u"kbar", pressure), ustrip(u"bohr^3", volume))
 
 function set_structure(template::PWInput, cell_parameters::CellParametersCard)
     if template.cell_parameters === nothing
