@@ -196,11 +196,8 @@ function set_press_vol(template::PWInput, pressure::Real, volume::Real)
     end
     return template
 end # function set_press_vol
-set_press_vol(
-    template::PWInput,
-    pressure::AbstractQuantity,
-    volume::AbstractQuantity,
-) = set_press_vol(template, ustrip(u"kbar", pressure), ustrip(u"bohr^3", volume))
+set_press_vol(template::PWInput, pressure::AbstractQuantity, volume::AbstractQuantity) =
+    set_press_vol(template, ustrip(u"kbar", pressure), ustrip(u"bohr^3", volume))
 
 function setcell(template::PWInput, cell_parameters::CellParametersCard)
     if template.cell_parameters === nothing
