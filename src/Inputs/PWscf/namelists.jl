@@ -813,11 +813,11 @@ BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
 BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
-    set_verbosity(template::ControlNamelist, verbosity)
+    setverbosity(template::ControlNamelist, verbosity)
 
 Return a modified `ControlNamelist`, with verbosity set.
 """
-function set_verbosity(control::ControlNamelist, verbosity)
+function setverbosity(control::ControlNamelist, verbosity)
     if verbosity == "high"
         @set! control.verbosity = "high"
         @set! control.wf_collect = true
@@ -834,22 +834,22 @@ function set_verbosity(control::ControlNamelist, verbosity)
         error("unknown `verbosity` `$verbosity` specified!")
     end
     return control
-end # function set_verbosity
+end # function setverbosity
 
 """
-    set_temperature(system::SystemNamelist, temperature)
+    set_elec_temp(system::SystemNamelist, temperature)
 
 Return a modified `SystemNamelist`, with finite temperature set.
 
 !!! warning
     Can be used with(out) units. If no unit is given, "Ry" is chosen.
 """
-function set_temperature(system::SystemNamelist, temperature)
+function set_elec_temp(system::SystemNamelist, temperature)
     @set! system.occupations = "smearing"
     @set! system.smearing = "fermi-dirac"
     @set! system.degauss = _tconvert(temperature)
     return system
-end # function set_temperature
+end # function set_elec_temp
 function _tconvert(temperature::AbstractQuantity)
     dim = dimension(unit(temperature))
     if dim == dimension(u"Ry")  # u"hartree", u"J", u"eV", etc..
@@ -865,7 +865,7 @@ function _tconvert(temperature::AbstractQuantity)
     else
         error("unknown unit given!")
     end
-end # function _set_temperature
+end
 _tconvert(temperature::Real) = temperature  # Ry
 
 # _coupledargs(::Type{ControlNamelist}) = (:calculation => :disk_io,)

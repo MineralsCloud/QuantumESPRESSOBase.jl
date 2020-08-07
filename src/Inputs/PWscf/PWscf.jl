@@ -26,7 +26,7 @@ using ..Inputs:
     QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entryname, Card, _Celldm
 
 import AbInitioSoftwareBase.Inputs:
-    inputstring, titleof, set_verbosity, set_temperature, set_pressure_volume, set_structure
+    inputstring, titleof, setverbosity, set_elec_temp, set_press_vol, setcell
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
 import Pseudopotentials: pseudoformat
@@ -73,10 +73,10 @@ export ControlNamelist,
     optional_namelists,
     required_cards,
     optional_cards,
-    set_verbosity,
-    set_temperature,
-    set_structure,
-    set_pressure_volume,
+    setverbosity,
+    set_elec_temp,
+    setcell,
+    set_press_vol,
     inputstring
 
 include("namelists.jl")
@@ -162,29 +162,29 @@ PWInput(args::QuantumESPRESSOInputEntry...) = PWInput(; map(args) do arg
 end...)
 
 """
-    set_verbosity(template::PWInput, verbosity)
+    setverbosity(template::PWInput, verbosity)
 
 Return a modified `PWInput`, with verbosity set.
 """
-function set_verbosity(template::PWInput, verbosity)
-    @set! template.control = set_verbosity(template.control, verbosity)
+function setverbosity(template::PWInput, verbosity)
+    @set! template.control = setverbosity(template.control, verbosity)
     return template
-end # function set_verbosity
+end # function setverbosity
 
 """
-    set_temperature(system::PWInput, temperature::Union{Real,AbstractQuantity})
+    set_elec_temp(system::PWInput, temperature::Union{Real,AbstractQuantity})
 
 Return a modified `PWInput`, with finite temperature set.
 
 !!! warning
     Can be used with(out) units. If no unit is given, "Ry" is chosen.
 """
-function set_temperature(template::PWInput, temperature)
-    @set! template.system = set_temperature(template.system, temperature)
+function set_elec_temp(template::PWInput, temperature)
+    @set! template.system = set_elec_temp(template.system, temperature)
     return template
-end # function set_temperature
+end # function set_elec_temp
 
-function set_pressure_volume(template::PWInput, pressure::Real, volume::Real)
+function set_press_vol(template::PWInput, pressure::Real, volume::Real)
     @set! template.cell.press = pressure
     factor = cbrt(volume / cellvolume(template))
     if template.cell_parameters === nothing || optionof(template.cell_parameters) == "alat"
@@ -195,14 +195,14 @@ function set_pressure_volume(template::PWInput, pressure::Real, volume::Real)
             optconvert("bohr", CellParametersCard(template.cell_parameters.data * factor))
     end
     return template
-end # function set_pressure_volume
-set_pressure_volume(
+end # function set_press_vol
+set_press_vol(
     template::PWInput,
     pressure::AbstractQuantity,
     volume::AbstractQuantity,
-) = set_pressure_volume(template, ustrip(u"kbar", pressure), ustrip(u"bohr^3", volume))
+) = set_press_vol(template, ustrip(u"kbar", pressure), ustrip(u"bohr^3", volume))
 
-function set_structure(template::PWInput, cell_parameters::CellParametersCard)
+function setcell(template::PWInput, cell_parameters::CellParametersCard)
     if template.cell_parameters === nothing
         if optionof(cell_parameters) in ("bohr", "angstrom")
             @set! template.cell_parameters = cell_parameters
@@ -231,20 +231,20 @@ function set_structure(template::PWInput, cell_parameters::CellParametersCard)
     end
     @set! template.cell_parameters = cell_parameters
     return template
-end # function set_structure
-function set_structure(template::PWInput, atomic_positions::AtomicPositionsCard)
+end # function setcell
+function setcell(template::PWInput, atomic_positions::AtomicPositionsCard)
     @set! template.atomic_positions = atomic_positions
     return template
-end # function set_structure
-set_structure(template::PWInput, c::CellParametersCard, a::AtomicPositionsCard) =
-    set_structure(set_structure(template, c), a)
-function set_structure(template::PWInput, cell::Cell, option1, option2)
-    return set_structure(
+end # function setcell
+setcell(template::PWInput, c::CellParametersCard, a::AtomicPositionsCard) =
+    setcell(setcell(template, c), a)
+function setcell(template::PWInput, cell::Cell, option1, option2)
+    return setcell(
         template,
         CellParametersCard(cell, option1),
         AtomicPositionsCard(cell, option2),
     )
-end # function set_structure
+end # function setcell
 
 optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
