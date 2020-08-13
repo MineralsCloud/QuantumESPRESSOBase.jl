@@ -258,6 +258,8 @@ function Bravais(ibrav::Integer)
         return FaceCenteredCubic(true)
     elseif ibrav == 3
         return BodyCenteredCubic(true)
+    elseif ibrav == -3
+        return BodyCenteredCubic(false)
     elseif ibrav == 4
         return PrimitiveHexagonal(true)
     elseif ibrav == 5
@@ -312,12 +314,14 @@ Lattice(::FaceCenteredCubic, p) = Lattice(p[1] / 2 * [
     0 1 1
     -1 1 0
 ])
+function Lattice(bravais::BodyCenteredCubic, p)
+    if bravais.obverse
         return Lattice(p[1] / 2 * [
             1 1 1
             -1 1 1
             -1 -1 1
         ])
-    else
+    else  # -3
         return Lattice(p[1] / 2 * [
             -1 1 1
             1 -1 1
