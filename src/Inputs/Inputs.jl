@@ -298,7 +298,7 @@ function Bravais(ibrav::Integer)
 end
 
 """
-    Lattice(::Bravais, p[, obverse::Bool])
+    Lattice(::Bravais, p)
 
 Create a Bravais lattice from the exact lattice type and cell parameters `p` (not `celldm`!).
 
