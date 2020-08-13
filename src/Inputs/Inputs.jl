@@ -347,12 +347,12 @@ Create a Bravais lattice from the exact lattice type and cell parameters `p` (no
 
 The first elements of `p` are `a`, `b`, `c`; the last 3 are `α`, `β`, `γ` (in radians).
 """
-Lattice(::PrimitiveCubic, p::_Celldm, args...) = Lattice(p[1] * [
+Lattice(::PrimitiveCubic, p::_Celldm) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 1
 ])
-Lattice(::FaceCenteredCubic, p::_Celldm, args...) = Lattice(p[1] / 2 * [
+Lattice(::FaceCenteredCubic, p::_Celldm) = Lattice(p[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
@@ -372,7 +372,7 @@ function Lattice(::BodyCenteredCubic, p::_Celldm, obverse::Bool = true)
         ])
     end
 end
-Lattice(::PrimitiveHexagonal, p::_Celldm, args...) = Lattice(p[1] * [
+Lattice(::PrimitiveHexagonal, p::_Celldm) = Lattice(p[1] * [
     1 0 0
     -1 / 2 √3 / 2 0
     0 0 p[3]
@@ -399,12 +399,12 @@ function Lattice(::RCenteredHexagonal, p::_Celldm, obverse::Bool = true)
         ])
     end
 end
-Lattice(::PrimitiveTetragonal, p::_Celldm, args...) = Lattice(p[1] * [
+Lattice(::PrimitiveTetragonal, p::_Celldm) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 p[3]
 ])
-function Lattice(::BodyCenteredTetragonal, celldm::_Celldm, args...)
+function Lattice(::BodyCenteredTetragonal, celldm::_Celldm)
     r = celldm[3]
     return Lattice(celldm[1] / 2 * [
         1 -1 r
@@ -412,7 +412,7 @@ function Lattice(::BodyCenteredTetragonal, celldm::_Celldm, args...)
         -1 -1 r
     ])
 end
-Lattice(::PrimitiveOrthorhombic, p::_Celldm, args...) = Lattice(p[1] * [
+Lattice(::PrimitiveOrthorhombic, p::_Celldm) = Lattice(p[1] * [
     1 0 0
     0 p[2] 0
     0 0 p[3]
@@ -433,7 +433,7 @@ function Lattice(::BCenteredOrthorhombic, p::_Celldm, obverse::Bool = true)
         ])
     end
 end
-function Lattice(::ACenteredOrthorhombic, p, args...)
+function Lattice(::ACenteredOrthorhombic, p)
     a, r1, r2 = p[1:3]
     return Lattice(a * [
         1 0 0
@@ -441,7 +441,7 @@ function Lattice(::ACenteredOrthorhombic, p, args...)
         0 r1 / 2 r2 / 2
     ])
 end  # New in QE 6.4
-function Lattice(::FaceCenteredOrthorhombic, p::_Celldm, args...)
+function Lattice(::FaceCenteredOrthorhombic, p::_Celldm)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     return Lattice([
         a 0 c
@@ -449,7 +449,7 @@ function Lattice(::FaceCenteredOrthorhombic, p::_Celldm, args...)
         0 b c
     ] / 2)
 end
-function Lattice(::BodyCenteredOrthorhombic, p::_Celldm, args...)
+function Lattice(::BodyCenteredOrthorhombic, p::_Celldm)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     return Lattice([
         a b c
@@ -473,7 +473,7 @@ function Lattice(bravais::PrimitiveMonoclinic, p)
         ])
     end
 end
-function Lattice(::CCenteredMonoclinic, p, args...)
+function Lattice(::CCenteredMonoclinic, p)
     a, r1, r2, cosγ = p[1:4]
     return Lattice(a * [
         1 / 2 0 -r2 / 2
@@ -481,7 +481,7 @@ function Lattice(::CCenteredMonoclinic, p, args...)
         1 / 2 0 r2 / 2
     ])
 end
-function Lattice(::BCenteredMonoclinic, p, args...)
+function Lattice(::BCenteredMonoclinic, p)
     a, r1, r2, _, cosβ = p[1:3]
     return Lattice(a * [
         1 / 2 r1 / 2 0
@@ -489,7 +489,7 @@ function Lattice(::BCenteredMonoclinic, p, args...)
         r2 * cosβ 0 r2 * sin(acos(cosβ))
     ])
 end
-function Lattice(::PrimitiveTriclinic, p, args...)
+function Lattice(::PrimitiveTriclinic, p)
     a, r1, r2, cosα, cosβ, cosγ = p[1:6]  # Every `p` that is an iterable can be used
     sinγ = sin(acos(cosγ))
     δ = r2 * sqrt(1 + 2 * cosα * cosβ * cosγ - cosα^2 - cosβ^2 - cosγ^2) / sinγ
