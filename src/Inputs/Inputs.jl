@@ -160,51 +160,6 @@ function required_cards end
 
 function optional_cards end
 
-# Do not export this type!
-struct _Celldm{T<:Bravais}
-    data::Any
-    function _Celldm{T}(data) where {T}
-        @argcheck 1 <= length(data) <= 6
-        return new(data)
-    end
-end
-
-Base.getindex(x::_Celldm, i) = getindex(x.data, i)
-# function Base.getindex(x::_Celldm, i::Integer)
-#     a = x.data[1]
-#     if i == 1
-#         return a
-#     elseif i in 2:3
-#         return a * x.data[i]
-#     elseif i in 4:6
-#         return acos(x.data[10-i])
-#     else
-#         throw(BoundsError(x.data, i))
-#     end
-# end # function Base.getindex
-# function Base.getindex(x::_Celldm{PrimitiveTriclinic}, i::Integer)
-#     a = x.data[1]
-#     if i == 1
-#         return a
-#     elseif i in 2:3
-#         return a * x.data[i]
-#     elseif i in 4:6
-#         return acos(x.data[i])  # Note the difference!
-#     else
-#         throw(BoundsError(x.data, i))
-#     end
-# end # function Base.getindex
-# Base.getindex(x::_Celldm, I) = [x[i] for i in I]
-
-# function Base.convert(::Type{_Celldm{T}}, p::CellParameters) where {T}
-#     a, b, c, α, β, γ = p
-#     return _Celldm{T}([a, b / a, c / a, cos(γ), cos(β), cos(α)])  # What a horrible conversion!
-# end # function Base.convert
-# function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
-#     a, b, c, α, β, γ = p
-#     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
-# end # function Base.convert
-
 include("PWscf/PWscf.jl")
 # include("CP/CP.jl")
 include("PHonon.jl")
@@ -216,7 +171,10 @@ Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRE
 """
 function inputstring(input::QuantumESPRESSOInput)
     return join(
-        map(Iterators.filter(!isnothing, getfield(input, i) for i = 1:nfields(input))) do f
+        map(Iterators.filter(
+            !isnothing,
+            getfield(input, i) for i in 1:nfields(input)
+        )) do f
             inputstring(f)
         end,
         newline(input),
@@ -295,73 +253,75 @@ delimiter(::Namelist) = ' '
 
 function Bravais(ibrav::Integer)
     if ibrav == 1
-        return PrimitiveCubic()
+        return PrimitiveCubic(true)
     elseif ibrav == 2
-        return FaceCenteredCubic()
+        return FaceCenteredCubic(true)
     elseif ibrav == 3
-        return BodyCenteredCubic()
+        return BodyCenteredCubic(true)
+    elseif ibrav == -3
+        return BodyCenteredCubic(false)
     elseif ibrav == 4
-        return PrimitiveHexagonal()
+        return PrimitiveHexagonal(true)
     elseif ibrav == 5
-        return RCenteredHexagonal()
+        return RCenteredHexagonal(true)
     elseif ibrav == -5
-        return RCenteredHexagonal()
+        return RCenteredHexagonal(false)
     elseif ibrav == 6
-        return PrimitiveTetragonal()
+        return PrimitiveTetragonal(true)
     elseif ibrav == 7
-        return BodyCenteredTetragonal()
+        return BodyCenteredTetragonal(true)
     elseif ibrav == 8
-        return PrimitiveOrthorhombic()
+        return PrimitiveOrthorhombic(true)
     elseif ibrav == 9
-        return BCenteredOrthorhombic()
+        return BCenteredOrthorhombic(true)
     elseif ibrav == -9
-        return BCenteredOrthorhombic()
+        return BCenteredOrthorhombic(false)
     elseif ibrav == 91
-        return ACenteredOrthorhombic()  # New in QE 6.5
+        return ACenteredOrthorhombic(true)  # New in QE 6.5
     elseif ibrav == 10
-        return FaceCenteredOrthorhombic()
+        return FaceCenteredOrthorhombic(true)
     elseif ibrav == 11
-        return BodyCenteredOrthorhombic()
+        return BodyCenteredOrthorhombic(true)
     elseif ibrav == 12
-        return PrimitiveMonoclinic()
+        return PrimitiveMonoclinic(true)
     elseif ibrav == -12
-        return PrimitiveMonoclinic()
+        return PrimitiveMonoclinic(false)
     elseif ibrav == 13
-        return CCenteredMonoclinic()
+        return CCenteredMonoclinic(true)
     elseif ibrav == -13
-        return BCenteredMonoclinic()  # New in QE 6.5
+        return BCenteredMonoclinic(true)  # New in QE 6.5
     elseif ibrav == 14
-        return PrimitiveTriclinic()
+        return PrimitiveTriclinic(true)
     else
         error("Bravais lattice undefined for `ibrav = $ibrav`!")
     end
 end
 
 """
-    Lattice(::Bravais, p[, obverse::Bool])
+    Lattice(::Bravais, p)
 
 Create a Bravais lattice from the exact lattice type and cell parameters `p` (not `celldm`!).
 
 The first elements of `p` are `a`, `b`, `c`; the last 3 are `α`, `β`, `γ` (in radians).
 """
-Lattice(::PrimitiveCubic, p::_Celldm, args...) = Lattice(p[1] * [
+Lattice(::PrimitiveCubic, p) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 1
 ])
-Lattice(::FaceCenteredCubic, p::_Celldm, args...) = Lattice(p[1] / 2 * [
+Lattice(::FaceCenteredCubic, p) = Lattice(p[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
 ])
-function Lattice(::BodyCenteredCubic, p::_Celldm, obverse::Bool = true)
-    if obverse
+function Lattice(bravais::BodyCenteredCubic, p)
+    if bravais.obverse
         return Lattice(p[1] / 2 * [
             1 1 1
             -1 1 1
             -1 -1 1
         ])
-    else
+    else  # -3
         return Lattice(p[1] / 2 * [
             -1 1 1
             1 -1 1
@@ -369,16 +329,16 @@ function Lattice(::BodyCenteredCubic, p::_Celldm, obverse::Bool = true)
         ])
     end
 end
-Lattice(::PrimitiveHexagonal, p::_Celldm, args...) = Lattice(p[1] * [
+Lattice(::PrimitiveHexagonal, p) = Lattice(p[1] * [
     1 0 0
     -1 / 2 √3 / 2 0
     0 0 p[3]
 ])
-function Lattice(::RCenteredHexagonal, p::_Celldm, obverse::Bool = true)
+function Lattice(bravais::RCenteredHexagonal, p)
     cosγ = p[4]
     ty = sqrt((1 - cosγ) / 6)
     tz = sqrt((1 + 2cosγ) / 3)
-    if obverse
+    if bravais.obverse
         tx = sqrt((1 - cosγ) / 2)
         return Lattice(p[1] * [
             tx -ty tz
@@ -396,12 +356,12 @@ function Lattice(::RCenteredHexagonal, p::_Celldm, obverse::Bool = true)
         ])
     end
 end
-Lattice(::PrimitiveTetragonal, p::_Celldm, args...) = Lattice(p[1] * [
+Lattice(::PrimitiveTetragonal, p) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 p[3]
 ])
-function Lattice(::BodyCenteredTetragonal, celldm::_Celldm, args...)
+function Lattice(::BodyCenteredTetragonal, celldm)
     r = celldm[3]
     return Lattice(celldm[1] / 2 * [
         1 -1 r
@@ -409,14 +369,14 @@ function Lattice(::BodyCenteredTetragonal, celldm::_Celldm, args...)
         -1 -1 r
     ])
 end
-Lattice(::PrimitiveOrthorhombic, p::_Celldm, args...) = Lattice(p[1] * [
+Lattice(::PrimitiveOrthorhombic, p) = Lattice(p[1] * [
     1 0 0
     0 p[2] 0
     0 0 p[3]
 ])
-function Lattice(::BCenteredOrthorhombic, p::_Celldm, obverse::Bool = true)
+function Lattice(bravais::BCenteredOrthorhombic, p)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
-    if obverse
+    if bravais.obverse
         return Lattice([
             a / 2 b / 2 0
             -a / 2 b / 2 0
@@ -430,12 +390,15 @@ function Lattice(::BCenteredOrthorhombic, p::_Celldm, obverse::Bool = true)
         ])
     end
 end
-# Lattice(::ACenteredOrthorhombic, p, args...) = Lattice([
-#     p[1] 0 0
-#     0 p[2] / 2 -p[3] / 2
-#     0 p[2] / 2 p[3] / 2
-# ])  # New in QE 6.4
-function Lattice(::FaceCenteredOrthorhombic, p::_Celldm, args...)
+function Lattice(::ACenteredOrthorhombic, p)
+    a, r1, r2 = p[1:3]
+    return Lattice(a * [
+        1 0 0
+        0 r1 / 2 -r2 / 2
+        0 r1 / 2 r2 / 2
+    ])
+end  # New in QE 6.4
+function Lattice(::FaceCenteredOrthorhombic, p)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     return Lattice([
         a 0 c
@@ -443,7 +406,7 @@ function Lattice(::FaceCenteredOrthorhombic, p::_Celldm, args...)
         0 b c
     ] / 2)
 end
-function Lattice(::BodyCenteredOrthorhombic, p::_Celldm, args...)
+function Lattice(::BodyCenteredOrthorhombic, p)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     return Lattice([
         a b c
@@ -451,46 +414,50 @@ function Lattice(::BodyCenteredOrthorhombic, p::_Celldm, args...)
         -a -b c
     ] / 2)
 end
-# function Lattice(::PrimitiveMonoclinic, p, obverse::Bool = true)
-#     a, b, c, _, β, γ = p[1:6]
-#     if obverse
-#         return Lattice([
-#             a 0 0
-#             b * cos(γ) b * sin(γ) 0
-#             0 0 c
-#         ])
-#     else
-#         return Lattice([
-#             a 0 0
-#             0 b 0
-#             c * cos(β) 0 c * sin(β)
-#         ])
-#     end
-# end
-# function Lattice(::CCenteredMonoclinic, p, args...)
-#     a, b, c = p[1:3]
-#     return Lattice([
-#         a / 2 0 -c / 2
-#         b * cos(p[6]) b * sin(p[6]) 0
-#         a / 2 0 c / 2
-#     ])
-# end
-# function Lattice(::BCenteredMonoclinic, p, args...)
-#     a, b, c = p[1:3]
-#     return Lattice([
-#         a / 2 b / 2 0
-#         -a / 2 b / 2 0
-#         c * cos(p[5]) 0 c * sin(p[5])
-#     ])
-# end
-# function Lattice(::PrimitiveTriclinic, p, args...)
-#     a, b, c, α, β, γ = p  # Every `p` that is an iterable can be used
-#     δ = c * sqrt(1 + 2 * cos(α) * cos(β) * cos(γ) - cos(α)^2 - cos(β)^2 - cos(γ)^2) / sin(γ)
-#     return Lattice([
-#         a 0 0
-#         b * cos(γ) b * sin(γ) 0
-#         c * cos(β) c * (cos(α) - cos(β) * cos(γ)) / sin(γ) δ
-#     ])
-# end
+function Lattice(bravais::PrimitiveMonoclinic, p)
+    if bravais.obverse
+        a, r1, r2, cosγ = p[1:4]
+        return Lattice(a * [
+            1 0 0
+            r1 * cosγ r1 * sin(acos(cosγ)) 0
+            0 0 r2
+        ])
+    else
+        a, r1, r2, _, cosβ = p[1:5]
+        return Lattice(a * [
+            1 0 0
+            0 r1 0
+            r2 * cosβ 0 r2 * sin(acos(cosβ))
+        ])
+    end
+end
+function Lattice(::CCenteredMonoclinic, p)
+    a, r1, r2, cosγ = p[1:4]
+    return Lattice(a * [
+        1 / 2 0 -r2 / 2
+        r1 * cosγ r1 * sin(acos(cosγ)) 0
+        1 / 2 0 r2 / 2
+    ])
+end
+function Lattice(::BCenteredMonoclinic, p)
+    a, r1, r2, _, cosβ = p[1:3]
+    return Lattice(a * [
+        1 / 2 r1 / 2 0
+        -1 / 2 r1 / 2 0
+        r2 * cosβ 0 r2 * sin(acos(cosβ))
+    ])
+end
+function Lattice(::PrimitiveTriclinic, p)
+    a, r1, r2, cosα, cosβ, cosγ = p[1:6]  # Every `p` that is an iterable can be used
+    sinγ = sin(acos(cosγ))
+    δ = r2 * sqrt(1 + 2 * cosα * cosβ * cosγ - cosα^2 - cosβ^2 - cosγ^2) / sinγ
+    return Lattice(
+        a * [
+            1 0 0
+            r1 * cosγ r1 * sinγ 0
+            r2 * cosβ r2 * (cosα - cosβ * cosγ) / sinγ δ
+        ],
+    )
+end
 
 end
