@@ -308,7 +308,7 @@ function Bravais(ibrav::Integer)
     elseif ibrav == 5
         return RCenteredHexagonal(true)
     elseif ibrav == -5
-        return RCenteredHexagonal(true)
+        return RCenteredHexagonal(false)
     elseif ibrav == 6
         return PrimitiveTetragonal(true)
     elseif ibrav == 7
@@ -318,7 +318,7 @@ function Bravais(ibrav::Integer)
     elseif ibrav == 9
         return BCenteredOrthorhombic(true)
     elseif ibrav == -9
-        return BCenteredOrthorhombic(true)
+        return BCenteredOrthorhombic(false)
     elseif ibrav == 91
         return ACenteredOrthorhombic(true)  # New in QE 6.5
     elseif ibrav == 10
@@ -377,11 +377,11 @@ Lattice(::PrimitiveHexagonal, p::_Celldm) = Lattice(p[1] * [
     -1 / 2 √3 / 2 0
     0 0 p[3]
 ])
-function Lattice(::RCenteredHexagonal, p::_Celldm, obverse::Bool = true)
+function Lattice(bravais::RCenteredHexagonal, p)
     cosγ = p[4]
     ty = sqrt((1 - cosγ) / 6)
     tz = sqrt((1 + 2cosγ) / 3)
-    if obverse
+    if bravais.obverse
         tx = sqrt((1 - cosγ) / 2)
         return Lattice(p[1] * [
             tx -ty tz
@@ -417,9 +417,9 @@ Lattice(::PrimitiveOrthorhombic, p::_Celldm) = Lattice(p[1] * [
     0 p[2] 0
     0 0 p[3]
 ])
-function Lattice(::BCenteredOrthorhombic, p::_Celldm, obverse::Bool = true)
+function Lattice(bravais::BCenteredOrthorhombic, p)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
-    if obverse
+    if bravais.obverse
         return Lattice([
             a / 2 b / 2 0
             -a / 2 b / 2 0
