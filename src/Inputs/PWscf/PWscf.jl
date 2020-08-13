@@ -23,7 +23,7 @@ using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
 using ..Inputs:
-    QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entryname, Card, _Celldm
+    QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entryname, Card
 
 import AbInitioSoftwareBase.Inputs:
     inputstring, titleof, setverbosity, set_elec_temp, set_press_vol, setcell
@@ -373,10 +373,7 @@ Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
 
 Return a `Lattice` from a `SystemNamelist`.
 """
-function Lattice(nml::SystemNamelist)
-    b = Bravais(nml)
-    return Lattice(b, _Celldm{typeof(b)}(nml.celldm))
-end # function Lattice
+Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
 
 """
     cellvolume(card)
