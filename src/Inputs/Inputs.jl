@@ -415,14 +415,15 @@ function Lattice(::BodyCenteredOrthorhombic, p)
     ] / 2)
 end
 function Lattice(bravais::PrimitiveMonoclinic, p)
-    a, r1, r2, _, cosβ, cosγ = p[1:6]
     if bravais.obverse
+        a, r1, r2, cosγ = p[1:4]
         return Lattice(a * [
             1 0 0
             r1 * cosγ r1 * sin(acos(cosγ)) 0
             0 0 r2
         ])
     else
+        a, r1, r2, _, cosβ = p[1:5]
         return Lattice(a * [
             1 0 0
             0 r1 0
