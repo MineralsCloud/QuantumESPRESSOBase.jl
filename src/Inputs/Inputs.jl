@@ -216,7 +216,10 @@ Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRE
 """
 function inputstring(input::QuantumESPRESSOInput)
     return join(
-        map(Iterators.filter(!isnothing, getfield(input, i) for i = 1:nfields(input))) do f
+        map(Iterators.filter(
+            !isnothing,
+            getfield(input, i) for i in 1:nfields(input)
+        )) do f
             inputstring(f)
         end,
         newline(input),
@@ -430,11 +433,14 @@ function Lattice(::BCenteredOrthorhombic, p::_Celldm, obverse::Bool = true)
         ])
     end
 end
-# Lattice(::ACenteredOrthorhombic, p, args...) = Lattice([
-#     p[1] 0 0
-#     0 p[2] / 2 -p[3] / 2
-#     0 p[2] / 2 p[3] / 2
-# ])  # New in QE 6.4
+function Lattice(::ACenteredOrthorhombic, p, args...)
+    a, r1, r2 = p[1:3]
+    return Lattice(a * [
+        1 0 0
+        0 r1 / 2 -r2 / 2
+        0 r1 / 2 r2 / 2
+    ])
+end  # New in QE 6.4
 function Lattice(::FaceCenteredOrthorhombic, p::_Celldm, args...)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     return Lattice([
@@ -451,46 +457,49 @@ function Lattice(::BodyCenteredOrthorhombic, p::_Celldm, args...)
         -a -b c
     ] / 2)
 end
-# function Lattice(::PrimitiveMonoclinic, p, obverse::Bool = true)
-#     a, b, c, _, β, γ = p[1:6]
-#     if obverse
-#         return Lattice([
-#             a 0 0
-#             b * cos(γ) b * sin(γ) 0
-#             0 0 c
-#         ])
-#     else
-#         return Lattice([
-#             a 0 0
-#             0 b 0
-#             c * cos(β) 0 c * sin(β)
-#         ])
-#     end
-# end
-# function Lattice(::CCenteredMonoclinic, p, args...)
-#     a, b, c = p[1:3]
-#     return Lattice([
-#         a / 2 0 -c / 2
-#         b * cos(p[6]) b * sin(p[6]) 0
-#         a / 2 0 c / 2
-#     ])
-# end
-# function Lattice(::BCenteredMonoclinic, p, args...)
-#     a, b, c = p[1:3]
-#     return Lattice([
-#         a / 2 b / 2 0
-#         -a / 2 b / 2 0
-#         c * cos(p[5]) 0 c * sin(p[5])
-#     ])
-# end
-# function Lattice(::PrimitiveTriclinic, p, args...)
-#     a, b, c, α, β, γ = p  # Every `p` that is an iterable can be used
-#     δ = c * sqrt(1 + 2 * cos(α) * cos(β) * cos(γ) - cos(α)^2 - cos(β)^2 - cos(γ)^2) / sin(γ)
-#     return Lattice([
-#         a 0 0
-#         b * cos(γ) b * sin(γ) 0
-#         c * cos(β) c * (cos(α) - cos(β) * cos(γ)) / sin(γ) δ
-#     ])
-# end
+function Lattice(bravais::PrimitiveMonoclinic, p)
+    a, r1, r2, _, cosβ, cosγ = p[1:6]
+    if bravais.obverse
+        return Lattice(a * [
+            1 0 0
+            r1 * cosγ r1 * sin(acos(cosγ)) 0
+            0 0 r2
+        ])
+    else
+        return Lattice(a * [
+            1 0 0
+            0 r1 0
+            r2 * cosβ 0 r2 * sin(acos(cosβ))
+        ])
+    end
+end
+function Lattice(::CCenteredMonoclinic, p, args...)
+    a, r1, r2, cosγ = p[1:4]
+    return Lattice(a * [
+        1 / 2 0 -r2 / 2
+        r1 * cosγ r1 * sin(acos(cosγ)) 0
+        1 / 2 0 r2 / 2
+    ])
+end
+function Lattice(::BCenteredMonoclinic, p, args...)
+    a, r1, r2, _, cosβ = p[1:3]
+    return Lattice(a * [
+        1 / 2 r1 / 2 0
+        -1 / 2 r1 / 2 0
+        r2 * cosβ 0 r2 * sin(acos(cosβ))
+    ])
+end
+function Lattice(::PrimitiveTriclinic, p, args...)
+    a, r1, r2, cosα, cosβ, cosγ = p[1:6]  # Every `p` that is an iterable can be used
+    sinγ = sin(acos(cosγ))
+    δ = r2 * sqrt(1 + 2 * cosα * cosβ * cosγ - cosα^2 - cosβ^2 - cosγ^2) / sinγ
+    return Lattice(
+        a * [
+            1 0 0
+            r1 * cosγ r1 * sinγ 0
+            r2 * cosβ r2 * (cosα - cosβ * cosγ) / sinγ δ
+        ],
+    )
+end
 
 end
