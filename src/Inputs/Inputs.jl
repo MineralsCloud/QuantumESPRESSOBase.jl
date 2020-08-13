@@ -295,43 +295,43 @@ delimiter(::Namelist) = ' '
 
 function Bravais(ibrav::Integer)
     if ibrav == 1
-        return PrimitiveCubic()
+        return PrimitiveCubic(true)
     elseif ibrav == 2
-        return FaceCenteredCubic()
+        return FaceCenteredCubic(true)
     elseif ibrav == 3
-        return BodyCenteredCubic()
+        return BodyCenteredCubic(true)
     elseif ibrav == 4
-        return PrimitiveHexagonal()
+        return PrimitiveHexagonal(true)
     elseif ibrav == 5
-        return RCenteredHexagonal()
+        return RCenteredHexagonal(true)
     elseif ibrav == -5
-        return RCenteredHexagonal()
+        return RCenteredHexagonal(true)
     elseif ibrav == 6
-        return PrimitiveTetragonal()
+        return PrimitiveTetragonal(true)
     elseif ibrav == 7
-        return BodyCenteredTetragonal()
+        return BodyCenteredTetragonal(true)
     elseif ibrav == 8
-        return PrimitiveOrthorhombic()
+        return PrimitiveOrthorhombic(true)
     elseif ibrav == 9
-        return BCenteredOrthorhombic()
+        return BCenteredOrthorhombic(true)
     elseif ibrav == -9
-        return BCenteredOrthorhombic()
+        return BCenteredOrthorhombic(true)
     elseif ibrav == 91
-        return ACenteredOrthorhombic()  # New in QE 6.5
+        return ACenteredOrthorhombic(true)  # New in QE 6.5
     elseif ibrav == 10
-        return FaceCenteredOrthorhombic()
+        return FaceCenteredOrthorhombic(true)
     elseif ibrav == 11
-        return BodyCenteredOrthorhombic()
+        return BodyCenteredOrthorhombic(true)
     elseif ibrav == 12
-        return PrimitiveMonoclinic()
+        return PrimitiveMonoclinic(true)
     elseif ibrav == -12
-        return PrimitiveMonoclinic()
+        return PrimitiveMonoclinic(false)
     elseif ibrav == 13
-        return CCenteredMonoclinic()
+        return CCenteredMonoclinic(true)
     elseif ibrav == -13
-        return BCenteredMonoclinic()  # New in QE 6.5
+        return BCenteredMonoclinic(true)  # New in QE 6.5
     elseif ibrav == 14
-        return PrimitiveTriclinic()
+        return PrimitiveTriclinic(true)
     else
         error("Bravais lattice undefined for `ibrav = $ibrav`!")
     end
