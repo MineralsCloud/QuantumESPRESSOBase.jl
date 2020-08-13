@@ -160,51 +160,6 @@ function required_cards end
 
 function optional_cards end
 
-# Do not export this type!
-struct _Celldm{T<:Bravais}
-    data::Any
-    function _Celldm{T}(data) where {T}
-        @argcheck 1 <= length(data) <= 6
-        return new(data)
-    end
-end
-
-Base.getindex(x::_Celldm, i) = getindex(x.data, i)
-# function Base.getindex(x::_Celldm, i::Integer)
-#     a = x.data[1]
-#     if i == 1
-#         return a
-#     elseif i in 2:3
-#         return a * x.data[i]
-#     elseif i in 4:6
-#         return acos(x.data[10-i])
-#     else
-#         throw(BoundsError(x.data, i))
-#     end
-# end # function Base.getindex
-# function Base.getindex(x::_Celldm{PrimitiveTriclinic}, i::Integer)
-#     a = x.data[1]
-#     if i == 1
-#         return a
-#     elseif i in 2:3
-#         return a * x.data[i]
-#     elseif i in 4:6
-#         return acos(x.data[i])  # Note the difference!
-#     else
-#         throw(BoundsError(x.data, i))
-#     end
-# end # function Base.getindex
-# Base.getindex(x::_Celldm, I) = [x[i] for i in I]
-
-# function Base.convert(::Type{_Celldm{T}}, p::CellParameters) where {T}
-#     a, b, c, α, β, γ = p
-#     return _Celldm{T}([a, b / a, c / a, cos(γ), cos(β), cos(α)])  # What a horrible conversion!
-# end # function Base.convert
-# function Base.convert(::Type{_Celldm{PrimitiveTriclinic}}, p::CellParameters)
-#     a, b, c, α, β, γ = p
-#     return _Celldm{PrimitiveTriclinic}([a, b / a, c / a, cos(α), cos(β), cos(γ)])  # What a horrible conversion!
-# end # function Base.convert
-
 include("PWscf/PWscf.jl")
 # include("CP/CP.jl")
 include("PHonon.jl")
@@ -347,18 +302,16 @@ Create a Bravais lattice from the exact lattice type and cell parameters `p` (no
 
 The first elements of `p` are `a`, `b`, `c`; the last 3 are `α`, `β`, `γ` (in radians).
 """
-Lattice(::PrimitiveCubic, p::_Celldm) = Lattice(p[1] * [
+Lattice(::PrimitiveCubic, p) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 1
 ])
-Lattice(::FaceCenteredCubic, p::_Celldm) = Lattice(p[1] / 2 * [
+Lattice(::FaceCenteredCubic, p) = Lattice(p[1] / 2 * [
     -1 0 1
     0 1 1
     -1 1 0
 ])
-function Lattice(::BodyCenteredCubic, p::_Celldm, obverse::Bool = true)
-    if obverse
         return Lattice(p[1] / 2 * [
             1 1 1
             -1 1 1
@@ -372,7 +325,7 @@ function Lattice(::BodyCenteredCubic, p::_Celldm, obverse::Bool = true)
         ])
     end
 end
-Lattice(::PrimitiveHexagonal, p::_Celldm) = Lattice(p[1] * [
+Lattice(::PrimitiveHexagonal, p) = Lattice(p[1] * [
     1 0 0
     -1 / 2 √3 / 2 0
     0 0 p[3]
@@ -399,12 +352,12 @@ function Lattice(bravais::RCenteredHexagonal, p)
         ])
     end
 end
-Lattice(::PrimitiveTetragonal, p::_Celldm) = Lattice(p[1] * [
+Lattice(::PrimitiveTetragonal, p) = Lattice(p[1] * [
     1 0 0
     0 1 0
     0 0 p[3]
 ])
-function Lattice(::BodyCenteredTetragonal, celldm::_Celldm)
+function Lattice(::BodyCenteredTetragonal, celldm)
     r = celldm[3]
     return Lattice(celldm[1] / 2 * [
         1 -1 r
@@ -412,7 +365,7 @@ function Lattice(::BodyCenteredTetragonal, celldm::_Celldm)
         -1 -1 r
     ])
 end
-Lattice(::PrimitiveOrthorhombic, p::_Celldm) = Lattice(p[1] * [
+Lattice(::PrimitiveOrthorhombic, p) = Lattice(p[1] * [
     1 0 0
     0 p[2] 0
     0 0 p[3]
@@ -441,7 +394,7 @@ function Lattice(::ACenteredOrthorhombic, p)
         0 r1 / 2 r2 / 2
     ])
 end  # New in QE 6.4
-function Lattice(::FaceCenteredOrthorhombic, p::_Celldm)
+function Lattice(::FaceCenteredOrthorhombic, p)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     return Lattice([
         a 0 c
@@ -449,7 +402,7 @@ function Lattice(::FaceCenteredOrthorhombic, p::_Celldm)
         0 b c
     ] / 2)
 end
-function Lattice(::BodyCenteredOrthorhombic, p::_Celldm)
+function Lattice(::BodyCenteredOrthorhombic, p)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     return Lattice([
         a b c
