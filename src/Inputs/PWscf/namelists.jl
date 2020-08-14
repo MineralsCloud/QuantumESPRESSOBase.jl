@@ -813,11 +813,11 @@ BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
 BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
-    setverbosity(template::ControlNamelist, verbosity)
+    set_verbosity(template::ControlNamelist, verbosity)
 
 Return a modified `ControlNamelist`, with verbosity set.
 """
-function setverbosity(control::ControlNamelist, verbosity)
+function set_verbosity(control::ControlNamelist, verbosity)
     if verbosity == "high"
         @set! control.verbosity = "high"
         @set! control.wf_collect = true
@@ -834,7 +834,7 @@ function setverbosity(control::ControlNamelist, verbosity)
         error("unknown `verbosity` `$verbosity` specified!")
     end
     return control
-end # function setverbosity
+end # function set_verbosity
 
 """
     set_elec_temp(system::SystemNamelist, temperature)
