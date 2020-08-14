@@ -24,7 +24,7 @@ using ..Inputs:
 
 import AbInitioSoftwareBase.Inputs: inputstring, titleof
 import Crystallography: Bravais, Lattice
-import Pseudopotentials: pseudoformat
+# import Pseudopotentials: pseudoformat
 import ..Inputs:
     optionpool,
     allnamelists,

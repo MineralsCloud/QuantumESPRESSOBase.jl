@@ -29,7 +29,7 @@ import AbInitioSoftwareBase.Inputs:
     inputstring, titleof, setverbosity, set_elec_temp, set_press_vol, setcell
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
-import Pseudopotentials: pseudoformat
+# import Pseudopotentials: pseudoformat
 import ..Inputs:
     optionpool,
     optionof,
