@@ -1,6 +1,6 @@
 module CP
 
-using Compat: eachrow
+using Compat: eachrow, isnothing
 using Formatting: sprintf1
 using LinearAlgebra: det
 using Parameters: @with_kw
@@ -98,7 +98,7 @@ Construct a `CPInput` which represents the input of program `cp.x`.
     plot_wannier::Union{Nothing,Float64} = nothing
     autopilot::Union{Nothing,Float64} = nothing
     @assert(
-        !(cell_parameters === nothing && system.ibrav == 0),
+        !(isnothing(cell_parameters) && system.ibrav == 0),
         "Cannot specify `ibrav = 0` with an empty `cell_parameters`!"
     )
 end # struct CPInput

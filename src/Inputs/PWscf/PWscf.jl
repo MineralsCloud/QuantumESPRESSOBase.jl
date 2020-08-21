@@ -12,7 +12,7 @@ julia>
 module PWscf
 
 using AutoHashEquals: @auto_hash_equals
-using Compat: eachrow
+using Compat: eachrow, isnothing
 using Crystallography: Cell
 using Formatting: sprintf1
 using LinearAlgebra: det, norm
@@ -22,8 +22,7 @@ using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
-using ..Inputs:
-    QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entryname, Card
+using ..Inputs: QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entryname, Card
 
 import AbInitioSoftwareBase.Inputs:
     inputstring, titleof, set_verbosity, set_elec_temp, set_press_vol, set_cell
@@ -141,7 +140,7 @@ function PWInput(;
     occupations = nothing,
     atomic_forces = nothing,
 )
-    @argcheck cell_parameters !== nothing || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
+    @argcheck !isnothing(cell_parameters) || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
     return PWInput(
         control,
         system,
@@ -187,7 +186,7 @@ end # function set_elec_temp
 function set_press_vol(template::PWInput, pressure::Real, volume::Real)
     @set! template.cell.press = pressure
     factor = cbrt(volume / cellvolume(template))
-    if template.cell_parameters === nothing || optionof(template.cell_parameters) == "alat"
+    if isnothing(template.cell_parameters) || optionof(template.cell_parameters) == "alat"
         @set! template.system.celldm[1] *= factor
     else
         @set! template.system.celldm = zeros(6)
@@ -200,7 +199,7 @@ set_press_vol(template::PWInput, pressure::AbstractQuantity, volume::AbstractQua
     set_press_vol(template, ustrip(u"kbar", pressure), ustrip(u"bohr^3", volume))
 
 function set_cell(template::PWInput, cell_parameters::CellParametersCard)
-    if template.cell_parameters === nothing
+    if isnothing(template.cell_parameters)
         if optionof(cell_parameters) in ("bohr", "angstrom")
             @set! template.cell_parameters = cell_parameters
             @set! template.system.ibrav = 0
@@ -405,12 +404,12 @@ cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
 """
 function cellvolume(input::PWInput)
-    if input.cell_parameters === nothing
+    if isnothing(input.cell_parameters)
         return cellvolume(Lattice(input.system))
     else
         if optionof(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
-            if input.system.celldm[1] === nothing
+            if isnothing(input.system.celldm[1])
                 error("`celldm[1]` is not defined!")
             else
                 return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))

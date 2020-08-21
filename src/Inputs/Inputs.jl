@@ -171,12 +171,10 @@ Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRE
 """
 function inputstring(input::QuantumESPRESSOInput)
     return join(
-        map(Iterators.filter(
-            !isnothing,
-            getfield(input, i) for i in 1:nfields(input)
-        )) do f
-            inputstring(f)
-        end,
+        map(
+            inputstring,
+            Iterators.filter(!isnothing, getfield(input, i) for i in 1:nfields(input)),
+        ),
         newline(input),
     )
 end
@@ -222,7 +220,7 @@ function _nmlinputstring(
     newline = '\n',
 )
     return join(
-        map(Iterators.filter(x -> x[2] !== nothing, enumerate(value))) do (i, x)
+        map(Iterators.filter(x -> !isnothing(x[2]), enumerate(value))) do (i, x)
             indent * join((string(key, '(', i, ')'), "=", fstring(x)), delimiter)
         end,
         newline,
