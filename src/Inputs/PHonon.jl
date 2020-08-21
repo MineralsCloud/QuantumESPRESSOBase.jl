@@ -12,6 +12,7 @@ julia>
 module PHonon
 
 using AutoHashEquals: @auto_hash_equals
+using Compat: @NamedTuple
 using ConstructionBase: setproperties
 using Setfield: @set!
 
@@ -31,6 +32,21 @@ export SpecialPoint,
     MatdynNamelist,
     DynmatNamelist
 export relayinfo
+
+const DVSCF_STAR = @NamedTuple begin
+    open::Bool
+    dir::String
+    ext::String
+    basis::String
+    pat::Bool
+end
+const DRHO_STAR = @NamedTuple begin
+    open::Bool
+    dir::String
+    ext::String
+    basis::String
+    pat::Bool
+end
 
 # The following default values are picked from `<QE source>/test-suite/not_epw_comp/phq_readin.f90`
 """
@@ -93,14 +109,8 @@ Represent the `INPUTPH` namelist of `ph.x`.
     modenum::Int
     start_q::Int
     last_q::Int
-    dvscf_star::NamedTuple{
-        (:open, :dir, :ext, :basis, :pat),
-        Tuple{Bool,String,String,String,Bool},
-    }
-    drho_star::NamedTuple{
-        (:open, :dir, :ext, :basis, :pat),
-        Tuple{Bool,String,String,String,Bool},
-    }
+    dvscf_star::DVSCF_STAR
+    drho_star::DRHO_STAR
 end # struct PhNamelist
 function PhNamelist(;
     amass = [0.0],
