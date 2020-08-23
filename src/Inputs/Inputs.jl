@@ -220,9 +220,10 @@ function _nmlinputstring(
     newline = '\n',
 )
     return join(
-        map(Iterators.filter(x -> !isnothing(x[2]), enumerate(value))) do (i, x)
+        (
             indent * join((string(key, '(', i, ')'), "=", fstring(x)), delimiter)
-        end,
+            for (i, x) in enumerate(value) if !isnothing(x)
+        ),
         newline,
     )
 end
