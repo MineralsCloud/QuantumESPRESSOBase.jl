@@ -176,7 +176,7 @@ function inputstring(input::QuantumESPRESSOInput)
             Iterators.filter(!isnothing, getfield(input, i) for i in 1:nfields(input)),
         ),
         newline(input),
-    )
+    ) * newline(input)  # Add a new line at the end of line to prevent errors
 end
 """
     inputstring(nml::Namelist)
