@@ -13,6 +13,7 @@ module PWscf
 
 using AutoHashEquals: @auto_hash_equals
 using Compat: eachrow, isnothing
+using ConstructionBase: setproperties
 using Crystallography: Cell
 using Formatting: sprintf1
 using LinearAlgebra: det, norm

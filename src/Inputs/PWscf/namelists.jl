@@ -119,7 +119,7 @@ function ControlNamelist(;
         gate,
     )
 end
-ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml, kwargs...)
+ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml; kwargs...)
 ControlNamelist(nml::ControlNamelist, t::NamedTuple) = setproperties(nml, t)
 ControlNamelist(nml::ControlNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
@@ -475,7 +475,7 @@ function SystemNamelist(;
         block_height,
     )
 end
-SystemNamelist(nml::SystemNamelist; kwargs...) = setproperties(nml, kwargs...)
+SystemNamelist(nml::SystemNamelist; kwargs...) = setproperties(nml; kwargs...)
 SystemNamelist(nml::SystemNamelist, t::NamedTuple) = setproperties(nml, t)
 SystemNamelist(nml::SystemNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
@@ -567,7 +567,7 @@ function ElectronsNamelist(;
         tqr,
     )
 end
-ElectronsNamelist(nml::ElectronsNamelist; kwargs...) = setproperties(nml, kwargs...)
+ElectronsNamelist(nml::ElectronsNamelist; kwargs...) = setproperties(nml; kwargs...)
 ElectronsNamelist(nml::ElectronsNamelist, t::NamedTuple) = setproperties(nml, t)
 ElectronsNamelist(nml::ElectronsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
@@ -660,7 +660,7 @@ function IonsNamelist(;
         w_2,
     )
 end
-IonsNamelist(nml::IonsNamelist; kwargs...) = setproperties(nml, kwargs...)
+IonsNamelist(nml::IonsNamelist; kwargs...) = setproperties(nml; kwargs...)
 IonsNamelist(nml::IonsNamelist, t::NamedTuple) = setproperties(nml, t)
 IonsNamelist(nml::IonsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
@@ -721,7 +721,7 @@ function CellNamelist(;
         cell_dofree,
     )
 end
-CellNamelist(nml::CellNamelist; kwargs...) = setproperties(nml, kwargs...)
+CellNamelist(nml::CellNamelist; kwargs...) = setproperties(nml; kwargs...)
 CellNamelist(nml::CellNamelist, t::NamedTuple) = setproperties(nml, t)
 CellNamelist(nml::CellNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
@@ -754,7 +754,7 @@ function DosNamelist(;
     @argcheck ngauss in (0, 1, -1, -99)
     return DosNamelist(prefix, outdir, ngauss, degauss, Emin, Emax, DeltaE, fildos)
 end
-DosNamelist(nml::DosNamelist; kwargs...) = setproperties(nml, kwargs...)
+DosNamelist(nml::DosNamelist; kwargs...) = setproperties(nml; kwargs...)
 DosNamelist(nml::DosNamelist, t::NamedTuple) = setproperties(nml, t)
 DosNamelist(nml::DosNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
@@ -808,7 +808,7 @@ function BandsNamelist(;
         lastk,
     )
 end
-BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml, kwargs...)
+BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
 BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
 BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
