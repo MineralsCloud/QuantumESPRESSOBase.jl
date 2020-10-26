@@ -2,7 +2,7 @@
 
 [[AbInitioSoftwareBase]]
 deps = ["FilePathsBase", "JSON", "Pkg", "YAML"]
-git-tree-sha1 = "73f17732562e60b0351abbbc604b73b370128361"
+git-tree-sha1 = "750a4c096b92a15389b77b1e7a051a26ff9b2f60"
 repo-rev = "master"
 repo-url = "git@github.com:MineralsCloud/AbInitioSoftwareBase.jl.git"
 uuid = "df5135bc-470e-46c6-b451-292e27ca5b84"
@@ -29,9 +29,9 @@ version = "0.5.10"
 
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "SHA", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
-git-tree-sha1 = "215f1c81cfd1c5416cd78740bff8ef59b24cd7c0"
+git-tree-sha1 = "b4f242d5e9f65648d438a03d245a9fdc6e38d728"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
-version = "3.15.0"
+version = "3.22.0"
 
 [[Conda]]
 deps = ["JSON", "VersionParsing"]
@@ -52,7 +52,7 @@ version = "0.6.0"
 
 [[Crystallography]]
 deps = ["CoordinateTransformations", "EponymTuples", "LibSymspg", "LinearAlgebra", "StaticArrays", "Unitful"]
-git-tree-sha1 = "e032235dcaddbba4b35e7c8d8b8cb406d325e6df"
+git-tree-sha1 = "616912b3103c02dc0c8a5eaf982651960b5bbe3d"
 repo-rev = "master"
 repo-url = "git@github.com:MineralsCloud/Crystallography.jl.git"
 uuid = "3bff3928-7a76-11e9-2089-d112443085a5"
@@ -104,9 +104,9 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[JSON]]
 deps = ["Dates", "Mmap", "Parsers", "Unicode"]
-git-tree-sha1 = "b34d7cef7b337321e97d22242c3c2b91f476748e"
+git-tree-sha1 = "81690084b6198a2e1da36fcfda16eeca9f9f24e4"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
-version = "0.21.0"
+version = "0.21.1"
 
 [[LibGit2]]
 deps = ["Printf"]
@@ -130,9 +130,9 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
 [[MacroTools]]
 deps = ["Markdown", "Random"]
-git-tree-sha1 = "f7d2e3f654af75f01ec49be82c231c382214223a"
+git-tree-sha1 = "6a8a2a625ab0dea913aba95c11370589e0239ff0"
 uuid = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
-version = "0.5.5"
+version = "0.5.6"
 
 [[Markdown]]
 deps = ["Base64"]
@@ -148,10 +148,10 @@ uuid = "dfbeeb84-381a-44da-9ec9-a723abf299c7"
 version = "0.3.1"
 
 [[Parsers]]
-deps = ["Dates", "Test"]
-git-tree-sha1 = "8077624b3c450b15c087944363606a6ba12f925e"
+deps = ["Dates"]
+git-tree-sha1 = "6fa4202675c05ba0f8268a6ddf07606350eda3ce"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "1.0.10"
+version = "1.0.11"
 
 [[Pkg]]
 deps = ["Dates", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
@@ -163,9 +163,9 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [[PyCall]]
 deps = ["Conda", "Dates", "Libdl", "LinearAlgebra", "MacroTools", "Serialization", "VersionParsing"]
-git-tree-sha1 = "3a3fdb9000d35958c9ba2323ca7c4958901f115d"
+git-tree-sha1 = "b6dff5fa725eff4f775f472acd86756d6e31fb02"
 uuid = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
-version = "1.91.4"
+version = "1.92.1"
 
 [[PyFortran90Namelists]]
 deps = ["Conda", "Pkg", "PyCall", "VersionParsing"]
@@ -185,9 +185,9 @@ uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[Requires]]
 deps = ["UUIDs"]
-git-tree-sha1 = "8c08d0c7812169e438a8478dae2a529377ad13f7"
+git-tree-sha1 = "28faf1c963ca1dc3ec87f166d92982e3c4a1f66d"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
-version = "1.0.2"
+version = "1.1.0"
 
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
@@ -235,9 +235,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[Unitful]]
 deps = ["ConstructionBase", "LinearAlgebra", "Random"]
-git-tree-sha1 = "75d9fcb9c5dba40f746a1bee368393ffd78084b0"
+git-tree-sha1 = "2b643523d52fc9fb4fe0729e6561d066055d58d8"
 uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
-version = "1.4.0"
+version = "1.5.0"
 
 [[UnitfulAtomic]]
 deps = ["Unitful"]
