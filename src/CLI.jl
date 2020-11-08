@@ -2,7 +2,7 @@ module CLI
 
 using AbInitioSoftwareBase.CLI: MpiExec
 
-export MpiExec, PWCmd, PhCmd
+export MpiExec, PWCmd, PhCmd, Q2rCmd, MatdynCmd
 
 struct PWCmd
     bin
