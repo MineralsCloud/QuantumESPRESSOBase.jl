@@ -48,7 +48,7 @@ MatdynCmd(; bin = "q2r.x") = MatdynCmd(bin)
 - `stdout = nothing`: output
 - `stderr = nothing`: error
 """
-function (x::PWCmd)(;
+function (x::QuantumESPRESSOExec)(;
     stdin = nothing,
     stdout = nothing,
     stderr = nothing,
@@ -56,10 +56,12 @@ function (x::PWCmd)(;
     input_redirect = false,
 )
     options = String[]
-    for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
-        v = getfield(x, k)
-        if !iszero(v)
-            push!(options, "-$k", string(v))
+    if x isa PWCmd
+        for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
+            v = getfield(x, k)
+            if !iszero(v)
+                push!(options, "-$k", string(v))
+            end
         end
     end
     if asstring
@@ -89,112 +91,10 @@ function (x::PWCmd)(;
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
 
-function (x::PhCmd)(;
-    stdin = nothing,
-    stdout = nothing,
-    stderr = nothing,
-    asstring = false,
-    input_redirect = false,
-)
-    options = String[]
-    if asstring
-        @warn "using string commands maybe error prone! Use with care!"
-        for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-            if v !== nothing
-                push!(options, redir[f], "'$v'")
-            end
-        end
-        return join((x.bin, options...), " ")
-    else
-        if input_redirect
-            return pipeline(
-                Cmd([x.bin; options]);
-                stdin = stdin,
-                stdout = stdout,
-                stderr = stderr,
-            )
-        else
-            return pipeline(
-                Cmd([x.bin, options..., "-inp", "$stdin"]);
-                stdout = stdout,
-                stderr = stderr,
-            )
-        end
-    end
-end
-
-function (x::Q2rCmd)(;
-    stdin = nothing,
-    stdout = nothing,
-    stderr = nothing,
-    asstring = false,
-    input_redirect = false,
-)
-    options = String[]
-    if asstring
-        @warn "using string commands maybe error prone! Use with care!"
-        for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-            if v !== nothing
-                push!(options, redir[f], "'$v'")
-            end
-        end
-        return join((x.bin, options...), " ")
-    else
-        if input_redirect
-            return pipeline(
-                Cmd([x.bin; options]);
-                stdin = stdin,
-                stdout = stdout,
-                stderr = stderr,
-            )
-        else
-            return pipeline(
-                Cmd([x.bin, options..., "-inp", "$stdin"]);
-                stdout = stdout,
-                stderr = stderr,
-            )
-        end
-    end
-end
-
-function (x::MatdynCmd)(;
-    stdin = nothing,
-    stdout = nothing,
-    stderr = nothing,
-    asstring = false,
-    input_redirect = false,
-)
-    options = String[]
-    if asstring
-        @warn "using string commands maybe error prone! Use with care!"
-        for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-            if v !== nothing
-                push!(options, redir[f], "'$v'")
-            end
-        end
-        return join((x.bin, options...), " ")
-    else
-        if input_redirect
-            return pipeline(
-                Cmd([x.bin; options]);
-                stdin = stdin,
-                stdout = stdout,
-                stderr = stderr,
-            )
-        else
-            return pipeline(
-                Cmd([x.bin, options..., "-inp", "$stdin"]);
-                stdout = stdout,
-                stderr = stderr,
-            )
-        end
-    end
-end
-
 const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
 
-function Base.:∘(mpi::MpiExec, pw::PWCmd)
+function Base.:∘(mpi::MpiExec, x::QuantumESPRESSOExec)
     function (;
         stdin = nothing,
         stdout = nothing,
@@ -212,235 +112,15 @@ function Base.:∘(mpi::MpiExec, pw::PWCmd)
         for (k, v) in mpi.args
             push!(args, "-$k", string(v))
         end
-        push!(args, pw.bin)
-        for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
-            v = getfield(pw, f)
-            if !iszero(v)
-                push!(args, "-$f", string(v))
-            end
-        end
-        if asstring
-            @warn "using string commands maybe error prone! Use with care!"
-            for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-                if v !== nothing
-                    push!(args, redir[f], "'$v'")
+        push!(args, x.bin)
+        if x isa PWCmd
+            for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
+                v = getfield(x, f)
+                if !iszero(v)
+                    push!(args, "-$f", string(v))
                 end
             end
-            return join(
-                (
-                    mpi.bin,
-                    "-n",
-                    mpi.np,
-                    "--mca",
-                    "btl_vader_single_copy_mechanism",
-                    "none",
-                    args...,
-                ),
-                " ",
-            )
-        else
-            if input_redirect
-                return pipeline(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        args...,
-                    ]);
-                    stdin = stdin,
-                    stdout = stdout,
-                    stderr = stderr,
-                )
-            else
-                return pipeline(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        args...,
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        "-inp",
-                        "$stdin",
-                    ]);
-                    stdout = stdout,
-                    stderr = stderr,
-                )
-            end
         end
-    end
-end
-function Base.:∘(mpi::MpiExec, ph::PhCmd)
-    function (;
-        stdin = nothing,
-        stdout = nothing,
-        stderr = nothing,
-        asstring = false,
-        input_redirect = false,
-    )
-        args = String[]
-        for f in (:host, :hostfile)
-            v = getfield(mpi, f)
-            if !isempty(v)
-                push!(args, "-$f", v)
-            end
-        end
-        for (k, v) in mpi.args
-            push!(args, "-$k", string(v))
-        end
-        push!(args, ph.bin)
-        if asstring
-            @warn "using string commands maybe error prone! Use with care!"
-            for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-                if v !== nothing
-                    push!(args, redir[f], "'$v'")
-                end
-            end
-            return join(
-                (
-                    mpi.bin,
-                    "-n",
-                    mpi.np,
-                    "--mca",
-                    "btl_vader_single_copy_mechanism",
-                    "none",
-                    args...,
-                ),
-                " ",
-            )
-        else
-            if input_redirect
-                return pipeline(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        args...,
-                    ]);
-                    stdin = stdin,
-                    stdout = stdout,
-                    stderr = stderr,
-                )
-            else
-                return pipeline(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        args...,
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        "-inp",
-                        "$stdin",
-                    ]);
-                    stdout = stdout,
-                    stderr = stderr,
-                )
-            end
-        end
-    end
-end
-function Base.:∘(mpi::MpiExec, q2r::Q2rCmd)
-    function (;
-        stdin = nothing,
-        stdout = nothing,
-        stderr = nothing,
-        asstring = false,
-        input_redirect = false,
-    )
-        args = String[]
-        for f in (:host, :hostfile)
-            v = getfield(mpi, f)
-            if !isempty(v)
-                push!(args, "-$f", v)
-            end
-        end
-        for (k, v) in mpi.args
-            push!(args, "-$k", string(v))
-        end
-        push!(args, q2r.bin)
-        if asstring
-            @warn "using string commands maybe error prone! Use with care!"
-            for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-                if v !== nothing
-                    push!(args, redir[f], "'$v'")
-                end
-            end
-            return join(
-                (
-                    mpi.bin,
-                    "-n",
-                    mpi.np,
-                    "--mca",
-                    "btl_vader_single_copy_mechanism",
-                    "none",
-                    args...,
-                ),
-                " ",
-            )
-        else
-            if input_redirect
-                return pipeline(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        args...,
-                    ]);
-                    stdin = stdin,
-                    stdout = stdout,
-                    stderr = stderr,
-                )
-            else
-                return pipeline(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        args...,
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        "-inp",
-                        "$stdin",
-                    ]);
-                    stdout = stdout,
-                    stderr = stderr,
-                )
-            end
-        end
-    end
-end
-function Base.:∘(mpi::MpiExec, matdyn::MatdynCmd)
-    function (;
-        stdin = nothing,
-        stdout = nothing,
-        stderr = nothing,
-        asstring = false,
-        input_redirect = false,
-    )
-        args = String[]
-        for f in (:host, :hostfile)
-            v = getfield(mpi, f)
-            if !isempty(v)
-                push!(args, "-$f", v)
-            end
-        end
-        for (k, v) in mpi.args
-            push!(args, "-$k", string(v))
-        end
-        push!(args, matdyn.bin)
         if asstring
             @warn "using string commands maybe error prone! Use with care!"
             for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
