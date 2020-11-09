@@ -52,6 +52,7 @@ function (x::QuantumESPRESSOExec)(;
     stdin = nothing,
     stdout = nothing,
     stderr = nothing,
+    dir = dirname(stdin),  # If `stdin` path is not complete, this will save it
     asstring = false,
     input_redirect = false,
 )
@@ -75,14 +76,14 @@ function (x::QuantumESPRESSOExec)(;
     else
         if input_redirect
             return pipeline(
-                Cmd([x.bin; options]);
+                setenv(Cmd([x.bin; options]); dir = dir);
                 stdin = stdin,
                 stdout = stdout,
                 stderr = stderr,
             )
         else
             return pipeline(
-                Cmd([x.bin, options..., "-inp", "$stdin"]);
+                setenv(Cmd([x.bin, options..., "-inp", "$stdin"]); dir = dir);
                 stdout = stdout,
                 stderr = stderr,
             )
@@ -99,6 +100,7 @@ function Base.:∘(mpi::MpiExec, x::QuantumESPRESSOExec)
         stdin = nothing,
         stdout = nothing,
         stderr = nothing,
+        dir = dirname(stdin),
         asstring = false,
         input_redirect = false,
     )
@@ -143,32 +145,38 @@ function Base.:∘(mpi::MpiExec, x::QuantumESPRESSOExec)
         else
             if input_redirect
                 return pipeline(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        args...,
-                    ]);
+                    setenv(
+                        Cmd([
+                            mpi.bin,
+                            "-n",
+                            string(mpi.np),
+                            "--mca",
+                            "btl_vader_single_copy_mechanism",
+                            "none",
+                            args...,
+                        ]);
+                        dir = dir,
+                    );
                     stdin = stdin,
                     stdout = stdout,
                     stderr = stderr,
                 )
             else
                 return pipeline(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        args...,
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        "-inp",
-                        "$stdin",
-                    ]);
+                    setenv(
+                        Cmd([
+                            mpi.bin,
+                            "-n",
+                            string(mpi.np),
+                            args...,
+                            "--mca",
+                            "btl_vader_single_copy_mechanism",
+                            "none",
+                            "-inp",
+                            "$stdin",
+                        ]);
+                        dir = dir,
+                    );
                     stdout = stdout,
                     stderr = stderr,
                 )
