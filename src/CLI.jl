@@ -4,7 +4,9 @@ using AbInitioSoftwareBase.CLI: MpiExec
 
 export MpiExec, PWCmd, PhCmd, Q2rCmd, MatdynCmd
 
-struct PWCmd
+abstract type QuantumESPRESSOExec end
+
+struct PWCmd <: QuantumESPRESSOExec
     bin
     nimage::UInt
     npool::UInt
@@ -16,17 +18,17 @@ end
 PWCmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
     PWCmd(bin, nimage, npool, ntg, nyfft, nband, ndiag)
 
-struct PhCmd
+struct PhCmd <: QuantumESPRESSOExec
     bin
 end
 PhCmd(; bin = "ph.x") = PhCmd(bin)
 
-struct Q2rCmd
+struct Q2rCmd <: QuantumESPRESSOExec
     bin
 end
 Q2rCmd(; bin = "q2r.x") = Q2rCmd(bin)
 
-struct MatdynCmd
+struct MatdynCmd <: QuantumESPRESSOExec
     bin
 end
 MatdynCmd(; bin = "q2r.x") = MatdynCmd(bin)
