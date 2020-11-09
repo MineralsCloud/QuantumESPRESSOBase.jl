@@ -2,11 +2,11 @@ module CLI
 
 using AbInitioSoftwareBase.CLI: MpiExec
 
-export MpiExec, PWCmd, PhCmd, Q2rCmd, MatdynCmd
+export MpiExec, PWX, PhX, Q2rX, MatdynX
 
 abstract type QuantumESPRESSOExec end
 
-struct PWCmd <: QuantumESPRESSOExec
+struct PWX <: QuantumESPRESSOExec
     bin
     nimage::UInt
     npool::UInt
@@ -15,23 +15,23 @@ struct PWCmd <: QuantumESPRESSOExec
     nband::UInt
     ndiag::UInt
 end
-PWCmd(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
-    PWCmd(bin, nimage, npool, ntg, nyfft, nband, ndiag)
+PWX(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PWX(bin, nimage, npool, ntg, nyfft, nband, ndiag)
 
-struct PhCmd <: QuantumESPRESSOExec
+struct PhX <: QuantumESPRESSOExec
     bin
 end
-PhCmd(; bin = "ph.x") = PhCmd(bin)
+PhX(; bin = "ph.x") = PhX(bin)
 
-struct Q2rCmd <: QuantumESPRESSOExec
+struct Q2rX <: QuantumESPRESSOExec
     bin
 end
-Q2rCmd(; bin = "q2r.x") = Q2rCmd(bin)
+Q2rX(; bin = "q2r.x") = Q2rX(bin)
 
-struct MatdynCmd <: QuantumESPRESSOExec
+struct MatdynX <: QuantumESPRESSOExec
     bin
 end
-MatdynCmd(; bin = "q2r.x") = MatdynCmd(bin)
+MatdynX(; bin = "q2r.x") = MatdynX(bin)
 
 """
     (::PWCmd)(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
@@ -57,7 +57,7 @@ function (x::QuantumESPRESSOExec)(;
     input_redirect = false,
 )
     options = String[]
-    if x isa PWCmd
+    if x isa PWX
         for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
             v = getfield(x, k)
             if !iszero(v)
@@ -115,7 +115,7 @@ function Base.:∘(mpi::MpiExec, x::QuantumESPRESSOExec)
             push!(args, "-$k", string(v))
         end
         push!(args, x.bin)
-        if x isa PWCmd
+        if x isa PWX
             for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
                 v = getfield(x, f)
                 if !iszero(v)
