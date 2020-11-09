@@ -1,8 +1,8 @@
 module CLI
 
-using AbInitioSoftwareBase.CLI: MpiExec
+using AbInitioSoftwareBase.CLI: Mpiexec
 
-export MpiExec, PWX, PhX, Q2rX, MatdynX
+export Mpiexec, PWX, PhX, Q2rX, MatdynX
 
 abstract type QuantumESPRESSOX end
 
@@ -34,7 +34,7 @@ end
 MatdynX(; bin = "q2r.x") = MatdynX(bin)
 
 """
-    (::PWCmd)(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
+    (::PWX)(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
 
 # Arguments
 - `bin`: the path to the PWscf executable, usually is `\"pw.x\"`. Better be an absolute path.
@@ -95,7 +95,7 @@ end
 const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
 
-function Base.:∘(mpi::MpiExec, x::QuantumESPRESSOX)
+function Base.:∘(mpi::Mpiexec, x::QuantumESPRESSOX)
     function (;
         stdin = nothing,
         stdout = nothing,
