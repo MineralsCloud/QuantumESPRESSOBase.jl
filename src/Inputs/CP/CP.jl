@@ -34,7 +34,7 @@ import ..Inputs:
     optional_namelists,
     required_cards,
     optional_cards
-using ..Formats: delimiter, newline, indent, floatfmt, intfmt
+using ..Formatter: delimiter, newline, indent, floatfmt, intfmt
 
 export ControlNamelist,
     SystemNamelist,

@@ -35,7 +35,7 @@ using OptionalArgChecks: @argcheck
 using PyFortran90Namelists: fstring
 
 import AbInitioSoftwareBase.Inputs: inputstring, groupname
-import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent
+import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent
 import Crystallography: Bravais, Lattice
 
 export optionof,

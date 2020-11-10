@@ -27,7 +27,7 @@ using ..Inputs: QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entry
 
 import AbInitioSoftwareBase.Inputs:
     inputstring, groupname, set_verbosity, set_elec_temp, set_press_vol, set_cell
-import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
+import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
 import ..Inputs:
