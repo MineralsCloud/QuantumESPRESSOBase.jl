@@ -330,7 +330,7 @@ function Lattice(bravais::BodyCenteredCubic, p)
 end
 Lattice(::PrimitiveHexagonal, p) = Lattice(p[1] * [
     1 0 0
-    -1 / 2 √3 / 2 0
+    -1/2 √3/2 0
     0 0 p[3]
 ])
 function Lattice(bravais::RCenteredHexagonal, p)
@@ -377,14 +377,14 @@ function Lattice(bravais::BCenteredOrthorhombic, p)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     if bravais.obverse
         return Lattice([
-            a / 2 b / 2 0
-            -a / 2 b / 2 0
+            a/2 b/2 0
+            -a/2 b/2 0
             0 0 c
         ])
     else
         return Lattice([
-            a / 2 -b / 2 0
-            a / 2 b / 2 0
+            a/2 -b/2 0
+            a/2 b/2 0
             0 0 c
         ])
     end
@@ -393,8 +393,8 @@ function Lattice(::ACenteredOrthorhombic, p)
     a, r1, r2 = p[1:3]
     return Lattice(a * [
         1 0 0
-        0 r1 / 2 -r2 / 2
-        0 r1 / 2 r2 / 2
+        0 r1/2 -r2/2
+        0 r1/2 r2/2
     ])
 end  # New in QE 6.4
 function Lattice(::FaceCenteredOrthorhombic, p)
@@ -418,7 +418,7 @@ function Lattice(bravais::PrimitiveMonoclinic, p)
         a, r1, r2, cosγ = p[1:4]
         return Lattice(a * [
             1 0 0
-            r1 * cosγ r1 * sin(acos(cosγ)) 0
+            r1*cosγ r1*sin(acos(cosγ)) 0
             0 0 r2
         ])
     else
@@ -426,37 +426,35 @@ function Lattice(bravais::PrimitiveMonoclinic, p)
         return Lattice(a * [
             1 0 0
             0 r1 0
-            r2 * cosβ 0 r2 * sin(acos(cosβ))
+            r2*cosβ 0 r2*sin(acos(cosβ))
         ])
     end
 end
 function Lattice(::CCenteredMonoclinic, p)
     a, r1, r2, cosγ = p[1:4]
     return Lattice(a * [
-        1 / 2 0 -r2 / 2
-        r1 * cosγ r1 * sin(acos(cosγ)) 0
-        1 / 2 0 r2 / 2
+        1/2 0 -r2/2
+        r1*cosγ r1*sin(acos(cosγ)) 0
+        1/2 0 r2/2
     ])
 end
 function Lattice(::BCenteredMonoclinic, p)
     a, r1, r2, _, cosβ = p[1:3]
     return Lattice(a * [
-        1 / 2 r1 / 2 0
-        -1 / 2 r1 / 2 0
-        r2 * cosβ 0 r2 * sin(acos(cosβ))
+        1/2 r1/2 0
+        -1/2 r1/2 0
+        r2*cosβ 0 r2*sin(acos(cosβ))
     ])
 end
 function Lattice(::PrimitiveTriclinic, p)
     a, r1, r2, cosα, cosβ, cosγ = p[1:6]  # Every `p` that is an iterable can be used
     sinγ = sin(acos(cosγ))
     δ = r2 * sqrt(1 + 2 * cosα * cosβ * cosγ - cosα^2 - cosβ^2 - cosγ^2) / sinγ
-    return Lattice(
-        a * [
-            1 0 0
-            r1 * cosγ r1 * sinγ 0
-            r2 * cosβ r2 * (cosα - cosβ * cosγ) / sinγ δ
-        ],
-    )
+    return Lattice(a * [
+        1 0 0
+        r1*cosγ r1*sinγ 0
+        r2*cosβ r2*(cosα-cosβ*cosγ)/sinγ δ
+    ])
 end
 
 end
