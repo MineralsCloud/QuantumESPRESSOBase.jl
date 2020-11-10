@@ -11,7 +11,7 @@ julia>
 """
 module Inputs
 
-using AbInitioSoftwareBase.Inputs: Input
+using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist
 using Compat: only, isnothing
 using Crystallography:
     CellParameters,

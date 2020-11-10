@@ -23,10 +23,17 @@ using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
-using ..Inputs: InputEntry, Namelist, QuantumESPRESSOInput, entryname, Card
+using ..Inputs: QuantumESPRESSOInput, Card, entryname
 
 import AbInitioSoftwareBase.Inputs:
-    inputstring, groupname, set_verbosity, set_elec_temp, set_press_vol, set_cell
+    InputEntry,
+    Namelist,
+    inputstring,
+    groupname,
+    set_verbosity,
+    set_elec_temp,
+    set_press_vol,
+    set_cell
 import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
