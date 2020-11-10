@@ -26,7 +26,7 @@ using UnitfulAtomic
 using ..Inputs: QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entryname, Card
 
 import AbInitioSoftwareBase.Inputs:
-    inputstring, titleof, set_verbosity, set_elec_temp, set_press_vol, set_cell
+    inputstring, groupname, set_verbosity, set_elec_temp, set_press_vol, set_cell
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
@@ -251,15 +251,15 @@ optionpool(::Type{GammaPointCard}) = ("gamma",)
 optionpool(::Type{SpecialPointsCard}) =
     ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 
-titleof(::Type{ControlNamelist}) = "CONTROL"
-titleof(::Type{SystemNamelist}) = "SYSTEM"
-titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
-titleof(::Type{IonsNamelist}) = "IONS"
-titleof(::Type{CellNamelist}) = "CELL"
-titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-titleof(::Type{CellParametersCard}) = "CELL_PARAMETERS"
-titleof(::Type{<:KPointsCard}) = "K_POINTS"
+groupname(::Type{ControlNamelist}) = "CONTROL"
+groupname(::Type{SystemNamelist}) = "SYSTEM"
+groupname(::Type{ElectronsNamelist}) = "ELECTRONS"
+groupname(::Type{IonsNamelist}) = "IONS"
+groupname(::Type{CellNamelist}) = "CELL"
+groupname(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+groupname(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+groupname(::Type{CellParametersCard}) = "CELL_PARAMETERS"
+groupname(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
     inputstring(data::AtomicSpecies)

@@ -34,13 +34,13 @@ using Crystallography:
 using OptionalArgChecks: @argcheck
 using PyFortran90Namelists: fstring
 
-import AbInitioSoftwareBase.Inputs: inputstring, titleof
+import AbInitioSoftwareBase.Inputs: inputstring, groupname
 import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent
 import Crystallography: Bravais, Lattice
 
 export optionof,
     optionpool,
-    titleof,
+    groupname,
     inputstring,
     required_namelists,
     optional_namelists,
@@ -66,11 +66,11 @@ The abstraction of all components of a `Input` that is not a `Namelist`.
 abstract type Card <: QuantumESPRESSOInputEntry end
 
 """
-    titleof(::Union{Namelist,Card})
+    groupname(::Union{Namelist,Card})
 
 Return the title of the input entry in Quantum ESPRESSO.
 
-The definition `titleof(x) = titleof(typeof(x))` is provided for convenience so that
+The definition `groupname(x) = groupname(typeof(x))` is provided for convenience so that
 instances can be passed instead of types.
 
 # Examples
@@ -78,11 +78,11 @@ instances can be passed instead of types.
 ```jldoctest
 julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Inputs.PWscf: ControlNamelist
 
-julia> titleof(ControlNamelist()) == titleof(ControlNamelist) == "CONTROL"
+julia> groupname(ControlNamelist()) == groupname(ControlNamelist) == "CONTROL"
 true
 ```
 """
-titleof(x::QuantumESPRESSOInputEntry) = titleof(typeof(x))
+groupname(x::QuantumESPRESSOInputEntry) = groupname(typeof(x))
 
 """
     dropdefault(nml::Namelist)
@@ -190,7 +190,7 @@ function inputstring(nml::Namelist)
         delimiter = delimiter(nml),
         newline = newline(nml),
     )
-    return join(filter(!isempty, ("&" * titleof(nml), content, '/')), newline(nml))
+    return join(filter(!isempty, ("&" * groupname(nml), content, '/')), newline(nml))
 end
 inputstring(x::AbstractString) = string(x)
 function _nmlinputstring(
