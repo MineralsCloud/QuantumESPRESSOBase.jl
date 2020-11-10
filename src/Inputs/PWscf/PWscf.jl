@@ -72,6 +72,8 @@ export ControlNamelist,
     optconvert,
     xmldir,
     wfcfiles,
+    exitfile,
+    mkexitfile,
     optionof,
     optionpool,
     allnamelists,
@@ -249,6 +251,16 @@ function set_cell(template::PWInput, cell::Cell, option1, option2)
         AtomicPositionsCard(cell, option2),
     )
 end # function set_cell
+
+exitfile(template::PWInput) = abspath(expanduser(joinpath(
+    template.control.outdir,
+    template.control.prefix * ".EXIT",
+)))
+function mkexitfile(template::PWInput)
+    path = exitfile(template)
+    mkpath(dirname(path))
+    return touch(path)
+end
 
 optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
