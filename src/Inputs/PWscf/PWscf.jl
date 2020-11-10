@@ -23,7 +23,7 @@ using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
-using ..Inputs: QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entryname, Card
+using ..Inputs: InputEntry, Namelist, QuantumESPRESSOInput, entryname, Card
 
 import AbInitioSoftwareBase.Inputs:
     inputstring, groupname, set_verbosity, set_elec_temp, set_press_vol, set_cell
@@ -157,7 +157,7 @@ function PWInput(;
         atomic_forces,
     )
 end
-PWInput(args::QuantumESPRESSOInputEntry...) = PWInput(; map(args) do arg
+PWInput(args::InputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
 end...)
 

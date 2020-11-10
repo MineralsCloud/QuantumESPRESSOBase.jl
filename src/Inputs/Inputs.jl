@@ -49,20 +49,12 @@ export optionof,
     allnamelists,
     allcards
 
-
 """
-    Namelist <: QuantumESPRESSOInputEntry
-
-The abstraction of an component of a `Input`, a basic Fortran data structure.
-"""
-abstract type Namelist <: QuantumESPRESSOInputEntry end
-
-"""
-    Card <: QuantumESPRESSOInputEntry
+    Card <: InputEntry
 
 The abstraction of all components of a `Input` that is not a `Namelist`.
 """
-abstract type Card <: QuantumESPRESSOInputEntry end
+abstract type Card <: InputEntry end
 
 """
     groupname(::Union{Namelist,Card})
@@ -81,7 +73,7 @@ julia> groupname(ControlNamelist()) == groupname(ControlNamelist) == "CONTROL"
 true
 ```
 """
-groupname(x::QuantumESPRESSOInputEntry) = groupname(typeof(x))
+groupname(x::InputEntry) = groupname(typeof(x))
 
 """
     dropdefault(nml::Namelist)
@@ -144,7 +136,7 @@ function optionpool end
 abstract type QuantumESPRESSOInput <: Input end
 
 # This is a helper function and should not be exported.
-entryname(S::Type{<:QuantumESPRESSOInputEntry}, T::Type{<:QuantumESPRESSOInput}) =
+entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
     only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 function allnamelists end
