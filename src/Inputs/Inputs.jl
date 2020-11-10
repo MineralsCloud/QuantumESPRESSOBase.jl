@@ -11,7 +11,7 @@ julia>
 """
 module Inputs
 
-using AbInitioSoftwareBase.Inputs: Input
+using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist
 using Compat: only, isnothing
 using Crystallography:
     CellParameters,
@@ -34,13 +34,13 @@ using Crystallography:
 using OptionalArgChecks: @argcheck
 using PyFortran90Namelists: fstring
 
-import AbInitioSoftwareBase.Inputs: inputstring, titleof
-import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent
+import AbInitioSoftwareBase.Inputs: inputstring, groupname
+import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent
 import Crystallography: Bravais, Lattice
 
 export optionof,
     optionpool,
-    titleof,
+    groupname,
     inputstring,
     required_namelists,
     optional_namelists,
@@ -49,28 +49,19 @@ export optionof,
     allnamelists,
     allcards
 
-abstract type QuantumESPRESSOInputEntry end  # Define this to make the `eltype` not `Any` if both `Namelist` & `Card` exist.
-
 """
-    Namelist <: QuantumESPRESSOInputEntry
-
-The abstraction of an component of a `Input`, a basic Fortran data structure.
-"""
-abstract type Namelist <: QuantumESPRESSOInputEntry end
-
-"""
-    Card <: QuantumESPRESSOInputEntry
+    Card <: InputEntry
 
 The abstraction of all components of a `Input` that is not a `Namelist`.
 """
-abstract type Card <: QuantumESPRESSOInputEntry end
+abstract type Card <: InputEntry end
 
 """
-    titleof(::Union{Namelist,Card})
+    groupname(::Union{Namelist,Card})
 
 Return the title of the input entry in Quantum ESPRESSO.
 
-The definition `titleof(x) = titleof(typeof(x))` is provided for convenience so that
+The definition `groupname(x) = groupname(typeof(x))` is provided for convenience so that
 instances can be passed instead of types.
 
 # Examples
@@ -78,11 +69,11 @@ instances can be passed instead of types.
 ```jldoctest
 julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Inputs.PWscf: ControlNamelist
 
-julia> titleof(ControlNamelist()) == titleof(ControlNamelist) == "CONTROL"
+julia> groupname(ControlNamelist()) == groupname(ControlNamelist) == "CONTROL"
 true
 ```
 """
-titleof(x::QuantumESPRESSOInputEntry) = titleof(typeof(x))
+groupname(x::InputEntry) = groupname(typeof(x))
 
 """
     dropdefault(nml::Namelist)
@@ -145,7 +136,7 @@ function optionpool end
 abstract type QuantumESPRESSOInput <: Input end
 
 # This is a helper function and should not be exported.
-entryname(S::Type{<:QuantumESPRESSOInputEntry}, T::Type{<:QuantumESPRESSOInput}) =
+entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
     only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 function allnamelists end
@@ -190,7 +181,7 @@ function inputstring(nml::Namelist)
         delimiter = delimiter(nml),
         newline = newline(nml),
     )
-    return join(filter(!isempty, ("&" * titleof(nml), content, '/')), newline(nml))
+    return join(filter(!isempty, ("&" * groupname(nml), content, '/')), newline(nml))
 end
 inputstring(x::AbstractString) = string(x)
 function _nmlinputstring(
@@ -330,7 +321,7 @@ function Lattice(bravais::BodyCenteredCubic, p)
 end
 Lattice(::PrimitiveHexagonal, p) = Lattice(p[1] * [
     1 0 0
-    -1 / 2 √3 / 2 0
+    -1/2 √3/2 0
     0 0 p[3]
 ])
 function Lattice(bravais::RCenteredHexagonal, p)
@@ -377,14 +368,14 @@ function Lattice(bravais::BCenteredOrthorhombic, p)
     a, b, c = p[1], p[1] * p[2], p[1] * p[3]
     if bravais.obverse
         return Lattice([
-            a / 2 b / 2 0
-            -a / 2 b / 2 0
+            a/2 b/2 0
+            -a/2 b/2 0
             0 0 c
         ])
     else
         return Lattice([
-            a / 2 -b / 2 0
-            a / 2 b / 2 0
+            a/2 -b/2 0
+            a/2 b/2 0
             0 0 c
         ])
     end
@@ -393,8 +384,8 @@ function Lattice(::ACenteredOrthorhombic, p)
     a, r1, r2 = p[1:3]
     return Lattice(a * [
         1 0 0
-        0 r1 / 2 -r2 / 2
-        0 r1 / 2 r2 / 2
+        0 r1/2 -r2/2
+        0 r1/2 r2/2
     ])
 end  # New in QE 6.4
 function Lattice(::FaceCenteredOrthorhombic, p)
@@ -418,7 +409,7 @@ function Lattice(bravais::PrimitiveMonoclinic, p)
         a, r1, r2, cosγ = p[1:4]
         return Lattice(a * [
             1 0 0
-            r1 * cosγ r1 * sin(acos(cosγ)) 0
+            r1*cosγ r1*sin(acos(cosγ)) 0
             0 0 r2
         ])
     else
@@ -426,37 +417,35 @@ function Lattice(bravais::PrimitiveMonoclinic, p)
         return Lattice(a * [
             1 0 0
             0 r1 0
-            r2 * cosβ 0 r2 * sin(acos(cosβ))
+            r2*cosβ 0 r2*sin(acos(cosβ))
         ])
     end
 end
 function Lattice(::CCenteredMonoclinic, p)
     a, r1, r2, cosγ = p[1:4]
     return Lattice(a * [
-        1 / 2 0 -r2 / 2
-        r1 * cosγ r1 * sin(acos(cosγ)) 0
-        1 / 2 0 r2 / 2
+        1/2 0 -r2/2
+        r1*cosγ r1*sin(acos(cosγ)) 0
+        1/2 0 r2/2
     ])
 end
 function Lattice(::BCenteredMonoclinic, p)
     a, r1, r2, _, cosβ = p[1:3]
     return Lattice(a * [
-        1 / 2 r1 / 2 0
-        -1 / 2 r1 / 2 0
-        r2 * cosβ 0 r2 * sin(acos(cosβ))
+        1/2 r1/2 0
+        -1/2 r1/2 0
+        r2*cosβ 0 r2*sin(acos(cosβ))
     ])
 end
 function Lattice(::PrimitiveTriclinic, p)
     a, r1, r2, cosα, cosβ, cosγ = p[1:6]  # Every `p` that is an iterable can be used
     sinγ = sin(acos(cosγ))
     δ = r2 * sqrt(1 + 2 * cosα * cosβ * cosγ - cosα^2 - cosβ^2 - cosγ^2) / sinγ
-    return Lattice(
-        a * [
-            1 0 0
-            r1 * cosγ r1 * sinγ 0
-            r2 * cosβ r2 * (cosα - cosβ * cosγ) / sinγ δ
-        ],
-    )
+    return Lattice(a * [
+        1 0 0
+        r1*cosγ r1*sinγ 0
+        r2*cosβ r2*(cosα-cosβ*cosγ)/sinγ δ
+    ])
 end
 
 end

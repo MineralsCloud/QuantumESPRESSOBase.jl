@@ -22,7 +22,7 @@ using ..Inputs:
     required_cards,
     optional_cards
 
-import AbInitioSoftwareBase.Inputs: inputstring, titleof
+import AbInitioSoftwareBase.Inputs: inputstring, groupname
 import Crystallography: Bravais, Lattice
 # import Pseudopotentials: pseudoformat
 import ..Inputs:
@@ -34,7 +34,7 @@ import ..Inputs:
     optional_namelists,
     required_cards,
     optional_cards
-using ..Formats: delimiter, newline, indent, floatfmt, intfmt
+using ..Formatter: delimiter, newline, indent, floatfmt, intfmt
 
 export ControlNamelist,
     SystemNamelist,
@@ -128,14 +128,14 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     end
 end # function optconvert
 
-titleof(::Type{ControlNamelist}) = "CONTROL"
-titleof(::Type{SystemNamelist}) = "SYSTEM"
-titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
-titleof(::Type{IonsNamelist}) = "IONS"
-titleof(::Type{CellNamelist}) = "CELL"
-titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-titleof(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
+groupname(::Type{ControlNamelist}) = "CONTROL"
+groupname(::Type{SystemNamelist}) = "SYSTEM"
+groupname(::Type{ElectronsNamelist}) = "ELECTRONS"
+groupname(::Type{IonsNamelist}) = "IONS"
+groupname(::Type{CellNamelist}) = "CELL"
+groupname(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+groupname(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+groupname(::Type{<:CellParametersCard}) = "CELL_PARAMETERS"
 
 """
     Bravais(nml::SystemNamelist)

@@ -411,10 +411,10 @@ DynmatNamelist(nml::DynmatNamelist; kwargs...) = setproperties(nml, kwargs...)
 DynmatNamelist(nml::DynmatNamelist, t::NamedTuple) = setproperties(nml, t)
 DynmatNamelist(nml::DynmatNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
-Inputs.titleof(::Type{PhNamelist}) = "INPUTPH"
-Inputs.titleof(::Type{Q2rNamelist}) = "INPUT"
-Inputs.titleof(::Type{MatdynNamelist}) = "INPUT"
-Inputs.titleof(::Type{DynmatNamelist}) = "INPUT"
+Inputs.groupname(::Type{PhNamelist}) = "INPUTPH"
+Inputs.groupname(::Type{Q2rNamelist}) = "INPUT"
+Inputs.groupname(::Type{MatdynNamelist}) = "INPUT"
+Inputs.groupname(::Type{DynmatNamelist}) = "INPUT"
 
 struct QPointsCard <: Card
     data::Vector{SpecialPoint}

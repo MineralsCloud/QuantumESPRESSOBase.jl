@@ -23,11 +23,18 @@ using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
-using ..Inputs: QuantumESPRESSOInputEntry, Namelist, QuantumESPRESSOInput, entryname, Card
+using ..Inputs: QuantumESPRESSOInput, Card, entryname
 
 import AbInitioSoftwareBase.Inputs:
-    inputstring, titleof, set_verbosity, set_elec_temp, set_press_vol, set_cell
-import AbInitioSoftwareBase.Inputs.Formats: delimiter, newline, indent, floatfmt, intfmt
+    InputEntry,
+    Namelist,
+    inputstring,
+    groupname,
+    set_verbosity,
+    set_elec_temp,
+    set_press_vol,
+    set_cell
+import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
 import ..Inputs:
@@ -157,7 +164,7 @@ function PWInput(;
         atomic_forces,
     )
 end
-PWInput(args::QuantumESPRESSOInputEntry...) = PWInput(; map(args) do arg
+PWInput(args::InputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
 end...)
 
@@ -251,15 +258,15 @@ optionpool(::Type{GammaPointCard}) = ("gamma",)
 optionpool(::Type{SpecialPointsCard}) =
     ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 
-titleof(::Type{ControlNamelist}) = "CONTROL"
-titleof(::Type{SystemNamelist}) = "SYSTEM"
-titleof(::Type{ElectronsNamelist}) = "ELECTRONS"
-titleof(::Type{IonsNamelist}) = "IONS"
-titleof(::Type{CellNamelist}) = "CELL"
-titleof(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-titleof(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-titleof(::Type{CellParametersCard}) = "CELL_PARAMETERS"
-titleof(::Type{<:KPointsCard}) = "K_POINTS"
+groupname(::Type{ControlNamelist}) = "CONTROL"
+groupname(::Type{SystemNamelist}) = "SYSTEM"
+groupname(::Type{ElectronsNamelist}) = "ELECTRONS"
+groupname(::Type{IonsNamelist}) = "IONS"
+groupname(::Type{CellNamelist}) = "CELL"
+groupname(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+groupname(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+groupname(::Type{CellParametersCard}) = "CELL_PARAMETERS"
+groupname(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
     inputstring(data::AtomicSpecies)
