@@ -86,7 +86,7 @@ end
 """
 function scriptify(
     x::QuantumESPRESSOBin;
-    stdin = nothing,
+    stdin,
     stdout = nothing,
     stderr = nothing,
     dir = dirname(stdin),  # If `stdin` path is not complete, this will save it
@@ -100,7 +100,7 @@ end
 function scriptify(
     mpi::Mpiexec,
     x::QuantumESPRESSOBin;
-    stdin = nothing,
+    stdin,
     stdout = nothing,
     stderr = nothing,
     dir = dirname(stdin),
