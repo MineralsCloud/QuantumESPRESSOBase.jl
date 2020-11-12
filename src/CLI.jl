@@ -50,7 +50,8 @@ MatdynX(; bin = "q2r.x") = MatdynX(bin)
 - `stdout = nothing`: output
 - `stderr = nothing`: error
 """
-function (x::QuantumESPRESSOBin)(;
+function scriptify(
+    x::QuantumESPRESSOBin;
     stdin = nothing,
     stdout = nothing,
     stderr = nothing,
@@ -93,98 +94,97 @@ function (x::QuantumESPRESSOBin)(;
     end
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
-
-const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
-# See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
-
-function Base.:∘(mpi::Mpiexec, x::QuantumESPRESSOBin)
-    function (;
-        stdin = nothing,
-        stdout = nothing,
-        stderr = nothing,
-        dir = dirname(stdin),
-        asstring = false,
-        input_redirect = false,
-    )
-        args = String[]
-        for f in (:host, :hostfile)
-            v = getfield(mpi, f)
-            if !isempty(v)
-                push!(args, "-$f", v)
-            end
+function scriptify(
+    mpi::Mpiexec,
+    x::QuantumESPRESSOBin;
+    stdin = nothing,
+    stdout = nothing,
+    stderr = nothing,
+    dir = dirname(stdin),
+    asstring = false,
+    input_redirect = false,
+)
+    args = String[]
+    for f in (:host, :hostfile)
+        v = getfield(mpi, f)
+        if !isempty(v)
+            push!(args, "-$f", v)
         end
-        for (k, v) in mpi.args
-            push!(args, "-$k", string(v))
-        end
-        push!(args, x.bin)
-        if x isa PWX
-            for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
-                v = getfield(x, f)
-                if !iszero(v)
-                    push!(args, "-$f", string(v))
-                end
-            end
-        end
-        if asstring
-            @warn "using string commands maybe error prone! Use with care!"
-            for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-                if v !== nothing
-                    push!(args, redir[f], "'$v'")
-                end
-            end
-            return join(
-                (
-                    mpi.bin,
-                    "-n",
-                    mpi.np,
-                    "--mca",
-                    "btl_vader_single_copy_mechanism",
-                    "none",
-                    args...,
-                ),
-                " ",
-            )
-        else
-            if input_redirect
-                return pipeline(
-                    setenv(
-                        Cmd([
-                            mpi.bin,
-                            "-n",
-                            string(mpi.np),
-                            "--mca",
-                            "btl_vader_single_copy_mechanism",
-                            "none",
-                            args...,
-                        ]);
-                        dir = dir,
-                    );
-                    stdin = stdin,
-                    stdout = stdout,
-                    stderr = stderr,
-                )
-            else
-                return pipeline(
-                    setenv(
-                        Cmd([
-                            mpi.bin,
-                            "-n",
-                            string(mpi.np),
-                            args...,
-                            "--mca",
-                            "btl_vader_single_copy_mechanism",
-                            "none",
-                            "-inp",
-                            "$stdin",
-                        ]);
-                        dir = dir,
-                    );
-                    stdout = stdout,
-                    stderr = stderr,
-                )
+    end
+    for (k, v) in mpi.args
+        push!(args, "-$k", string(v))
+    end
+    push!(args, x.bin)
+    if x isa PWX
+        for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
+            v = getfield(x, f)
+            if !iszero(v)
+                push!(args, "-$f", string(v))
             end
         end
     end
+    if asstring
+        @warn "using string commands maybe error prone! Use with care!"
+        for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
+            if v !== nothing
+                push!(args, redir[f], "'$v'")
+            end
+        end
+        return join(
+            (
+                mpi.bin,
+                "-n",
+                mpi.np,
+                "--mca",
+                "btl_vader_single_copy_mechanism",
+                "none",
+                args...,
+            ),
+            " ",
+        )
+    else
+        if input_redirect
+            return pipeline(
+                setenv(
+                    Cmd([
+                        mpi.bin,
+                        "-n",
+                        string(mpi.np),
+                        "--mca",
+                        "btl_vader_single_copy_mechanism",
+                        "none",
+                        args...,
+                    ]);
+                    dir = dir,
+                );
+                stdin = stdin,
+                stdout = stdout,
+                stderr = stderr,
+            )
+        else
+            return pipeline(
+                setenv(
+                    Cmd([
+                        mpi.bin,
+                        "-n",
+                        string(mpi.np),
+                        args...,
+                        "--mca",
+                        "btl_vader_single_copy_mechanism",
+                        "none",
+                        "-inp",
+                        "$stdin",
+                    ]);
+                    dir = dir,
+                );
+                stdout = stdout,
+                stderr = stderr,
+            )
+        end
+    end
 end
+
+const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
+# See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
 
 end
