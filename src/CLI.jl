@@ -38,20 +38,20 @@ struct MatdynX <: QuantumESPRESSOBin
 end
 MatdynX(; bin = "q2r.x") = MatdynX(bin)
 
-function _scriptify(  # Never export!
-    x::QuantumESPRESSOBin;
-    stdin = nothing,
-    stdout = nothing,
-    stderr = nothing,
-    tostring = false,
-    input_not_read = true,
+function _prescriptify(  # Never export!
+    x,
+    stdin,
+    stdout,
+    stderr,
+    tostring,
+    input_not_read,
 )
-    options = String[]
+    args = [x.bin]
     if x isa PWX
         for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
             v = getfield(x, k)
             if !iszero(v)
-                push!(options, "-$k", string(v))
+                push!(args, "-$k", string(v))
             end
         end
     end
@@ -59,15 +59,15 @@ function _scriptify(  # Never export!
         @warn "using shell maybe error prone!"
         for (i, v) in enumerate((stdin, stdout, stderr))
             if v !== nothing
-                push!(options, REDIRECTION_OPERATORS[i], "'$v'")
+                push!(args, REDIRECTION_OPERATORS[i], "'$v'")
             end
         end
     else
         if input_not_read
-            push!(options, "-inp", "$stdin")
+            push!(args, "-inp", "$stdin")
         end
     end
-    return [x.bin, options...]
+    return args
 end
 """
     (::PWX)(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
@@ -93,28 +93,8 @@ function scriptify(
     tostring = false,
     input_not_read = true,
 )
-    cmd = _scriptify(
-        x;
-        stdin = stdin,
-        stdout = stdout,
-        stderr = stderr,
-        tostring = tostring,
-        input_not_read = input_not_read,
-    )
-    if tostring
-        return join(cmd, " ")
-    else
-        if input_not_read
-            return pipeline(setenv(Cmd(cmd); dir = dir), stdout = stdout, stderr = stderr)
-        else
-            return pipeline(
-                setenv(Cmd(cmd); dir = dir);
-                stdin = stdin,
-                stdout = stdout,
-                stderr = stderr,
-            )
-        end
-    end
+    args = _prescriptify(x, stdin, stdout, stderr, tostring, input_not_read)
+    return _postscriptify(args, stdin, stdout, stderr, dir, tostring, input_not_read)
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
 function scriptify(
@@ -125,7 +105,7 @@ function scriptify(
     stderr = nothing,
     dir = dirname(stdin),
     tostring = false,
-    input_not_read = false,
+    input_not_read = true,
 )
     cmd = [mpi.bin, "-n", string(mpi.np)]
     for f in (:host, :hostfile)
@@ -137,27 +117,19 @@ function scriptify(
     for (k, v) in mpi.args
         push!(cmd, "-$k", string(v))
     end
-    args = _scriptify(
-        x;
-        stdin = stdin,
-        stdout = stdout,
-        stderr = stderr,
-        tostring = tostring,
-        input_not_read = input_not_read,
-    )
+    args = _prescriptify(x, stdin, stdout, stderr, tostring, input_not_read)
     append!(cmd, args)
+    return _postscriptify(cmd, stdin, stdout, stderr, dir, tostring, input_not_read)
+end
+function _postscriptify(args, stdin, stdout, stderr, dir, tostring, input_not_read)
     if tostring
-        return join(cmd, " ")
+        return join(args, " ")
     else
+        cmd = pipeline(setenv(Cmd(args); dir = dir), stdout = stdout, stderr = stderr)
         if input_not_read
-            return pipeline(setenv(Cmd(cmd); dir = dir), stdout = stdout, stderr = stderr)
+            return cmd
         else
-            return pipeline(
-                setenv(Cmd(cmd); dir = dir);
-                stdin = stdin,
-                stdout = stdout,
-                stderr = stderr,
-            )
+            return pipeline(cmd; stdin = stdin)
         end
     end
 end
