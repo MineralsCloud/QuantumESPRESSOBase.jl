@@ -6,6 +6,9 @@ import AbInitioSoftwareBase.CLI: scriptify
 
 export Mpiexec, PWX, PhX, Q2rX, MatdynX
 
+const REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
+# See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
+
 abstract type QuantumESPRESSOBin <: AbInitioSoftwareBin end
 
 struct PWX <: QuantumESPRESSOBin
@@ -35,6 +38,37 @@ struct MatdynX <: QuantumESPRESSOBin
 end
 MatdynX(; bin = "q2r.x") = MatdynX(bin)
 
+function _scriptify(  # Never export!
+    x::QuantumESPRESSOBin;
+    stdin = nothing,
+    stdout = nothing,
+    stderr = nothing,
+    tostring = false,
+    input_not_read = true,
+)
+    options = String[]
+    if x isa PWX
+        for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
+            v = getfield(x, k)
+            if !iszero(v)
+                push!(options, "-$k", string(v))
+            end
+        end
+    end
+    if tostring
+        @warn "using shell maybe error prone!"
+        for (i, v) in enumerate((stdin, stdout, stderr))
+            if v !== nothing
+                push!(options, REDIRECTION_OPERATORS[i], "'$v'")
+            end
+        end
+    else
+        if input_not_read
+            push!(options, "-inp", "$stdin")
+        end
+    end
+    return [x.bin, options...]
+end
 """
     (::PWX)(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
 
@@ -57,36 +91,25 @@ function scriptify(
     stderr = nothing,
     dir = dirname(stdin),  # If `stdin` path is not complete, this will save it
     tostring = false,
-    input_redirect = false,
+    input_not_read = true,
 )
-    options = String[]
-    if x isa PWX
-        for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
-            v = getfield(x, k)
-            if !iszero(v)
-                push!(options, "-$k", string(v))
-            end
-        end
-    end
+    cmd = _scriptify(
+        x;
+        stdin = stdin,
+        stdout = stdout,
+        stderr = stderr,
+        tostring = tostring,
+        input_not_read = input_not_read,
+    )
     if tostring
-        @warn "using string commands maybe error prone! Use with care!"
-        for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-            if v !== nothing
-                push!(options, redir[f], "'$v'")
-            end
-        end
-        return join((x.bin, options...), " ")
+        return join(cmd, " ")
     else
-        if input_redirect
-            return pipeline(
-                setenv(Cmd([x.bin; options]); dir = dir);
-                stdin = stdin,
-                stdout = stdout,
-                stderr = stderr,
-            )
+        if input_not_read
+            return pipeline(setenv(Cmd(cmd); dir = dir), stdout = stdout, stderr = stderr)
         else
             return pipeline(
-                setenv(Cmd([x.bin, options..., "-inp", "$stdin"]); dir = dir);
+                setenv(Cmd(cmd); dir = dir);
+                stdin = stdin,
                 stdout = stdout,
                 stderr = stderr,
             )
@@ -102,89 +125,41 @@ function scriptify(
     stderr = nothing,
     dir = dirname(stdin),
     tostring = false,
-    input_redirect = false,
+    input_not_read = false,
 )
-    args = String[]
+    cmd = [mpi.bin, "-n", string(mpi.np)]
     for f in (:host, :hostfile)
         v = getfield(mpi, f)
         if !isempty(v)
-            push!(args, "-$f", v)
+            push!(cmd, "-$f", v)
         end
     end
     for (k, v) in mpi.args
-        push!(args, "-$k", string(v))
+        push!(cmd, "-$k", string(v))
     end
-    push!(args, x.bin)
-    if x isa PWX
-        for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
-            v = getfield(x, f)
-            if !iszero(v)
-                push!(args, "-$f", string(v))
-            end
-        end
-    end
+    args = _scriptify(
+        x;
+        stdin = stdin,
+        stdout = stdout,
+        stderr = stderr,
+        tostring = tostring,
+        input_not_read = input_not_read,
+    )
+    append!(cmd, args)
     if tostring
-        @warn "using string commands maybe error prone! Use with care!"
-        for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-            if v !== nothing
-                push!(args, redir[f], "'$v'")
-            end
-        end
-        return join(
-            (
-                mpi.bin,
-                "-n",
-                mpi.np,
-                "--mca",
-                "btl_vader_single_copy_mechanism",
-                "none",
-                args...,
-            ),
-            " ",
-        )
+        return join(cmd, " ")
     else
-        if input_redirect
-            return pipeline(
-                setenv(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        args...,
-                    ]);
-                    dir = dir,
-                );
-                stdin = stdin,
-                stdout = stdout,
-                stderr = stderr,
-            )
+        if input_not_read
+            return pipeline(setenv(Cmd(cmd); dir = dir), stdout = stdout, stderr = stderr)
         else
             return pipeline(
-                setenv(
-                    Cmd([
-                        mpi.bin,
-                        "-n",
-                        string(mpi.np),
-                        args...,
-                        "--mca",
-                        "btl_vader_single_copy_mechanism",
-                        "none",
-                        "-inp",
-                        "$stdin",
-                    ]);
-                    dir = dir,
-                );
+                setenv(Cmd(cmd); dir = dir);
+                stdin = stdin,
                 stdout = stdout,
                 stderr = stderr,
             )
         end
     end
 end
-
-const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
-# See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
 
 end
