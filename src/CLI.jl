@@ -1,12 +1,17 @@
 module CLI
 
-using AbInitioSoftwareBase.CLI: Mpiexec
+using AbInitioSoftwareBase.CLI: Mpiexec, AbInitioSoftwareBin
+
+import AbInitioSoftwareBase.CLI: scriptify
 
 export Mpiexec, PWX, PhX, Q2rX, MatdynX
 
-abstract type QuantumESPRESSOX end
+const REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
+# See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
 
-struct PWX <: QuantumESPRESSOX
+abstract type QuantumESPRESSOBin <: AbInitioSoftwareBin end
+
+struct PWX <: QuantumESPRESSOBin
     bin
     nimage::UInt
     npool::UInt
@@ -18,21 +23,52 @@ end
 PWX(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
     PWX(bin, nimage, npool, ntg, nyfft, nband, ndiag)
 
-struct PhX <: QuantumESPRESSOX
+struct PhX <: QuantumESPRESSOBin
     bin
 end
 PhX(; bin = "ph.x") = PhX(bin)
 
-struct Q2rX <: QuantumESPRESSOX
+struct Q2rX <: QuantumESPRESSOBin
     bin
 end
 Q2rX(; bin = "q2r.x") = Q2rX(bin)
 
-struct MatdynX <: QuantumESPRESSOX
+struct MatdynX <: QuantumESPRESSOBin
     bin
 end
 MatdynX(; bin = "q2r.x") = MatdynX(bin)
 
+function _prescriptify(  # Never export!
+    x,
+    stdin,
+    stdout,
+    stderr,
+    tostring,
+    input_not_read,
+)
+    args = [x.bin]
+    if x isa PWX
+        for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
+            v = getfield(x, k)
+            if !iszero(v)
+                push!(args, "-$k", string(v))
+            end
+        end
+    end
+    if tostring
+        @warn "using shell maybe error prone!"
+        for (i, v) in enumerate((stdin, stdout, stderr))
+            if v !== nothing
+                push!(args, REDIRECTION_OPERATORS[i], "'$v'")
+            end
+        end
+    else
+        if input_not_read
+            push!(args, "-inp", "$stdin")
+        end
+    end
+    return args
+end
 """
     (::PWX)(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0, stdin = nothing, stdout = nothing, stderr = nothing)
 
@@ -48,139 +84,52 @@ MatdynX(; bin = "q2r.x") = MatdynX(bin)
 - `stdout = nothing`: output
 - `stderr = nothing`: error
 """
-function (x::QuantumESPRESSOX)(;
-    stdin = nothing,
+function scriptify(
+    x::QuantumESPRESSOBin;
+    stdin,
     stdout = nothing,
     stderr = nothing,
     dir = dirname(stdin),  # If `stdin` path is not complete, this will save it
-    asstring = false,
-    input_redirect = false,
+    tostring = false,
+    input_not_read = true,
 )
-    options = String[]
-    if x isa PWX
-        for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
-            v = getfield(x, k)
-            if !iszero(v)
-                push!(options, "-$k", string(v))
-            end
-        end
-    end
-    if asstring
-        @warn "using string commands maybe error prone! Use with care!"
-        for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-            if v !== nothing
-                push!(options, redir[f], "'$v'")
-            end
-        end
-        return join((x.bin, options...), " ")
-    else
-        if input_redirect
-            return pipeline(
-                setenv(Cmd([x.bin; options]); dir = dir);
-                stdin = stdin,
-                stdout = stdout,
-                stderr = stderr,
-            )
-        else
-            return pipeline(
-                setenv(Cmd([x.bin, options..., "-inp", "$stdin"]); dir = dir);
-                stdout = stdout,
-                stderr = stderr,
-            )
-        end
-    end
+    args = _prescriptify(x, stdin, stdout, stderr, tostring, input_not_read)
+    return _postscriptify(args, stdin, stdout, stderr, dir, tostring, input_not_read)
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
-
-const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
-# See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
-
-function Base.:∘(mpi::Mpiexec, x::QuantumESPRESSOX)
-    function (;
-        stdin = nothing,
-        stdout = nothing,
-        stderr = nothing,
-        dir = dirname(stdin),
-        asstring = false,
-        input_redirect = false,
-    )
-        args = String[]
-        for f in (:host, :hostfile)
-            v = getfield(mpi, f)
-            if !isempty(v)
-                push!(args, "-$f", v)
-            end
+function scriptify(
+    mpi::Mpiexec,
+    x::QuantumESPRESSOBin;
+    stdin,
+    stdout = nothing,
+    stderr = nothing,
+    dir = dirname(stdin),
+    tostring = false,
+    input_not_read = true,
+)
+    cmd = [mpi.bin, "-n", string(mpi.np)]
+    for f in (:host, :hostfile)
+        v = getfield(mpi, f)
+        if !isempty(v)
+            push!(cmd, "-$f", v)
         end
-        for (k, v) in mpi.args
-            push!(args, "-$k", string(v))
-        end
-        push!(args, x.bin)
-        if x isa PWX
-            for f in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
-                v = getfield(x, f)
-                if !iszero(v)
-                    push!(args, "-$f", string(v))
-                end
-            end
-        end
-        if asstring
-            @warn "using string commands maybe error prone! Use with care!"
-            for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
-                if v !== nothing
-                    push!(args, redir[f], "'$v'")
-                end
-            end
-            return join(
-                (
-                    mpi.bin,
-                    "-n",
-                    mpi.np,
-                    "--mca",
-                    "btl_vader_single_copy_mechanism",
-                    "none",
-                    args...,
-                ),
-                " ",
-            )
+    end
+    for (k, v) in mpi.args
+        push!(cmd, "-$k", string(v))
+    end
+    args = _prescriptify(x, stdin, stdout, stderr, tostring, input_not_read)
+    append!(cmd, args)
+    return _postscriptify(cmd, stdin, stdout, stderr, dir, tostring, input_not_read)
+end
+function _postscriptify(args, stdin, stdout, stderr, dir, tostring, input_not_read)
+    if tostring
+        return join(args, " ")
+    else
+        cmd = pipeline(setenv(Cmd(args); dir = dir), stdout = stdout, stderr = stderr)
+        if input_not_read
+            return cmd
         else
-            if input_redirect
-                return pipeline(
-                    setenv(
-                        Cmd([
-                            mpi.bin,
-                            "-n",
-                            string(mpi.np),
-                            "--mca",
-                            "btl_vader_single_copy_mechanism",
-                            "none",
-                            args...,
-                        ]);
-                        dir = dir,
-                    );
-                    stdin = stdin,
-                    stdout = stdout,
-                    stderr = stderr,
-                )
-            else
-                return pipeline(
-                    setenv(
-                        Cmd([
-                            mpi.bin,
-                            "-n",
-                            string(mpi.np),
-                            args...,
-                            "--mca",
-                            "btl_vader_single_copy_mechanism",
-                            "none",
-                            "-inp",
-                            "$stdin",
-                        ]);
-                        dir = dir,
-                    );
-                    stdout = stdout,
-                    stderr = stderr,
-                )
-            end
+            return pipeline(cmd; stdin = stdin)
         end
     end
 end
