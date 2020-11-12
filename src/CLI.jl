@@ -56,7 +56,7 @@ function scriptify(
     stdout = nothing,
     stderr = nothing,
     dir = dirname(stdin),  # If `stdin` path is not complete, this will save it
-    asstring = false,
+    tostring = false,
     input_redirect = false,
 )
     options = String[]
@@ -68,7 +68,7 @@ function scriptify(
             end
         end
     end
-    if asstring
+    if tostring
         @warn "using string commands maybe error prone! Use with care!"
         for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
             if v !== nothing
@@ -101,7 +101,7 @@ function scriptify(
     stdout = nothing,
     stderr = nothing,
     dir = dirname(stdin),
-    asstring = false,
+    tostring = false,
     input_redirect = false,
 )
     args = String[]
@@ -123,7 +123,7 @@ function scriptify(
             end
         end
     end
-    if asstring
+    if tostring
         @warn "using string commands maybe error prone! Use with care!"
         for (f, v) in zip((:stdin, :stdout, :stderr), (stdin, stdout, stderr))
             if v !== nothing
