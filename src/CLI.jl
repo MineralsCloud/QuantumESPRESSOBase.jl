@@ -1,12 +1,14 @@
 module CLI
 
-using AbInitioSoftwareBase.CLI: Mpiexec
+using AbInitioSoftwareBase.CLI: Mpiexec, AbInitioSoftwareBin
+
+import AbInitioSoftwareBase.CLI: scriptify
 
 export Mpiexec, PWX, PhX, Q2rX, MatdynX
 
-abstract type QuantumESPRESSOX end
+abstract type QuantumESPRESSOBin <: AbInitioSoftwareBin end
 
-struct PWX <: QuantumESPRESSOX
+struct PWX <: QuantumESPRESSOBin
     bin
     nimage::UInt
     npool::UInt
@@ -18,17 +20,17 @@ end
 PWX(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
     PWX(bin, nimage, npool, ntg, nyfft, nband, ndiag)
 
-struct PhX <: QuantumESPRESSOX
+struct PhX <: QuantumESPRESSOBin
     bin
 end
 PhX(; bin = "ph.x") = PhX(bin)
 
-struct Q2rX <: QuantumESPRESSOX
+struct Q2rX <: QuantumESPRESSOBin
     bin
 end
 Q2rX(; bin = "q2r.x") = Q2rX(bin)
 
-struct MatdynX <: QuantumESPRESSOX
+struct MatdynX <: QuantumESPRESSOBin
     bin
 end
 MatdynX(; bin = "q2r.x") = MatdynX(bin)
@@ -48,7 +50,7 @@ MatdynX(; bin = "q2r.x") = MatdynX(bin)
 - `stdout = nothing`: output
 - `stderr = nothing`: error
 """
-function (x::QuantumESPRESSOX)(;
+function (x::QuantumESPRESSOBin)(;
     stdin = nothing,
     stdout = nothing,
     stderr = nothing,
@@ -95,7 +97,7 @@ end
 const redir = (stdin = "-inp", stdout = "1>", stderr = "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html
 
-function Base.:∘(mpi::Mpiexec, x::QuantumESPRESSOX)
+function Base.:∘(mpi::Mpiexec, x::QuantumESPRESSOBin)
     function (;
         stdin = nothing,
         stdout = nothing,
