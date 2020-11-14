@@ -121,9 +121,16 @@ function scriptify(
     append!(cmd, args)
     return _postscriptify(cmd, stdin, stdout, stderr, dir, use_shell, input_not_read)
 end
-function _postscriptify(args, stdin, stdout, stderr, dir, tostring, input_not_read)
-    if tostring
-        return join(args, " ")
+function _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_read)
+    if use_shell
+        mkpath(dir)
+        path, _ = mktemp(dir; cleanup = false)
+        open(path, "w") do io
+            shell = join(args, " ")
+            write(io, shell)
+        end
+        chmod(path, 0o755)
+        return Cmd([abspath(path)])
     else
         cmd = pipeline(setenv(Cmd(args); dir = dir), stdout = stdout, stderr = stderr)
         if input_not_read
