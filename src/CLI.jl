@@ -130,7 +130,7 @@ function _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_r
             write(io, shell)
         end
         chmod(path, 0o755)
-        return Cmd([abspath(path)])
+        return setenv(Cmd([abspath(path)]); dir = dir)
     else
         cmd = pipeline(setenv(Cmd(args); dir = dir), stdout = stdout, stderr = stderr)
         if input_not_read
