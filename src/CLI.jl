@@ -43,7 +43,7 @@ function _prescriptify(  # Never export!
     stdin,
     stdout,
     stderr,
-    tostring,
+    use_shell,
     input_not_read,
 )
     args = [x.bin]
@@ -55,7 +55,7 @@ function _prescriptify(  # Never export!
             end
         end
     end
-    if tostring
+    if use_shell
         @warn "using shell maybe error prone!"
         for (i, v) in enumerate((stdin, stdout, stderr))
             if v !== nothing
@@ -90,11 +90,11 @@ function scriptify(
     stdout = nothing,
     stderr = nothing,
     dir = dirname(stdin),  # If `stdin` path is not complete, this will save it
-    tostring = false,
+    use_shell = false,
     input_not_read = true,
 )
-    args = _prescriptify(x, stdin, stdout, stderr, tostring, input_not_read)
-    return _postscriptify(args, stdin, stdout, stderr, dir, tostring, input_not_read)
+    args = _prescriptify(x, stdin, stdout, stderr, use_shell, input_not_read)
+    return _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_read)
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
 function scriptify(
@@ -104,7 +104,7 @@ function scriptify(
     stdout = nothing,
     stderr = nothing,
     dir = dirname(stdin),
-    tostring = false,
+    use_shell = false,
     input_not_read = true,
 )
     cmd = [mpi.bin, "-n", string(mpi.np)]
@@ -117,9 +117,9 @@ function scriptify(
     for (k, v) in mpi.args
         push!(cmd, "-$k", string(v))
     end
-    args = _prescriptify(x, stdin, stdout, stderr, tostring, input_not_read)
+    args = _prescriptify(x, stdin, stdout, stderr, use_shell, input_not_read)
     append!(cmd, args)
-    return _postscriptify(cmd, stdin, stdout, stderr, dir, tostring, input_not_read)
+    return _postscriptify(cmd, stdin, stdout, stderr, dir, use_shell, input_not_read)
 end
 function _postscriptify(args, stdin, stdout, stderr, dir, tostring, input_not_read)
     if tostring
