@@ -6,7 +6,7 @@ import AbInitioSoftwareBase.CLI: scriptify
 
 export Mpiexec, PWX, PhX, Q2rX, MatdynX
 
-const REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
+# const REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
 
 abstract type QuantumESPRESSOBin <: AbInitioSoftwareBin end
@@ -57,6 +57,11 @@ function _prescriptify(  # Never export!
     end
     if use_shell
         @warn "using shell maybe error prone!"
+        if input_not_read
+            REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
+        else
+            REDIRECTION_OPERATORS = ("<", "1>", "2>")
+        end
         for (i, v) in enumerate((stdin, stdout, stderr))
             if v !== nothing
                 push!(args, REDIRECTION_OPERATORS[i], "'$v'")
@@ -91,7 +96,7 @@ function scriptify(
     stderr = nothing,
     dir = dirname(stdin),  # If `stdin` path is not complete, this will save it
     use_shell = false,
-    input_not_read = true,
+    input_not_read = false,
 )
     args = _prescriptify(x, stdin, stdout, stderr, use_shell, input_not_read)
     return _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_read)
@@ -105,7 +110,7 @@ function scriptify(
     stderr = nothing,
     dir = dirname(stdin),
     use_shell = false,
-    input_not_read = true,
+    input_not_read = false,
 )
     cmd = [mpi.bin, "-n", string(mpi.np)]
     for f in (:host, :hostfile)
