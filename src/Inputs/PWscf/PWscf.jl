@@ -209,10 +209,16 @@ end
 (x::PressureSetter{<:AbstractQuantity})(template::PWInput) =
     PressureSetter(ustrip(u"kbar", x.press))(template)
 
-function set_cell(template::PWInput, cell_parameters::CellParametersCard)
+struct StructureSetter{S,T} <: Setter
+    cp::S
+    ap::T
+end
+StructureSetter(cp::CellParametersCard) = StructureSetter(cp, nothing)
+StructureSetter(ap::AtomicPositionsCard) = StructureSetter(nothing, ap)
+function (x::StructureSetter{CellParametersCard,Nothing})(template::PWInput)
     if isnothing(template.cell_parameters)
-        if optionof(cell_parameters) in ("bohr", "angstrom")
-            @set! template.cell_parameters = cell_parameters
+        if optionof(x.cp) in ("bohr", "angstrom")
+            @set! template.cell_parameters = x.cp
             @set! template.system.ibrav = 0
             @set! template.system.celldm = zeros(6)
         else
@@ -221,12 +227,10 @@ function set_cell(template::PWInput, cell_parameters::CellParametersCard)
         end
     else
         if optionof(template.cell_parameters) == "alat"
-            if optionof(cell_parameters) in ("bohr", "angstrom")
+            if optionof(x.cp) in ("bohr", "angstrom")
                 @set! template.system.celldm = [template.system.celldm[1]]
-                cell_parameters = CellParametersCard(
-                    cell_parameters.data / template.system.celldm[1],
-                    "alat",
-                )
+                cell_parameters =
+                    CellParametersCard(x.cp.data / template.system.celldm[1], "alat")
             else  # "alat"
                 @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
             end
@@ -238,20 +242,13 @@ function set_cell(template::PWInput, cell_parameters::CellParametersCard)
     end
     @set! template.cell_parameters = cell_parameters
     return template
-end # function set_cell
-function set_cell(template::PWInput, atomic_positions::AtomicPositionsCard)
-    @set! template.atomic_positions = atomic_positions
+end
+function (x::StructureSetter{Nothing,AtomicPositionsCard})(template::PWInput)
+    @set! template.atomic_positions = x.ap
     return template
-end # function set_cell
-set_cell(template::PWInput, c::CellParametersCard, a::AtomicPositionsCard) =
-    set_cell(set_cell(template, c), a)
-function set_cell(template::PWInput, cell::Cell, option1, option2)
-    return set_cell(
-        template,
-        CellParametersCard(cell, option1),
-        AtomicPositionsCard(cell, option2),
-    )
-end # function set_cell
+end
+(x::StructureSetter{CellParametersCard,AtomicPositionsCard})(template::PWInput) =
+    (StructureSetter(x.ap) ∘ StructureSetter(x.cp))(template)
 
 exitfile(template::PWInput) = abspath(expanduser(joinpath(
     template.control.outdir,
