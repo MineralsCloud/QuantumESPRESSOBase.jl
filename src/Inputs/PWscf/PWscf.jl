@@ -26,15 +26,6 @@ using UnitfulAtomic
 
 using ..Inputs: QuantumESPRESSOInput, Card, entryname
 
-import AbInitioSoftwareBase.Inputs:
-    InputEntry,
-    Namelist,
-    inputstring,
-    groupname,
-    set_verbosity,
-    set_elec_temp,
-    set_press_vol,
-    set_cell
 import AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Setter, inputstring, groupname
 import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
@@ -71,6 +62,12 @@ export ControlNamelist,
     GammaPointCard,
     SpecialPointsCard,
     PWInput,
+    VerbositySetter,
+    ElectronicTemperatureSetter,
+    ElecTempSetter,
+    VolumeSetter,
+    PressureSetter,
+    StructureSetter,
     optconvert,
     xmldir,
     wfcfiles,
@@ -84,10 +81,6 @@ export ControlNamelist,
     optional_namelists,
     required_cards,
     optional_cards,
-    set_verbosity,
-    set_elec_temp,
-    set_cell,
-    set_press_vol,
     inputstring
 
 include("namelists.jl")
