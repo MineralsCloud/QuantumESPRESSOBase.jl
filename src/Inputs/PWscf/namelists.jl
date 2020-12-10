@@ -836,37 +836,32 @@ function set_verbosity(control::ControlNamelist, verbosity)
     return control
 end # function set_verbosity
 
-"""
-    set_elec_temp(system::SystemNamelist, temperature)
 
-Return a modified `SystemNamelist`, with finite temperature set.
-
-!!! warning
-    Can be used with(out) units. If no unit is given, "Ry" is chosen.
-"""
-function set_elec_temp(system::SystemNamelist, temperature)
+struct ElectronicTemperatureSetter <: Setter
+    t::Temperature
+end
+function (x::ElectronicTemperatureSetter)(system::SystemNamelist)
     @set! system.occupations = "smearing"
     @set! system.smearing = "fermi-dirac"
-    @set! system.degauss = _tconvert(temperature)
+    @set! system.degauss = _tconvert(x.t)
     return system
-end # function set_elec_temp
-function _tconvert(temperature::AbstractQuantity)
-    dim = dimension(unit(temperature))
+end
+function _tconvert(t)
+    dim = dimension(unit(t))
     if dim == dimension(u"Ry")  # u"hartree", u"J", u"eV", etc..
-        return ustrip(u"Ry", temperature)
+        return ustrip(u"Ry", t)
     elseif dim == dimension(u"Hz")  # u"Hz", u"THz", ...
-        return ustrip(u"Hz", temperature) / 6579683920502000.0 * 2
+        return ustrip(u"Hz", t) / 6579683920502000.0 * 2
     elseif dim == dimension(u"K")  # u"K", u"mK", u"μK", ...
-        return ustrip(u"K", temperature) / 315775.02480407 * 2
+        return ustrip(u"K", t) / 315775.02480407 * 2
     elseif dim == dimension(u"m^-1")  # u"m^-1", u"cm^-1", ...
-        return ustrip(u"m^-1", temperature) / 21947463.13632 * 2
+        return ustrip(u"m^-1", t) / 21947463.13632 * 2
     elseif dim == dimension(u"kg")  # u"kg", u"g", ...
-        return ustrip(u"kg", temperature) / 4.8508702095432e-35 * 2
+        return ustrip(u"kg", t) / 4.8508702095432e-35 * 2
     else
         error("unknown unit given!")
     end
 end
-_tconvert(temperature::Real) = temperature  # Ry
 
 # _coupledargs(::Type{ControlNamelist}) = (:calculation => :disk_io,)
 # _coupledargs(::Type{SystemNamelist}) = (:ecutwfc => :ecutrho, :ecutrho => :ecutfock)

@@ -20,7 +20,8 @@ using LinearAlgebra: det, norm
 using OptionalArgChecks: @argcheck
 using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
-using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
+using Unitful:
+    AbstractQuantity, NoUnits, Temperature, dimension, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
 using ..Inputs: QuantumESPRESSOInput, Card, entryname
@@ -34,6 +35,7 @@ import AbInitioSoftwareBase.Inputs:
     set_elec_temp,
     set_press_vol,
     set_cell
+import AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Setter, inputstring, groupname
 import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
@@ -180,18 +182,11 @@ function set_verbosity(template::PWInput, verbosity)
     return template
 end # function set_verbosity
 
-"""
-    set_elec_temp(system::PWInput, temperature::Union{Real,AbstractQuantity})
 
-Return a modified `PWInput`, with finite temperature set.
-
-!!! warning
-    Can be used with(out) units. If no unit is given, "Ry" is chosen.
-"""
-function set_elec_temp(template::PWInput, temperature)
-    @set! template.system = set_elec_temp(template.system, temperature)
+function (x::ElectronicTemperatureSetter)(template::PWInput)
+    @set! template.system = x(template.system)
     return template
-end # function set_elec_temp
+end
 
 function set_press_vol(template::PWInput, pressure::Real, volume::Real)
     @set! template.cell.press = pressure
