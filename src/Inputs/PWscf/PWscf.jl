@@ -182,9 +182,11 @@ function (x::ElectronicTemperatureSetter)(template::PWInput)
     return template
 end
 
-function set_press_vol(template::PWInput, pressure::Real, volume::Real)
-    @set! template.cell.press = pressure
-    factor = cbrt(volume / cellvolume(template))
+struct VolumeSetter{T} <: Setter
+    vol::T
+end
+function (x::VolumeSetter{<:Real})(template::PWInput)
+    factor = cbrt(x.vol / cellvolume(template))
     if isnothing(template.cell_parameters) || optionof(template.cell_parameters) == "alat"
         @set! template.system.celldm[1] *= factor
     else
@@ -193,9 +195,19 @@ function set_press_vol(template::PWInput, pressure::Real, volume::Real)
             optconvert("bohr", CellParametersCard(template.cell_parameters.data * factor))
     end
     return template
-end # function set_press_vol
-set_press_vol(template::PWInput, pressure::AbstractQuantity, volume::AbstractQuantity) =
-    set_press_vol(template, ustrip(u"kbar", pressure), ustrip(u"bohr^3", volume))
+end
+(x::VolumeSetter{<:AbstractQuantity})(template::PWInput) =
+    VolumeSetter(ustrip(u"bohr^3", x.vol))(template)
+
+struct PressureSetter{T} <: Setter
+    press::T
+end
+function (x::PressureSetter{<:Real})(template::PWInput)
+    @set! template.cell.press = x.press
+    return template
+end
+(x::PressureSetter{<:AbstractQuantity})(template::PWInput) =
+    PressureSetter(ustrip(u"kbar", x.press))(template)
 
 function set_cell(template::PWInput, cell_parameters::CellParametersCard)
     if isnothing(template.cell_parameters)
