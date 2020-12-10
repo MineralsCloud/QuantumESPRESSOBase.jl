@@ -812,61 +812,57 @@ BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
 BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
 BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
-"""
-    set_verbosity(template::ControlNamelist, verbosity)
-
-Return a modified `ControlNamelist`, with verbosity set.
-"""
-function set_verbosity(control::ControlNamelist, verbosity)
-    if verbosity == "high"
+struct VerbositySetter <: Setter
+    v::String
+    function VerbositySetter(v)
+        @assert v in ("high", "low")
+        return new(v)
+    end
+end
+function (x::VerbositySetter)(control::ControlNamelist)
+    if x.v == "high"
         @set! control.verbosity = "high"
         @set! control.wf_collect = true
         @set! control.tstress = true
         @set! control.tprnfor = true
         @set! control.disk_io = "high"
-    elseif verbosity == "low"
+    else
         @set! control.verbosity = "low"
         @set! control.wf_collect = false
         @set! control.tstress = false
         @set! control.tprnfor = false
         @set! control.disk_io = "low"
-    else
-        error("unknown `verbosity` `$verbosity` specified!")
     end
     return control
-end # function set_verbosity
+end
 
-"""
-    set_elec_temp(system::SystemNamelist, temperature)
-
-Return a modified `SystemNamelist`, with finite temperature set.
-
-!!! warning
-    Can be used with(out) units. If no unit is given, "Ry" is chosen.
-"""
-function set_elec_temp(system::SystemNamelist, temperature)
+struct ElectronicTemperatureSetter <: Setter
+    temp::Temperature
+end
+function (x::ElectronicTemperatureSetter)(system::SystemNamelist)
     @set! system.occupations = "smearing"
     @set! system.smearing = "fermi-dirac"
-    @set! system.degauss = _tconvert(temperature)
+    @set! system.degauss = _tconvert(x.temp)
     return system
-end # function set_elec_temp
-function _tconvert(temperature::AbstractQuantity)
-    dim = dimension(unit(temperature))
+end
+function _tconvert(temp)
+    dim = dimension(unit(temp))
     if dim == dimension(u"Ry")  # u"hartree", u"J", u"eV", etc..
-        return ustrip(u"Ry", temperature)
+        return ustrip(u"Ry", temp)
     elseif dim == dimension(u"Hz")  # u"Hz", u"THz", ...
-        return ustrip(u"Hz", temperature) / 6579683920502000.0 * 2
+        return ustrip(u"Hz", temp) / 6579683920502000.0 * 2
     elseif dim == dimension(u"K")  # u"K", u"mK", u"μK", ...
-        return ustrip(u"K", temperature) / 315775.02480407 * 2
+        return ustrip(u"K", temp) / 315775.02480407 * 2
     elseif dim == dimension(u"m^-1")  # u"m^-1", u"cm^-1", ...
-        return ustrip(u"m^-1", temperature) / 21947463.13632 * 2
+        return ustrip(u"m^-1", temp) / 21947463.13632 * 2
     elseif dim == dimension(u"kg")  # u"kg", u"g", ...
-        return ustrip(u"kg", temperature) / 4.8508702095432e-35 * 2
+        return ustrip(u"kg", temp) / 4.8508702095432e-35 * 2
     else
         error("unknown unit given!")
     end
 end
-_tconvert(temperature::Real) = temperature  # Ry
+
+const ElecTempSetter = ElectronicTemperatureSetter
 
 # _coupledargs(::Type{ControlNamelist}) = (:calculation => :disk_io,)
 # _coupledargs(::Type{SystemNamelist}) = (:ecutwfc => :ecutrho, :ecutrho => :ecutfock)

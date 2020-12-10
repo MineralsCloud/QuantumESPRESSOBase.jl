@@ -20,20 +20,13 @@ using LinearAlgebra: det, norm
 using OptionalArgChecks: @argcheck
 using Setfield: @set!
 using StaticArrays: SVector, SMatrix, FieldVector
-using Unitful: AbstractQuantity, NoUnits, upreferred, unit, ustrip, @u_str
+using Unitful:
+    AbstractQuantity, NoUnits, Temperature, dimension, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
 using ..Inputs: QuantumESPRESSOInput, Card, entryname
 
-import AbInitioSoftwareBase.Inputs:
-    InputEntry,
-    Namelist,
-    inputstring,
-    groupname,
-    set_verbosity,
-    set_elec_temp,
-    set_press_vol,
-    set_cell
+import AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Setter, inputstring, groupname
 import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
@@ -69,6 +62,12 @@ export ControlNamelist,
     GammaPointCard,
     SpecialPointsCard,
     PWInput,
+    VerbositySetter,
+    ElectronicTemperatureSetter,
+    ElecTempSetter,
+    VolumeSetter,
+    PressureSetter,
+    StructureSetter,
     optconvert,
     xmldir,
     wfcfiles,
@@ -82,10 +81,6 @@ export ControlNamelist,
     optional_namelists,
     required_cards,
     optional_cards,
-    set_verbosity,
-    set_elec_temp,
-    set_cell,
-    set_press_vol,
     inputstring
 
 include("namelists.jl")
@@ -170,32 +165,21 @@ PWInput(args::InputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
 end...)
 
-"""
-    set_verbosity(template::PWInput, verbosity)
-
-Return a modified `PWInput`, with verbosity set.
-"""
-function set_verbosity(template::PWInput, verbosity)
-    @set! template.control = set_verbosity(template.control, verbosity)
+function (s::VerbositySetter)(template::PWInput)
+    @set! template.control = s(template.control)
     return template
-end # function set_verbosity
+end
 
-"""
-    set_elec_temp(system::PWInput, temperature::Union{Real,AbstractQuantity})
-
-Return a modified `PWInput`, with finite temperature set.
-
-!!! warning
-    Can be used with(out) units. If no unit is given, "Ry" is chosen.
-"""
-function set_elec_temp(template::PWInput, temperature)
-    @set! template.system = set_elec_temp(template.system, temperature)
+function (x::ElectronicTemperatureSetter)(template::PWInput)
+    @set! template.system = x(template.system)
     return template
-end # function set_elec_temp
+end
 
-function set_press_vol(template::PWInput, pressure::Real, volume::Real)
-    @set! template.cell.press = pressure
-    factor = cbrt(volume / cellvolume(template))
+struct VolumeSetter{T} <: Setter
+    vol::T
+end
+function (x::VolumeSetter{<:Real})(template::PWInput)
+    factor = cbrt(x.vol / cellvolume(template))
     if isnothing(template.cell_parameters) || optionof(template.cell_parameters) == "alat"
         @set! template.system.celldm[1] *= factor
     else
@@ -204,14 +188,30 @@ function set_press_vol(template::PWInput, pressure::Real, volume::Real)
             optconvert("bohr", CellParametersCard(template.cell_parameters.data * factor))
     end
     return template
-end # function set_press_vol
-set_press_vol(template::PWInput, pressure::AbstractQuantity, volume::AbstractQuantity) =
-    set_press_vol(template, ustrip(u"kbar", pressure), ustrip(u"bohr^3", volume))
+end
+(x::VolumeSetter{<:AbstractQuantity})(template::PWInput) =
+    VolumeSetter(ustrip(u"bohr^3", x.vol))(template)
 
-function set_cell(template::PWInput, cell_parameters::CellParametersCard)
+struct PressureSetter{T} <: Setter
+    press::T
+end
+function (x::PressureSetter{<:Real})(template::PWInput)
+    @set! template.cell.press = x.press
+    return template
+end
+(x::PressureSetter{<:AbstractQuantity})(template::PWInput) =
+    PressureSetter(ustrip(u"kbar", x.press))(template)
+
+struct StructureSetter{S,T} <: Setter
+    cp::S
+    ap::T
+end
+StructureSetter(cp::CellParametersCard) = StructureSetter(cp, nothing)
+StructureSetter(ap::AtomicPositionsCard) = StructureSetter(nothing, ap)
+function (x::StructureSetter{CellParametersCard,Nothing})(template::PWInput)
     if isnothing(template.cell_parameters)
-        if optionof(cell_parameters) in ("bohr", "angstrom")
-            @set! template.cell_parameters = cell_parameters
+        if optionof(x.cp) in ("bohr", "angstrom")
+            @set! template.cell_parameters = x.cp
             @set! template.system.ibrav = 0
             @set! template.system.celldm = zeros(6)
         else
@@ -220,12 +220,10 @@ function set_cell(template::PWInput, cell_parameters::CellParametersCard)
         end
     else
         if optionof(template.cell_parameters) == "alat"
-            if optionof(cell_parameters) in ("bohr", "angstrom")
+            if optionof(x.cp) in ("bohr", "angstrom")
                 @set! template.system.celldm = [template.system.celldm[1]]
-                cell_parameters = CellParametersCard(
-                    cell_parameters.data / template.system.celldm[1],
-                    "alat",
-                )
+                cell_parameters =
+                    CellParametersCard(x.cp.data / template.system.celldm[1], "alat")
             else  # "alat"
                 @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
             end
@@ -237,20 +235,13 @@ function set_cell(template::PWInput, cell_parameters::CellParametersCard)
     end
     @set! template.cell_parameters = cell_parameters
     return template
-end # function set_cell
-function set_cell(template::PWInput, atomic_positions::AtomicPositionsCard)
-    @set! template.atomic_positions = atomic_positions
+end
+function (x::StructureSetter{Nothing,AtomicPositionsCard})(template::PWInput)
+    @set! template.atomic_positions = x.ap
     return template
-end # function set_cell
-set_cell(template::PWInput, c::CellParametersCard, a::AtomicPositionsCard) =
-    set_cell(set_cell(template, c), a)
-function set_cell(template::PWInput, cell::Cell, option1, option2)
-    return set_cell(
-        template,
-        CellParametersCard(cell, option1),
-        AtomicPositionsCard(cell, option2),
-    )
-end # function set_cell
+end
+(x::StructureSetter{CellParametersCard,AtomicPositionsCard})(template::PWInput) =
+    (StructureSetter(x.ap) ∘ StructureSetter(x.cp))(template)
 
 exitfile(template::PWInput) = abspath(expanduser(joinpath(
     template.control.outdir,
