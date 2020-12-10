@@ -812,30 +812,29 @@ BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
 BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
 BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
-"""
-    set_verbosity(template::ControlNamelist, verbosity)
-
-Return a modified `ControlNamelist`, with verbosity set.
-"""
-function set_verbosity(control::ControlNamelist, verbosity)
-    if verbosity == "high"
+struct VerbositySetter <: Setter
+    v::String
+    function VerbositySetter(v)
+        @assert v in ("high", "low")
+        return new(v)
+    end
+end
+function (x::VerbositySetter)(control::ControlNamelist)
+    if x.v == "high"
         @set! control.verbosity = "high"
         @set! control.wf_collect = true
         @set! control.tstress = true
         @set! control.tprnfor = true
         @set! control.disk_io = "high"
-    elseif verbosity == "low"
+    else
         @set! control.verbosity = "low"
         @set! control.wf_collect = false
         @set! control.tstress = false
         @set! control.tprnfor = false
         @set! control.disk_io = "low"
-    else
-        error("unknown `verbosity` `$verbosity` specified!")
     end
     return control
-end # function set_verbosity
-
+end
 
 struct ElectronicTemperatureSetter <: Setter
     t::Temperature

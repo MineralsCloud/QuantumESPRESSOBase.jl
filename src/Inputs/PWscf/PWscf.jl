@@ -172,16 +172,10 @@ PWInput(args::InputEntry...) = PWInput(; map(args) do arg
     entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
 end...)
 
-"""
-    set_verbosity(template::PWInput, verbosity)
-
-Return a modified `PWInput`, with verbosity set.
-"""
-function set_verbosity(template::PWInput, verbosity)
-    @set! template.control = set_verbosity(template.control, verbosity)
+function (s::VerbositySetter)(template::PWInput)
+    @set! template.control = s(template.control)
     return template
-end # function set_verbosity
-
+end
 
 function (x::ElectronicTemperatureSetter)(template::PWInput)
     @set! template.system = x(template.system)
