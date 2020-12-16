@@ -20,7 +20,7 @@ using Setfield: @set!
 using ..Inputs: Card, QuantumESPRESSOInput
 using ..Inputs.PWscf: SpecialPoint, PWInput
 
-import ..Inputs
+import ..Inputs: groupname
 
 export SpecialPoint,
     QPointsCard,
@@ -39,10 +39,10 @@ include("q2r.jl")
 include("matdyn.jl")
 include("dynmat.jl")
 
-Inputs.groupname(::Type{PhNamelist}) = "INPUTPH"
-Inputs.groupname(::Type{Q2rNamelist}) = "INPUT"
-Inputs.groupname(::Type{MatdynNamelist}) = "INPUT"
-Inputs.groupname(::Type{DynmatNamelist}) = "INPUT"
+groupname(::Type{PhNamelist}) = "INPUTPH"
+groupname(::Type{Q2rNamelist}) = "INPUT"
+groupname(::Type{MatdynNamelist}) = "INPUT"
+groupname(::Type{DynmatNamelist}) = "INPUT"
 
 struct QPointsCard <: Card
     data::Vector{SpecialPoint}
