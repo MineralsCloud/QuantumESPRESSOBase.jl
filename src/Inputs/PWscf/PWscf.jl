@@ -24,7 +24,7 @@ using Unitful:
     AbstractQuantity, NoUnits, Temperature, dimension, upreferred, unit, ustrip, @u_str
 using UnitfulAtomic
 
-using ..Inputs: QuantumESPRESSOInput, Card, entryname
+using ..Inputs: QuantumESPRESSOInput, Card, VerbositySetter, entryname
 
 import AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Setter, inputstring, groupname
 import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent, floatfmt, intfmt
