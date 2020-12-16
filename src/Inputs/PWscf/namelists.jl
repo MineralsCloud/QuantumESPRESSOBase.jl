@@ -812,13 +812,6 @@ BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
 BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
 BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
-struct VerbositySetter <: Setter
-    v::String
-    function VerbositySetter(v)
-        @assert v in ("high", "low")
-        return new(v)
-    end
-end
 function (x::VerbositySetter)(control::ControlNamelist)
     if x.v == "high"
         @set! control.verbosity = "high"

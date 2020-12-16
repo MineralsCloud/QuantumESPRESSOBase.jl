@@ -11,7 +11,7 @@ julia>
 """
 module Inputs
 
-using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist
+using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Setter
 using Compat: only, isnothing
 using Crystallography:
     CellParameters,
@@ -150,6 +150,14 @@ function optional_namelists end
 function required_cards end
 
 function optional_cards end
+
+struct VerbositySetter <: Setter
+    v::String
+    function VerbositySetter(v)
+        @assert v in ("high", "low")
+        return new(v)
+    end
+end
 
 include("PWscf/PWscf.jl")
 # include("CP/CP.jl")

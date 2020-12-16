@@ -17,7 +17,7 @@ using Compat: @NamedTuple
 using ConstructionBase: setproperties
 using Setfield: @set!
 
-using ..Inputs: Card, QuantumESPRESSOInput
+using ..Inputs: Card, QuantumESPRESSOInput, VerbositySetter
 using ..Inputs.PWscf: SpecialPoint, PWInput
 
 import ..Inputs: groupname
@@ -31,7 +31,8 @@ export SpecialPoint,
     PhNamelist,
     Q2rNamelist,
     MatdynNamelist,
-    DynmatNamelist
+    DynmatNamelist,
+    VerbositySetter
 export relayinfo
 
 include("ph.jl")
@@ -49,6 +50,11 @@ struct QPointsCard <: Card
 end
 
 include("inputs.jl")
+
+function (x::VerbositySetter)(control::PhNamelist)
+    @set! control.verbosity = x.v
+    return control
+end
 
 """
     relayinfo(from::PWInput, to::PhInput)
