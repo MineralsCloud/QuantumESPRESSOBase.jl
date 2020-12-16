@@ -153,7 +153,7 @@ function optional_cards end
 
 include("PWscf/PWscf.jl")
 # include("CP/CP.jl")
-include("PHonon.jl")
+include("PHonon/PHonon.jl")
 
 """
     inputstring(input::QuantumESPRESSOInput)

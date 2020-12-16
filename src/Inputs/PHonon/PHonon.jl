@@ -11,12 +11,13 @@ julia>
 """
 module PHonon
 
+using AbInitioSoftwareBase.Inputs: Namelist
 using AutoHashEquals: @auto_hash_equals
 using Compat: @NamedTuple
 using ConstructionBase: setproperties
 using Setfield: @set!
 
-using ..Inputs: Namelist, Card, QuantumESPRESSOInput
+using ..Inputs: Card, QuantumESPRESSOInput
 using ..Inputs.PWscf: SpecialPoint, PWInput
 
 import ..Inputs
