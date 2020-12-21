@@ -233,7 +233,7 @@ function (x::StructureSetter{CellParametersCard,Nothing})(template::PWInput)
             end
         end
     end
-    @set! template.cell_parameters = cell_parameters
+    @set! template.cell_parameters = x.cp
     return template
 end
 function (x::StructureSetter{Nothing,AtomicPositionsCard})(template::PWInput)
