@@ -146,6 +146,12 @@ function PWInput(;
     atomic_forces = nothing,
 )
     @argcheck !isnothing(cell_parameters) || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
+    foreach(atomic_species.data) do datum
+        path = joinpath(control.outdir, datum.pseudopot)
+        if !isfile(path)
+            @warn "pseudopotential file \"$path\" does not exist!"
+        end
+    end
     return PWInput(
         control,
         system,
@@ -243,10 +249,9 @@ end
 (x::StructureSetter{CellParametersCard,AtomicPositionsCard})(template::PWInput) =
     (StructureSetter(x.ap) ∘ StructureSetter(x.cp))(template)
 
-exitfile(template::PWInput) = abspath(expanduser(joinpath(
-    template.control.outdir,
-    template.control.prefix * ".EXIT",
-)))
+exitfile(template::PWInput) = abspath(
+    expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT")),
+)
 function mkexitfile(template::PWInput)
     path = exitfile(template)
     mkpath(dirname(path))
