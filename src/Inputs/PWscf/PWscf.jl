@@ -249,10 +249,9 @@ end
 (x::StructureSetter{CellParametersCard,AtomicPositionsCard})(template::PWInput) =
     (StructureSetter(x.ap) ∘ StructureSetter(x.cp))(template)
 
-exitfile(template::PWInput) = abspath(expanduser(joinpath(
-    template.control.outdir,
-    template.control.prefix * ".EXIT",
-)))
+exitfile(template::PWInput) = abspath(
+    expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT")),
+)
 function mkexitfile(template::PWInput)
     path = exitfile(template)
     mkpath(dirname(path))
