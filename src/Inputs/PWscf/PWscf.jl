@@ -147,7 +147,7 @@ function PWInput(;
 )
     @argcheck !isnothing(cell_parameters) || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
     foreach(atomic_species.data) do datum
-        path = joinpath(control.outdir, datum.pseudopot)
+        path = joinpath(control.pseudo_dir, datum.pseudopot)
         if !isfile(path)
             @warn "pseudopotential file \"$path\" does not exist!"
         end
