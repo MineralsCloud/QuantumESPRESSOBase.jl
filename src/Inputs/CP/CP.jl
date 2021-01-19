@@ -22,7 +22,7 @@ using ..Inputs:
     required_cards,
     optional_cards
 
-import AbInitioSoftwareBase.Inputs: inputstring, groupname
+import AbInitioSoftwareBase.Inputs: asstring, groupname
 import Crystallography: Bravais, Lattice
 # import Pseudopotentials: pseudoformat
 import ..Inputs:
@@ -176,19 +176,19 @@ function cellvolume(card::AbstractCellParametersCard)
     end
 end # function cellvolume
 
-function inputstring(data::AtomicSpecies)
+function asstring(data::AtomicSpecies)
     return join(
         (sprintf1("%3s", data.atom), sprintf1(floatfmt(data), data.mass), data.pseudopot),
         delimiter(data),
     )
 end
-function inputstring(card::AtomicSpeciesCard)
+function asstring(card::AtomicSpeciesCard)
     # Using generator expressions in `join` is faster than using `Vector`s.
     return "ATOMIC_SPECIES" *
            newline(card) *
-           join((indent(card) * inputstring(x) for x in unique(card.data)), newline(card))
+           join((indent(card) * asstring(x) for x in unique(card.data)), newline(card))
 end
-function inputstring(data::AtomicPosition)
+function asstring(data::AtomicPosition)
     f(x) = x ? "" : "0"
     return join(
         [
@@ -199,12 +199,12 @@ function inputstring(data::AtomicPosition)
         delimiter(data),
     )
 end
-function inputstring(card::AtomicPositionsCard)
+function asstring(card::AtomicPositionsCard)
     return "ATOMIC_POSITIONS { $(optionof(card)) }" *
            newline(card) *
-           join((indent(card) * inputstring(x) for x in card.data), newline(card))
+           join((indent(card) * asstring(x) for x in card.data), newline(card))
 end
-function inputstring(card::CellParametersCard)
+function asstring(card::CellParametersCard)
     it = (
         indent * join((sprintf1(floatfmt(card), x) for x in row), delimiter(card)) for
         row in eachrow(card.data)
