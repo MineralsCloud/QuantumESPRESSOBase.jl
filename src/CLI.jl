@@ -1,6 +1,6 @@
 module CLI
 
-using AbInitioSoftwareBase.CLI: Executable
+using AbInitioSoftwareBase.CLI: Executable, Mpiexec
 
 import AbInitioSoftwareBase.CLI: scriptify
 
@@ -102,6 +102,24 @@ function scriptify(
     return _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_read)
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
+function scriptify(
+    mpi::Mpiexec,
+    x::QuantumESPRESSOExec;
+    stdin,
+    stdout = nothing,
+    stderr = nothing,
+    dir = dirname(stdin),
+    use_shell = false,
+    input_not_read = false,
+)
+    cmd = [mpi.bin, "-n", string(mpi.np)]
+    for (k, v) in mpi.args
+        push!(cmd, "$k", string(v))
+    end
+    args = _prescriptify(x, stdin, stdout, stderr, use_shell, input_not_read)
+    append!(cmd, args)
+    return _postscriptify(cmd, stdin, stdout, stderr, dir, use_shell, input_not_read)
+end
 function _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_read)
     if use_shell
         mkpath(dir)
