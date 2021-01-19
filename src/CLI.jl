@@ -1,17 +1,17 @@
 module CLI
 
-using AbInitioSoftwareBase.CLI: Mpiexec, AbInitioSoftwareBin
+using AbInitioSoftwareBase.CLI: Executable
 
 import AbInitioSoftwareBase.CLI: scriptify
 
-export Mpiexec, PWX, PhX, Q2rX, MatdynX
+export PWExec, PhExec, Q2rExec, MatdynExec
 
 # const REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
 
-abstract type QuantumESPRESSOBin <: AbInitioSoftwareBin end
+abstract type QuantumESPRESSOExec <: Executable end
 
-struct PWX <: QuantumESPRESSOBin
+struct PWExec <: QuantumESPRESSOExec
     bin
     nimage::UInt
     npool::UInt
@@ -20,23 +20,23 @@ struct PWX <: QuantumESPRESSOBin
     nband::UInt
     ndiag::UInt
 end
-PWX(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
-    PWX(bin, nimage, npool, ntg, nyfft, nband, ndiag)
+PWExec(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PWExec(bin, nimage, npool, ntg, nyfft, nband, ndiag)
 
-struct PhX <: QuantumESPRESSOBin
+struct PhExec <: QuantumESPRESSOExec
     bin
 end
-PhX(; bin = "ph.x") = PhX(bin)
+PhExec(; bin = "ph.x") = PhExec(bin)
 
-struct Q2rX <: QuantumESPRESSOBin
+struct Q2rExec <: QuantumESPRESSOExec
     bin
 end
-Q2rX(; bin = "q2r.x") = Q2rX(bin)
+Q2rExec(; bin = "q2r.x") = Q2rExec(bin)
 
-struct MatdynX <: QuantumESPRESSOBin
+struct MatdynExec <: QuantumESPRESSOExec
     bin
 end
-MatdynX(; bin = "q2r.x") = MatdynX(bin)
+MatdynExec(; bin = "q2r.x") = MatdynExec(bin)
 
 function _prescriptify(  # Never export!
     x,
@@ -47,7 +47,7 @@ function _prescriptify(  # Never export!
     input_not_read,
 )
     args = [x.bin]
-    if x isa PWX
+    if x isa PWExec
         for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
             v = getfield(x, k)
             if !iszero(v)
@@ -90,7 +90,7 @@ end
 - `stderr = nothing`: error
 """
 function scriptify(
-    x::QuantumESPRESSOBin;
+    x::QuantumESPRESSOExec;
     stdin,
     stdout = nothing,
     stderr = nothing,
@@ -102,30 +102,6 @@ function scriptify(
     return _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_read)
 end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
-function scriptify(
-    mpi::Mpiexec,
-    x::QuantumESPRESSOBin;
-    stdin,
-    stdout = nothing,
-    stderr = nothing,
-    dir = dirname(stdin),
-    use_shell = false,
-    input_not_read = false,
-)
-    cmd = [mpi.bin, "-n", string(mpi.np)]
-    for f in (:host, :hostfile)
-        v = getfield(mpi, f)
-        if !isempty(v)
-            push!(cmd, "-$f", v)
-        end
-    end
-    for (k, v) in mpi.args
-        push!(cmd, "-$k", string(v))
-    end
-    args = _prescriptify(x, stdin, stdout, stderr, use_shell, input_not_read)
-    append!(cmd, args)
-    return _postscriptify(cmd, stdin, stdout, stderr, dir, use_shell, input_not_read)
-end
 function _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_read)
     if use_shell
         mkpath(dir)
