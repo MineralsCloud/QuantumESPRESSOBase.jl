@@ -26,7 +26,7 @@ using UnitfulAtomic
 
 using ..Inputs: QuantumESPRESSOInput, Card, VerbositySetter, entryname
 
-import AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Setter, inputstring, groupname
+import AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Setter, asstring, groupname
 import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent, floatfmt, intfmt
 import Crystallography: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
@@ -81,7 +81,7 @@ export ControlNamelist,
     optional_namelists,
     required_cards,
     optional_cards,
-    inputstring
+    asstring
 
 include("namelists.jl")
 include("cards.jl")
@@ -277,11 +277,11 @@ groupname(::Type{CellParametersCard}) = "CELL_PARAMETERS"
 groupname(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
-    inputstring(data::AtomicSpecies)
+    asstring(data::AtomicSpecies)
 
 Return a `String` representing a `AtomicSpecies`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(data::AtomicSpecies)
+function asstring(data::AtomicSpecies)
     return join(
         (
             indent(data),
@@ -293,18 +293,18 @@ function inputstring(data::AtomicSpecies)
     )
 end
 """
-    inputstring(card::AtomicSpeciesCard)
+    asstring(card::AtomicSpeciesCard)
 
 Return a `String` representing a `AtomicSpeciesCard`, valid for Quantum ESPRESSO's input.
 """
-inputstring(card::AtomicSpeciesCard) =
-    join(("ATOMIC_SPECIES", map(inputstring, unique(card.data))...), newline(card))
+asstring(card::AtomicSpeciesCard) =
+    join(("ATOMIC_SPECIES", map(asstring, unique(card.data))...), newline(card))
 """
-    inputstring(data::AtomicPosition)
+    asstring(data::AtomicPosition)
 
 Return a `String` representing a `AtomicPosition`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(data::AtomicPosition)
+function asstring(data::AtomicPosition)
     content = join(
         (
             indent(data),
@@ -320,20 +320,20 @@ function inputstring(data::AtomicPosition)
     end
 end
 """
-    inputstring(card::AtomicPositionsCard)
+    asstring(card::AtomicPositionsCard)
 
 Return a `String` representing a `AtomicPositionsCard`, valid for Quantum ESPRESSO's input.
 """
-inputstring(card::AtomicPositionsCard) = join(
-    ("ATOMIC_POSITIONS { $(optionof(card)) }", map(inputstring, card.data)...),
+asstring(card::AtomicPositionsCard) = join(
+    ("ATOMIC_POSITIONS { $(optionof(card)) }", map(asstring, card.data)...),
     newline(card),
 )
 """
-    inputstring(card::CellParametersCard)
+    asstring(card::CellParametersCard)
 
 Return a `String` representing a `CellParametersCard`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(card::CellParametersCard)
+function asstring(card::CellParametersCard)
     return join(
         (
             "CELL_PARAMETERS { $(optionof(card)) }",
@@ -345,35 +345,35 @@ function inputstring(card::CellParametersCard)
     )
 end
 """
-    inputstring(data::MonkhorstPackGrid)
+    asstring(data::MonkhorstPackGrid)
 
 Return a `String` representing a `MonkhorstPackGrid`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(data::MonkhorstPackGrid)
+function asstring(data::MonkhorstPackGrid)
     return indent(data) * join(map([data.mesh; data.is_shift]) do x
         sprintf1(intfmt(data), x)
     end, delimiter(data))
 end
 """
-    inputstring(data::SpecialKPoint)
+    asstring(data::SpecialKPoint)
 
 Return a `String` representing a `SpecialKPoint`, valid for Quantum ESPRESSO's input.
 """
-inputstring(data::SpecialPoint) =
+asstring(data::SpecialPoint) =
     indent(data) * join(map(x -> sprintf1(floatfmt(data), x), data), delimiter(data))
 """
-    inputstring(card::KPointsCard)
+    asstring(card::KPointsCard)
 
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
-function inputstring(card::SpecialPointsCard)
+function asstring(card::SpecialPointsCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
-    return join((content, length(card.data), map(inputstring, card.data)...), newline(card))
+    return join((content, length(card.data), map(asstring, card.data)...), newline(card))
 end
-inputstring(card::GammaPointCard) = "K_POINTS { $(optionof(card)) }" * newline(card)
-function inputstring(card::KMeshCard)
+asstring(card::GammaPointCard) = "K_POINTS { $(optionof(card)) }" * newline(card)
+function asstring(card::KMeshCard)
     content = "K_POINTS { $(optionof(card)) }" * newline(card)
-    return content * inputstring(card.data)
+    return content * asstring(card.data)
 end
 
 """
