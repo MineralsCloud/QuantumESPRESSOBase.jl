@@ -2,7 +2,7 @@
 
 [[AbInitioSoftwareBase]]
 deps = ["IsURL", "JSON", "Pkg", "YAML"]
-git-tree-sha1 = "fe78dd5fbf8faf3afce9dba79e11accb2ce345e6"
+git-tree-sha1 = "e9ceb5a0eba6a9822d4ff1455c00685c259820e1"
 repo-rev = "master"
 repo-url = "git@github.com:MineralsCloud/AbInitioSoftwareBase.jl.git"
 uuid = "df5135bc-470e-46c6-b451-292e27ca5b84"
