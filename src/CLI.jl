@@ -34,14 +34,14 @@ struct Q2rExec <: QuantumESPRESSOExec end
 struct MatdynExec <: QuantumESPRESSOExec end
 
 function _prescriptify(  # Never export!
-    x,
+    x::QuantumESPRESSOExec,
     stdin,
     stdout,
     stderr,
     use_shell,
     input_not_read,
 )
-    args = [x.bin]
+    args = [getpath(typeof(x))]
     if x isa PWExec
         for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
             v = getfield(x, k)
