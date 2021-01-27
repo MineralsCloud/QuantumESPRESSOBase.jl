@@ -1,6 +1,7 @@
 module CLI
 
 using AbInitioSoftwareBase.CLI: Executable, Mpiexec
+using Preferences: @load_preference, @set_preferences!
 
 import AbInitioSoftwareBase.CLI: scriptify
 
@@ -132,6 +133,18 @@ function _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_r
             return pipeline(cmd; stdin = stdin)
         end
     end
+end
+
+productname(::Type{PWExec}) = "pw.x"
+productname(::Type{PhExec}) = "ph.x"
+productname(::Type{Q2rExec}) = "q2r.x"
+productname(::Type{MatdynExec}) = "matdyn.x"
+
+function setpath(T::Type{<:QuantumESPRESSOExec}, path)
+    @set_preferences!(productname(T) => path)
+end
+function getpath(T::Type{<:QuantumESPRESSOExec})
+    return @load_preference(productname(T))
 end
 
 end
