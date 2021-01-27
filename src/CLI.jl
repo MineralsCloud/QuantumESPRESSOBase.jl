@@ -10,7 +10,7 @@ export PWExec, PhExec, Q2rExec, MatdynExec
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
 
 abstract type QuantumESPRESSOExec <: Executable end
-
+# See https://github.com/QEF/q-e/blob/884a6f8/Modules/command_line_options.f90
 struct PWExec <: QuantumESPRESSOExec
     bin
     nimage::UInt
