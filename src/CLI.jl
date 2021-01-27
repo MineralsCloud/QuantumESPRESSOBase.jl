@@ -22,9 +22,11 @@ struct PWExec <: QuantumESPRESSOExec
 end
 PWExec(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
     PWExec(bin, nimage, npool, ntg, nyfft, nband, ndiag)
-
+# See https://www.quantum-espresso.org/Doc/ph_user_guide/node14.html
 struct PhExec <: QuantumESPRESSOExec
     bin
+    nimage::UInt
+    npool::UInt
 end
 PhExec(; bin = "ph.x") = PhExec(bin)
 
