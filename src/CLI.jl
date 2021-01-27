@@ -28,7 +28,7 @@ struct PhExec <: QuantumESPRESSOExec
     nimage::UInt
     npool::UInt
 end
-PhExec(; bin = "ph.x") = PhExec(bin)
+PhExec(; bin = "ph.x", nimage = 0, npool = 0) = PhExec(bin, nimage, npool)
 
 struct Q2rExec <: QuantumESPRESSOExec
     bin
