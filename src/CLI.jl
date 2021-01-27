@@ -5,7 +5,7 @@ using Preferences: @load_preference, @set_preferences!
 
 import AbInitioSoftwareBase.CLI: scriptify
 
-export PWExec, PhExec, Q2rExec, MatdynExec
+export PWExec, PhExec, Q2rExec, MatdynExec, setpath, getpath, scriptify
 
 # const REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
@@ -146,5 +146,11 @@ end
 function getpath(T::Type{<:QuantumESPRESSOExec})
     return @load_preference(productname(T))
 end
+
+# Set default paths of the executables
+setpath(PWExec, "pw.x")
+setpath(PhExec, "ph.x")
+setpath(Q2rExec, "q2r.x")
+setpath(MatdynExec, "matdyn.x")
 
 end
