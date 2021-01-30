@@ -1,7 +1,7 @@
 module CLI
 
 using AbInitioSoftwareBase.CLI: Executable, Mpiexec
-using Preferences: @load_preference, @set_preferences!
+using Preferences: @load_preference, @set_preferences!, @has_preference
 
 import AbInitioSoftwareBase.CLI: scriptify
 
@@ -140,17 +140,20 @@ productname(::Type{PhExec}) = "ph.x"
 productname(::Type{Q2rExec}) = "q2r.x"
 productname(::Type{MatdynExec}) = "matdyn.x"
 
+const string_nameof = string ∘ nameof
+
 function setbinpath(T::Type{<:QuantumESPRESSOExec}, path)
-    @set_preferences!(productname(T) => path)
+    @set_preferences!(string_nameof(T) => path)
 end
 function binpath(T::Type{<:QuantumESPRESSOExec})
-    return @load_preference(productname(T))
+    return @load_preference(string_nameof(T))
 end
 
 # Set default paths of the executables
-setbinpath(PWExec, "pw.x")
-setbinpath(PhExec, "ph.x")
-setbinpath(Q2rExec, "q2r.x")
-setbinpath(MatdynExec, "matdyn.x")
+foreach((PWExec, PhExec, Q2rExec, MatdynExec)) do T
+    if !@has_preference(string_nameof(T))
+        setbinpath(T, productname(T))
+    end
+end
 
 end
