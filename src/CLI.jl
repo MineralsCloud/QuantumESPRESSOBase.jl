@@ -5,7 +5,7 @@ using Preferences: @load_preference, @set_preferences!
 
 import AbInitioSoftwareBase.CLI: scriptify
 
-export PWExec, PhExec, Q2rExec, MatdynExec, setpath, getpath, scriptify
+export PWExec, PhExec, Q2rExec, MatdynExec, setbinpath, binpath, scriptify
 
 # const REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
@@ -41,7 +41,7 @@ function _prescriptify(  # Never export!
     use_shell,
     input_not_read,
 )
-    args = [getpath(typeof(x))]
+    args = [binpath(typeof(x))]
     if x isa PWExec
         for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
             v = getfield(x, k)
@@ -140,17 +140,17 @@ productname(::Type{PhExec}) = "ph.x"
 productname(::Type{Q2rExec}) = "q2r.x"
 productname(::Type{MatdynExec}) = "matdyn.x"
 
-function setpath(T::Type{<:QuantumESPRESSOExec}, path)
+function setbinpath(T::Type{<:QuantumESPRESSOExec}, path)
     @set_preferences!(productname(T) => path)
 end
-function getpath(T::Type{<:QuantumESPRESSOExec})
+function binpath(T::Type{<:QuantumESPRESSOExec})
     return @load_preference(productname(T))
 end
 
 # Set default paths of the executables
-setpath(PWExec, "pw.x")
-setpath(PhExec, "ph.x")
-setpath(Q2rExec, "q2r.x")
-setpath(MatdynExec, "matdyn.x")
+setbinpath(PWExec, "pw.x")
+setbinpath(PhExec, "ph.x")
+setbinpath(Q2rExec, "q2r.x")
+setbinpath(MatdynExec, "matdyn.x")
 
 end
