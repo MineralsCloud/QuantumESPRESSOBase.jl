@@ -29,4 +29,3 @@ end
 MatdynExec(; bin = "q2r.x") = MatdynExec(bin)
 
 binpath(x) = x.bin
-
