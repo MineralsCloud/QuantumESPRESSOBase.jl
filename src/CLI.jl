@@ -1,18 +1,18 @@
 module CLI
 
 using AbInitioSoftwareBase.CLI: Executable, Mpiexec
+using Preferences: @load_preference, @set_preferences!
 
 import AbInitioSoftwareBase.CLI: scriptify
 
-export PWExec, PhExec, Q2rExec, MatdynExec
+export PWExec, PhExec, Q2rExec, MatdynExec, setpath, getpath, scriptify
 
 # const REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
 
 abstract type QuantumESPRESSOExec <: Executable end
-
+# See https://github.com/QEF/q-e/blob/884a6f8/Modules/command_line_options.f90
 struct PWExec <: QuantumESPRESSOExec
-    bin
     nimage::UInt
     npool::UInt
     ntg::UInt
@@ -20,33 +20,28 @@ struct PWExec <: QuantumESPRESSOExec
     nband::UInt
     ndiag::UInt
 end
-PWExec(; bin = "pw.x", nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
-    PWExec(bin, nimage, npool, ntg, nyfft, nband, ndiag)
-
+PWExec(; nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PWExec(nimage, npool, ntg, nyfft, nband, ndiag)
+# See https://www.quantum-espresso.org/Doc/ph_user_guide/node14.html
 struct PhExec <: QuantumESPRESSOExec
-    bin
+    nimage::UInt
+    npool::UInt
 end
-PhExec(; bin = "ph.x") = PhExec(bin)
+PhExec(; nimage = 0, npool = 0) = PhExec(nimage, npool)
 
-struct Q2rExec <: QuantumESPRESSOExec
-    bin
-end
-Q2rExec(; bin = "q2r.x") = Q2rExec(bin)
+struct Q2rExec <: QuantumESPRESSOExec end
 
-struct MatdynExec <: QuantumESPRESSOExec
-    bin
-end
-MatdynExec(; bin = "q2r.x") = MatdynExec(bin)
+struct MatdynExec <: QuantumESPRESSOExec end
 
 function _prescriptify(  # Never export!
-    x,
+    x::QuantumESPRESSOExec,
     stdin,
     stdout,
     stderr,
     use_shell,
     input_not_read,
 )
-    args = [x.bin]
+    args = [getpath(typeof(x))]
     if x isa PWExec
         for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
             v = getfield(x, k)
@@ -139,5 +134,23 @@ function _postscriptify(args, stdin, stdout, stderr, dir, use_shell, input_not_r
         end
     end
 end
+
+productname(::Type{PWExec}) = "pw.x"
+productname(::Type{PhExec}) = "ph.x"
+productname(::Type{Q2rExec}) = "q2r.x"
+productname(::Type{MatdynExec}) = "matdyn.x"
+
+function setpath(T::Type{<:QuantumESPRESSOExec}, path)
+    @set_preferences!(productname(T) => path)
+end
+function getpath(T::Type{<:QuantumESPRESSOExec})
+    return @load_preference(productname(T))
+end
+
+# Set default paths of the executables
+setpath(PWExec, "pw.x")
+setpath(PhExec, "ph.x")
+setpath(Q2rExec, "q2r.x")
+setpath(MatdynExec, "matdyn.x")
 
 end
