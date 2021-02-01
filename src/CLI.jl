@@ -1,7 +1,6 @@
 module CLI
 
 using AbInitioSoftwareBase.CLI: Executable, Mpiexec
-using Preferences: @load_preference, @set_preferences!, @has_preference
 
 import AbInitioSoftwareBase.CLI: scriptify
 

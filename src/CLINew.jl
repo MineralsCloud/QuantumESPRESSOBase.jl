@@ -1,3 +1,5 @@
+using Preferences: @load_preference, @set_preferences!, @has_preference
+
 # See https://github.com/QEF/q-e/blob/884a6f8/Modules/command_line_options.f90
 struct PWExec <: QuantumESPRESSOExec
     nimage::UInt
