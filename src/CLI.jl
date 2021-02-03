@@ -5,15 +5,15 @@ using Configurations: @option
 
 import AbInitioSoftwareBase.CLI: scriptify
 
-export PWExec, PhExec, Q2rExec, MatdynExec, scriptify
+export PwX, PhX, Q2rX, MatdynX, scriptify
 
 # const REDIRECTION_OPERATORS = ("-inp", "1>", "2>")
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
 
-abstract type QuantumESPRESSOExec <: Executable end
+abstract type QuantumESPRESSOExecutable <: Executable end
 
 # See https://github.com/QEF/q-e/blob/884a6f8/Modules/command_line_options.f90
-struct PWExec <: QuantumESPRESSOExec
+struct PwX <: QuantumESPRESSOExecutable
     nimage::UInt
     npool::UInt
     ntg::UInt
@@ -21,39 +21,39 @@ struct PWExec <: QuantumESPRESSOExec
     nband::UInt
     ndiag::UInt
 end
-PWExec(; nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
-    PWExec(nimage, npool, ntg, nyfft, nband, ndiag)
+PwX(; nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PwX(nimage, npool, ntg, nyfft, nband, ndiag)
 # See https://www.quantum-espresso.org/Doc/ph_user_guide/node14.html
-struct PhExec <: QuantumESPRESSOExec
+struct PhX <: QuantumESPRESSOExecutable
     nimage::UInt
     npool::UInt
 end
-PhExec(; nimage = 0, npool = 0) = PhExec(nimage, npool)
+PhX(; nimage = 0, npool = 0) = PhX(nimage, npool)
 
-struct Q2rExec <: QuantumESPRESSOExec end
+struct Q2rX <: QuantumESPRESSOExecutable end
 
-struct MatdynExec <: QuantumESPRESSOExec end
+struct MatdynX <: QuantumESPRESSOExecutable end
 
 abstract type QuantumESPRESSOExecPath end
 
-@option struct PWExecPath <: QuantumESPRESSOExecPath
+@option struct PwXPath <: QuantumESPRESSOExecPath
     path::String = "pw.x"
 end
 
-@option struct PhExecPath <: QuantumESPRESSOExecPath
+@option struct PhXPath <: QuantumESPRESSOExecPath
     path::String = "ph.x"
 end
 
-@option struct Q2rExecPath <: QuantumESPRESSOExecPath
+@option struct Q2rXPath <: QuantumESPRESSOExecPath
     ng = "q2r.x"
 end
 
-@option struct MatdynExecPath <: QuantumESPRESSOExecPath
+@option struct MatdynXPath <: QuantumESPRESSOExecPath
     path::String = "matdyn.x"
 end
 
 function _prescriptify(  # Never export!
-    x::QuantumESPRESSOExec,
+    x::QuantumESPRESSOExecutable,
     stdin,
     stdout,
     stderr,
@@ -61,7 +61,7 @@ function _prescriptify(  # Never export!
     input_not_read,
 )
     args = [binpath(x).path]
-    if x isa PWExec
+    if x isa PwX
         for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
             v = getfield(x, k)
             if !iszero(v)
@@ -104,7 +104,7 @@ end
 - `stderr = nothing`: error
 """
 function scriptify(
-    x::QuantumESPRESSOExec;
+    x::QuantumESPRESSOExecutable;
     stdin,
     stdout = nothing,
     stderr = nothing,
@@ -118,7 +118,7 @@ end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
 function scriptify(
     mpi::Mpiexec,
-    x::QuantumESPRESSOExec,
+    x::QuantumESPRESSOExecutable,
     mpipath::MpiexecPath,
     xpath::QuantumESPRESSOExecPath;
     stdin,
