@@ -1,6 +1,7 @@
 module CLI
 
-using AbInitioSoftwareBase.CLI: Executable, Mpiexec
+using AbInitioSoftwareBase.CLI: Executable, Mpiexec, MpiexecPath
+using Configurations: @option
 
 import AbInitioSoftwareBase.CLI: scriptify
 
@@ -10,10 +11,45 @@ export PWExec, PhExec, Q2rExec, MatdynExec, scriptify
 # See https://www.quantum-espresso.org/Doc/pw_user_guide/node21.html 5.0.0.3
 
 abstract type QuantumESPRESSOExec <: Executable end
-if VERSION <= v"1.5.3"
-    include("CLICompat.jl")
-else
-    include("CLINew.jl")
+
+# See https://github.com/QEF/q-e/blob/884a6f8/Modules/command_line_options.f90
+struct PWExec <: QuantumESPRESSOExec
+    nimage::UInt
+    npool::UInt
+    ntg::UInt
+    nyfft::UInt
+    nband::UInt
+    ndiag::UInt
+end
+PWExec(; nimage = 0, npool = 0, ntg = 0, nyfft = 0, nband = 0, ndiag = 0) =
+    PWExec(nimage, npool, ntg, nyfft, nband, ndiag)
+# See https://www.quantum-espresso.org/Doc/ph_user_guide/node14.html
+struct PhExec <: QuantumESPRESSOExec
+    nimage::UInt
+    npool::UInt
+end
+PhExec(; nimage = 0, npool = 0) = PhExec(nimage, npool)
+
+struct Q2rExec <: QuantumESPRESSOExec end
+
+struct MatdynExec <: QuantumESPRESSOExec end
+
+abstract type QuantumESPRESSOExecPath end
+
+@option struct PWExecPath <: QuantumESPRESSOExecPath
+    path::String = "pw.x"
+end
+
+@option struct PhExecPath <: QuantumESPRESSOExecPath
+    path::String = "ph.x"
+end
+
+@option struct Q2rExecPath <: QuantumESPRESSOExecPath
+    ng = "q2r.x"
+end
+
+@option struct MatdynExecPath <: QuantumESPRESSOExecPath
+    path::String = "matdyn.x"
 end
 
 function _prescriptify(  # Never export!
@@ -24,7 +60,7 @@ function _prescriptify(  # Never export!
     use_shell,
     input_not_read,
 )
-    args = [binpath(x)]
+    args = [binpath(x).path]
     if x isa PWExec
         for k in (:nimage, :npool, :ntg, :nyfft, :nband, :ndiag)
             v = getfield(x, k)
@@ -82,7 +118,9 @@ end
 # docs from https://www.quantum-espresso.org/Doc/user_guide/node18.html
 function scriptify(
     mpi::Mpiexec,
-    x::QuantumESPRESSOExec;
+    x::QuantumESPRESSOExec,
+    mpipath::MpiexecPath,
+    xpath::QuantumESPRESSOExecPath;
     stdin,
     stdout = nothing,
     stderr = nothing,
@@ -90,7 +128,7 @@ function scriptify(
     use_shell = false,
     input_not_read = false,
 )
-    cmd = [mpi.bin, "-n", string(mpi.np)]
+    cmd = [mpipath.path, "-n", string(mpi.np)]
     for (k, v) in mpi.args
         push!(cmd, "$k", string(v))
     end
