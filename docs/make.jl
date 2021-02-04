@@ -17,7 +17,6 @@ makedocs(;
         "API by module" => [
             "`QuantumESPRESSOBase` module" => "api/api.md",
             "`Inputs` module" => "api/Inputs.md",
-            "`CLI` module" => "api/CLI.md",
         ],
     ],
 )
