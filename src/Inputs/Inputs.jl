@@ -29,26 +29,6 @@ export optionof,
     allnamelists,
     allcards
 
-
-"""
-    groupname(::Union{Namelist,Card})
-
-Return the title of the input entry in Quantum ESPRESSO.
-
-The definition `groupname(x) = groupname(typeof(x))` is provided for convenience so that
-instances can be passed instead of types.
-
-# Examples
-
-```jldoctest
-julia> using QuantumESPRESSOBase; using QuantumESPRESSOBase.Inputs.PWscf: ControlNamelist
-
-julia> groupname(ControlNamelist()) == groupname(ControlNamelist) == "CONTROL"
-true
-```
-"""
-groupname(x::InputEntry) = groupname(typeof(x))
-
 """
     dropdefault(nml::Namelist)
 
