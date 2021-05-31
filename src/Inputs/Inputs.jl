@@ -11,7 +11,7 @@ julia>
 """
 module Inputs
 
-using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Setter
+using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter
 using Compat: only, isnothing
 using OptionalArgChecks: @argcheck
 using PyFortran90Namelists: fstring
@@ -29,12 +29,6 @@ export optionof,
     allnamelists,
     allcards
 
-"""
-    Card <: InputEntry
-
-The abstraction of all components of a `Input` that is not a `Namelist`.
-"""
-abstract type Card <: InputEntry end
 
 """
     groupname(::Union{Namelist,Card})
