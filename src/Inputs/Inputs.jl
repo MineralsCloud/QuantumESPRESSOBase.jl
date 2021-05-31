@@ -47,14 +47,6 @@ function dropdefault(nml::Namelist)
     return result
 end
 
-# _coupledargs(::Type{<:Namelist}) = ()
-
-Base.Dict(nml::Namelist) =
-    Dict(name => getproperty(nml, name) for name in propertynames(nml))
-Base.NamedTuple(nml::Namelist) =
-    NamedTuple{propertynames(nml)}(getproperty(nml, name) for name in propertynames(nml))
-Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(Dict(a), Dict(b))
-
 """
     optionof(x::Card)
 
@@ -204,5 +196,11 @@ indent(::Namelist) = ' '^4
 delimiter(::Namelist) = ' '
 
 include("crystallography.jl")
+
+Base.Dict(nml::Namelist) =
+    Dict(name => getproperty(nml, name) for name in propertynames(nml))
+Base.NamedTuple(nml::Namelist) =
+    NamedTuple{propertynames(nml)}(getproperty(nml, name) for name in propertynames(nml))
+Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(Dict(a), Dict(b))
 
 end
