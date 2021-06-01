@@ -1,4 +1,4 @@
-using Crystallography: Cell
+using Crystallography: Cell, ReciprocalPoint
 using StaticArrays: SVector, SMatrix, FieldVector
 
 import ..Inputs: optionpool
@@ -11,7 +11,6 @@ export AtomicSpecies,
     AtomicForce,
     AtomicForcesCard,
     MonkhorstPackGrid,
-    SpecialPoint,
     KPointsCard,
     KMeshCard,
     GammaPointCard,
@@ -224,18 +223,6 @@ struct MonkhorstPackGrid
     is_shift::SVector{3,Bool}
 end
 
-"""
-    SpecialKPoint(coord, weight)
-
-Represent a special point of the 3D Brillouin zone. Each of them has a weight.
-"""
-struct SpecialPoint <: FieldVector{4,Float64}
-    x::Float64
-    y::Float64
-    z::Float64
-    w::Float64
-end
-
 abstract type KPointsCard <: Card end
 
 struct KMeshCard <: KPointsCard
@@ -254,7 +241,7 @@ Represent the `K_POINTS` card in QE.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
 struct SpecialPointsCard <: KPointsCard
-    data::Vector{SpecialPoint}
+    data::Vector{ReciprocalPoint}
     option::String
     function SpecialPointsCard(data, option = "tpiba")
         @argcheck option in optionpool(SpecialPointsCard)
@@ -263,7 +250,7 @@ struct SpecialPointsCard <: KPointsCard
 end
 function SpecialPointsCard(data::AbstractMatrix, option = "tpiba")
     @argcheck size(data, 2) == 4
-    return SpecialPointsCard(map(SpecialPoint, eachrow(data)), option)
+    return SpecialPointsCard(map(ReciprocalPoint, eachrow(data)), option)
 end
 
 optionof(::KMeshCard) = "automatic"

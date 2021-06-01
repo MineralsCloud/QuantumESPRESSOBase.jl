@@ -86,8 +86,11 @@ end
 
 Return a `String` representing a `SpecialKPoint`, valid for Quantum ESPRESSO's input.
 """
-asstring(data::SpecialPoint) =
-    indent(data) * join(map(x -> sprintf1(floatfmt(data), x), data), delimiter(data))
+asstring(data::ReciprocalPoint) =
+    indent(data) * join(
+        map(x -> sprintf1(floatfmt(data), x), [data.coord..., data.weight]),
+        delimiter(data),
+    )
 """
     asstring(card::KPointsCard)
 
@@ -103,14 +106,15 @@ function asstring(card::KMeshCard)
     return content * asstring(card.data)
 end
 
-indent(::Union{AtomicSpecies,AtomicPosition,SpecialPoint,MonkhorstPackGrid,AtomicForce}) =
-    ' '^4
+indent(
+    ::Union{AtomicSpecies,AtomicPosition,ReciprocalPoint,MonkhorstPackGrid,AtomicForce},
+) = ' '^4
 
 delimiter(
-    ::Union{AtomicSpecies,AtomicPosition,SpecialPoint,MonkhorstPackGrid,AtomicForce},
+    ::Union{AtomicSpecies,AtomicPosition,ReciprocalPoint,MonkhorstPackGrid,AtomicForce},
 ) = ' '
 
-floatfmt(::Union{AtomicSpecies,AtomicPosition,SpecialPoint}) = "%14.9f"
+floatfmt(::Union{AtomicSpecies,AtomicPosition,ReciprocalPoint}) = "%14.9f"
 floatfmt(::CellParametersCard) = "%14.9f"
 
 intfmt(::MonkhorstPackGrid) = "%5d"
