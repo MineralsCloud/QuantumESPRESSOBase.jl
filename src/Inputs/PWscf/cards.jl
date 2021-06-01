@@ -1,3 +1,23 @@
+using Crystallography: Cell
+using StaticArrays: SVector, SMatrix, FieldVector
+
+import ..Inputs: optionpool
+
+export AtomicSpecies,
+    AtomicSpeciesCard,
+    AtomicPosition,
+    AtomicPositionsCard,
+    CellParametersCard,
+    AtomicForce,
+    AtomicForcesCard,
+    MonkhorstPackGrid,
+    SpecialPoint,
+    KPointsCard,
+    KMeshCard,
+    GammaPointCard,
+    SpecialPointsCard
+export optconvert, optionpool
+
 """
     AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
     AtomicSpecies(x::AtomicPosition, mass, pseudopot)
@@ -248,3 +268,16 @@ end
 
 optionof(::KMeshCard) = "automatic"
 optionof(::GammaPointCard) = "gamma"
+
+optionpool(::Type{AtomicPositionsCard}) =
+    ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
+optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
+optionpool(::Type{KMeshCard}) = ("automatic",)
+optionpool(::Type{GammaPointCard}) = ("gamma",)
+optionpool(::Type{SpecialPointsCard}) =
+    ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+
+groupname(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
+groupname(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
+groupname(::Type{CellParametersCard}) = "CELL_PARAMETERS"
+groupname(::Type{<:KPointsCard}) = "K_POINTS"

@@ -1,3 +1,17 @@
+using ConstructionBase: setproperties
+using Unitful: dimension, unit
+
+export ControlNamelist,
+    SystemNamelist,
+    ElectronsNamelist,
+    IonsNamelist,
+    CellNamelist,
+    DosNamelist,
+    BandsNamelist,
+    ElectronicTemperatureSetter,
+    ElecTempSetter
+export xmldir, wfcfiles
+
 # From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4
 const Maybe{T} = Union{T,Nothing}
 
@@ -860,3 +874,9 @@ const ElecTempSetter = ElectronicTemperatureSetter
 # _coupledargs(::Type{ControlNamelist}) = (:calculation => :disk_io,)
 # _coupledargs(::Type{SystemNamelist}) = (:ecutwfc => :ecutrho, :ecutrho => :ecutfock)
 # _coupledargs(::Type{DosNamelist}) = (:prefix => :fildos,)
+
+groupname(::Type{ControlNamelist}) = "CONTROL"
+groupname(::Type{SystemNamelist}) = "SYSTEM"
+groupname(::Type{ElectronsNamelist}) = "ELECTRONS"
+groupname(::Type{IonsNamelist}) = "IONS"
+groupname(::Type{CellNamelist}) = "CELL"
