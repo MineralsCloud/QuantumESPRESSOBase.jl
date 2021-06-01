@@ -15,15 +15,15 @@ using AbInitioSoftwareBase.Inputs: Namelist
 using AutoHashEquals: @auto_hash_equals
 using Compat: @NamedTuple
 using ConstructionBase: setproperties
+using Crystallography: ReciprocalPoint
 using Setfield: @set!
 
 using ..Inputs: Card, QuantumESPRESSOInput, VerbositySetter
-using ..Inputs.PWscf: SpecialPoint, PWInput
+using ..Inputs.PWscf: PWInput
 
 import ..Inputs: groupname
 
-export SpecialPoint,
-    QPointsCard,
+export QPointsCard,
     PhInput,
     Q2rInput,
     MatdynInput,
@@ -46,7 +46,7 @@ groupname(::Type{MatdynNamelist}) = "INPUT"
 groupname(::Type{DynmatNamelist}) = "INPUT"
 
 struct QPointsCard <: Card
-    data::Vector{SpecialPoint}
+    data::Vector{ReciprocalPoint}
 end
 
 include("inputs.jl")
