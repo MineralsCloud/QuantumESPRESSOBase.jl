@@ -1,3 +1,5 @@
+using LinearAlgebra: det
+
 """
     Bravais(nml::SystemNamelist)
 
@@ -29,7 +31,7 @@ function cellvolume(card::AbstractCellParametersCard)
     else  # option == "alat"
         error("information not enough! Parameter `celldm[1]` needed!")
     end
-end # function cellvolume
+end
 """
     cellvolume(nml::SystemNamelist)
 
@@ -56,4 +58,4 @@ function cellvolume(input::PWInput)
             return cellvolume(input.cell_parameters)
         end
     end
-end # function cellvolume
+end

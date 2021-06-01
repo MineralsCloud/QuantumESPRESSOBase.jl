@@ -11,27 +11,20 @@ julia>
 """
 module PWscf
 
+using AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Card, Setter
 using AutoHashEquals: @auto_hash_equals
-using Compat: eachrow, isnothing
-using ConstructionBase: setproperties
-using Crystallography: Cell
-using Formatting: sprintf1
-using LinearAlgebra: det, norm
+using Compat: isnothing
 using OptionalArgChecks: @argcheck
 using Setfield: @set!
-using StaticArrays: SVector, SMatrix, FieldVector
-using Unitful:
-    AbstractQuantity, NoUnits, Temperature, dimension, upreferred, unit, ustrip, @u_str
+using Unitful: AbstractQuantity, Temperature, ustrip, @u_str
 using UnitfulAtomic
 
-using ..Inputs: QuantumESPRESSOInput, Card, VerbositySetter, entryname
+using ..Inputs: QuantumESPRESSOInput, VerbositySetter, entryname
 
-import AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Setter, asstring, groupname
-import AbInitioSoftwareBase.Inputs.Formatter: delimiter, newline, indent, floatfmt, intfmt
+import AbInitioSoftwareBase.Inputs: asstring, groupname
 import Crystallography: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
 import ..Inputs:
-    optionpool,
     optionof,
     allnamelists,
     allcards,
@@ -41,47 +34,17 @@ import ..Inputs:
     optional_cards
 # _coupledargs
 
-export ControlNamelist,
-    SystemNamelist,
-    ElectronsNamelist,
-    IonsNamelist,
-    CellNamelist,
-    DosNamelist,
-    BandsNamelist,
-    AtomicSpecies,
-    AtomicSpeciesCard,
-    AtomicPosition,
-    AtomicPositionsCard,
-    CellParametersCard,
-    AtomicForce,
-    AtomicForcesCard,
-    MonkhorstPackGrid,
-    SpecialPoint,
-    KPointsCard,
-    KMeshCard,
-    GammaPointCard,
-    SpecialPointsCard,
-    PWInput,
-    VerbositySetter,
-    ElectronicTemperatureSetter,
-    ElecTempSetter,
-    VolumeSetter,
-    PressureSetter,
-    StructureSetter,
-    optconvert,
-    xmldir,
-    wfcfiles,
+export PWInput,
     exitfile,
     mkexitfile,
     optionof,
-    optionpool,
+    groupname,
     allnamelists,
     allcards,
     required_namelists,
     optional_namelists,
     required_cards,
-    optional_cards,
-    asstring
+    optional_cards
 
 include("namelists.jl")
 include("cards.jl")
@@ -179,24 +142,6 @@ function mkexitfile(template::PWInput)
     mkpath(dirname(path))
     return touch(path)
 end
-
-optionpool(::Type{AtomicPositionsCard}) =
-    ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
-optionpool(::Type{KMeshCard}) = ("automatic",)
-optionpool(::Type{GammaPointCard}) = ("gamma",)
-optionpool(::Type{SpecialPointsCard}) =
-    ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
-
-groupname(::Type{ControlNamelist}) = "CONTROL"
-groupname(::Type{SystemNamelist}) = "SYSTEM"
-groupname(::Type{ElectronsNamelist}) = "ELECTRONS"
-groupname(::Type{IonsNamelist}) = "IONS"
-groupname(::Type{CellNamelist}) = "CELL"
-groupname(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
-groupname(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
-groupname(::Type{CellParametersCard}) = "CELL_PARAMETERS"
-groupname(::Type{<:KPointsCard}) = "K_POINTS"
 
 """
     allnamelists(x::PWInput)

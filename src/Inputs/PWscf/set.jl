@@ -1,3 +1,5 @@
+export VerbositySetter, VolumeSetter, PressureSetter, StructureSetter
+
 function (s::VerbositySetter)(template::PWInput)
     @set! template.control = s(template.control)
     return template

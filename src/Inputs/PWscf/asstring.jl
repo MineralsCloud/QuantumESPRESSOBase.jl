@@ -1,3 +1,8 @@
+using Compat: eachrow
+using Formatting: sprintf1
+
+export asstring
+
 """
     asstring(data::AtomicSpecies)
 
