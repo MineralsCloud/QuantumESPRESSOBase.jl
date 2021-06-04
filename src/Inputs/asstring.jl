@@ -37,33 +37,27 @@ Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
 """
 function asstring(nml::Namelist)
     config = formatconfig(nml)
-    content = _asstring(dropdefault(nml))
+    dict = dropdefault(nml)
+    content = join((_asstring(key, value) for (key, value) in dict), config.newline)
     return join(filter(!isempty, ("&" * groupname(nml), content, '/')), config.newline)
-end
-function _asstring(dict::AbstractDict)
-    config = formatconfig(Namelist)
-    return join((_asstring(key, value) for (key, value) in dict), config.newline)
 end
 function _asstring(key, value::AbstractVector)
     config = formatconfig(Namelist)
     indent, delimiter, newline = config.indent, config.delimiter, config.newline
-    return join(
-        (
-            indent * join((string(key, '(', i, ')'), "=", fstring(x)), delimiter) for
-            (i, x) in enumerate(value) if !isnothing(x)
-        ),
-        newline,
+    iter = (
+        indent * join((string(key, '(', i, ')'), "=", fstring(x)), delimiter) for
+        (i, x) in enumerate(value) if !isnothing(x)
     )
+    return join(iter, newline)
 end
 function _asstring(key, value::NamedTuple)
     config = formatconfig(Namelist)
     indent, delimiter, newline = config.indent, config.delimiter, config.newline
-    return join(
-        map(keys(value), values(value)) do x, y
-            indent * join((string(key, '%', x), "=", fstring(y)), delimiter)
-        end,
-        newline,
+    iter = (
+        indent * join((string(key, '%', x), "=", fstring(y)), delimiter) for
+        (x, y) in value
     )
+    return join(iter, newline)
 end
 function _asstring(key, value)
     config = formatconfig(Namelist)
