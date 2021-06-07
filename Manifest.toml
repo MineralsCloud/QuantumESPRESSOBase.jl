@@ -59,9 +59,9 @@ version = "0.6.1"
 
 [[Counters]]
 deps = ["SparseArrays"]
-git-tree-sha1 = "31bf497965ec3edf0b5cace7439cc8c30a0014df"
+git-tree-sha1 = "6107c3c82c979db4c826b7abd0fa7175316683ba"
 uuid = "5a653867-b65e-5b16-a095-b1e26d522bbf"
-version = "0.3.2"
+version = "0.3.3"
 
 [[Crayons]]
 git-tree-sha1 = "3f71217b538d7aaee0b69ab47d9b7724ca8afa0d"
@@ -279,9 +279,9 @@ version = "0.1.1"
 
 [[StaticArrays]]
 deps = ["LinearAlgebra", "Random", "Statistics"]
-git-tree-sha1 = "a1f226ebe197578c25fcf948bfff3d0d12f2ff20"
+git-tree-sha1 = "42378d3bab8b4f57aa1ca443821b752850592668"
 uuid = "90137ffa-7385-5640-81b9-e52037218182"
-version = "1.2.1"
+version = "1.2.2"
 
 [[Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
@@ -325,9 +325,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[Unitful]]
 deps = ["ConstructionBase", "Dates", "LinearAlgebra", "Random"]
-git-tree-sha1 = "c6bbc170505c5ea36593a0072b61d3be8bf868ae"
+git-tree-sha1 = "b3682a0559219355f1e3c8024e9f97adce2d4623"
 uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
-version = "1.7.0"
+version = "1.8.0"
 
 [[UnitfulAtomic]]
 deps = ["Unitful"]

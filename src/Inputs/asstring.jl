@@ -1,6 +1,16 @@
-import AbInitioSoftwareBase.Inputs: asstring
+import AbInitioSoftwareBase.Inputs: FormatConfig, asstring
 
 export asstring
+
+formatconfig(::Type{<:Union{QuantumESPRESSOInput,Namelist}}) = FormatConfig(;
+    delimiter = " ",
+    newline = "\n",
+    indent = ' '^4,
+    float = "%f",
+    int = "%i",
+    bool = ".%.",
+)
+formatconfig(x) = formatconfig(typeof(x))
 
 """
     asstring(input::QuantumESPRESSOInput)
@@ -8,13 +18,9 @@ export asstring
 Return a `String` representing a `QuantumESPRESSOInput`, valid for Quantum ESPRESSO's input.
 """
 function asstring(input::QuantumESPRESSOInput)
-    return join(
-        map(
-            asstring,
-            Iterators.filter(!isnothing, getfield(input, i) for i in 1:nfields(input)),
-        ),
-        newline(input),
-    ) * newline(input)  # Add a new line at the end of line to prevent errors
+    newline = formatconfig(input).newline
+    return join(map(_asstring, getfield(input, i) for i in 1:nfields(input)), newline) *
+           newline  # Add a new line at the end of line to prevent errors
 end
 """
     asstring(nml::Namelist)
@@ -22,63 +28,33 @@ end
 Return a `String` representing a `Namelist`, valid for Quantum ESPRESSO's input.
 """
 function asstring(nml::Namelist)
-    content = _nmlasstring(
-        dropdefault(nml);
-        indent = indent(nml),
-        delimiter = delimiter(nml),
-        newline = newline(nml),
-    )
-    return join(filter(!isempty, ("&" * groupname(nml), content, '/')), newline(nml))
+    config = formatconfig(nml)
+    dict = dropdefault(nml)
+    content = join((_asstring(key, value) for (key, value) in dict), config.newline)
+    return join(filter(!isempty, ("&" * groupname(nml), content, '/')), config.newline)
 end
-asstring(x::AbstractString) = string(x)
-function _nmlasstring(dict::AbstractDict; indent = ' '^4, delimiter = ' ', newline = '\n')
-    return join(
-        map(keys(dict), values(dict)) do key, value
-            _nmlasstring(
-                key,
-                value;
-                indent = indent,
-                delimiter = delimiter,
-                newline = newline,
-            )
-        end,
-        newline,
+function _asstring(key, value::AbstractVector)
+    config = formatconfig(Namelist)
+    indent, delimiter, newline = config.indent, config.delimiter, config.newline
+    iter = (
+        indent * join((string(key, '(', i, ')'), "=", fstring(x)), delimiter) for
+        (i, x) in enumerate(value) if !isnothing(x)
     )
+    return join(iter, newline)
 end
-function _nmlasstring(
-    key,
-    value::AbstractVector;
-    indent = ' '^4,
-    delimiter = ' ',
-    newline = '\n',
-)
-    return join(
-        (
-            indent * join((string(key, '(', i, ')'), "=", fstring(x)), delimiter) for
-            (i, x) in enumerate(value) if !isnothing(x)
-        ),
-        newline,
+function _asstring(key, value::NamedTuple)
+    config = formatconfig(Namelist)
+    indent, delimiter, newline = config.indent, config.delimiter, config.newline
+    iter = (
+        indent * join((string(key, '%', x), "=", fstring(y)), delimiter) for
+        (x, y) in value
     )
+    return join(iter, newline)
 end
-function _nmlasstring(
-    key,
-    value::NamedTuple;
-    indent = ' '^4,
-    delimiter = ' ',
-    newline = '\n',
-)
-    return join(
-        map(keys(value), values(value)) do x, y
-            indent * join((string(key, '%', x), "=", fstring(y)), delimiter)
-        end,
-        newline,
-    )
+function _asstring(key, value)
+    config = formatconfig(Namelist)
+    indent, delimiter = config.indent, config.delimiter
+    return indent * join((string(key), "=", fstring(value)), delimiter)
 end
-_nmlasstring(key, value; indent = ' '^4, delimiter = ' ', newline = '\n') =
-    indent * join((string(key), "=", fstring(value)), delimiter)
-
-newline(::Union{QuantumESPRESSOInput,Namelist,Card}) = '\n'
-
-indent(::Namelist) = ' '^4
-
-delimiter(::Namelist) = ' '
+_asstring(::Nothing) = ""
+_asstring(x) = asstring(x)
