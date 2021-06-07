@@ -2,15 +2,7 @@ import AbInitioSoftwareBase.Inputs: FormatConfig, asstring
 
 export asstring
 
-formatconfig(::Type{QuantumESPRESSOInput}) = FormatConfig(;
-    delimiter = " ",
-    newline = "\n",
-    indent = ' '^4,
-    float = "%f",
-    int = "%i",
-    bool = ".%.",
-)
-formatconfig(::Type{<:Namelist}) = FormatConfig(;
+formatconfig(::Type{<:Union{QuantumESPRESSOInput,Namelist}}) = FormatConfig(;
     delimiter = " ",
     newline = "\n",
     indent = ' '^4,
