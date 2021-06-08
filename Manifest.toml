@@ -2,7 +2,7 @@
 
 [[AbInitioSoftwareBase]]
 deps = ["Configurations", "IsURL", "JSON", "Pkg", "YAML"]
-git-tree-sha1 = "aa4615ff525867867d33739d3291d8d89c2388c2"
+git-tree-sha1 = "b1e616c828b6502c590c3fa62b9f70ed73e61c1c"
 repo-rev = "master"
 repo-url = "git@github.com:MineralsCloud/AbInitioSoftwareBase.jl.git"
 uuid = "df5135bc-470e-46c6-b451-292e27ca5b84"
@@ -68,13 +68,13 @@ git-tree-sha1 = "3f71217b538d7aaee0b69ab47d9b7724ca8afa0d"
 uuid = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
 version = "4.0.4"
 
-[[Crystallography]]
+[[CrystallographyBase]]
 deps = ["CoordinateTransformations", "Counters", "LinearAlgebra", "Spglib", "StaticArrays"]
-git-tree-sha1 = "0b80f61509f40401dfda434c1d896ccfb970f346"
+git-tree-sha1 = "2aa543062b32efec962b083e468abb71be17e72a"
 repo-rev = "master"
-repo-url = "git@github.com:MineralsCloud/Crystallography.jl.git"
-uuid = "3bff3928-7a76-11e9-2089-d112443085a5"
-version = "0.1.1"
+repo-url = "https://github.com/MineralsCloud/CrystallographyBase.jl"
+uuid = "93b1d1cd-a8ea-4aa5-adb1-b2407ea0ba8d"
+version = "0.1.0"
 
 [[Dates]]
 deps = ["Printf"]
