@@ -22,7 +22,7 @@ using UnitfulAtomic
 using ..Inputs: QuantumESPRESSOInput, VerbositySetter, entryname
 
 import AbInitioSoftwareBase.Inputs: asstring, groupname
-import Crystallography: Bravais, Lattice, cellvolume
+import CrystallographyBase: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
 import ..Inputs: optionof
 

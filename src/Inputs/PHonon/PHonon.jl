@@ -15,7 +15,7 @@ using AbInitioSoftwareBase.Inputs: Namelist
 using AutoHashEquals: @auto_hash_equals
 using Compat: @NamedTuple
 using ConstructionBase: setproperties
-using Crystallography: ReciprocalPoint
+using CrystallographyBase: ReciprocalPoint
 using Setfield: @set!
 
 using ..Inputs: Card, QuantumESPRESSOInput, VerbositySetter

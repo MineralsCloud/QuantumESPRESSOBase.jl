@@ -1,4 +1,4 @@
-using Crystallography:
+using CrystallographyBase:
     PrimitiveCubic,
     FaceCenteredCubic,
     BodyCenteredCubic,
@@ -16,7 +16,7 @@ using Crystallography:
     BCenteredMonoclinic,
     PrimitiveTriclinic
 
-import Crystallography: Bravais, Lattice
+import CrystallographyBase: Bravais, Lattice
 
 function Bravais(ibrav::Integer)
     if ibrav == 1

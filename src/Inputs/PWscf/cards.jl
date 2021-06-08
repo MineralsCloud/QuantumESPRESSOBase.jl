@@ -1,4 +1,4 @@
-using Crystallography: Cell, ReciprocalPoint
+using CrystallographyBase: Cell, ReciprocalPoint
 using StaticArrays: SVector, SMatrix, FieldVector
 
 import ..Inputs: optionpool
