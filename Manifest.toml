@@ -1,8 +1,8 @@
 # This file is machine-generated - editing it directly is not advised
 
 [[AbInitioSoftwareBase]]
-deps = ["Configurations", "IsURL", "JSON", "Pkg", "YAML"]
-git-tree-sha1 = "b1e616c828b6502c590c3fa62b9f70ed73e61c1c"
+deps = ["Configurations", "IsURL", "JSON", "TOML", "YAML"]
+git-tree-sha1 = "bea2af8f92b13d3d33f9178914a0ac1972c375bd"
 repo-rev = "master"
 repo-url = "git@github.com:MineralsCloud/AbInitioSoftwareBase.jl.git"
 uuid = "df5135bc-470e-46c6-b451-292e27ca5b84"
@@ -69,8 +69,8 @@ uuid = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
 version = "4.0.4"
 
 [[CrystallographyBase]]
-deps = ["CoordinateTransformations", "Counters", "LinearAlgebra", "Spglib", "StaticArrays"]
-git-tree-sha1 = "2aa543062b32efec962b083e468abb71be17e72a"
+deps = ["CoordinateTransformations", "Counters", "Functors", "LinearAlgebra", "Spglib", "StaticArrays"]
+git-tree-sha1 = "b967e3dfe84d309baf932ad9a4ea5229affdf379"
 repo-rev = "master"
 repo-url = "https://github.com/MineralsCloud/CrystallographyBase.jl"
 uuid = "93b1d1cd-a8ea-4aa5-adb1-b2407ea0ba8d"
@@ -102,6 +102,12 @@ deps = ["Printf"]
 git-tree-sha1 = "8339d61043228fdd3eb658d86c926cb282ae72a8"
 uuid = "59287772-0a20-5a39-b81b-1366585eb4c0"
 version = "0.4.2"
+
+[[Functors]]
+deps = ["MacroTools"]
+git-tree-sha1 = "a7bb2af991c43dcf5c3455d276dd83976799634f"
+uuid = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
+version = "0.2.1"
 
 [[Future]]
 deps = ["Random"]
