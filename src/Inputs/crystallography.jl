@@ -60,7 +60,7 @@ function Bravais(ibrav::Integer)
     elseif ibrav == 14
         return PrimitiveTriclinic(true)
     else
-        error("Bravais lattice undefined for `ibrav = $ibrav`!")
+        throw(ArgumentError("Bravais lattice undefined for `ibrav = $ibrav`!"))
     end
 end
 
