@@ -18,49 +18,60 @@ using CrystallographyBase:
 
 import CrystallographyBase: Bravais, Lattice
 
-function Bravais(ibrav::Integer)
-    if ibrav == 1
+export Ibrav
+
+struct Ibrav
+    i::Int
+    function Ibrav(i)
+        @assert i in union(0:1:14, (-3, -5, -9, 91, -12, -13)) "Bravais lattice undefined for `ibrav = $i`!"
+        return new(i)
+    end
+end
+
+function Bravais(ibrav::Ibrav)
+    i = ibrav.i
+    if i == 1
         return PrimitiveCubic(true)
-    elseif ibrav == 2
+    elseif i == 2
         return FaceCenteredCubic(true)
-    elseif ibrav == 3
+    elseif i == 3
         return BodyCenteredCubic(true)
-    elseif ibrav == -3
+    elseif i == -3
         return BodyCenteredCubic(false)
-    elseif ibrav == 4
+    elseif i == 4
         return PrimitiveHexagonal(true)
-    elseif ibrav == 5
+    elseif i == 5
         return RCenteredHexagonal(true)
-    elseif ibrav == -5
+    elseif i == -5
         return RCenteredHexagonal(false)
-    elseif ibrav == 6
+    elseif i == 6
         return PrimitiveTetragonal(true)
-    elseif ibrav == 7
+    elseif i == 7
         return BodyCenteredTetragonal(true)
-    elseif ibrav == 8
+    elseif i == 8
         return PrimitiveOrthorhombic(true)
-    elseif ibrav == 9
+    elseif i == 9
         return BCenteredOrthorhombic(true)
-    elseif ibrav == -9
+    elseif i == -9
         return BCenteredOrthorhombic(false)
-    elseif ibrav == 91
+    elseif i == 91
         return ACenteredOrthorhombic(true)  # New in QE 6.5
-    elseif ibrav == 10
+    elseif i == 10
         return FaceCenteredOrthorhombic(true)
-    elseif ibrav == 11
+    elseif i == 11
         return BodyCenteredOrthorhombic(true)
-    elseif ibrav == 12
+    elseif i == 12
         return PrimitiveMonoclinic(true)
-    elseif ibrav == -12
+    elseif i == -12
         return PrimitiveMonoclinic(false)
-    elseif ibrav == 13
+    elseif i == 13
         return CCenteredMonoclinic(true)
-    elseif ibrav == -13
+    elseif i == -13
         return BCenteredMonoclinic(true)  # New in QE 6.5
-    elseif ibrav == 14
+    elseif i == 14
         return PrimitiveTriclinic(true)
     else
-        throw(ArgumentError("Bravais lattice undefined for `ibrav = $ibrav`!"))
+        @assert false "this should never happen!"
     end
 end
 
