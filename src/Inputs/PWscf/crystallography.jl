@@ -16,6 +16,10 @@ Return a `Lattice` from a `SystemNamelist`.
 """
 Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
 
+struct InformationNotEnough <: Exception
+    msg::AbstractString
+end
+
 """
     cellvolume(card)
 
@@ -31,7 +35,7 @@ function cellvolume(card::AbstractCellParametersCard)
     elseif option == "angstrom"
         return ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
     else  # option == "alat"
-        error("information not enough! Parameter `celldm[1]` needed!")
+        throw(InformationNotEnough("parameter `celldm[1]` needed!"))
     end
 end
 """
@@ -52,7 +56,7 @@ function cellvolume(input::PWInput)
         if optionof(input.cell_parameters) == "alat"
             # If no value of `celldm` is changed...
             if isnothing(input.system.celldm[1])
-                error("`celldm[1]` is not defined!")
+                throw(InformationNotEnough("parameter `celldm[1]` needed!"))
             else
                 return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
             end
