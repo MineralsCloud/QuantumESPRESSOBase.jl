@@ -1,11 +1,13 @@
 using LinearAlgebra: det
 
+using ..Inputs: Ibrav
+
 """
     Bravais(nml::SystemNamelist)
 
 Return a `Bravais` from a `SystemNamelist`.
 """
-Bravais(nml::SystemNamelist) = Bravais(nml.ibrav)
+Bravais(nml::SystemNamelist) = Bravais(Ibrav(nml.ibrav))
 
 """
     Lattice(nml::SystemNamelist)
