@@ -12,7 +12,6 @@
 [![Build Status](https://cloud.drone.io/api/badges/MineralsCloud/QuantumESPRESSOBase.jl/status.svg)](https://cloud.drone.io/MineralsCloud/QuantumESPRESSOBase.jl)
 [![Build Status](https://api.cirrus-ci.com/github/MineralsCloud/QuantumESPRESSOBase.jl.svg)](https://cirrus-ci.com/github/MineralsCloud/QuantumESPRESSOBase.jl)
 [![Coverage](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl)
-[![Coverage](https://coveralls.io/repos/github/MineralsCloud/QuantumESPRESSOBase.jl/badge.svg?branch=master)](https://coveralls.io/github/MineralsCloud/QuantumESPRESSOBase.jl?branch=master)
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/organization/repository)
 
 [`QuantumESPRESSOBase.jl`](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl) provides
