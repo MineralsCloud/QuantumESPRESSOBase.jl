@@ -23,7 +23,7 @@ using ..Inputs:
     optional_cards
 
 import AbInitioSoftwareBase.Inputs: asstring, groupname
-import CrystallographyBase: Bravais, Lattice
+import Crystallography: Bravais, Lattice
 # import Pseudopotentials: pseudoformat
 import ..Inputs:
     optionpool,

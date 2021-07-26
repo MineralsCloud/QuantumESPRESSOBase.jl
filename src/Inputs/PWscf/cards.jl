@@ -1,4 +1,4 @@
-using CrystallographyBase: Cell, ReciprocalPoint
+using Crystallography: Cell, ReciprocalPoint
 using Functors: fmap
 using StaticArrays: SVector, SMatrix, FieldVector
 
