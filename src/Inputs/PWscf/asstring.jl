@@ -4,7 +4,7 @@ using Formatting: sprintf1
 
 export asstring
 
-formatconfig(
+FormatConfig(
     ::Type{
         <:Union{
             AtomicSpecies,
@@ -31,7 +31,7 @@ formatconfig(
 Return a `String` representing a `AtomicSpecies`, valid for Quantum ESPRESSO's input.
 """
 function asstring(data::AtomicSpecies)
-    config = formatconfig(data)
+    config = FormatConfig(data)
     return join(
         (
             config.indent,
@@ -48,7 +48,7 @@ end
 Return a `String` representing a `AtomicSpeciesCard`, valid for Quantum ESPRESSO's input.
 """
 function asstring(card::AtomicSpeciesCard)
-    config = formatconfig(card)
+    config = FormatConfig(card)
     data = union(card.data)
     return join(("ATOMIC_SPECIES", map(asstring, data)...), config.newline)
 end
@@ -58,7 +58,7 @@ end
 Return a `String` representing a `AtomicPosition`, valid for Quantum ESPRESSO's input.
 """
 function asstring(data::AtomicPosition)
-    config = formatconfig(data)
+    config = FormatConfig(data)
     content = join(
         (
             config.indent,
@@ -79,7 +79,7 @@ end
 Return a `String` representing a `AtomicPositionsCard`, valid for Quantum ESPRESSO's input.
 """
 function asstring(card::AtomicPositionsCard)
-    config = formatconfig(card)
+    config = FormatConfig(card)
     join(
         ("ATOMIC_POSITIONS { $(optionof(card)) }", map(asstring, card.data)...),
         config.newline,
@@ -91,7 +91,7 @@ end
 Return a `String` representing a `CellParametersCard`, valid for Quantum ESPRESSO's input.
 """
 function asstring(card::CellParametersCard)
-    config = formatconfig(card)
+    config = FormatConfig(card)
     return join(
         (
             "CELL_PARAMETERS { $(optionof(card)) }",
@@ -108,7 +108,7 @@ end
 Return a `String` representing a `MonkhorstPackGrid`, valid for Quantum ESPRESSO's input.
 """
 function asstring(data::MonkhorstPackGrid)
-    config = formatconfig(data)
+    config = FormatConfig(data)
     return config.indent * join(map([data.mesh; data.is_shift]) do x
         sprintf1(config.int, x)
     end, config.delimiter)
@@ -119,7 +119,7 @@ end
 Return a `String` representing a `SpecialKPoint`, valid for Quantum ESPRESSO's input.
 """
 function asstring(data::ReciprocalPoint)
-    config = formatconfig(data)
+    config = FormatConfig(data)
     return config.indent * join(
         map(x -> sprintf1(config.float, x), [data.coord..., data.weight]),
         config.delimiter,
@@ -131,16 +131,16 @@ end
 Return a `String` representing a `KPointsCard`, valid for Quantum ESPRESSO's input.
 """
 function asstring(card::SpecialPointsCard)
-    config = formatconfig(card)
+    config = FormatConfig(card)
     content = "K_POINTS { $(optionof(card)) }" * config.newline
     return join((content, length(card.data), map(asstring, card.data)...), config.newline)
 end
 function asstring(card::GammaPointCard)
-    config = formatconfig(card)
+    config = FormatConfig(card)
     return "K_POINTS { $(optionof(card)) }" * config.newline
 end
 function asstring(card::KMeshCard)
-    config = formatconfig(card)
+    config = FormatConfig(card)
     content = "K_POINTS { $(optionof(card)) }" * config.newline
     return content * asstring(card.data)
 end
