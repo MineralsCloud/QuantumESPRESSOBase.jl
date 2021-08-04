@@ -1,4 +1,5 @@
 using Crystallography: Cell, ReciprocalPoint
+using Functors: fmap
 using StaticArrays: SVector, SMatrix, FieldVector
 
 import ..Inputs: optionpool
@@ -167,11 +168,11 @@ struct CellParametersCard <: AbstractCellParametersCard
         return new(data, option)
     end
 end
-CellParametersCard(data::AbstractMatrix{<:AbstractQuantity}) =
-    CellParametersCard(ustrip.(u"bohr", data), "bohr")
-CellParametersCard(lattice::Lattice{T}, option) where {T} =
-    CellParametersCard(convert(Matrix{T}, lattice), option)
-CellParametersCard(cell::Cell, option) = CellParametersCard(cell.lattice, option)
+CellParametersCard(lattice::Lattice{<:Real}, option) =
+    CellParametersCard(transpose(lattice.data), option)
+CellParametersCard(lattice::Lattice{<:Length}) =
+    CellParametersCard(fmap(x -> ustrip(u"bohr", x), lattice), "bohr")
+CellParametersCard(cell::Cell, option) = CellParametersCard(transpose(cell.lattice), option)
 
 struct AtomicForce
     atom::String

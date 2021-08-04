@@ -102,12 +102,11 @@ struct VerbositySetter <: Setter
     end
 end
 
+include("crystallography.jl")
 include("asstring.jl")
 include("PWscf/PWscf.jl")
 # include("CP/CP.jl")
 include("PHonon/PHonon.jl")
-
-include("crystallography.jl")
 
 Base.Dict(nml::Namelist) =
     Dict(name => getproperty(nml, name) for name in propertynames(nml))
