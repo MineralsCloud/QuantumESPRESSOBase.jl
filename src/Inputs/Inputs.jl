@@ -108,10 +108,4 @@ include("PWscf/PWscf.jl")
 # include("CP/CP.jl")
 include("PHonon/PHonon.jl")
 
-Base.Dict(nml::Namelist) =
-    Dict(name => getproperty(nml, name) for name in propertynames(nml))
-Base.NamedTuple(nml::Namelist) =
-    NamedTuple{propertynames(nml)}(getproperty(nml, name) for name in propertynames(nml))
-Base.setdiff(a::T, b::T) where {T<:Namelist} = setdiff(Dict(a), Dict(b))
-
 end
