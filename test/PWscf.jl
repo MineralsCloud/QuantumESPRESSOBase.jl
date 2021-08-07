@@ -76,41 +76,6 @@ end
           "ATOMIC_POSITIONS { alat }\n       S    0.500000000    0.288675130    1.974192764\n      Mo    0.000000000    0.577350270    2.462038339\n       S    0.000000000   -0.577350270    2.950837559"
 end
 
-@testset "Test `append_atom!`" begin
-    @testset "`append_atom!` to `AtomicSpecies`" begin
-        v = [AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")]
-        append_atom!(v, ["H", "O"])
-        @test [x.atom for x in v] == ["S", "H", "O"]
-    end # testset
-    @testset "`append_atom!` to `AtomicSpeciesCard`" begin
-        a = ["Al", "As"]
-        m = [24590.7655930491, 68285.4024548272]
-        pp = ["Al.pbe-n-kjpaw_psl.1.0.0.UPF", "As.pbe-n-kjpaw_psl.1.0.0.UPF"]
-        card = AtomicSpeciesCard(StructArray{AtomicSpecies}((a, m, pp)))
-        append_atom!(card, ["S", "N"])
-        @test [x.atom for x in card.data] == ["Al", "As", "S", "N"]
-    end # testset
-    @testset "`append_atom!` to `AtomicPosition`" begin
-        v = [AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764])]
-        append_atom!(v, ["H", "O"])
-        @test [x.atom for x in v] == ["S", "H", "O"]
-    end # testset
-    @testset "`append_atom!` to `AtomicPositionsCard`" begin
-        a = ["S", "Mo", "S"]
-        pos = [
-            [0.500000000, 0.288675130, 1.974192764],
-            [0.000000000, 0.577350270, 2.462038339],
-            [0.000000000, -0.577350270, 2.950837559],
-        ]
-        card = AtomicPositionsCard(
-            "alat",
-            StructArray{AtomicPosition}((a, pos, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
-        )
-        append_atom!(card, ["H", "O"])
-        @test [x.atom for x in card.data] == ["S", "Mo", "S", "H", "O"]
-    end # testset
-end # testset
-
 @testset "Constructing `CellParametersCard`" begin
     #Data from https://gitlab.com/QEF/q-e/blob/master/NEB/examples/neb1.in
     option = "bohr"
