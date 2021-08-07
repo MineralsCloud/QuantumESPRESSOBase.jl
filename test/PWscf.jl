@@ -15,25 +15,12 @@ using QuantumESPRESSOBase.Inputs.PWscf
     @test_throws AssertionError @set x.atom = "sulfur"
     @test_throws InexactError @set x.mass = 1im
     @test x == AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
-    y = AtomicSpecies('S')  # Incomplete initialization
-    @test_throws UndefRefError y == AtomicSpecies("S")
-    @test_throws UndefRefError y.pseudopot
-    @test_throws AssertionError y.atom = "sulfur"
-    x.atom = 'S'  # Setting `atom` with a `Char` still works
-    @test x.atom == "S"
-    @test_throws ErrorException y.mss = 12.0  # Given a wrong field name
-    y.mass, y.pseudopot = 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"
-    @test x == y  # Constructing `AtomicSpecies` in 3 steps is equivalent to a one-time construction
-    @test AtomicSpecies(AtomicPosition(
-        'S',
-        [0.500000000, 0.288675130, 1.974192764],
-    )).atom == "S"
     @test AtomicSpecies(
         AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764]),
         32.066,
         "S.pz-n-rrkjus_psl.0.1.UPF",
     ) == x
-end # testset
+end
 
 @testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
     a = ["Al", "As"]
