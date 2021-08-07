@@ -84,14 +84,14 @@ end
         0 5 0
         0 0 5
     ]
-    card = CellParametersCard(option, data)
+    card = CellParametersCard(data, option)
     @test_throws AssertionError @set card.option = "ala"
     @test_throws AssertionError @set card.option = "crystal" # Allowed options are alat, angstrom, bohr
-    @test_throws AssertionError @set card.data = [ # Matrix size should be (3, 3)
+    @test_throws DimensionMismatch @set card.data = [ # Matrix size should be (3, 3)
         1 2
         3 4
     ]
-    @test_throws AssertionError @set card.data = [
+    @test_throws DimensionMismatch @set card.data = [
         1 2 3 4
         5 6 7 8
         4 3 2 1
