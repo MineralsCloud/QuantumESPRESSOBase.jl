@@ -46,28 +46,14 @@ end
     x = AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764])
     @test_throws AssertionError @set x.atom = "sulfur"
     @test_throws InexactError @set x.pos = [1im, 2im, 3im]
-    @test_throws AssertionError x.pos = [1, 2, 3, 4]
-    @test_throws AssertionError x.if_pos = [1, 2, 3]
-    @test_throws AssertionError x.if_pos = [1, 0, 1, 1]
-    x.atom = 'S'  # Setting `atom` with a `Char` still works
-    @test x.atom == "S"
     @test_throws ErrorException x.posi = [0.1, 0.2, 0.3]  # Given a wrong field name
     @test x.if_pos == [1, 1, 1]
     @test x == AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764])
-    y = AtomicPosition('S')  # Incomplete initialization
-    @test_throws UndefRefError y == AtomicPosition("S")
-    @test_throws UndefRefError y.pos
-    @test_throws UndefRefError y.if_pos
-    @test_throws AssertionError y.atom = "sulfur"
-    y.pos, y.if_pos = [0.500000000, 0.288675130, 1.974192764], [1, 1, 1]
-    @test x == y  # Constructing `AtomicSpecies` in 3 steps is equivalent to a one-time construction
-    @test AtomicPosition(AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")).atom ==
-          "S"
     @test AtomicPosition(
         AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
         [0.500000000, 0.288675130, 1.974192764],
     ) == x
-end # testset
+end
 
 @testset "Test constructing `AtomicPositionsCard` from `StructArray`s" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
