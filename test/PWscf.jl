@@ -124,33 +124,6 @@ end
     @test_throws InexactError MonkhorstPackGrid([4, 4, 4], [1, 1, 2])
 end
 
-@testset "Construct `KPointsCard` incorrectly" begin
-    @test_throws AssertionError KPointsCard("automatic", GammaPoint())
-    @test_throws AssertionError KPointsCard(
-        "automatic",
-        [
-            SpecialKPoint([3 / 4, 1 / 4, 1 / 4], 1 / 2),
-            SpecialKPoint([1 / 4, 1 / 4, 1 / 4], 1 / 2),
-        ],
-    )
-    @test_throws AssertionError KPointsCard(
-        "gamma",
-        MonkhorstPackGrid([4, 4, 4], [1, 1, 1]),
-    )
-    @test_throws AssertionError KPointsCard(
-        "gamma",
-        [
-            SpecialKPoint([3 / 4, 1 / 4, 1 / 4], 1 / 2),
-            SpecialKPoint([1 / 4, 1 / 4, 1 / 4], 1 / 2),
-        ],
-    )
-    @test_throws AssertionError KPointsCard(
-        "tpiba",
-        MonkhorstPackGrid([4, 4, 4], [1, 1, 1]),
-    )
-    @test_throws AssertionError KPointsCard("tpiba", GammaPoint())
-end # testset
-
 end # module PWscf
 
 @testset "Test constructing a `PWInput`: silicon" begin
