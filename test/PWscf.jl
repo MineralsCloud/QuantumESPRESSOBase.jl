@@ -124,8 +124,6 @@ end
     @test_throws InexactError MonkhorstPackGrid([4, 4, 4], [1, 1, 2])
 end
 
-end # module PWscf
-
 @testset "Test constructing a `PWInput`: silicon" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
@@ -333,3 +331,5 @@ end # testset
         )
     end
 end # testset
+
+end
