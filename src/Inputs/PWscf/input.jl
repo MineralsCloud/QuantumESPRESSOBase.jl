@@ -83,9 +83,6 @@ function PWInput(;
         atomic_forces,
     )
 end
-PWInput(args::InputEntry...) = PWInput(; map(args) do arg
-    entryname(typeof(arg), PWInput) => arg  # See https://discourse.julialang.org/t/construct-an-immutable-type-from-a-dict/26709/10
-end...)
 
 exitfile(template::PWInput) = abspath(
     expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT")),
