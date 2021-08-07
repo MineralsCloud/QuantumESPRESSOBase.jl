@@ -258,7 +258,7 @@ struct SpecialPointsCard <: KPointsCard
 end
 function SpecialPointsCard(data::AbstractMatrix, option = "tpiba")
     @assert size(data, 2) == 4
-    return SpecialPointsCard(map(ReciprocalPoint, eachrow(data)), option)
+    return SpecialPointsCard(map(x -> ReciprocalPoint(x...), eachrow(data)), option)
 end
 
 optionof(::KMeshCard) = "automatic"
