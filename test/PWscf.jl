@@ -118,11 +118,11 @@ end
 end
 
 @testset "Construct `MonkhorstPackGrid` incorrectly" begin
-    @test_throws AssertionError MonkhorstPackGrid([4, 4, 4, 4], [1, 1, 1])
+    @test_throws DimensionMismatch MonkhorstPackGrid([4, 4, 4, 4], [1, 1, 1])
     @test_throws AssertionError MonkhorstPackGrid([4, 4, 0], [1, 1, 1])
-    @test_throws AssertionError MonkhorstPackGrid([4, 4, 4], [1, 1, 1, 1])
-    @test_throws AssertionError MonkhorstPackGrid([4, 4, 0], [1, 1, 2])
-end # testset
+    @test_throws DimensionMismatch MonkhorstPackGrid([4, 4, 4], [1, 1, 1, 1])
+    @test_throws InexactError MonkhorstPackGrid([4, 4, 4], [1, 1, 2])
+end
 
 @testset "Construct `SpecialKPoint`" begin
     @test_throws AssertionError SpecialKPoint([1 / 4, 1 / 4], 1 / 2)
