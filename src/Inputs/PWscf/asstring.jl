@@ -11,6 +11,7 @@ FormatConfig(
             AtomicPosition,
             ReciprocalPoint,
             AtomicSpeciesCard,
+            AtomicPositionsCard,
             CellParametersCard,
             MonkhorstPackGrid,
             AtomicForce,

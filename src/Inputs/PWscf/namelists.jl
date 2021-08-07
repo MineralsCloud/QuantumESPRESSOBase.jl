@@ -88,19 +88,19 @@ function ControlNamelist(;
     gate = false,
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
-    @argcheck calculation in ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
-    @argcheck verbosity in ("high", "low", "debug", "medium", "default", "minimal")
-    @argcheck restart_mode in ("from_scratch", "restart")
-    @argcheck iprint >= 1
-    @argcheck disk_io in ("high", "medium", "low", "none", "default")
-    @argcheck dt >= 0
-    # @argcheck !(lkpoint_dir && wf_collect) "`lkpoint_dir` currently doesn't work together with `wf_collect`!"
-    @argcheck max_seconds >= 0
-    @argcheck etot_conv_thr >= 0
-    @argcheck forc_conv_thr >= 0
-    @argcheck gdir in 1:3
-    @argcheck !all((gate, tefield, !dipfield)) "`gate` cannot be used with `tefield` if dipole correction is not active!"
-    @argcheck !all((gate, dipfield, !tefield)) "dipole correction is not active if `tefield = false`!"
+    @assert calculation in ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
+    @assert verbosity in ("high", "low", "debug", "medium", "default", "minimal")
+    @assert restart_mode in ("from_scratch", "restart")
+    @assert iprint >= 1
+    @assert disk_io in ("high", "medium", "low", "none", "default")
+    @assert dt >= 0
+    # @assert !(lkpoint_dir && wf_collect) "`lkpoint_dir` currently doesn't work together with `wf_collect`!"
+    @assert max_seconds >= 0
+    @assert etot_conv_thr >= 0
+    @assert forc_conv_thr >= 0
+    @assert gdir in 1:3
+    @assert !all((gate, tefield, !dipfield)) "`gate` cannot be used with `tefield` if dipole correction is not active!"
+    @assert !all((gate, dipfield, !tefield)) "dipole correction is not active if `tefield = false`!"
     return ControlNamelist(
         calculation,
         title,
@@ -349,9 +349,9 @@ function SystemNamelist(;
     block_height = 0.1,  # The default value in QE's source code is 0.0
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
-    @argcheck ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13), 127)
-    @argcheck ntyp <= 10 && ntyp <= nat
-    @argcheck smearing in (
+    @assert ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13), 127)
+    @assert ntyp <= 10 && ntyp <= nat
+    @assert smearing in (
         "gaussian",
         "gauss",
         "methfessel-paxton",
@@ -365,31 +365,31 @@ function SystemNamelist(;
         "f-d",
         "fd",
     )
-    @argcheck nspin in (1, 2, 4)
-    @argcheck ecutwfc >= 0  # From `set_cutoff` in https://github.com/QEF/q-e/blob/7573301/PW/src/input.f90#L1597-L1639
-    @argcheck ecutrho >= ecutwfc # From `set_cutoff`
-    @argcheck ecfixed >= 0
-    @argcheck qcutz >= 0
-    @argcheck q2sigma >= 0
-    @argcheck lda_plus_u_kind in 0:1
-    @argcheck edir in 1:3
-    @argcheck space_group in 0:230
-    @argcheck origin_choice in 1:2
-    @argcheck length(starting_charge) <= ntyp
-    @argcheck length(starting_magnetization) <= ntyp
-    @argcheck length(Hubbard_U) <= ntyp
-    @argcheck length(Hubbard_J0) <= ntyp
-    @argcheck length(Hubbard_alpha) <= ntyp
-    @argcheck length(Hubbard_beta) <= ntyp
-    # @argcheck all(length(x) <= ntyp for x in Hubbard_J)
-    @argcheck length(angle1) <= ntyp
-    @argcheck length(angle2) <= ntyp
-    @argcheck length(fixed_magnetization) <= 3
-    @argcheck length(london_c6) <= ntyp
-    @argcheck length(london_rvdw) <= ntyp
-    @argcheck exxdiv_treatment in
-              ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none")
-    @argcheck !(x_gamma_extrapolation && exxdiv_treatment in ("vcut_ws", "vcut_spherical")) "`x_gamma_extrapolation` cannot be used with `vcut`!"
+    @assert nspin in (1, 2, 4)
+    @assert ecutwfc >= 0  # From `set_cutoff` in https://github.com/QEF/q-e/blob/7573301/PW/src/input.f90#L1597-L1639
+    @assert ecutrho >= ecutwfc # From `set_cutoff`
+    @assert ecfixed >= 0
+    @assert qcutz >= 0
+    @assert q2sigma >= 0
+    @assert lda_plus_u_kind in 0:1
+    @assert edir in 1:3
+    @assert space_group in 0:230
+    @assert origin_choice in 1:2
+    @assert length(starting_charge) <= ntyp
+    @assert length(starting_magnetization) <= ntyp
+    @assert length(Hubbard_U) <= ntyp
+    @assert length(Hubbard_J0) <= ntyp
+    @assert length(Hubbard_alpha) <= ntyp
+    @assert length(Hubbard_beta) <= ntyp
+    # @assert all(length(x) <= ntyp for x in Hubbard_J)
+    @assert length(angle1) <= ntyp
+    @assert length(angle2) <= ntyp
+    @assert length(fixed_magnetization) <= 3
+    @assert length(london_c6) <= ntyp
+    @assert length(london_rvdw) <= ntyp
+    @assert exxdiv_treatment in
+            ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none")
+    @assert !(x_gamma_extrapolation && exxdiv_treatment in ("vcut_ws", "vcut_spherical")) "`x_gamma_extrapolation` cannot be used with `vcut`!"
     return SystemNamelist(
         ibrav,
         celldm,
@@ -551,11 +551,11 @@ function ElectronsNamelist(;
     tqr = false,
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
-    @argcheck mixing_mode in ("plain", "TF", "local-TF")
-    @argcheck diagonalization in ("david", "cg", "cg-serial", "david-serial", "ppcg")  # Different from docs
-    @argcheck efield_phase in ("read", "write", "none")
-    @argcheck startingpot in ("atomic", "file")
-    @argcheck startingwfc in ("atomic", "atomic+random", "random", "file")
+    @assert mixing_mode in ("plain", "TF", "local-TF")
+    @assert diagonalization in ("david", "cg", "cg-serial", "david-serial", "ppcg")  # Different from docs
+    @assert efield_phase in ("read", "write", "none")
+    @assert startingpot in ("atomic", "file")
+    @assert startingwfc in ("atomic", "atomic+random", "random", "file")
     return ElectronsNamelist(
         electron_maxstep,
         scf_must_converge,
@@ -637,12 +637,12 @@ function IonsNamelist(;
     w_2 = 0.5,
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
-    @argcheck ion_dynamics in
-              ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman")
-    @argcheck ion_positions in ("default", "from_input")
-    @argcheck pot_extrapolation in ("none", "atomic", "first_order", "second_order")
-    @argcheck wfc_extrapolation in ("none", "first_order", "second_order")
-    @argcheck ion_temperature in (
+    @assert ion_dynamics in
+            ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman")
+    @assert ion_positions in ("default", "from_input")
+    @assert pot_extrapolation in ("none", "atomic", "first_order", "second_order")
+    @assert wfc_extrapolation in ("none", "first_order", "second_order")
+    @assert ion_temperature in (
         "rescaling",
         "rescale-v",
         "rescale-T",
@@ -652,7 +652,7 @@ function IonsNamelist(;
         "initial",
         "not_controlled",
     )
-    @argcheck tempw > 0
+    @assert tempw > 0
     return IonsNamelist(
         ion_dynamics,
         ion_positions,
@@ -706,9 +706,9 @@ function CellNamelist(;
     cell_dofree = "all",
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
-    @argcheck cell_dynamics in ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w")
-    @argcheck wmass >= 0
-    @argcheck cell_dofree in (
+    @assert cell_dynamics in ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w")
+    @assert wmass >= 0
+    @assert cell_dofree in (
         "all",
         "ibrav",
         "x",
@@ -765,7 +765,7 @@ function DosNamelist(;
     DeltaE = 0.01,
     fildos = "$(prefix).dos",
 )
-    @argcheck ngauss in (0, 1, -1, -99)
+    @assert ngauss in (0, 1, -1, -99)
     return DosNamelist(prefix, outdir, ngauss, degauss, Emin, Emax, DeltaE, fildos)
 end
 DosNamelist(nml::DosNamelist; kwargs...) = setproperties(nml; kwargs...)
@@ -806,7 +806,7 @@ function BandsNamelist(;
     firstk = 0,
     lastk = 10000000,
 )
-    @argcheck spin_component in 1:2
+    @assert spin_component in 1:2
     return BandsNamelist(
         prefix,
         outdir,

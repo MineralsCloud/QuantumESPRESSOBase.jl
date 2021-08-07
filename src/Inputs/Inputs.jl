@@ -13,7 +13,6 @@ module Inputs
 
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
 using Compat: only, isnothing
-using OptionalArgChecks: @argcheck
 using PyFortran90Namelists: fstring
 
 export optionof,
@@ -34,14 +33,14 @@ Return an `AbstractDict` of non-default values of a `Namelist`.
 function dropdefault(nml::Namelist)
     default = typeof(nml)()  # Create a `Namelist` with all default values
     # Compare `default` with `nml`, discard the same values
-    result = filter!(item -> item.second != getfield(default, item.first), Dict(nml))
+    result = Iterators.filter(item -> item.second != getfield(default, item.first), nml)
     # for (drivingarg, passivearg) in _coupledargs(typeof(nml))
     # rule
     # end
     if isempty(result)
         @info "Every entry in the namelist is the default value!"
     end
-    return result
+    return Dict{Symbol,Any}(result)
 end
 
 """
@@ -77,10 +76,6 @@ function optionpool end
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput <: Input end
-
-# This is a helper function and should not be exported.
-entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
-    only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
 
 function allnamelists end
 
