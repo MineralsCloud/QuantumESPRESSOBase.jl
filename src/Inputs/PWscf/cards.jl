@@ -1,6 +1,6 @@
 using Crystallography: Cell, ReciprocalPoint
 using Functors: fmap
-using StaticArrays: SVector, SMatrix, FieldVector
+using StaticArrays: SVector, SMatrix
 
 import ..Inputs: optionpool
 
