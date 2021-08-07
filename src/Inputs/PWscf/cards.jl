@@ -61,7 +61,7 @@ struct AtomicSpecies
     """
     pseudopot::String
     function AtomicSpecies(atom::Union{AbstractChar,AbstractString}, mass, pseudopot)
-        @argcheck length(atom) <= 3 "`atom` can have at most 3 characters!"
+        @assert length(atom) <= 3 "`atom` can have at most 3 characters!"
         return new(string(atom), mass, pseudopot)
     end
 end
@@ -120,7 +120,7 @@ struct AtomicPosition
     """
     if_pos::SVector{3,Bool}
     function AtomicPosition(atom::Union{AbstractChar,AbstractString}, pos, if_pos)
-        @argcheck length(atom) <= 3 "`atom` can have at most 3 characters!"
+        @assert length(atom) <= 3 "`atom` can have at most 3 characters!"
         return new(string(atom), pos, if_pos)
     end
 end
@@ -142,7 +142,7 @@ struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
     option::String
     function AtomicPositionsCard(data, option = "alat")
-        @argcheck option in optionpool(AtomicPositionsCard)
+        @assert option in optionpool(AtomicPositionsCard)
         return new(data, option)
     end
 end
@@ -164,7 +164,7 @@ struct CellParametersCard <: AbstractCellParametersCard
     data::SMatrix{3,3,Float64}
     option::String
     function CellParametersCard(data, option = "alat")
-        @argcheck option in optionpool(CellParametersCard)
+        @assert option in optionpool(CellParametersCard)
         return new(data, option)
     end
 end
@@ -178,7 +178,7 @@ struct AtomicForce
     atom::String
     force::SVector{3,Float64}
     function AtomicForce(atom::Union{AbstractChar,AbstractString}, force)
-        @argcheck length(atom) <= 3 "`atom` can have at most 3 characters!"
+        @assert length(atom) <= 3 "`atom` can have at most 3 characters!"
         return new(string(atom), force)
     end
 end
@@ -245,12 +245,12 @@ struct SpecialPointsCard <: KPointsCard
     data::Vector{ReciprocalPoint}
     option::String
     function SpecialPointsCard(data, option = "tpiba")
-        @argcheck option in optionpool(SpecialPointsCard)
+        @assert option in optionpool(SpecialPointsCard)
         return new(data, option)
     end
 end
 function SpecialPointsCard(data::AbstractMatrix, option = "tpiba")
-    @argcheck size(data, 2) == 4
+    @assert size(data, 2) == 4
     return SpecialPointsCard(map(ReciprocalPoint, eachrow(data)), option)
 end
 

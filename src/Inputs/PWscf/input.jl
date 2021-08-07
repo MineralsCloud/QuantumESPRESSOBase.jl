@@ -61,7 +61,7 @@ function PWInput(;
     occupations = nothing,
     atomic_forces = nothing,
 )
-    @argcheck !isnothing(cell_parameters) || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
+    @assert !isnothing(cell_parameters) || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
     foreach(atomic_species.data) do datum
         path = joinpath(control.pseudo_dir, datum.pseudopot)
         if !isfile(path)

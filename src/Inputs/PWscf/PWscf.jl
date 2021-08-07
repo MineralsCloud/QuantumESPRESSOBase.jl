@@ -14,7 +14,7 @@ module PWscf
 using AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Card, Setter
 using AutoHashEquals: @auto_hash_equals
 using Compat: isnothing
-using OptionalArgChecks: @argcheck
+using OptionalArgChecks: @assert
 using Setfield: @set!
 using Unitful: AbstractQuantity, Length, Temperature, ustrip, @u_str
 using UnitfulAtomic
