@@ -102,8 +102,8 @@ end
 
 @testset "Constructing `AtomicForce`" begin
     x = AtomicForce("H", [1, 2, 3])
-    @test_throws AssertionError @set x.force = [1, 2]
-    @test_throws AssertionError @set x.force = [1, 2, 3, 4]
+    @test_throws DimensionMismatch @set x.force = [1, 2]
+    @test_throws DimensionMismatch @set x.force = [1, 2, 3, 4]
 end
 
 @testset "Test constructing `AtomicForce` from `StructArray`" begin
