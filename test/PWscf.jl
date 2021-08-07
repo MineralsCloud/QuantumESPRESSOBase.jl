@@ -124,12 +124,6 @@ end
     @test_throws InexactError MonkhorstPackGrid([4, 4, 4], [1, 1, 2])
 end
 
-@testset "Construct `SpecialKPoint`" begin
-    @test_throws AssertionError SpecialKPoint([1 / 4, 1 / 4], 1 / 2)
-    @test SpecialKPoint([3 / 4, 1 / 4, 1 / 4], 1 / 2) ==
-          SpecialKPoint(3 / 4, 1 / 4, 1 / 4, 1 / 2)
-end # testset
-
 @testset "Construct `KPointsCard` incorrectly" begin
     @test_throws AssertionError KPointsCard("automatic", GammaPoint())
     @test_throws AssertionError KPointsCard(
