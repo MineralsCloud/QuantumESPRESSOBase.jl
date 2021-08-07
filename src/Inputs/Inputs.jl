@@ -78,10 +78,6 @@ function optionpool end
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput <: Input end
 
-# This is a helper function and should not be exported.
-entryname(S::Type{<:InputEntry}, T::Type{<:QuantumESPRESSOInput}) =
-    only(fieldname(T, i) for (i, m) in enumerate(fieldtypes(T)) if S <: m)
-
 function allnamelists end
 
 function allcards end
