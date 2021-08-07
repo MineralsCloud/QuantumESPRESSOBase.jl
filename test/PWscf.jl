@@ -37,19 +37,9 @@ end
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
     ]
-    @testset "Mutual construction" begin
-        @test map(x -> x.atom, AtomicPositionsCard("alat", card).data) == ["Al", "As", "Si"]
-    end # testset
-    @testset "Test `pseudoformat`" begin
-        @test unique(pseudoformat.(card.data)) == [UnifiedPseudopotentialFormat()]
-    end # testset
-    @testset "Test `asstring`" begin
-        @test asstring(card) ==
-              "ATOMIC_SPECIES\n     Al     24590.7655930491 Al.pbe-n-kjpaw_psl.1.0.0.UPF\n     As     68285.4024548272 As.pbe-n-kjpaw_psl.1.0.0.UPF\n     Si     25591.1924913552 Si.pbe-n-kjpaw_psl.1.0.0.UPF"
-        @test asstring(card; delim = "", indent = "") ==
-              "ATOMIC_SPECIES\n Al    24590.7655930491Al.pbe-n-kjpaw_psl.1.0.0.UPF\n As    68285.4024548272As.pbe-n-kjpaw_psl.1.0.0.UPF\n Si    25591.1924913552Si.pbe-n-kjpaw_psl.1.0.0.UPF"
-    end # testset
-end # testset
+    @test asstring(card) ==
+          "ATOMIC_SPECIES\n      Al 24590.765593049 Al.pbe-n-kjpaw_psl.1.0.0.UPF\n      As 68285.402454827 As.pbe-n-kjpaw_psl.1.0.0.UPF\n      Si 25591.192491355 Si.pbe-n-kjpaw_psl.1.0.0.UPF"
+end
 
 @testset "Constructing `AtomicPosition`" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
