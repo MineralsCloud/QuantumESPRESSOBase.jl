@@ -222,6 +222,13 @@ Represent the Monkhorst--Pack grid.
 struct MonkhorstPackGrid
     mesh::SVector{3,UInt}
     is_shift::SVector{3,Bool}
+    function MonkhorstPackGrid(mesh, is_shift)
+        @assert all(mesh .>= 1)
+        if eltype(is_shift) != Bool
+            is_shift = Bool.(is_shift)
+        end
+        return new(mesh, is_shift)
+    end
 end
 
 abstract type KPointsCard <: Card end
