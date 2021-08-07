@@ -64,24 +64,17 @@ end
         [0.000000000, -0.577350270, 2.950837559],
     ]
     card = AtomicPositionsCard(
-        "alat",
         StructArray{AtomicPosition}((a, pos, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
+        "alat",
     )
     @test card.data == [
         AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
         AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
         AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
     ]
-    @testset "Mutual construction" begin
-        @test map(x -> x.atom, AtomicSpeciesCard(card).data) == ["S", "Mo", "S"]
-    end # testset
-    @testset "Test `asstring`" begin
-        @test asstring(card) ==
-              "ATOMIC_POSITIONS { alat }\n      S    0.500000000    0.288675130    1.974192764\n     Mo    0.000000000    0.577350270    2.462038339\n      S    0.000000000   -0.577350270    2.950837559"
-        @test asstring(card; delim = "", indent = "") ==
-              "ATOMIC_POSITIONS { alat }\n  S   0.500000000   0.288675130   1.974192764\n Mo   0.000000000   0.577350270   2.462038339\n  S   0.000000000  -0.577350270   2.950837559"
-    end # testset
-end # testset
+    @test asstring(card) ==
+          "ATOMIC_POSITIONS { alat }\n       S    0.500000000    0.288675130    1.974192764\n      Mo    0.000000000    0.577350270    2.462038339\n       S    0.000000000   -0.577350270    2.950837559"
+end
 
 @testset "Test `push_atom!`" begin
     @testset "`push_atom!` to `AtomicSpecies`" begin
