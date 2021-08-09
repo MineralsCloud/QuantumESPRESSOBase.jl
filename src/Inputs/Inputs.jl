@@ -13,7 +13,6 @@ module Inputs
 
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
 using Compat: only, isnothing
-using PyFortran90Namelists: fstring
 
 export optionof,
     optionpool,
