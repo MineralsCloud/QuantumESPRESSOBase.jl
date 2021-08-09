@@ -1,3 +1,4 @@
+using Compat: eachcol
 using Crystallography: Cell, ReciprocalPoint, MonkhorstPackGrid
 using Functors: fmap
 using StaticArrays: SVector, SMatrix
@@ -145,9 +146,10 @@ struct AtomicPositionsCard <: Card
         return new(data, option)
     end
 end
-AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard(map(cell.atompos) do atompos
-    AtomicPosition(string(atompos.atom), atompos.pos)
-end, option)
+AtomicPositionsCard(cell::Cell, option) =
+    AtomicPositionsCard(map(cell.types, eachcol(cell.positions)) do atom, position
+        AtomicPosition(string(atom), position)
+    end, option)
 # Introudce mutual constructors since they share the same atoms.
 
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
