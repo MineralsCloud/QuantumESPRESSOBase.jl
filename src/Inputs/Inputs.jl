@@ -13,7 +13,6 @@ module Inputs
 
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
 using Compat: only, isnothing
-using PyFortran90Namelists: fstring
 
 export optionof,
     optionpool,
@@ -98,7 +97,6 @@ struct VerbositySetter <: Setter
 end
 
 include("crystallography.jl")
-include("asstring.jl")
 include("PWscf/PWscf.jl")
 # include("CP/CP.jl")
 # include("PHonon/PHonon.jl")
