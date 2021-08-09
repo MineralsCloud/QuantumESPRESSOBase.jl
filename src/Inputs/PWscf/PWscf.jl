@@ -31,7 +31,6 @@ include("namelists.jl")
 include("cards.jl")
 include("input.jl")
 include("crystallography.jl")
-include("asstring.jl")
 include("set.jl")
 include("validation.jl")
 
