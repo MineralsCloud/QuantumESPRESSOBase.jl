@@ -1,3 +1,4 @@
+using AutoHashEquals: @auto_hash_equals
 using Compat: eachcol
 using Crystallography: Cell, ReciprocalPoint, MonkhorstPackGrid
 using Functors: fmap
@@ -78,10 +79,9 @@ Return the pseudopotential format of the `AtomicSpecies`.
 
 Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 """
-struct AtomicSpeciesCard <: Card
+@auto_hash_equals struct AtomicSpeciesCard <: Card
     data::Vector{AtomicSpecies}
 end
-AtomicSpeciesCard(cell::Cell) = AtomicSpeciesCard(map(AtomicSpecies ∘ string, cell.numbers))
 
 """
     AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
@@ -138,7 +138,7 @@ Represent the `ATOMIC_POSITIONS` card in QE.
 - `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
 - `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 """
-struct AtomicPositionsCard <: Card
+@auto_hash_equals struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
     option::String
     function AtomicPositionsCard(data, option = "alat")
@@ -184,7 +184,7 @@ struct AtomicForce
     end
 end
 
-struct AtomicForcesCard <: Card
+@auto_hash_equals struct AtomicForcesCard <: Card
     data::Vector{AtomicForce}
 end
 
@@ -243,7 +243,7 @@ Represent the `K_POINTS` card in QE.
 - `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
-struct SpecialPointsCard <: KPointsCard
+@auto_hash_equals struct SpecialPointsCard <: KPointsCard
     data::Vector{ReciprocalPoint}
     option::String
     function SpecialPointsCard(data, option = "tpiba")
