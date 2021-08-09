@@ -15,7 +15,7 @@ export AtomicSpecies,
     KMeshCard,
     GammaPointCard,
     SpecialPointsCard
-export optconvert, optionpool
+export optconvert, optionpool, eachatom
 
 """
     AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
@@ -185,6 +185,21 @@ end
 struct AtomicForcesCard <: Card
     data::Vector{AtomicForce}
 end
+
+# See https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1008-L1032 & https://github.com/JuliaLang/julia/blob/de3a70a/base/io.jl#L971-L1054
+struct AtomicIterator{T}
+    x::T
+end
+
+eachatom(card::Union{AtomicSpeciesCard,AtomicPositionsCard,AtomicForcesCard}) =
+    AtomicIterator(card)
+
+Base.length(iter::AtomicIterator) = length(iter.x.data)
+
+Base.iterate(iter::AtomicIterator, state = 1) =
+    state > length(iter) ? nothing : (iter.x.data[state], state + 1)
+
+Base.eltype(iter::AtomicIterator) = eltype(iter.x.data)
 
 """
     optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
