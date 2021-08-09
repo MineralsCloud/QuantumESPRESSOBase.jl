@@ -116,13 +116,6 @@ end
     ]
 end
 
-@testset "Construct `MonkhorstPackGrid` incorrectly" begin
-    @test_throws DimensionMismatch MonkhorstPackGrid([4, 4, 4, 4], [1, 1, 1])
-    @test_throws AssertionError MonkhorstPackGrid([4, 4, 0], [1, 1, 1])
-    @test_throws DimensionMismatch MonkhorstPackGrid([4, 4, 4], [1, 1, 1, 1])
-    @test_throws InexactError MonkhorstPackGrid([4, 4, 4], [1, 1, 2])
-end
-
 @testset "Test constructing a `PWInput`: silicon" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
