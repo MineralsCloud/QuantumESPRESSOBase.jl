@@ -187,19 +187,19 @@ struct AtomicForcesCard <: Card
 end
 
 # See https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1008-L1032 & https://github.com/JuliaLang/julia/blob/de3a70a/base/io.jl#L971-L1054
-struct AtomicIterator{T}
-    x::T
+struct EachAtom{T}
+    card::T
 end
 
 eachatom(card::Union{AtomicSpeciesCard,AtomicPositionsCard,AtomicForcesCard}) =
-    AtomicIterator(card)
+    EachAtom(card)
 
-Base.length(iter::AtomicIterator) = length(iter.x.data)
+Base.length(iter::EachAtom) = length(iter.card.data)
 
-Base.iterate(iter::AtomicIterator, state = 1) =
-    state > length(iter) ? nothing : (iter.x.data[state], state + 1)
+Base.iterate(iter::EachAtom, state = 1) =
+    state > length(iter) ? nothing : (iter.card.data[state], state + 1)
 
-Base.eltype(iter::AtomicIterator) = eltype(iter.x.data)
+Base.eltype(iter::EachAtom) = eltype(iter.card.data)
 
 """
     optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
