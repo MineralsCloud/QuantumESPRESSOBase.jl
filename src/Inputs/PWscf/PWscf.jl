@@ -20,7 +20,7 @@ using UnitfulAtomic
 
 using ..Inputs: QuantumESPRESSOInput, VerbositySetter
 
-import AbInitioSoftwareBase.Inputs: asstring, groupname
+import AbInitioSoftwareBase.Inputs: groupname
 import Crystallography: Bravais, Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
 import ..Inputs: optionof
@@ -31,7 +31,6 @@ include("namelists.jl")
 include("cards.jl")
 include("input.jl")
 include("crystallography.jl")
-include("asstring.jl")
 include("set.jl")
 include("validation.jl")
 
