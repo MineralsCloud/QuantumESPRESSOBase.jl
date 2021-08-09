@@ -1,7 +1,6 @@
 module CP
 
 using Compat: eachrow, isnothing
-using Formatting: sprintf1
 using LinearAlgebra: det
 using Parameters: @with_kw
 using Setfield: get, set, @lens, @set
