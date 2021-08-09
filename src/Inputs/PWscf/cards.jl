@@ -82,7 +82,6 @@ Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 @auto_hash_equals struct AtomicSpeciesCard <: Card
     data::Vector{AtomicSpecies}
 end
-AtomicSpeciesCard(cell::Cell) = AtomicSpeciesCard(map(AtomicSpecies ∘ string, cell.numbers))
 
 """
     AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
