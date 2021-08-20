@@ -1,4 +1,5 @@
-export VerbositySetter, VolumeSetter, PressureSetter, StructureSetter
+export VerbositySetter,
+    VolumeSetter, PressureSetter, CellParametersCardSetter, AtomicPositionsCardSetter
 
 function (s::VerbositySetter)(template::PWInput)
     @set! template.control = s(template.control)
@@ -37,16 +38,18 @@ end
 (x::PressureSetter{<:AbstractQuantity})(template::PWInput) =
     PressureSetter(ustrip(u"kbar", x.press))(template)
 
-struct StructureSetter{S,T} <: Setter
-    cp::S
-    ap::T
+struct CellParametersCardSetter <: Setter
+    card::CellParametersCard
 end
-StructureSetter(cp::CellParametersCard) = StructureSetter(cp, nothing)
-StructureSetter(ap::AtomicPositionsCard) = StructureSetter(nothing, ap)
-function (x::StructureSetter{CellParametersCard,Nothing})(template::PWInput)
+
+struct AtomicPositionsCardSetter <: Setter
+    card::AtomicPositionsCard
+end
+
+function (x::CellParametersCardSetter)(template::PWInput)
     if isnothing(template.cell_parameters)
-        if optionof(x.cp) in ("bohr", "angstrom")
-            @set! template.cell_parameters = x.cp
+        if optionof(x.card) in ("bohr", "angstrom")
+            @set! template.cell_parameters = x.card
             @set! template.system.ibrav = 0
             @set! template.system.celldm = zeros(6)
         else
@@ -55,10 +58,10 @@ function (x::StructureSetter{CellParametersCard,Nothing})(template::PWInput)
         end
     else
         if optionof(template.cell_parameters) == "alat"
-            if optionof(x.cp) in ("bohr", "angstrom")
+            if optionof(x.card) in ("bohr", "angstrom")
                 @set! template.system.celldm = [template.system.celldm[1]]
                 cell_parameters =
-                    CellParametersCard(x.cp.data / template.system.celldm[1], "alat")
+                    CellParametersCard(x.card.data / template.system.celldm[1], "alat")
             else  # "alat"
                 @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
             end
@@ -68,12 +71,10 @@ function (x::StructureSetter{CellParametersCard,Nothing})(template::PWInput)
             end
         end
     end
-    @set! template.cell_parameters = x.cp
+    @set! template.cell_parameters = x.card
     return template
 end
-function (x::StructureSetter{Nothing,AtomicPositionsCard})(template::PWInput)
-    @set! template.atomic_positions = x.ap
+function (x::AtomicPositionsCardSetter)(template::PWInput)
+    @set! template.atomic_positions = x.card
     return template
 end
-(x::StructureSetter{CellParametersCard,AtomicPositionsCard})(template::PWInput) =
-    (StructureSetter(x.ap) ∘ StructureSetter(x.cp))(template)
