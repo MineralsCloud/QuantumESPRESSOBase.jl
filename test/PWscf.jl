@@ -36,8 +36,6 @@ end
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
     ]
-    @test asstring(card) ==
-          "ATOMIC_SPECIES\n      Al 24590.765593049 Al.pbe-n-kjpaw_psl.1.0.0.UPF\n      As 68285.402454827 As.pbe-n-kjpaw_psl.1.0.0.UPF\n      Si 25591.192491355 Si.pbe-n-kjpaw_psl.1.0.0.UPF"
 end
 
 @testset "Constructing `AtomicPosition`" begin
@@ -71,8 +69,6 @@ end
         AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
         AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
     ]
-    @test asstring(card) ==
-          "ATOMIC_POSITIONS { alat }\n       S    0.500000000    0.288675130    1.974192764\n      Mo    0.000000000    0.577350270    2.462038339\n       S    0.000000000   -0.577350270    2.950837559"
 end
 
 @testset "Constructing `CellParametersCard`" begin
