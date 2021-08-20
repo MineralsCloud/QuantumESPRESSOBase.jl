@@ -843,8 +843,8 @@ function (x::VerbositySetter)(control::ControlNamelist)
     return control
 end
 
-struct ElectronicTemperatureSetter <: Setter
-    temp::Temperature
+struct ElectronicTemperatureSetter{T<:Number} <: Setter
+    temp::T
 end
 function (x::ElectronicTemperatureSetter)(system::SystemNamelist)
     @set! system.occupations = "smearing"

@@ -10,7 +10,7 @@ function (x::ElectronicTemperatureSetter)(template::PWInput)
     return template
 end
 
-struct VolumeSetter{T} <: Setter
+struct VolumeSetter{T<:Number} <: Setter
     vol::T
 end
 function (x::VolumeSetter{<:Real})(template::PWInput)
@@ -27,7 +27,7 @@ end
 (x::VolumeSetter{<:AbstractQuantity})(template::PWInput) =
     VolumeSetter(ustrip(u"bohr^3", x.vol))(template)
 
-struct PressureSetter{T} <: Setter
+struct PressureSetter{T<:Number} <: Setter
     press::T
 end
 function (x::PressureSetter{<:Real})(template::PWInput)
