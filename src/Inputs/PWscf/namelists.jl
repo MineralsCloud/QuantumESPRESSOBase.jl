@@ -1,5 +1,5 @@
 using ConstructionBase: setproperties
-using Unitful: dimension, unit
+import Unitful
 
 export ControlNamelist,
     SystemNamelist,
@@ -849,25 +849,14 @@ end
 function (x::ElectronicTemperatureSetter)(system::SystemNamelist)
     @set! system.occupations = "smearing"
     @set! system.smearing = "fermi-dirac"
-    @set! system.degauss = _tconvert(x.temp)
+    @set! system.degauss = degauss(x.temp)
     return system
 end
-function _tconvert(temp)
-    dim = dimension(unit(temp))
-    if dim == dimension(u"Ry")  # u"hartree", u"J", u"eV", etc..
-        return ustrip(u"Ry", temp)
-    elseif dim == dimension(u"Hz")  # u"Hz", u"THz", ...
-        return ustrip(u"Hz", temp) / 6579683920502000.0 * 2
-    elseif dim == dimension(u"K")  # u"K", u"mK", u"μK", ...
-        return ustrip(u"K", temp) / 315775.02480407 * 2
-    elseif dim == dimension(u"m^-1")  # u"m^-1", u"cm^-1", ...
-        return ustrip(u"m^-1", temp) / 21947463.13632 * 2
-    elseif dim == dimension(u"kg")  # u"kg", u"g", ...
-        return ustrip(u"kg", temp) / 4.8508702095432e-35 * 2
-    else
-        error("unknown unit given!")
-    end
-end
+degauss(temp::Real) = temp
+degauss(temp::Unitful.Temperature) = ustrip(u"K", temp) / 315775.02480407 * 2
+degauss(temp::Unitful.Energy) = ustrip(u"Ry", temp)
+degauss(temp::Unitful.Frequency) = ustrip(u"Hz", temp) / 6579683920502000.0 * 2
+degauss(temp::Unitful.Wavenumber) = ustrip(u"m^-1", temp) / 21947463.13632 * 2
 
 const ElecTempSetter = ElectronicTemperatureSetter
 
