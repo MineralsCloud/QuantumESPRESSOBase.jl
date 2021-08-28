@@ -51,10 +51,7 @@ end
 
 include("inputs.jl")
 
-function (x::VerbositySetter)(control::PhNamelist)
-    @set! control.verbosity = x.v
-    return control
-end
+
 function (x::VerbositySetter)(template::PhInput)
     @set! template.inputph.verbosity = x.v
     return template

@@ -203,3 +203,8 @@ end
 PhNamelist(nml::PhNamelist; kwargs...) = setproperties(nml, kwargs...)
 PhNamelist(nml::PhNamelist, t::NamedTuple) = setproperties(nml, t)
 PhNamelist(nml::PhNamelist, dict::AbstractDict) = setproperties(nml, dict)
+
+function (x::VerbositySetter)(control::PhNamelist)
+    @set! control.verbosity = x.v
+    return control
+end
