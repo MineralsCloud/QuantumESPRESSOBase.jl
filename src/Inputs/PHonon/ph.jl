@@ -208,3 +208,175 @@ function (x::VerbositySetter)(control::PhNamelist)
     @set! control.verbosity = x.v
     return control
 end
+
+# The following default values are picked from `<QE source>/PHonon/PH/q2r.f90`
+"""
+    Q2rNamelist <: Namelist
+
+Represent the `INPUT` namelist of `q2r.x`.
+"""
+@auto_hash_equals struct Q2rNamelist <: Namelist
+    fildyn::String
+    flfrc::String
+    loto_2d::Bool
+    zasr::String
+end # struct Q2rNamelist
+function Q2rNamelist(; fildyn = " ", flfrc = " ", loto_2d = false, zasr = "no")
+    return Q2rNamelist(fildyn, flfrc, loto_2d, zasr)
+end
+Q2rNamelist(nml::Q2rNamelist; kwargs...) = setproperties(nml, kwargs...)
+Q2rNamelist(nml::Q2rNamelist, t::NamedTuple) = setproperties(nml, t)
+Q2rNamelist(nml::Q2rNamelist, dict::AbstractDict) = setproperties(nml, dict)
+
+# The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
+"""
+    MatdynNamelist <: Namelist
+
+Represent the `INPUT` namelist of `matdyn.x`.
+"""
+@auto_hash_equals struct MatdynNamelist <: Namelist
+    dos::Bool
+    deltaE::Float64
+    ndos::Int
+    nk1::Int
+    nk2::Int
+    nk3::Int
+    asr::String
+    readtau::Bool
+    flfrc::String
+    fldos::String
+    flfrq::String
+    flvec::String
+    fleig::String
+    fldyn::String
+    fltau::String
+    amass::Vector{Union{Nothing,Float64}}
+    at::Matrix{Union{Nothing,Float64}}  # FIXME: not very sure
+    ntyp::Int
+    l1::Int
+    l2::Int
+    l3::Int
+    la2F::Bool
+    q_in_band_form::Bool
+    eigen_similarity::Bool
+    q_in_cryst_coord::Bool
+    na_ifc::Bool
+    fd::Bool
+    nosym::Bool
+    loto_2d::Bool
+end # struct MatdynNamelist
+function MatdynNamelist(;
+    dos = false,
+    deltaE = 1.0,
+    ndos = 1,
+    nk1 = 0,
+    nk2 = 0,
+    nk3 = 0,
+    asr = "no",
+    readtau = false,
+    flfrc = " ",
+    fldos = "matdyn.dos",
+    flfrq = "matdyn.freq",
+    flvec = "matdyn.modes",
+    fleig = "matdyn.eig",
+    fldyn = " ",
+    fltau = " ",
+    amass = zeros(1),
+    at = zeros(3, 3),  # FIXME: not very sure
+    ntyp = 0,
+    l1 = 1,
+    l2 = 1,
+    l3 = 1,
+    la2F = false,
+    q_in_band_form = false,
+    eigen_similarity = false,
+    q_in_cryst_coord = false,
+    na_ifc = false,
+    fd = false,
+    nosym = false,
+    loto_2d = false,
+)
+    return MatdynNamelist(
+        dos,
+        deltaE,
+        ndos,
+        nk1,
+        nk2,
+        nk3,
+        asr,
+        readtau,
+        flfrc,
+        fldos,
+        flfrq,
+        flvec,
+        fleig,
+        fldyn,
+        fltau,
+        amass,
+        at,
+        ntyp,
+        l1,
+        l2,
+        l3,
+        la2F,
+        q_in_band_form,
+        eigen_similarity,
+        q_in_cryst_coord,
+        na_ifc,
+        fd,
+        nosym,
+        loto_2d,
+    )
+end
+MatdynNamelist(nml::MatdynNamelist; kwargs...) = setproperties(nml, kwargs...)
+MatdynNamelist(nml::MatdynNamelist, t::NamedTuple) = setproperties(nml, t)
+MatdynNamelist(nml::MatdynNamelist, dict::AbstractDict) = setproperties(nml, dict)
+
+"""
+    DynmatNamelist <: Namelist
+
+Represent the `INPUT` namelist of `dynmat.x`.
+"""
+@auto_hash_equals struct DynmatNamelist <: Namelist
+    asr::String
+    axis::Int
+    fildyn::String
+    filout::String
+    filmol::String
+    filxsf::String
+    fileig::String
+    amass::Vector{Union{Nothing,Float64}}
+    q::Vector{Union{Nothing,Float64}}
+    lperm::Bool
+    lplasma::Bool
+end # struct DynmatNamelist
+function DynmatNamelist(;
+    asr = "no",
+    axis = 3,
+    fildyn = "matdyn",
+    filout = "dynmat.out",
+    filmol = "dynmat.mold",
+    filxsf = "dynmat.axsf",
+    fileig = " ",
+    amass = zeros(1),
+    q = zeros(3),
+    lperm = false,
+    lplasma = false,
+)
+    return DynmatNamelist(
+        asr,
+        axis,
+        fildyn,
+        filout,
+        filmol,
+        filxsf,
+        fileig,
+        amass,
+        q,
+        lperm,
+        lplasma,
+    )
+end
+DynmatNamelist(nml::DynmatNamelist; kwargs...) = setproperties(nml, kwargs...)
+DynmatNamelist(nml::DynmatNamelist, t::NamedTuple) = setproperties(nml, t)
+DynmatNamelist(nml::DynmatNamelist, dict::AbstractDict) = setproperties(nml, dict)
