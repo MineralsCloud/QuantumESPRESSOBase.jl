@@ -35,10 +35,7 @@ export QPointsCard,
     VerbositySetter
 export relayinfo
 
-include("ph.jl")
-include("q2r.jl")
-include("matdyn.jl")
-include("dynmat.jl")
+include("namelists.jl")
 
 groupname(::Type{PhNamelist}) = "INPUTPH"
 groupname(::Type{Q2rNamelist}) = "INPUT"
