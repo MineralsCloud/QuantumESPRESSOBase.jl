@@ -1,3 +1,6 @@
+using ..Inputs: QuantumESPRESSOInput
+using ..Inputs.PWscf: PWInput
+
 struct PhInput <: QuantumESPRESSOInput
     title_line::String
     inputph::PhNamelist

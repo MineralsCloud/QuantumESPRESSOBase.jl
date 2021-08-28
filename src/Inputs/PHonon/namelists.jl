@@ -1,3 +1,8 @@
+using AbInitioSoftwareBase.Inputs: Namelist
+using AutoHashEquals: @auto_hash_equals
+using Compat: @NamedTuple
+using ConstructionBase: setproperties
+
 const DVSCF_STAR = @NamedTuple begin
     open::Bool
     dir::String
