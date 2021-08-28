@@ -380,3 +380,8 @@ end
 DynmatNamelist(nml::DynmatNamelist; kwargs...) = setproperties(nml, kwargs...)
 DynmatNamelist(nml::DynmatNamelist, t::NamedTuple) = setproperties(nml, t)
 DynmatNamelist(nml::DynmatNamelist, dict::AbstractDict) = setproperties(nml, dict)
+
+groupname(::Type{PhNamelist}) = "INPUTPH"
+groupname(::Type{Q2rNamelist}) = "INPUT"
+groupname(::Type{MatdynNamelist}) = "INPUT"
+groupname(::Type{DynmatNamelist}) = "INPUT"

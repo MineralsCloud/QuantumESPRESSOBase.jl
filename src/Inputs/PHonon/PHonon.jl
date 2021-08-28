@@ -37,11 +37,6 @@ export relayinfo
 
 include("namelists.jl")
 
-groupname(::Type{PhNamelist}) = "INPUTPH"
-groupname(::Type{Q2rNamelist}) = "INPUT"
-groupname(::Type{MatdynNamelist}) = "INPUT"
-groupname(::Type{DynmatNamelist}) = "INPUT"
-
 struct QPointsCard <: Card
     data::Vector{ReciprocalPoint}
 end
