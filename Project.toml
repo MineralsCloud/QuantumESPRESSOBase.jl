@@ -1,37 +1,37 @@
 name = "QuantumESPRESSOBase"
 uuid = "51b62caa-b28f-11e9-38c2-1f67cb498e05"
 authors = ["Qi Zhang <singularitti@outlook.com>"]
-version = "0.3.1-DEV"
+version = "0.3.2-DEV"
 
 [deps]
+UnitfulAtomic = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
 AbInitioSoftwareBase = "df5135bc-470e-46c6-b451-292e27ca5b84"
-AutoHashEquals = "15f4f7f2-30c1-5605-9d31-71845cf9641f"
-Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
 ConstructionBase = "187b0558-2788-49d3-abe0-74a17ed4e7c9"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
 Crystallography = "3bff3928-7a76-11e9-2089-d112443085a5"
 Functors = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
-LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
-StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
-UnitfulAtomic = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
-
-[compat]
-AbInitioSoftwareBase = "0.2, 0.3, 0.4, 0.5"
-AutoHashEquals = "0.2"
-Compat = "3.8"
-ConstructionBase = "1"
-Crystallography = "0.3"
-Functors = "0.2"
-Setfield = "0.3, 0.4, 0.5, 0.6, 0.7"
-StaticArrays = "0.8.3, 0.9, 0.10, 0.11, 0.12, 1"
-Unitful = "0.18, 1"
-UnitfulAtomic = "0.2, 0.3, 1"
-julia = "1"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+AutoHashEquals = "15f4f7f2-30c1-5605-9d31-71845cf9641f"
+Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
 
 [extras]
-StructArrays = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+StructArrays = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
+
+[compat]
+UnitfulAtomic = "0.2, 0.3, 1"
+AbInitioSoftwareBase = "0.2, 0.3, 0.4, 0.5"
+ConstructionBase = "1"
+Compat = "3.8"
+Crystallography = "0.3"
+Functors = "0.2"
+Unitful = "0.18, 1"
+StaticArrays = "0.8.3, 0.9, 0.10, 0.11, 0.12, 1"
+julia = "1"
+AutoHashEquals = "0.2"
+Setfield = "0.3, 0.4, 0.5, 0.6, 0.7"
 
 [targets]
 test = ["Test", "StructArrays"]
