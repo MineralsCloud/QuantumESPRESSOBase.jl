@@ -18,6 +18,7 @@ Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 StructArrays = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
+StructHelpers = "4093c41a-2008-41fd-82b8-e3f9d02b504f"
 
 [compat]
 UnitfulAtomic = "0.2, 0.3, 1"
@@ -28,6 +29,7 @@ Crystallography = "0.3"
 Functors = "0.2"
 Unitful = "0.18, 1"
 StaticArrays = "0.8.3, 0.9, 0.10, 0.11, 0.12, 1"
+StructHelpers = "0.1"
 julia = "1"
 Setfield = "0.3, 0.4, 0.5, 0.6, 0.7"
 
