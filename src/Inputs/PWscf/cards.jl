@@ -1,4 +1,3 @@
-using AutoHashEquals: @auto_hash_equals
 using Compat: eachcol
 using Crystallography: Cell, ReciprocalPoint, MonkhorstPackGrid
 using Functors: fmap
@@ -79,9 +78,10 @@ Return the pseudopotential format of the `AtomicSpecies`.
 
 Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 """
-@auto_hash_equals struct AtomicSpeciesCard <: Card
+struct AtomicSpeciesCard <: Card
     data::Vector{AtomicSpecies}
 end
+@batteries AtomicSpeciesCard eq = true hash = true
 
 """
     AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
@@ -138,7 +138,7 @@ Represent the `ATOMIC_POSITIONS` card in QE.
 - `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
 - `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 """
-@auto_hash_equals struct AtomicPositionsCard <: Card
+struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
     option::String
     function AtomicPositionsCard(data, option = "alat")
@@ -150,7 +150,7 @@ AtomicPositionsCard(cell::Cell, option) =
     AtomicPositionsCard(map(cell.types, eachcol(cell.positions)) do atom, position
         AtomicPosition(string(atom), position)
     end, option)
-# Introudce mutual constructors since they share the same atoms.
+@batteries AtomicPositionsCard eq = true hash = true
 
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
 abstract type AbstractCellParametersCard <: Card end
@@ -184,9 +184,10 @@ struct AtomicForce
     end
 end
 
-@auto_hash_equals struct AtomicForcesCard <: Card
+struct AtomicForcesCard <: Card
     data::Vector{AtomicForce}
 end
+@batteries AtomicForcesCard eq = true hash = true
 
 # See https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1008-L1032 & https://github.com/JuliaLang/julia/blob/de3a70a/base/io.jl#L971-L1054
 struct EachAtom{T}
@@ -243,7 +244,7 @@ Represent the `K_POINTS` card in QE.
 - `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
-@auto_hash_equals struct SpecialPointsCard <: KPointsCard
+struct SpecialPointsCard <: KPointsCard
     data::Vector{ReciprocalPoint}
     option::String
     function SpecialPointsCard(data, option = "tpiba")
@@ -255,6 +256,7 @@ function SpecialPointsCard(data::AbstractMatrix, option = "tpiba")
     @assert size(data, 2) == 4
     return SpecialPointsCard(map(x -> ReciprocalPoint(x...), eachrow(data)), option)
 end
+@batteries SpecialPointsCard eq = true hash = true
 
 optionof(::KMeshCard) = "automatic"
 optionof(::GammaPointCard) = "gamma"
