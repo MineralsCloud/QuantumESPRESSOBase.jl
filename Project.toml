@@ -13,12 +13,12 @@ Crystallography = "3bff3928-7a76-11e9-2089-d112443085a5"
 Functors = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+StructHelpers = "4093c41a-2008-41fd-82b8-e3f9d02b504f"
 Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 StructArrays = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
-StructHelpers = "4093c41a-2008-41fd-82b8-e3f9d02b504f"
 
 [compat]
 UnitfulAtomic = "0.2, 0.3, 1"
