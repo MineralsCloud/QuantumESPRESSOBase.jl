@@ -13,7 +13,7 @@ Crystallography = "3bff3928-7a76-11e9-2089-d112443085a5"
 Functors = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-AutoHashEquals = "15f4f7f2-30c1-5605-9d31-71845cf9641f"
+StructHelpers = "4093c41a-2008-41fd-82b8-e3f9d02b504f"
 Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
 
 [extras]
@@ -29,8 +29,8 @@ Crystallography = "0.3"
 Functors = "0.2"
 Unitful = "0.18, 1"
 StaticArrays = "0.8.3, 0.9, 0.10, 0.11, 0.12, 1"
+StructHelpers = "0.1"
 julia = "1"
-AutoHashEquals = "0.2"
 Setfield = "0.3, 0.4, 0.5, 0.6, 0.7"
 
 [targets]

@@ -1,7 +1,7 @@
 using AbInitioSoftwareBase.Inputs: Namelist
-using AutoHashEquals: @auto_hash_equals
 using Compat: @NamedTuple
 using ConstructionBase: setproperties
+using StructHelpers: @batteries
 
 const DVSCF_STAR = @NamedTuple begin
     open::Bool
@@ -24,7 +24,7 @@ end
 
 Represent the `INPUTPH` namelist of `ph.x`.
 """
-@auto_hash_equals struct PhNamelist <: Namelist
+struct PhNamelist <: Namelist
     amass::Vector{Union{Nothing,Float64}}
     outdir::String
     prefix::String
@@ -208,6 +208,7 @@ end
 PhNamelist(nml::PhNamelist; kwargs...) = setproperties(nml, kwargs...)
 PhNamelist(nml::PhNamelist, t::NamedTuple) = setproperties(nml, t)
 PhNamelist(nml::PhNamelist, dict::AbstractDict) = setproperties(nml, dict)
+@batteries PhNamelist eq = true hash = true
 
 function (x::VerbositySetter)(control::PhNamelist)
     @set! control.verbosity = x.v
@@ -220,7 +221,7 @@ end
 
 Represent the `INPUT` namelist of `q2r.x`.
 """
-@auto_hash_equals struct Q2rNamelist <: Namelist
+struct Q2rNamelist <: Namelist
     fildyn::String
     flfrc::String
     loto_2d::Bool
@@ -232,6 +233,7 @@ end
 Q2rNamelist(nml::Q2rNamelist; kwargs...) = setproperties(nml, kwargs...)
 Q2rNamelist(nml::Q2rNamelist, t::NamedTuple) = setproperties(nml, t)
 Q2rNamelist(nml::Q2rNamelist, dict::AbstractDict) = setproperties(nml, dict)
+@batteries Q2rNamelist eq = true hash = true
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
 """
@@ -239,7 +241,7 @@ Q2rNamelist(nml::Q2rNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 Represent the `INPUT` namelist of `matdyn.x`.
 """
-@auto_hash_equals struct MatdynNamelist <: Namelist
+struct MatdynNamelist <: Namelist
     dos::Bool
     deltaE::Float64
     ndos::Int
@@ -336,13 +338,14 @@ end
 MatdynNamelist(nml::MatdynNamelist; kwargs...) = setproperties(nml, kwargs...)
 MatdynNamelist(nml::MatdynNamelist, t::NamedTuple) = setproperties(nml, t)
 MatdynNamelist(nml::MatdynNamelist, dict::AbstractDict) = setproperties(nml, dict)
+@batteries MatdynNamelist eq = true hash = true
 
 """
     DynmatNamelist <: Namelist
 
 Represent the `INPUT` namelist of `dynmat.x`.
 """
-@auto_hash_equals struct DynmatNamelist <: Namelist
+struct DynmatNamelist <: Namelist
     asr::String
     axis::Int
     fildyn::String
@@ -385,6 +388,7 @@ end
 DynmatNamelist(nml::DynmatNamelist; kwargs...) = setproperties(nml, kwargs...)
 DynmatNamelist(nml::DynmatNamelist, t::NamedTuple) = setproperties(nml, t)
 DynmatNamelist(nml::DynmatNamelist, dict::AbstractDict) = setproperties(nml, dict)
+@batteries DynmatNamelist eq = true hash = true
 
 groupname(::Type{PhNamelist}) = "INPUTPH"
 groupname(::Type{Q2rNamelist}) = "INPUT"

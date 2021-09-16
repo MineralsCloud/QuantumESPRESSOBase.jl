@@ -25,7 +25,7 @@ const Maybe{T} = Union{T,Nothing}
 
 Represent the `CONTROL` namelist of `pw.x`.
 """
-@auto_hash_equals struct ControlNamelist <: Namelist
+struct ControlNamelist <: Namelist
     calculation::String
     title::String
     verbosity::String
@@ -150,7 +150,7 @@ wfcfiles(nml::ControlNamelist, n = 1) =
 
 Represent the `SYSTEM` namelist of `pw.x`.
 """
-@auto_hash_equals struct SystemNamelist <: Namelist
+struct SystemNamelist <: Namelist
     ibrav::Int8
     celldm::Vector{Maybe{Float64}}
     A::Float64
@@ -502,7 +502,7 @@ SystemNamelist(nml::SystemNamelist, dict::AbstractDict) = setproperties(nml, dic
 
 Represent the `ELECTRONS` namelist of `pw.x`.
 """
-@auto_hash_equals struct ElectronsNamelist <: Namelist
+struct ElectronsNamelist <: Namelist
     electron_maxstep::UInt
     scf_must_converge::Bool
     conv_thr::Float64
@@ -596,7 +596,7 @@ Represent the `IONS` namelist of `pw.x`.
 
 Input this namelist only if `calculation` is `"relax"`, `"md"`, `"vc-relax"`, or `"vc-md"`.
 """
-@auto_hash_equals struct IonsNamelist <: Namelist
+struct IonsNamelist <: Namelist
     ion_dynamics::String
     ion_positions::String
     pot_extrapolation::String
@@ -689,7 +689,7 @@ Represent the `CELL` namelist of `pw.x`.
 
 Input this namelist only if `calculation` is `"vc-relax"` or `"vc-md"`.
 """
-@auto_hash_equals struct CellNamelist <: Namelist
+struct CellNamelist <: Namelist
     cell_dynamics::String
     press::Float64
     wmass::Float64
@@ -745,7 +745,7 @@ CellNamelist(nml::CellNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 Represent the `DOS` namelist of `dos.x`.
 """
-@auto_hash_equals struct DosNamelist <: Namelist
+struct DosNamelist <: Namelist
     prefix::String
     outdir::String
     ngauss::Int
@@ -778,7 +778,7 @@ DosNamelist(nml::DosNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 Represent the `BANDS` namelist of `bands.x`.
 """
-@auto_hash_equals struct BandsNamelist <: Namelist
+struct BandsNamelist <: Namelist
     prefix::String
     outdir::String
     filband::String
@@ -825,6 +825,14 @@ end
 BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
 BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
 BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
+
+@batteries ControlNamelist eq = true hash = true
+@batteries SystemNamelist eq = true hash = true
+@batteries ElectronsNamelist eq = true hash = true
+@batteries IonsNamelist eq = true hash = true
+@batteries CellNamelist eq = true hash = true
+@batteries DosNamelist eq = true hash = true
+@batteries BandsNamelist eq = true hash = true
 
 function (x::VerbositySetter)(control::ControlNamelist)
     if x.v == "high"
