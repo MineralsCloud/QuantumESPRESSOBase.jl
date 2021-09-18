@@ -23,7 +23,6 @@ end
     PhNamelist(amass, outdir, prefix, niter_ph, tr2_ph, alpha_mix, nmix_ph, verbosity, reduce_io, max_seconds, fildyn, fildrho, fildvscf, epsil, lrpa, lnoloc, trans, lraman, eth_rps, eth_ns, dek, recover, low_directory_check, only_init, qplot, q2d, q_in_band_form, electron_phonon, lshift_q, zeu, zue, elop, fpol, ldisp, nogg, asr, ldiag, lqdir, search_sym, nq1, nq2, nq3, nk1, nk2, nk3, k1, k2, k3, start_irr, last_irr, nat_todo, modenum, start_q, last_q, dvscf_star, drho_star)
     PhNamelist(; kwargs...)
     PhNamelist(::PhNamelist; kwargs...)
-    PhNamelist(::PhNamelist, dict)
 
 Represent the `INPUTPH` namelist of `ph.x`.
 """
@@ -221,7 +220,6 @@ end
     Q2rNamelist(fildyn, flfrc, loto_2d, zasr)
     Q2rNamelist(; kwargs...)
     Q2rNamelist(::Q2rNamelist; kwargs...)
-    Q2rNamelist(::Q2rNamelist, dict)
 
 Represent the `INPUT` namelist of `q2r.x`.
 """
@@ -242,7 +240,6 @@ Q2rNamelist(nml::Q2rNamelist; kwargs...) = setproperties(nml, kwargs...)
     MatdynNamelist(dos, deltaE, ndos, nk1, nk2, nk3, asr, readtau, flfrc, fldos, flfrq, flvec, fleig, fldyn, fltau, amass, at, ntyp, l1, l2, l3, la2F, q_in_band_form, eigen_similarity, q_in_cryst_coord, na_ifc, fd, nosym, loto_2d)
     MatdynNamelist(; kwargs...)
     MatdynNamelist(::MatdynNamelist; kwargs...)
-    MatdynNamelist(::MatdynNamelist, dict)
 
 Represent the `INPUT` namelist of `matdyn.x`.
 """
@@ -347,7 +344,6 @@ MatdynNamelist(nml::MatdynNamelist; kwargs...) = setproperties(nml, kwargs...)
     DynmatNamelist(asr, axis, fildyn, filout, filmol, filxsf, fileig, amass, q, lperm, lplasma)
     DynmatNamelist(; kwargs...)
     DynmatNamelist(::DynmatNamelist; kwargs...)
-    DynmatNamelist(::DynmatNamelist, dict)
 
 Represent the `INPUT` namelist of `dynmat.x`.
 """
