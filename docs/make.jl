@@ -18,7 +18,9 @@ makedocs(;
         "Manual" => ["Installation" => "install.md", "Development" => "develop.md"],
         "API by module" => [
             "`QuantumESPRESSOBase` module" => "api/api.md",
-            "`Inputs` module" => "api/Inputs.md",
+            "`Inputs` module" => "api/Inputs/Inputs.md",
+            "`Inputs.PWscf` module" => "api/Inputs/PWscf.md",
+            "`Inputs.PHonon` module" => "api/Inputs/PHonon.md",
         ],
     ],
 )
