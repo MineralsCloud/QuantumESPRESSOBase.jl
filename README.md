@@ -14,7 +14,7 @@
 [![Coverage](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl)
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/organization/repository)
 
-[`QuantumESPRESSOBase.jl`](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl) provides
-the underlying data structures that represent the input and output of [Quantum
-ESPRESSO](https://www.quantum-espresso.org/). It is written purely in language
-[`Julia`](https://julialang.org/).
+[`QuantumESPRESSOBase.jl`](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl)
+provides the underlying data structures that represent the input and output of
+[Quantum ESPRESSO](https://www.quantum-espresso.org/). It is written purely in
+language [`Julia`](https://julialang.org/).
