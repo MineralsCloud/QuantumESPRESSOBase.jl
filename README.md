@@ -10,10 +10,11 @@
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/MineralsCloud/QuantumESPRESSOBase.jl?svg=true)](https://ci.appveyor.com/project/singularitti/QuantumESPRESSOBase-jl)
 [![Build Status](https://cloud.drone.io/api/badges/MineralsCloud/QuantumESPRESSOBase.jl/status.svg)](https://cloud.drone.io/MineralsCloud/QuantumESPRESSOBase.jl)
 [![Build Status](https://api.cirrus-ci.com/github/MineralsCloud/QuantumESPRESSOBase.jl.svg)](https://cirrus-ci.com/github/MineralsCloud/QuantumESPRESSOBase.jl)
+[![pipeline status](https://gitlab.com/singularitti/QuantumESPRESSOBase.jl/badges/master/pipeline.svg)](https://gitlab.com/singularitti/QuantumESPRESSOBase.jl/-/pipelines)
 [![Coverage](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl)
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/organization/repository)
 
-[`QuantumESPRESSOBase.jl`](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl) provides
-the underlying data structures that represent the input and output of [Quantum
-ESPRESSO](https://www.quantum-espresso.org/). It is written purely in language
-[`Julia`](https://julialang.org/).
+[`QuantumESPRESSOBase.jl`](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl)
+provides the underlying data structures that represent the input and output of
+[Quantum ESPRESSO](https://www.quantum-espresso.org/). It is written purely in
+language [`Julia`](https://julialang.org/).
