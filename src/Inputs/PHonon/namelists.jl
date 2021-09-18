@@ -209,8 +209,6 @@ function PhNamelist(;
     )
 end
 PhNamelist(nml::PhNamelist; kwargs...) = setproperties(nml, kwargs...)
-PhNamelist(nml::PhNamelist, t::NamedTuple) = setproperties(nml, t)
-PhNamelist(nml::PhNamelist, dict::AbstractDict) = setproperties(nml, dict)
 @batteries PhNamelist eq = true hash = true
 
 function (x::VerbositySetter)(control::PhNamelist)
@@ -237,8 +235,6 @@ function Q2rNamelist(; fildyn = " ", flfrc = " ", loto_2d = false, zasr = "no")
     return Q2rNamelist(fildyn, flfrc, loto_2d, zasr)
 end
 Q2rNamelist(nml::Q2rNamelist; kwargs...) = setproperties(nml, kwargs...)
-Q2rNamelist(nml::Q2rNamelist, t::NamedTuple) = setproperties(nml, t)
-Q2rNamelist(nml::Q2rNamelist, dict::AbstractDict) = setproperties(nml, dict)
 @batteries Q2rNamelist eq = true hash = true
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
@@ -345,8 +341,6 @@ function MatdynNamelist(;
     )
 end
 MatdynNamelist(nml::MatdynNamelist; kwargs...) = setproperties(nml, kwargs...)
-MatdynNamelist(nml::MatdynNamelist, t::NamedTuple) = setproperties(nml, t)
-MatdynNamelist(nml::MatdynNamelist, dict::AbstractDict) = setproperties(nml, dict)
 @batteries MatdynNamelist eq = true hash = true
 
 """
@@ -398,8 +392,6 @@ function DynmatNamelist(;
     )
 end
 DynmatNamelist(nml::DynmatNamelist; kwargs...) = setproperties(nml, kwargs...)
-DynmatNamelist(nml::DynmatNamelist, t::NamedTuple) = setproperties(nml, t)
-DynmatNamelist(nml::DynmatNamelist, dict::AbstractDict) = setproperties(nml, dict)
 @batteries DynmatNamelist eq = true hash = true
 
 groupname(::Type{PhNamelist}) = "INPUTPH"
