@@ -1,9 +1,10 @@
 ```@meta
 CurrentModule = QuantumESPRESSOBase
-DocTestSetup = :(using QuantumESPRESSOBase)
 ```
 
 # QuantumESPRESSOBase
+
+Documentation for [QuantumESPRESSOBase](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl).
 
 See the [Index](@ref main-index) for the complete list of documented functions and types.
 
@@ -12,9 +13,13 @@ See the [Index](@ref main-index) for the complete list of documented functions a
 ```@contents
 Pages = [
     "install.md",
+    "develop.md",
     "api/api.md",
+    "api/Inputs/Inputs.md",
+    "api/Inputs/PWscf.md",
+    "api/Inputs/PHonon.md",
 ]
-Depth = 1
+Depth = 3
 ```
 
 ### [Index](@id main-index)
