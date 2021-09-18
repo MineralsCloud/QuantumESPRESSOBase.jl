@@ -133,8 +133,6 @@ function ControlNamelist(;
     )
 end
 ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml; kwargs...)
-ControlNamelist(nml::ControlNamelist, t::NamedTuple) = setproperties(nml, t)
-ControlNamelist(nml::ControlNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
 wfcfiles(nml::ControlNamelist, n = 1) =
@@ -488,8 +486,6 @@ function SystemNamelist(;
     )
 end
 SystemNamelist(nml::SystemNamelist; kwargs...) = setproperties(nml; kwargs...)
-SystemNamelist(nml::SystemNamelist, t::NamedTuple) = setproperties(nml, t)
-SystemNamelist(nml::SystemNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     ElectronsNamelist(electron_maxstep, scf_must_converge, conv_thr, adaptive_thr, conv_thr_init, conv_thr_multi, mixing_mode, mixing_beta, mixing_ndim, mixing_fixed_ns, diagonalization, ortho_para, diago_thr_init, diago_cg_maxiter, diago_david_ndim, diago_full_acc, efield, efield_cart, efield_phase, startingpot, startingwfc, tqr)
@@ -579,8 +575,6 @@ function ElectronsNamelist(;
     )
 end
 ElectronsNamelist(nml::ElectronsNamelist; kwargs...) = setproperties(nml; kwargs...)
-ElectronsNamelist(nml::ElectronsNamelist, t::NamedTuple) = setproperties(nml, t)
-ElectronsNamelist(nml::ElectronsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     IonsNamelist(ion_dynamics, ion_positions, pot_extrapolation, wfc_extrapolation, remove_rigid_rot, ion_temperature, tempw, tolp, delta_t, nraise, refold_pos, upscale, bfgs_ndim, trust_radius_max, trust_radius_min, trust_radius_ini, w_1, w_2)
@@ -671,8 +665,6 @@ function IonsNamelist(;
     )
 end
 IonsNamelist(nml::IonsNamelist; kwargs...) = setproperties(nml; kwargs...)
-IonsNamelist(nml::IonsNamelist, t::NamedTuple) = setproperties(nml, t)
-IonsNamelist(nml::IonsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     CellNamelist(cell_dynamics, press, wmass, cell_factor, press_conv_thr, cell_dofree)
@@ -731,8 +723,6 @@ function CellNamelist(;
     )
 end
 CellNamelist(nml::CellNamelist; kwargs...) = setproperties(nml; kwargs...)
-CellNamelist(nml::CellNamelist, t::NamedTuple) = setproperties(nml, t)
-CellNamelist(nml::CellNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 # The following default values are picked from `<QE source>/PP/src/dos.f90`
 """
@@ -767,8 +757,6 @@ function DosNamelist(;
     return DosNamelist(prefix, outdir, ngauss, degauss, Emin, Emax, DeltaE, fildos)
 end
 DosNamelist(nml::DosNamelist; kwargs...) = setproperties(nml; kwargs...)
-DosNamelist(nml::DosNamelist, t::NamedTuple) = setproperties(nml, t)
-DosNamelist(nml::DosNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
 """
@@ -824,8 +812,6 @@ function BandsNamelist(;
     )
 end
 BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
-BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
-BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 @batteries ControlNamelist eq = true hash = true
 @batteries SystemNamelist eq = true hash = true
