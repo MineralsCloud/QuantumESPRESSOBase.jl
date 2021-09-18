@@ -15,7 +15,9 @@ Pages = [
     "install.md",
     "develop.md",
     "api/api.md",
-    "api/Inputs.md",
+    "api/Inputs/Inputs.md",
+    "api/Inputs/PWscf.md",
+    "api/Inputs/PHonon.md",
 ]
 Depth = 3
 ```
