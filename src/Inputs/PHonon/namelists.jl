@@ -23,7 +23,6 @@ end
     PhNamelist(amass, outdir, prefix, niter_ph, tr2_ph, alpha_mix, nmix_ph, verbosity, reduce_io, max_seconds, fildyn, fildrho, fildvscf, epsil, lrpa, lnoloc, trans, lraman, eth_rps, eth_ns, dek, recover, low_directory_check, only_init, qplot, q2d, q_in_band_form, electron_phonon, lshift_q, zeu, zue, elop, fpol, ldisp, nogg, asr, ldiag, lqdir, search_sym, nq1, nq2, nq3, nk1, nk2, nk3, k1, k2, k3, start_irr, last_irr, nat_todo, modenum, start_q, last_q, dvscf_star, drho_star)
     PhNamelist(; kwargs...)
     PhNamelist(::PhNamelist; kwargs...)
-    PhNamelist(::PhNamelist, dict)
 
 Represent the `INPUTPH` namelist of `ph.x`.
 """
@@ -209,8 +208,6 @@ function PhNamelist(;
     )
 end
 PhNamelist(nml::PhNamelist; kwargs...) = setproperties(nml, kwargs...)
-PhNamelist(nml::PhNamelist, t::NamedTuple) = setproperties(nml, t)
-PhNamelist(nml::PhNamelist, dict::AbstractDict) = setproperties(nml, dict)
 @batteries PhNamelist eq = true hash = true
 
 function (x::VerbositySetter)(control::PhNamelist)
@@ -223,7 +220,6 @@ end
     Q2rNamelist(fildyn, flfrc, loto_2d, zasr)
     Q2rNamelist(; kwargs...)
     Q2rNamelist(::Q2rNamelist; kwargs...)
-    Q2rNamelist(::Q2rNamelist, dict)
 
 Represent the `INPUT` namelist of `q2r.x`.
 """
@@ -237,8 +233,6 @@ function Q2rNamelist(; fildyn = " ", flfrc = " ", loto_2d = false, zasr = "no")
     return Q2rNamelist(fildyn, flfrc, loto_2d, zasr)
 end
 Q2rNamelist(nml::Q2rNamelist; kwargs...) = setproperties(nml, kwargs...)
-Q2rNamelist(nml::Q2rNamelist, t::NamedTuple) = setproperties(nml, t)
-Q2rNamelist(nml::Q2rNamelist, dict::AbstractDict) = setproperties(nml, dict)
 @batteries Q2rNamelist eq = true hash = true
 
 # The following default values are picked from `<QE source>/PHonon/PH/matdyn.f90`
@@ -246,7 +240,6 @@ Q2rNamelist(nml::Q2rNamelist, dict::AbstractDict) = setproperties(nml, dict)
     MatdynNamelist(dos, deltaE, ndos, nk1, nk2, nk3, asr, readtau, flfrc, fldos, flfrq, flvec, fleig, fldyn, fltau, amass, at, ntyp, l1, l2, l3, la2F, q_in_band_form, eigen_similarity, q_in_cryst_coord, na_ifc, fd, nosym, loto_2d)
     MatdynNamelist(; kwargs...)
     MatdynNamelist(::MatdynNamelist; kwargs...)
-    MatdynNamelist(::MatdynNamelist, dict)
 
 Represent the `INPUT` namelist of `matdyn.x`.
 """
@@ -345,15 +338,12 @@ function MatdynNamelist(;
     )
 end
 MatdynNamelist(nml::MatdynNamelist; kwargs...) = setproperties(nml, kwargs...)
-MatdynNamelist(nml::MatdynNamelist, t::NamedTuple) = setproperties(nml, t)
-MatdynNamelist(nml::MatdynNamelist, dict::AbstractDict) = setproperties(nml, dict)
 @batteries MatdynNamelist eq = true hash = true
 
 """
     DynmatNamelist(asr, axis, fildyn, filout, filmol, filxsf, fileig, amass, q, lperm, lplasma)
     DynmatNamelist(; kwargs...)
     DynmatNamelist(::DynmatNamelist; kwargs...)
-    DynmatNamelist(::DynmatNamelist, dict)
 
 Represent the `INPUT` namelist of `dynmat.x`.
 """
@@ -398,8 +388,6 @@ function DynmatNamelist(;
     )
 end
 DynmatNamelist(nml::DynmatNamelist; kwargs...) = setproperties(nml, kwargs...)
-DynmatNamelist(nml::DynmatNamelist, t::NamedTuple) = setproperties(nml, t)
-DynmatNamelist(nml::DynmatNamelist, dict::AbstractDict) = setproperties(nml, dict)
 @batteries DynmatNamelist eq = true hash = true
 
 groupname(::Type{PhNamelist}) = "INPUTPH"

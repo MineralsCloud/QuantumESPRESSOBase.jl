@@ -20,7 +20,6 @@ const Maybe{T} = Union{T,Nothing}
     ControlNamelist(calculation, title, verbosity, restart_mode, wf_collect, nstep, iprint, tstress, tprnfor, dt, outdir, wfcdir, prefix, lkpoint_dir, max_seconds, etot_conv_thr, forc_conv_thr, disk_io, pseudo_dir, tefield, dipfield, lelfield, nberrycyc, lorbm, lberry, gdir, nppstr, lfcpopt, gate)
     ControlNamelist(; kwargs...)
     ControlNamelist(::ControlNamelist; kwargs...)
-    ControlNamelist(::ControlNamelist, dict)
 
 Represent the `CONTROL` namelist of `pw.x`.
 """
@@ -133,8 +132,6 @@ function ControlNamelist(;
     )
 end
 ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml; kwargs...)
-ControlNamelist(nml::ControlNamelist, t::NamedTuple) = setproperties(nml, t)
-ControlNamelist(nml::ControlNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
 wfcfiles(nml::ControlNamelist, n = 1) =
@@ -144,7 +141,6 @@ wfcfiles(nml::ControlNamelist, n = 1) =
     SystemNamelist(ibrav, celldm, A, B, C, cosAB, cosAC, cosBC, nat, ntyp, nbnd, tot_charge, starting_charge, tot_magnetization, starting_magnetization, ecutwfc, ecutrho, ecutfock, nr1, nr2, nr3, nr1s, nr2s, nr3s, nosym, nosym_evc, noinv, no_t_rev, force_symmorphic, use_all_frac, occupations, one_atom_occupations, starting_spin_angle, degauss, smearing, nspin, noncolin, ecfixed, qcutz, q2sigma, input_dft, exx_fraction, screening_parameter, exxdiv_treatment, x_gamma_extrapolation, ecutvcut, nqx1, nqx2, nqx3, localization_thr, lda_plus_u, lda_plus_u_kind, Hubbard_U, Hubbard_J0, Hubbard_alpha, Hubbard_beta, starting_ns_eigenvalue, U_projection_type, edir, emaxpos, eopreg, eamp, angle1, angle2, constrained_magnetization, fixed_magnetization, lambda, report, lspinorb, assume_isolated, esm_bc, esm_w, esm_efield, esm_nfit, fcp_mu, vdw_corr, london, london_s6, london_c6, london_rvdw, london_rcut, ts_vdw_econv_thr, ts_vdw_isolated, xdm, xdm_a1, xdm_a2, space_group, uniqueb, origin_choice, rhombohedral, zgate, relaxz, block, block_1, block_2, block_height)
     SystemNamelist(; kwargs...)
     SystemNamelist(::SystemNamelist; kwargs...)
-    SystemNamelist(::SystemNamelist, dict)
 
 Represent the `SYSTEM` namelist of `pw.x`.
 """
@@ -488,14 +484,11 @@ function SystemNamelist(;
     )
 end
 SystemNamelist(nml::SystemNamelist; kwargs...) = setproperties(nml; kwargs...)
-SystemNamelist(nml::SystemNamelist, t::NamedTuple) = setproperties(nml, t)
-SystemNamelist(nml::SystemNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     ElectronsNamelist(electron_maxstep, scf_must_converge, conv_thr, adaptive_thr, conv_thr_init, conv_thr_multi, mixing_mode, mixing_beta, mixing_ndim, mixing_fixed_ns, diagonalization, ortho_para, diago_thr_init, diago_cg_maxiter, diago_david_ndim, diago_full_acc, efield, efield_cart, efield_phase, startingpot, startingwfc, tqr)
     ElectronsNamelist(; kwargs...)
     ElectronsNamelist(::ElectronsNamelist; kwargs...)
-    ElectronsNamelist(::ElectronsNamelist, dict)
 
 Represent the `ELECTRONS` namelist of `pw.x`.
 """
@@ -579,14 +572,11 @@ function ElectronsNamelist(;
     )
 end
 ElectronsNamelist(nml::ElectronsNamelist; kwargs...) = setproperties(nml; kwargs...)
-ElectronsNamelist(nml::ElectronsNamelist, t::NamedTuple) = setproperties(nml, t)
-ElectronsNamelist(nml::ElectronsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     IonsNamelist(ion_dynamics, ion_positions, pot_extrapolation, wfc_extrapolation, remove_rigid_rot, ion_temperature, tempw, tolp, delta_t, nraise, refold_pos, upscale, bfgs_ndim, trust_radius_max, trust_radius_min, trust_radius_ini, w_1, w_2)
     IonsNamelist(; kwargs...)
     IonsNamelist(::IonsNamelist; kwargs...)
-    IonsNamelist(::IonsNamelist, dict)
 
 Represent the `IONS` namelist of `pw.x`.
 
@@ -671,14 +661,11 @@ function IonsNamelist(;
     )
 end
 IonsNamelist(nml::IonsNamelist; kwargs...) = setproperties(nml; kwargs...)
-IonsNamelist(nml::IonsNamelist, t::NamedTuple) = setproperties(nml, t)
-IonsNamelist(nml::IonsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 """
     CellNamelist(cell_dynamics, press, wmass, cell_factor, press_conv_thr, cell_dofree)
     CellNamelist(; kwargs...)
     CellNamelist(::CellNamelist; kwargs...)
-    CellNamelist(::CellNamelist, dict)
 
 Represent the `CELL` namelist of `pw.x`.
 
@@ -731,15 +718,12 @@ function CellNamelist(;
     )
 end
 CellNamelist(nml::CellNamelist; kwargs...) = setproperties(nml; kwargs...)
-CellNamelist(nml::CellNamelist, t::NamedTuple) = setproperties(nml, t)
-CellNamelist(nml::CellNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 # The following default values are picked from `<QE source>/PP/src/dos.f90`
 """
     DosNamelist(prefix, outdir, ngauss, degauss, Emin, Emax, DeltaE, fildos)
     DosNamelist(; kwargs...)
     DosNamelist(::DosNamelist; kwargs...)
-    DosNamelist(::DosNamelist, dict)
 
 Represent the `DOS` namelist of `dos.x`.
 """
@@ -767,15 +751,12 @@ function DosNamelist(;
     return DosNamelist(prefix, outdir, ngauss, degauss, Emin, Emax, DeltaE, fildos)
 end
 DosNamelist(nml::DosNamelist; kwargs...) = setproperties(nml; kwargs...)
-DosNamelist(nml::DosNamelist, t::NamedTuple) = setproperties(nml, t)
-DosNamelist(nml::DosNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 # The following default values are picked from `<QE source>/PP/src/bands.f90`
 """
     BandsNamelist(prefix, outdir, filband, spin_component, lsigma, lp, filp, lsym, no_overlap, plot_2d, firstk, lastk)
     BandsNamelist(; kwargs...)
     BandsNamelist(::BandsNamelist; kwargs...)
-    BandsNamelist(::BandsNamelist, dict)
 
 Represent the `BANDS` namelist of `bands.x`.
 """
@@ -824,8 +805,6 @@ function BandsNamelist(;
     )
 end
 BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
-BandsNamelist(nml::BandsNamelist, t::NamedTuple) = setproperties(nml, t)
-BandsNamelist(nml::BandsNamelist, dict::AbstractDict) = setproperties(nml, dict)
 
 @batteries ControlNamelist eq = true hash = true
 @batteries SystemNamelist eq = true hash = true
