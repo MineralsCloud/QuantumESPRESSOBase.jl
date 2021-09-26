@@ -92,7 +92,7 @@ function Lattice(bravais::BodyCenteredCubic, p)
     end
 end
 Lattice(::PrimitiveHexagonal, p) =
-    Lattice(p[1] * [[1, 0, 0], [-1 / 2, √3 / 2, 0], [0, 0, p[3]]])
+    Lattice(p[1] * [[1, 0, 0], [-1 / 2, √3 / 2, 0], [0, 0, p[3]]]...)
 function Lattice(bravais::RCenteredHexagonal, p)
     cosγ = p[4]
     ty = sqrt((1 - cosγ) / 6)
