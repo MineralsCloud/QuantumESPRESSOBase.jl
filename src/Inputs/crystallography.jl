@@ -71,7 +71,7 @@ function Bravais(ibrav::Ibrav)
     elseif i == 14
         return PrimitiveTriclinic(true)
     else
-        @assert false "this should never happen!"
+        throw(ArgumentError("ambiguous `ibrav` number $i is given!"))
     end
 end
 

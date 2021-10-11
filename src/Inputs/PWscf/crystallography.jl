@@ -50,18 +50,22 @@ cellvolume(nml::SystemNamelist) = cellvolume(Lattice(nml))
 Return the volume of the cell based on the information given in a `PWInput`, in atomic unit.
 """
 function cellvolume(input::PWInput)
-    if isnothing(input.cell_parameters)
-        return cellvolume(Lattice(input.system))
-    else
-        if optionof(input.cell_parameters) == "alat"
-            # If no value of `celldm` is changed...
-            if isnothing(input.system.celldm[1])
-                throw(InformationNotEnough("parameter `celldm[1]` needed!"))
-            else
-                return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
+    if input.system.ibrav == 0
+        if isnothing(input.cell_parameters)
+            throw(InformationNotEnough("`ibrav` is 0, must read cell parameters!"))
+        else
+            if optionof(input.cell_parameters) == "alat"
+                # If no value of `celldm` is changed...
+                if isnothing(input.system.celldm[1])
+                    throw(InformationNotEnough("parameter `celldm[1]` needed!"))
+                else
+                    return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
+                end
+            else  # "bohr" or "angstrom"
+                return cellvolume(input.cell_parameters)
             end
-        else  # "bohr" or "angstrom"
-            return cellvolume(input.cell_parameters)
         end
+    else
+        return cellvolume(Lattice(input.system))
     end
 end
