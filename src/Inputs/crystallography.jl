@@ -113,7 +113,7 @@ function Lattice(::BodyCenteredTetragonal, celldm)
     return Lattice(celldm[1] / 2 * [[1, -1, r], [1, 1, r], [-1, -1, r]]...)
 end
 Lattice(::PrimitiveOrthorhombic, p) =
-    Lattice(p[1] * [[1, 0, 0], [0, p[2], 0], [0, 0, p[3]]])
+    Lattice(p[1] * [[1, 0, 0], [0, p[2], 0], [0, 0, p[3]]]...)
 function Lattice(bravais::BCenteredOrthorhombic, p)
     a, b, c = p[1] .* (1, p[2], p[3])
     if bravais.obverse
