@@ -38,13 +38,12 @@ end
 (x::PressureSetter{<:AbstractQuantity})(template::PWInput) =
     PressureSetter(ustrip(u"kbar", x.press))(template)
 
-struct CellParametersCardSetter <: Setter
-    card::CellParametersCard
+struct CardSetter{T} <: Setter
+    card::T
 end
 
-struct AtomicPositionsCardSetter <: Setter
-    card::AtomicPositionsCard
-end
+const CellParametersCardSetter = CardSetter{CellParametersCard}
+const AtomicPositionsCardSetter = CardSetter{AtomicPositionsCard}
 
 function (x::CellParametersCardSetter)(template::PWInput)
     if isnothing(template.cell_parameters)
@@ -66,8 +65,8 @@ function (x::CellParametersCardSetter)(template::PWInput)
                 @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
             end
         else
-            if optionof(cell_parameters) == "alat"
-                error("not matched!")
+            if optionof(x.card) == "alat"
+                throw(InformationNotEnough("the `CellParametersCard` does not have units!"))
             end
         end
     end
