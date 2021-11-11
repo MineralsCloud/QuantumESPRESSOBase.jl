@@ -65,8 +65,8 @@ function (x::CellParametersCardSetter)(template::PWInput)
                 @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
             end
         else
-            if optionof(cell_parameters) == "alat"
-                error("not matched!")
+            if optionof(x.card) == "alat"
+                throw(InformationNotEnough("the `CellParametersCard` does not have units!"))
             end
         end
     end
