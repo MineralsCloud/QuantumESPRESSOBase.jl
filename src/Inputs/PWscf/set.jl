@@ -38,13 +38,12 @@ end
 (x::PressureSetter{<:AbstractQuantity})(template::PWInput) =
     PressureSetter(ustrip(u"kbar", x.press))(template)
 
-struct CellParametersCardSetter <: Setter
-    card::CellParametersCard
+struct CardSetter{T} <: Setter
+    card::T
 end
 
-struct AtomicPositionsCardSetter <: Setter
-    card::AtomicPositionsCard
-end
+const CellParametersCardSetter = CardSetter{CellParametersCard}
+const AtomicPositionsCardSetter = CardSetter{AtomicPositionsCard}
 
 function (x::CellParametersCardSetter)(template::PWInput)
     if isnothing(template.cell_parameters)
