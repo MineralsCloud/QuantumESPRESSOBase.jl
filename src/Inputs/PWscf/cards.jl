@@ -16,7 +16,7 @@ export AtomicSpecies,
     KMeshCard,
     GammaPointCard,
     SpecialPointsCard
-export optconvert, optionpool, eachatom
+export optconvert, optionpool, eachatom, getpotentials
 
 """
     AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
