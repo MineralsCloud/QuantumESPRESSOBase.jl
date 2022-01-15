@@ -94,20 +94,20 @@ function mkexitfile(template::PWInput)
 end
 
 """
-    allnamelists(x::PWInput)
+    allnamelists(input::PWInput)
 
 Return an iterator of all `Namelist`s from a `PWInput`. You may want to `collect` them.
 """
-allnamelists(x::PWInput) =
-    (getfield(x, f) for f in (:control, :system, :electrons, :ions, :cell))
+allnamelists(input::PWInput) =
+    (getfield(input, f) for f in (:control, :system, :electrons, :ions, :cell))
 
 """
-    allcards(x::PWInput)
+    allcards(input::PWInput)
 
 Get all `Card`s from a `PWInput`.
 """
-allcards(x::PWInput) = (
-    getfield(x, f) for f in (
+allcards(input::PWInput) = (
+    getfield(input, f) for f in (
         :atomic_species,
         :atomic_positions,
         :k_points,
@@ -119,38 +119,38 @@ allcards(x::PWInput) = (
 )
 
 """
-    required_namelists(x::PWInput)
+    required_namelists(input::PWInput)
 
 Return an iterator of required `Namelist`s from a `PWInput`. You may want to `collect` them.
 """
-required_namelists(x::PWInput) = (getfield(x, f) for f in (:control, :system, :electrons))
+required_namelists(input::PWInput) = (getfield(input, f) for f in (:control, :system, :electrons))
 
 """
-    optional_namelists(x::PWInput)
+    optional_namelists(input::PWInput)
 
 Return an iterator of optional `Namelist`s from a `PWInput`. You may want to `collect` them.
 """
-optional_namelists(x::PWInput) = (getfield(x, f) for f in (:ions, :cell))
+optional_namelists(input::PWInput) = (getfield(input, f) for f in (:ions, :cell))
 
 """
-    required_cards(x::PWInput)
+    required_cards(input::PWInput)
 
 Return an iterator of required `Card`s from a `PWInput`. You may want to `collect` them.
 """
-required_cards(x::PWInput) =
-    (getfield(x, f) for f in (:atomic_species, :atomic_positions, :k_points))
+required_cards(input::PWInput) =
+    (getfield(input, f) for f in (:atomic_species, :atomic_positions, :k_points))
 
 """
-    optional_cards(x::PWInput)
+    optional_cards(input::PWInput)
 
 Return an iterator of optional `Card`s from a `PWInput`. You may want to `collect` them.
 """
-optional_cards(x::PWInput) =
-    (getfield(x, f) for f in (:cell_parameters, :constraints, :occupations, :atomic_forces))
+optional_cards(input::PWInput) =
+    (getfield(input, f) for f in (:cell_parameters, :constraints, :occupations, :atomic_forces))
 
 """
-    getpotentials(x::PWInput)
+    getpotentials(input::PWInput)
 
 Get the pseudopotential names from a `PWInput`.
 """
-getpotentials(x::PWInput) = getpotentials(x.atomic_species)
+getpotentials(input::PWInput) = getpotentials(input.atomic_species)
