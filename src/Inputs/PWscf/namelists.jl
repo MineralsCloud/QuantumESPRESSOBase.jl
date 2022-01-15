@@ -10,7 +10,7 @@ export ControlNamelist,
     BandsNamelist,
     ElectronicTemperatureSetter,
     ElecTempSetter
-export xmldir, wfcfiles, getpseudodir
+export getxmldir, wfcfiles, getpseudodir
 
 # From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4
 const Maybe{T} = Union{T,Nothing}
@@ -133,10 +133,10 @@ function ControlNamelist(;
 end
 ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml; kwargs...)
 
-xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
+getxmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
 
 wfcfiles(nml::ControlNamelist, n = 1) =
-    [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
+    [joinpath(getxmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
 
 
 """
