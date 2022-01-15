@@ -28,8 +28,6 @@ The `atom` field accepts at most 3 characters.
 
 # Examples
 ```jldoctest
-julia> using QuantumESPRESSOBase.Cards.PWscf
-
 julia> AtomicSpecies("C1", 12, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
 AtomicSpecies("C1", 12.0, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
 
@@ -104,8 +102,6 @@ The `atom` field accepts at most 3 characters.
 
 # Examples
 ```jldoctest
-julia> using QuantumESPRESSOBase.Cards.PWscf
-
 julia> AtomicPosition('O', [0, 0, 0])
 AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 1, 1])
 
