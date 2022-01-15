@@ -10,7 +10,7 @@ export ControlNamelist,
     BandsNamelist,
     ElectronicTemperatureSetter,
     ElecTempSetter
-export xmldir, wfcfiles
+export getxmldir, wfcfiles, getpseudodir
 
 # From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4
 const Maybe{T} = Union{T,Nothing}
@@ -133,9 +133,18 @@ function ControlNamelist(;
 end
 ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml; kwargs...)
 
-xmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
+getxmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
+
 wfcfiles(nml::ControlNamelist, n = 1) =
-    [joinpath(xmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
+    [joinpath(getxmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
+
+
+"""
+    getpseudodir(nml::ControlNamelist)
+
+Get the directory storing the pseudopotential files.
+"""
+getpseudodir(nml::ControlNamelist) = abspath(expanduser(nml.pseudo_dir))
 
 """
     SystemNamelist(ibrav, celldm, A, B, C, cosAB, cosAC, cosBC, nat, ntyp, nbnd, tot_charge, starting_charge, tot_magnetization, starting_magnetization, ecutwfc, ecutrho, ecutfock, nr1, nr2, nr3, nr1s, nr2s, nr3s, nosym, nosym_evc, noinv, no_t_rev, force_symmorphic, use_all_frac, occupations, one_atom_occupations, starting_spin_angle, degauss, smearing, nspin, noncolin, ecfixed, qcutz, q2sigma, input_dft, exx_fraction, screening_parameter, exxdiv_treatment, x_gamma_extrapolation, ecutvcut, nqx1, nqx2, nqx3, localization_thr, lda_plus_u, lda_plus_u_kind, Hubbard_U, Hubbard_J0, Hubbard_alpha, Hubbard_beta, starting_ns_eigenvalue, U_projection_type, edir, emaxpos, eopreg, eamp, angle1, angle2, constrained_magnetization, fixed_magnetization, lambda, report, lspinorb, assume_isolated, esm_bc, esm_w, esm_efield, esm_nfit, fcp_mu, vdw_corr, london, london_s6, london_c6, london_rvdw, london_rcut, ts_vdw_econv_thr, ts_vdw_isolated, xdm, xdm_a1, xdm_a2, space_group, uniqueb, origin_choice, rhombohedral, zgate, relaxz, block, block_1, block_2, block_height)

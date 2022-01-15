@@ -154,3 +154,10 @@ optional_cards(input::PWInput) =
 Get the pseudopotential names from a `PWInput`.
 """
 getpotentials(input::PWInput) = getpotentials(input.atomic_species)
+
+"""
+    getpseudodir(input::PWInput)
+
+Get the directory storing the pseudopotential files.
+"""
+getpseudodir(input::PWInput) = getpseudodir(input.control)
