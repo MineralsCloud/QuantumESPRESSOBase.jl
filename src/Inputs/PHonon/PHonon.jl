@@ -5,7 +5,7 @@
 
 # Examples
 
-```jldoctest
+```julia
 julia>
 ```
 """
