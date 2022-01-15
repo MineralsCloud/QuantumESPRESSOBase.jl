@@ -5,7 +5,7 @@
 
 # Examples
 
-```jldoctest
+```julia
 julia>
 ```
 """
@@ -58,9 +58,7 @@ optionof(card::Card) = hasfield(typeof(card), :option) ? getfield(card, :option)
 Return the allowed options for `Card` `T`.
 
 # Examples
-```jldoctest
-julia> using QuantumESPRESSOBase.Cards, QuantumESPRESSOBase.Cards.PWscf
-
+```julia
 julia> optionpool(AtomicPositionsCard)
 ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 

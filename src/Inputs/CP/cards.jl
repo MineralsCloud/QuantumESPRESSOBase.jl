@@ -7,7 +7,7 @@ Represent each line of the `ATOMIC_SPECIES` card in QE.
 The `atom` field accepts at most 3 characters.
 
 # Examples
-```jldoctest
+```julia
 julia> using QuantumESPRESSOBase.Cards.PWscf
 
 julia> AtomicSpecies("C1", 12, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
@@ -72,7 +72,7 @@ Represent each line of the `ATOMIC_POSITIONS` card in QE.
 The `atom` field accepts at most 3 characters.
 
 # Examples
-```jldoctest
+```julia
 julia> using QuantumESPRESSOBase.Cards.PWscf
 
 julia> AtomicPosition('O', [0, 0, 0])
@@ -189,7 +189,7 @@ Represent each line of the `ATOMIC_VELOCITIES` card in QE's `CP` package.
 The `atom` field accepts at most 3 characters.
 
 # Examples
-```jldoctest
+```julia
 julia> using QuantumESPRESSOBase.Cards.CP
 
 julia> AtomicVelocity("H", [0.140374e-04, -0.333683e-04, 0.231834e-04])
