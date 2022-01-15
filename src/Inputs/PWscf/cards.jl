@@ -16,7 +16,7 @@ export AtomicSpecies,
     KMeshCard,
     GammaPointCard,
     SpecialPointsCard
-export optconvert, optionpool, eachatom
+export optconvert, optionpool, eachatom, getpotentials
 
 """
     AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
@@ -84,6 +84,17 @@ end
 @batteries AtomicSpeciesCard eq = true hash = true
 
 """
+    getpotentials(card::AtomicSpeciesCard)
+
+Get the pseudopotential names from an `AtomicSpeciesCard`.
+"""
+function getpotentials(card::AtomicSpeciesCard)
+    return map(card.data) do atomic_species
+        atomic_species.pseudopot
+    end
+end
+
+"""
     AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
     AtomicPosition(x::AtomicSpecies, pos, if_pos)
 
@@ -148,8 +159,8 @@ struct AtomicPositionsCard <: Card
 end
 AtomicPositionsCard(cell::Cell, option) =
     AtomicPositionsCard(map(cell.types, eachcol(cell.positions)) do atom, position
-        AtomicPosition(string(atom), position)
-    end, option)
+            AtomicPosition(string(atom), position)
+        end, option)
 @batteries AtomicPositionsCard eq = true hash = true
 
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
