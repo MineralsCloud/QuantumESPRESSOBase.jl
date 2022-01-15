@@ -35,4 +35,6 @@ PWInput
 
 ```@docs
 optconvert
+getpseudodir
+getpotentials
 ```
