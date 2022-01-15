@@ -147,3 +147,10 @@ Return an iterator of optional `Card`s from a `PWInput`. You may want to `collec
 """
 optional_cards(x::PWInput) =
     (getfield(x, f) for f in (:cell_parameters, :constraints, :occupations, :atomic_forces))
+
+"""
+    getpotentials(x::PWInput)
+
+Get the pseudopotential names from a `PWInput`.
+"""
+getpotentials(x::PWInput) = getpotentials(x.atomic_species)
