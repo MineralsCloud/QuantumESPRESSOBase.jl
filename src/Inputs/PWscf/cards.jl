@@ -159,8 +159,8 @@ struct AtomicPositionsCard <: Card
 end
 AtomicPositionsCard(cell::Cell, option) =
     AtomicPositionsCard(map(cell.types, eachcol(cell.positions)) do atom, position
-        AtomicPosition(string(atom), position)
-    end, option)
+            AtomicPosition(string(atom), position)
+        end, option)
 @batteries AtomicPositionsCard eq = true hash = true
 
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
