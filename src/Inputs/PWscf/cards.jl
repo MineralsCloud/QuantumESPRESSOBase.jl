@@ -84,6 +84,17 @@ end
 @batteries AtomicSpeciesCard eq = true hash = true
 
 """
+    getpotentials(card::AtomicSpeciesCard)
+
+Get the pseudopotential names from an `AtomicSpeciesCard`.
+"""
+function getpotentials(card::AtomicSpeciesCard)
+    return map(card.data) do atomic_species
+        atomic_species.pseudopot
+    end
+end
+
+"""
     AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
     AtomicPosition(x::AtomicSpecies, pos, if_pos)
 
