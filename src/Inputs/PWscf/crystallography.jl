@@ -2,6 +2,10 @@ using LinearAlgebra: det
 
 using ..Inputs: Ibrav
 
+struct InformationNotEnough <: Exception
+    msg::AbstractString
+end
+
 """
     Bravais(nml::SystemNamelist)
 
@@ -15,9 +19,36 @@ Bravais(nml::SystemNamelist) = Bravais(Ibrav(nml.ibrav))
 Return a `Lattice` from a `SystemNamelist`.
 """
 Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
+"""
+    Lattice(card::CellParametersCard)
 
-struct InformationNotEnough <: Exception
-    msg::AbstractString
+Return a `Lattice` from a `CellParametersCard`.
+"""
+function Lattice(card::CellParametersCard)
+    m, option = transpose(card.data), optionof(card)
+    if option == "alat"
+        throw(InformationNotEnough("parameter `celldm[1]` needed!"))
+    elseif option == "bohr"
+        return Lattice(m)
+    else  # option == "angstrom"
+        return Lattice(m * ustrip(u"bohr", 1u"angstrom"))
+    end
+end
+"""
+    Lattice(card::PWInput)
+
+Return a `Lattice` from a `PWInput`.
+"""
+function Lattice(input::PWInput)
+    if isnothing(input.cell_parameters)
+        return Lattice(input.system)
+    else
+        if optionof(input.cell_parameters) == "alat"
+            return Lattice(input.cell_parameters) * first(input.system.celldm)
+        else
+            return Lattice(input.cell_parameters)
+        end
+    end
 end
 
 """
