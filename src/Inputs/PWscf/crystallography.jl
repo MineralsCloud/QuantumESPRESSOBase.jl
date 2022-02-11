@@ -21,11 +21,13 @@ Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
 Return a `Lattice` from a `CellParametersCard`.
 """
 function Lattice(card::CellParametersCard)
-    m, option = transpose(card.data), card.option
-    return if option == "alat" || option == "bohr"
-        Lattice(m)
+    m, option = transpose(card.data), optionof(card)
+    if option == "alat"
+        throw(InformationNotEnough("parameter `celldm[1]` needed!"))
+    elseif option == "bohr"
+        return Lattice(m)
     else  # option == "angstrom"
-        Lattice(m * ustrip(u"bohr", 1u"angstrom"))
+        return Lattice(m * ustrip(u"bohr", 1u"angstrom"))
     end
 end
 """
