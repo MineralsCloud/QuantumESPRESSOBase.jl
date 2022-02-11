@@ -2,6 +2,10 @@ using LinearAlgebra: det
 
 using ..Inputs: Ibrav
 
+struct InformationNotEnough <: Exception
+    msg::AbstractString
+end
+
 """
     Bravais(nml::SystemNamelist)
 
@@ -45,10 +49,6 @@ function Lattice(input::PWInput)
             return Lattice(input.cell_parameters)
         end
     end
-end
-
-struct InformationNotEnough <: Exception
-    msg::AbstractString
 end
 
 """
