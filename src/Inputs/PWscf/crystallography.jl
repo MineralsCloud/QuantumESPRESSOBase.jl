@@ -1,5 +1,4 @@
 using LinearAlgebra: det
-using Unitful: uparse, unitmodules
 
 using ..Inputs: Ibrav
 
@@ -23,10 +22,10 @@ Return a `Lattice` from a `CellParametersCard`.
 """
 function Lattice(card::CellParametersCard)
     m, option = transpose(card.data), card.option
-    return if option == "alat"
+    return if option == "alat" || option == "bohr"
         Lattice(m)
-    else  # option in ("bohr", "angstrom")
-        Lattice(m * uparse(option; unit_context = unitmodules))
+    else  # option == "angstrom"
+        Lattice(m * ustrip(u"bohr", 1u"angstrom"))
     end
 end
 
