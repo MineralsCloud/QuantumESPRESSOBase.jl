@@ -2,7 +2,7 @@ using LinearAlgebra: det
 
 using ..Inputs: Ibrav
 
-struct InformationNotEnough <: Exception
+struct LackCellInfoError <: Exception
     msg::AbstractString
 end
 
@@ -27,7 +27,7 @@ Return a `Lattice` from a `CellParametersCard`.
 function Lattice(card::CellParametersCard)
     m, option = transpose(card.data), optionof(card)
     if option == "alat"
-        throw(InformationNotEnough("parameter `celldm[1]` needed!"))
+        throw(LackCellInfoError("parameter `celldm[1]` needed!"))
     elseif option == "bohr"
         return Lattice(m)
     else  # option == "angstrom"
@@ -66,7 +66,7 @@ function cellvolume(card::AbstractCellParametersCard)
     elseif option == "angstrom"
         return ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
     else  # option == "alat"
-        throw(InformationNotEnough("parameter `celldm[1]` needed!"))
+        throw(LackCellInfoError("parameter `celldm[1]` needed!"))
     end
 end
 """
@@ -83,12 +83,12 @@ Return the volume of the cell based on the information given in a `PWInput`, in 
 function cellvolume(input::PWInput)
     if input.system.ibrav == 0
         if isnothing(input.cell_parameters)
-            throw(InformationNotEnough("`ibrav` is 0, must read cell parameters!"))
+            throw(LackCellInfoError("`ibrav` is 0, must read cell parameters!"))
         else
             if optionof(input.cell_parameters) == "alat"
                 # If no value of `celldm` is changed...
                 if isnothing(input.system.celldm[1])
-                    throw(InformationNotEnough("parameter `celldm[1]` needed!"))
+                    throw(LackCellInfoError("parameter `celldm[1]` needed!"))
                 else
                     return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
                 end

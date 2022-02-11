@@ -66,7 +66,7 @@ function (x::CellParametersCardSetter)(template::PWInput)
             end
         else
             if optionof(x.card) == "alat"
-                throw(InformationNotEnough("the `CellParametersCard` does not have units!"))
+                throw(LackCellInfoError("the `CellParametersCard` does not have units!"))
             end
         end
     end
