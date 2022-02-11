@@ -1,4 +1,5 @@
 using LinearAlgebra: det
+using Unitful: uparse, unitmodules
 
 using ..Inputs: Ibrav
 
@@ -15,6 +16,19 @@ Bravais(nml::SystemNamelist) = Bravais(Ibrav(nml.ibrav))
 Return a `Lattice` from a `SystemNamelist`.
 """
 Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
+"""
+    Lattice(card::CellParametersCard)
+
+Return a `Lattice` from a `CellParametersCard`.
+"""
+function Lattice(card::CellParametersCard)
+    m, option = transpose(card.data), card.option
+    return if option == "alat"
+        Lattice(m)
+    else  # option in ("bohr", "angstrom")
+        Lattice(m * uparse(option; unit_context = unitmodules))
+    end
+end
 
 struct InformationNotEnough <: Exception
     msg::AbstractString
