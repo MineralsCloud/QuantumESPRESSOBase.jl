@@ -28,6 +28,22 @@ function Lattice(card::CellParametersCard)
         Lattice(m * ustrip(u"bohr", 1u"angstrom"))
     end
 end
+"""
+    Lattice(card::PWInput)
+
+Return a `Lattice` from a `PWInput`.
+"""
+function Lattice(input::PWInput)
+    if isnothing(input.cell_parameters)
+        return Lattice(input.system)
+    else
+        if optionof(input.cell_parameters) == "alat"
+            return Lattice(input.cell_parameters) * first(input.system.celldm)
+        else
+            return Lattice(input.cell_parameters)
+        end
+    end
+end
 
 struct InformationNotEnough <: Exception
     msg::AbstractString
