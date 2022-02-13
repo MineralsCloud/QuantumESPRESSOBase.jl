@@ -44,7 +44,7 @@ function Lattice(input::PWInput)
         return Lattice(input.system)
     else
         if optionof(input.cell_parameters) == "alat"
-            return Lattice(input.cell_parameters) * first(input.system.celldm)
+            return Lattice(transpose(input.cell_parameters.data) * first(input.system.celldm))
         else
             return Lattice(input.cell_parameters)
         end
