@@ -111,15 +111,15 @@ function find_symmetry(input::PWInput, symprec = 1e-5)
     option = input.atomic_positions.option
     data = Iterators.map(input.atomic_positions.data) do atomic_position
         atom, position = atomic_position.atom, atomic_position.pos
-        # In unit of bohr
+        # `position` is a `Vector` in unit of "bohr"
         if option == "alat"
-            position .*= input.system.celldm[1]
+            position *= input.system.celldm[1]
         elseif option == "bohr"
             position
         elseif option == "angstrom"
-            ustrip.(u"bohr", position .* u"angstrom")
+            ustrip.(u"bohr", position * u"angstrom")
         elseif option == "crystal"
-            CartesianFromFractional(lattice).(position)
+            CartesianFromFractional(lattice)(position)
         else  # option == "crystal_sg"
             error("unimplemented!")  # FIXME
         end
