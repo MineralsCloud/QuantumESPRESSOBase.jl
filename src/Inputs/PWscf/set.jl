@@ -46,30 +46,16 @@ const CellParametersCardSetter = CardSetter{CellParametersCard}
 const AtomicPositionsCardSetter = CardSetter{AtomicPositionsCard}
 
 function (x::CellParametersCardSetter)(template::PWInput)
-    if isnothing(template.cell_parameters)
-        if optionof(x.card) in ("bohr", "angstrom")
-            @set! template.cell_parameters = x.card
-            @set! template.system.ibrav = 0
-            @set! template.system.celldm = zeros(6)
-        else
+    if optionof(x.card) == "alat"
+        if isnothing(template.cell_parameters) || optionof(template.cell_parameters) == "alat"
             @set! template.system.celldm = [template.system.celldm[1]]
-            @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
+        else  # optionof(template.cell_parameters) is "bohr" or "angstrom"
+            throw(LackCellInfoError("the `CellParametersCard` does not have units!"))
         end
-    else
-        if optionof(template.cell_parameters) == "alat"
-            if optionof(x.card) in ("bohr", "angstrom")
-                @set! template.system.celldm = [template.system.celldm[1]]
-                cell_parameters =
-                    CellParametersCard(x.card.data / template.system.celldm[1], "alat")
-            else  # "alat"
-                @warn "Please note this `CellParametersCard` might not have the same `alat` as before!"
-            end
-        else
-            if optionof(x.card) == "alat"
-                throw(LackCellInfoError("the `CellParametersCard` does not have units!"))
-            end
-        end
+    else  # "bohr" or "angstrom"
+        @set! template.system.celldm = zeros(6)
     end
+    @set! template.system.ibrav = 0
     @set! template.cell_parameters = x.card
     return template
 end
