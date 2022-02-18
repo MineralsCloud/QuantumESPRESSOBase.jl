@@ -124,7 +124,7 @@ function find_symmetry(input::PWInput, symprec = 1e-5)
         end
         atom, position
     end
-    cell = Cell(lattice, first.(data), last.(data))
+    cell = Cell(lattice.data, first.(data), last.(data))
     dataset = get_dataset(cell, symprec)
     return dataset
 end
