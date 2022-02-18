@@ -1,3 +1,4 @@
+using Compat: Iterators
 using Crystallography: CartesianFromFractional
 using LinearAlgebra: det
 using Spglib: get_dataset
@@ -108,21 +109,21 @@ end
 function find_symmetry(input::PWInput, symprec = 1e-5)
     lattice = Lattice(input)
     option = input.atomic_positions.option
-    data = map(input.atomic_positions.data) do atomic_position
+    data = Iterators.map(input.atomic_positions.data) do atomic_position
         atom, position = atomic_position.atom, atomic_position.pos
         # In unit of bohr
         if option == "alat"
-            position *= input.system.celldm[1]
+            position .*= input.system.celldm[1]
         elseif option == "bohr"
             position
         elseif option == "angstrom"
-            ustrip(u"bohr", position * u"angstrom")
+            ustrip.(u"bohr", position .* u"angstrom")
         elseif option == "crystal"
-            CartesianFromFractional(lattice)(position)
+            CartesianFromFractional(lattice).(position)
         else  # option == "crystal_sg"
             error("unimplemented!")  # FIXME
         end
-        atom, position
+        position, atom
     end
     cell = Cell(lattice.data, first.(data), last.(data))
     dataset = get_dataset(cell, symprec)
