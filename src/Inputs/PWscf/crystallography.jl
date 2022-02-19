@@ -5,6 +5,8 @@ using Spglib: get_dataset
 
 using ..Inputs: Ibrav
 
+import Spglib: Cell
+
 export find_symmetry
 
 struct LackCellInfoError <: Exception
@@ -54,6 +56,13 @@ function Lattice(input::PWInput)
             return Lattice(input.cell_parameters)
         end
     end
+end
+
+function Cell(input::PWInput)
+    lattice = Lattice(input) * 1u"bohr"
+    positions = [atomic_position.pos for atomic_position in input.atomic_positions.data]
+    types = [atomic_position.atom[1:2] for atomic_position in input.atomic_positions.data]
+    return Cell(lattice, positions, types)
 end
 
 """
