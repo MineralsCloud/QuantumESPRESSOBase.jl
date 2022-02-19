@@ -5,6 +5,7 @@ using Spglib: get_dataset
 
 using ..Inputs: Ibrav
 
+import Crystallography: crystaldensity
 import Spglib: Cell
 
 export find_symmetry
@@ -113,6 +114,12 @@ function cellvolume(input::PWInput)
     else
         return cellvolume(Lattice(input.system))
     end
+end
+
+function crystaldensity(input::PWInput)
+    lattice = Lattice(input) * 1u"bohr"
+    atoms = (Symbol(atomic_position.atom[1:2]) for atomic_position in input.atomic_positions.data)
+    return crystaldensity(lattice, atoms)
 end
 
 function find_symmetry(input::PWInput, symprec = 1e-5)
