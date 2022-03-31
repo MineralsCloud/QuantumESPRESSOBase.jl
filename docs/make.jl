@@ -5,7 +5,7 @@ DocMeta.setdocmeta!(QuantumESPRESSOBase, :DocTestSetup, :(using QuantumESPRESSOB
 
 makedocs(;
     modules=[QuantumESPRESSOBase],
-    authors="Qi Zhang <singularitti@outlook.com>",
+    authors="Reno <singularitti@outlook.com>",
     repo="https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/blob/{commit}{path}#{line}",
     sitename="QuantumESPRESSOBase.jl",
     format=Documenter.HTML(;
