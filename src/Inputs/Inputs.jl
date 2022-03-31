@@ -13,6 +13,7 @@ module Inputs
 
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
 using Compat: only, isnothing
+using OrderedCollections: OrderedDict
 
 export optionof,
     optionpool,
@@ -27,7 +28,7 @@ export optionof,
 """
     dropdefault(nml::Namelist)
 
-Return an `AbstractDict` of non-default values of a `Namelist`.
+Return an [`OrderedDict`](https://juliacollections.github.io/OrderedCollections.jl/latest/ordered_containers.html#OrderedDicts-and-OrderedSets-1) of non-default values of a `Namelist`.
 """
 function dropdefault(nml::Namelist)
     default = typeof(nml)()  # Create a `Namelist` with all default values
@@ -39,7 +40,7 @@ function dropdefault(nml::Namelist)
     if isempty(result)
         @info "Every entry in the namelist is the default value!"
     end
-    return Dict{Symbol,Any}(result)
+    return OrderedDict{Symbol,Any}(result)
 end
 
 """
