@@ -118,7 +118,7 @@ end
 @testset "Construct a `PWInput`: silicon" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
-        control = ControlNamelist(
+        control = ControlNamelist(;
             tstress = true,
             tprnfor = true,
             outdir = raw"$TMP_DIR/",
@@ -126,8 +126,8 @@ end
             pseudo_dir = raw"$PSEUDO_DIR/",
         )
         system =
-            SystemNamelist(ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
-        electrons = ElectronsNamelist(conv_thr = 1.0e-8, diagonalization = "$diago")
+            SystemNamelist(; ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
+        electrons = ElectronsNamelist(; conv_thr = 1.0e-8, diagonalization = "$diago")
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([
             AtomicPosition("Si", [0.0, 0.0, 0.0]),
@@ -147,7 +147,7 @@ end
                 0.375 0.375 0.625 3.0
             ],
         )
-        object = PWInput(
+        object = PWInput(;
             control = control,
             system = system,
             electrons = electrons,
@@ -161,13 +161,13 @@ end
 @testset "Construct a `PWInput`: silicon bands" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
-        control = ControlNamelist(
+        control = ControlNamelist(;
             calculation = "bands",
             pseudo_dir = raw"$PSEUDO_DIR/",
             outdir = raw"$TMP_DIR/",
             prefix = "silicon",
         )
-        system = SystemNamelist(
+        system = SystemNamelist(;
             ibrav = 2,
             celldm = [10.2],
             nat = 2,
@@ -175,7 +175,7 @@ end
             ecutwfc = 18.0,
             nbnd = 8,
         )
-        electrons = ElectronsNamelist(diagonalization = "$diago")
+        electrons = ElectronsNamelist(; diagonalization = "$diago")
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([
             AtomicPosition("Si", [0.0, 0.0, 0.0]),
@@ -213,7 +213,7 @@ end
                 0.5 0.5 0.5 1.0
             ],
         )
-        object = PWInput(
+        object = PWInput(;
             control = control,
             system = system,
             electrons = electrons,
@@ -227,7 +227,7 @@ end
 @testset "Construct a `PWInput`: aluminium" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
-        control = ControlNamelist(
+        control = ControlNamelist(;
             calculation = "scf",
             restart_mode = "from_scratch",
             pseudo_dir = raw"$PSEUDO_DIR/",
@@ -236,7 +236,7 @@ end
             tprnfor = true,
             tstress = true,
         )
-        system = SystemNamelist(
+        system = SystemNamelist(;
             ibrav = 2,
             celldm = [7.50],
             nat = 1,
@@ -246,7 +246,7 @@ end
             smearing = "marzari-vanderbilt",
             degauss = 0.05,
         )
-        electrons = ElectronsNamelist(diagonalization = "$diago", mixing_beta = 0.7)
+        electrons = ElectronsNamelist(; diagonalization = "$diago", mixing_beta = 0.7)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Al", 26.98, "Al.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([AtomicPosition("Al", [0.0, 0.0, 0.0])])
         k_points = SpecialPointsCard(
@@ -313,7 +313,7 @@ end
                 0.4375000 0.4375000 0.5625000 3.00
             ],
         )
-        object = PWInput(
+        object = PWInput(;
             control = control,
             system = system,
             electrons = electrons,
