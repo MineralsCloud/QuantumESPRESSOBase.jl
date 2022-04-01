@@ -127,7 +127,7 @@ end
         )
         system =
             SystemNamelist(; ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
-        electrons = ElectronsNamelist(; conv_thr = 1.0e-8, diagonalization = "$diago")
+        electrons = ElectronsNamelist(; conv_thr = 1.0e-8, diagonalization = diago)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([
             AtomicPosition("Si", [0.0, 0.0, 0.0]),
@@ -175,7 +175,7 @@ end
             ecutwfc = 18.0,
             nbnd = 8,
         )
-        electrons = ElectronsNamelist(; diagonalization = "$diago")
+        electrons = ElectronsNamelist(; diagonalization = diago)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([
             AtomicPosition("Si", [0.0, 0.0, 0.0]),
@@ -246,7 +246,7 @@ end
             smearing = "marzari-vanderbilt",
             degauss = 0.05,
         )
-        electrons = ElectronsNamelist(; diagonalization = "$diago", mixing_beta = 0.7)
+        electrons = ElectronsNamelist(; diagonalization = diago, mixing_beta = 0.7)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Al", 26.98, "Al.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([AtomicPosition("Al", [0.0, 0.0, 0.0])])
         k_points = SpecialPointsCard(
