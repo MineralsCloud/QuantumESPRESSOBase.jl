@@ -1,44 +1,44 @@
 module PWscf
 
-using Test
-
-using Setfield
+using Test: @testset, @test, @test_throws
+using Crystallography: ReciprocalPoint
+using Setfield: @set
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase
 using QuantumESPRESSOBase.Inputs.PWscf
 
-@testset "Constructing `AtomicSpecies`" begin
+@testset "Construct `AtomicSpecies`" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L128.
     x = AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
     @test_throws AssertionError @set x.atom = "sulfur"
     @test_throws InexactError @set x.mass = 1im
     @test x == AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
-    @test AtomicSpecies(
+    @test x == AtomicSpecies(
         AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764]),
         32.066,
         "S.pz-n-rrkjus_psl.0.1.UPF",
-    ) == x
+    )
 end
 
-@testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
+@testset "Construct `AtomicSpeciesCard` from a `StructArray`" begin
     a = ["Al", "As"]
     m = [24590.7655930491, 68285.4024548272]
     pp = ["Al.pbe-n-kjpaw_psl.1.0.0.UPF", "As.pbe-n-kjpaw_psl.1.0.0.UPF"]
     card = AtomicSpeciesCard(StructArray{AtomicSpecies}((a, m, pp)))
-    @test card.data == [
+    @test card == AtomicSpeciesCard([
         AtomicSpecies("Al", 24590.7655930491, "Al.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
-    ]
+    ])
     push!(card.data, AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"))
-    @test card.data == [
+    @test card == AtomicSpeciesCard([
         AtomicSpecies("Al", 24590.7655930491, "Al.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
-    ]
+    ])
 end
 
-@testset "Constructing `AtomicPosition`" begin
+@testset "Construct `AtomicPosition`" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
     x = AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764])
     @test_throws AssertionError @set x.atom = "sulfur"
@@ -46,13 +46,13 @@ end
     @test_throws ErrorException x.posi = [0.1, 0.2, 0.3]  # Given a wrong field name
     @test x.if_pos == [1, 1, 1]
     @test x == AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764])
-    @test AtomicPosition(
+    @test x == AtomicPosition(
         AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
         [0.500000000, 0.288675130, 1.974192764],
-    ) == x
+    )
 end
 
-@testset "Test constructing `AtomicPositionsCard` from `StructArray`s" begin
+@testset "Construct `AtomicPositionsCard` from a `StructArray`" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
     a = ["S", "Mo", "S"]
     pos = [
@@ -64,14 +64,17 @@ end
         StructArray{AtomicPosition}((a, pos, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
         "alat",
     )
-    @test card.data == [
-        AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
-        AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
-        AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
-    ]
+    @test card == AtomicPositionsCard(
+        [
+            AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
+            AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
+            AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
+        ],
+        "alat",
+    )
 end
 
-@testset "Constructing `CellParametersCard`" begin
+@testset "Construct `CellParametersCard`" begin
     #Data from https://gitlab.com/QEF/q-e/blob/master/NEB/examples/neb1.in
     option = "bohr"
     data = [
@@ -95,27 +98,27 @@ end
     @test CellParametersCard(data).option == "alat" # default option is alat
 end
 
-@testset "Constructing `AtomicForce`" begin
+@testset "Construct `AtomicForce`" begin
     x = AtomicForce("H", [1, 2, 3])
     @test_throws DimensionMismatch @set x.force = [1, 2]
     @test_throws DimensionMismatch @set x.force = [1, 2, 3, 4]
 end
 
-@testset "Test constructing `AtomicForce` from `StructArray`" begin
+@testset "Construct `AtomicForce` from a `StructArray`" begin
     a = ["H", "O", "H"]
     f = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     card = AtomicForcesCard(StructArray{AtomicForce}((a, f)))
-    @test card.data == [
+    @test card == AtomicForcesCard([
         AtomicForce("H", [1, 2, 3]),
         AtomicForce("O", [4, 5, 6]),
         AtomicForce("H", [7, 8, 9]),
-    ]
+    ])
 end
 
-@testset "Test constructing a `PWInput`: silicon" begin
+@testset "Construct a `PWInput`: silicon" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
-        control = ControlNamelist(
+        control = ControlNamelist(;
             tstress = true,
             tprnfor = true,
             outdir = raw"$TMP_DIR/",
@@ -123,8 +126,8 @@ end
             pseudo_dir = raw"$PSEUDO_DIR/",
         )
         system =
-            SystemNamelist(ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
-        electrons = ElectronsNamelist(conv_thr = 1.0e-8, diagonalization = "$diago")
+            SystemNamelist(; ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
+        electrons = ElectronsNamelist(; conv_thr = 1.0e-8, diagonalization = diago)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([
             AtomicPosition("Si", [0.0, 0.0, 0.0]),
@@ -144,28 +147,37 @@ end
                 0.375 0.375 0.625 3.0
             ],
         )
-        object = PWInput(
+        input = PWInput(;
             control = control,
             system = system,
             electrons = electrons,
             atomic_species = atomic_species,
             atomic_positions = atomic_positions,
             k_points = k_points,
-            cell_parameters = nothing,
+        )
+        @test input.cell_parameters === nothing
+        @test input.electrons.diagonalization == diago
+        @test input == PWInput(;
+            control = control,
+            system = system,
+            electrons = electrons,
+            atomic_species = atomic_species,
+            atomic_positions = atomic_positions,
+            k_points = k_points,
         )
     end
 end
 
-@testset "Test constructing a `PWInput`: silicon bands" begin
+@testset "Construct a `PWInput`: silicon bands" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
-        control = ControlNamelist(
+        control = ControlNamelist(;
             calculation = "bands",
             pseudo_dir = raw"$PSEUDO_DIR/",
             outdir = raw"$TMP_DIR/",
             prefix = "silicon",
         )
-        system = SystemNamelist(
+        system = SystemNamelist(;
             ibrav = 2,
             celldm = [10.2],
             nat = 2,
@@ -173,7 +185,7 @@ end
             ecutwfc = 18.0,
             nbnd = 8,
         )
-        electrons = ElectronsNamelist(diagonalization = "$diago")
+        electrons = ElectronsNamelist(; diagonalization = diago)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([
             AtomicPosition("Si", [0.0, 0.0, 0.0]),
@@ -211,22 +223,32 @@ end
                 0.5 0.5 0.5 1.0
             ],
         )
-        object = PWInput(
+        input = PWInput(;
             control = control,
             system = system,
             electrons = electrons,
             atomic_species = atomic_species,
             atomic_positions = atomic_positions,
             k_points = k_points,
-            cell_parameters = nothing,
+        )
+        @test input.cell_parameters === nothing
+        @test input.electrons.diagonalization == diago
+        # Test whether equality holds for different constructions of `PWInput`
+        @test input == PWInput(;
+            control = control,
+            system = system,
+            electrons = electrons,
+            atomic_species = atomic_species,
+            atomic_positions = atomic_positions,
+            k_points = k_points,
         )
     end
 end
 
-@testset "Test constructing a `PWInput`: aluminium" begin
+@testset "Construct a `PWInput`: aluminium" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
-        control = ControlNamelist(
+        control = ControlNamelist(;
             calculation = "scf",
             restart_mode = "from_scratch",
             pseudo_dir = raw"$PSEUDO_DIR/",
@@ -235,7 +257,7 @@ end
             tprnfor = true,
             tstress = true,
         )
-        system = SystemNamelist(
+        system = SystemNamelist(;
             ibrav = 2,
             celldm = [7.50],
             nat = 1,
@@ -245,7 +267,7 @@ end
             smearing = "marzari-vanderbilt",
             degauss = 0.05,
         )
-        electrons = ElectronsNamelist(diagonalization = "$diago", mixing_beta = 0.7)
+        electrons = ElectronsNamelist(; diagonalization = diago, mixing_beta = 0.7)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Al", 26.98, "Al.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([AtomicPosition("Al", [0.0, 0.0, 0.0])])
         k_points = SpecialPointsCard(
@@ -312,15 +334,86 @@ end
                 0.4375000 0.4375000 0.5625000 3.00
             ],
         )
-        object = PWInput(
+        input = PWInput(;
             control = control,
             system = system,
             electrons = electrons,
             atomic_species = atomic_species,
             atomic_positions = atomic_positions,
             k_points = k_points,
-            cell_parameters = nothing,
         )
+        @test input.cell_parameters === nothing
+        @test input.electrons.diagonalization == diago
+        @test input == PWInput(;
+            control = control,
+            system = system,
+            electrons = electrons,
+            atomic_species = atomic_species,
+            atomic_positions = atomic_positions,
+            k_points = k_points,
+        )
+        @test input.k_points == SpecialPointsCard([
+            ReciprocalPoint([0.0625, 0.0625, 0.0625], 1.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.1875], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.3125], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.4375], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.5625], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.6875], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.8125], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.9375], 3.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.1875], 3.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.3125], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.4375], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.5625], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.6875], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.9375], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.3125], 3.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.4375], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.5625], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.6875], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.9375], 6.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.4375], 3.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.5625], 6.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.6875], 6.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.9375], 6.0),
+            ReciprocalPoint([0.0625, 0.5625, 0.5625], 3.0),
+            ReciprocalPoint([0.0625, 0.5625, 0.6875], 6.0),
+            ReciprocalPoint([0.0625, 0.5625, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.6875, 0.6875], 3.0),
+            ReciprocalPoint([0.0625, 0.6875, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.8125, 0.8125], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.1875], 1.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.3125], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.4375], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.5625], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.6875], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.8125], 3.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.3125], 3.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.4375], 6.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.5625], 6.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.6875], 6.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.8125], 6.0),
+            ReciprocalPoint([0.1875, 0.4375, 0.4375], 3.0),
+            ReciprocalPoint([0.1875, 0.4375, 0.5625], 6.0),
+            ReciprocalPoint([0.1875, 0.4375, 0.6875], 6.0),
+            ReciprocalPoint([0.1875, 0.4375, 0.8125], 6.0),
+            ReciprocalPoint([0.1875, 0.5625, 0.5625], 3.0),
+            ReciprocalPoint([0.1875, 0.5625, 0.6875], 6.0),
+            ReciprocalPoint([0.1875, 0.6875, 0.6875], 3.0),
+            ReciprocalPoint([0.3125, 0.3125, 0.3125], 1.0),
+            ReciprocalPoint([0.3125, 0.3125, 0.4375], 3.0),
+            ReciprocalPoint([0.3125, 0.3125, 0.5625], 3.0),
+            ReciprocalPoint([0.3125, 0.3125, 0.6875], 3.0),
+            ReciprocalPoint([0.3125, 0.4375, 0.4375], 3.0),
+            ReciprocalPoint([0.3125, 0.4375, 0.5625], 6.0),
+            ReciprocalPoint([0.3125, 0.4375, 0.6875], 6.0),
+            ReciprocalPoint([0.3125, 0.5625, 0.5625], 3.0),
+            ReciprocalPoint([0.4375, 0.4375, 0.4375], 1.0),
+            ReciprocalPoint([0.4375, 0.4375, 0.5625], 3.0),
+        ])
     end
 end
 
