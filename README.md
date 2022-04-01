@@ -12,9 +12,22 @@
 [![pipeline status](https://gitlab.com/singularitti/QuantumESPRESSOBase.jl/badges/master/pipeline.svg)](https://gitlab.com/singularitti/QuantumESPRESSOBase.jl/-/pipelines)
 [![Coverage](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl)
 [![PkgEval](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/Q/QuantumESPRESSOBase.svg)](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/report.html)
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/organization/repository)
+[![GitHub license](https://img.shields.io/github/license/MineralsCloud/QuantumESPRESSOBase.jl)](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/blob/master/LICENSE)
 
-[`QuantumESPRESSOBase.jl`](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl)
-provides the underlying data structures that represent the input and output of
-[Quantum ESPRESSO](https://www.quantum-espresso.org/). It is written purely in
-language [`Julia`](https://julialang.org/).
+[`QuantumESPRESSOBase.jl`](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl) declares
+basic data types and methods for manipulating crystal structures, generating input files for
+[Quantum ESPRESSO](https://www.quantum-espresso.org/), error checking before running, etc.
+It is written purely in language [`Julia`](https://julialang.org/).
+
+Please view the [arXiv prepint here](https://arxiv.org/abs/2109.11724) and cite this package as:
+
+```bibtex
+@misc{zhang2021textttexpress,
+      title={$\texttt{express}$: extensible, high-level workflows for swifter $\textit{ab initio}$ materials modeling},
+      author={Qi Zhang and Chaoxuan Gu and Jingyi Zhuang and Renata M. Wentzcovitch},
+      year={2021},
+      eprint={2109.11724},
+      archivePrefix={arXiv},
+      primaryClass={physics.comp-ph}
+}
+```
