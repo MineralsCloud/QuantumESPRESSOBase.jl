@@ -1,7 +1,6 @@
 module Setters
 
 using Test: @testset, @test
-using Setfield: set
 using Unitful
 using UnitfulAtomic
 
