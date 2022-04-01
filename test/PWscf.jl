@@ -1,8 +1,8 @@
 module PWscf
 
-using Test
-
-using Setfield
+using Test: @testset, @test, @test_throws
+using Crystallography: ReciprocalPoint
+using Setfield: @set
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase
@@ -147,7 +147,17 @@ end
                 0.375 0.375 0.625 3.0
             ],
         )
-        object = PWInput(;
+        input = PWInput(;
+            control = control,
+            system = system,
+            electrons = electrons,
+            atomic_species = atomic_species,
+            atomic_positions = atomic_positions,
+            k_points = k_points,
+        )
+        @test input.cell_parameters === nothing
+        @test input.electrons.diagonalization == diago
+        @test input == PWInput(;
             control = control,
             system = system,
             electrons = electrons,
@@ -213,7 +223,18 @@ end
                 0.5 0.5 0.5 1.0
             ],
         )
-        object = PWInput(;
+        input = PWInput(;
+            control = control,
+            system = system,
+            electrons = electrons,
+            atomic_species = atomic_species,
+            atomic_positions = atomic_positions,
+            k_points = k_points,
+        )
+        @test input.cell_parameters === nothing
+        @test input.electrons.diagonalization == diago
+        # Test whether equality holds for different constructions of `PWInput`
+        @test input == PWInput(;
             control = control,
             system = system,
             electrons = electrons,
@@ -313,7 +334,7 @@ end
                 0.4375000 0.4375000 0.5625000 3.00
             ],
         )
-        object = PWInput(;
+        input = PWInput(;
             control = control,
             system = system,
             electrons = electrons,
@@ -321,6 +342,78 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
+        @test input.cell_parameters === nothing
+        @test input.electrons.diagonalization == diago
+        @test input == PWInput(;
+            control = control,
+            system = system,
+            electrons = electrons,
+            atomic_species = atomic_species,
+            atomic_positions = atomic_positions,
+            k_points = k_points,
+        )
+        @test input.k_points == SpecialPointsCard([
+            ReciprocalPoint([0.0625, 0.0625, 0.0625], 1.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.1875], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.3125], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.4375], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.5625], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.6875], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.8125], 3.0),
+            ReciprocalPoint([0.0625, 0.0625, 0.9375], 3.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.1875], 3.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.3125], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.4375], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.5625], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.6875], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.1875, 0.9375], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.3125], 3.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.4375], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.5625], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.6875], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.3125, 0.9375], 6.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.4375], 3.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.5625], 6.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.6875], 6.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.4375, 0.9375], 6.0),
+            ReciprocalPoint([0.0625, 0.5625, 0.5625], 3.0),
+            ReciprocalPoint([0.0625, 0.5625, 0.6875], 6.0),
+            ReciprocalPoint([0.0625, 0.5625, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.6875, 0.6875], 3.0),
+            ReciprocalPoint([0.0625, 0.6875, 0.8125], 6.0),
+            ReciprocalPoint([0.0625, 0.8125, 0.8125], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.1875], 1.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.3125], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.4375], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.5625], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.6875], 3.0),
+            ReciprocalPoint([0.1875, 0.1875, 0.8125], 3.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.3125], 3.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.4375], 6.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.5625], 6.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.6875], 6.0),
+            ReciprocalPoint([0.1875, 0.3125, 0.8125], 6.0),
+            ReciprocalPoint([0.1875, 0.4375, 0.4375], 3.0),
+            ReciprocalPoint([0.1875, 0.4375, 0.5625], 6.0),
+            ReciprocalPoint([0.1875, 0.4375, 0.6875], 6.0),
+            ReciprocalPoint([0.1875, 0.4375, 0.8125], 6.0),
+            ReciprocalPoint([0.1875, 0.5625, 0.5625], 3.0),
+            ReciprocalPoint([0.1875, 0.5625, 0.6875], 6.0),
+            ReciprocalPoint([0.1875, 0.6875, 0.6875], 3.0),
+            ReciprocalPoint([0.3125, 0.3125, 0.3125], 1.0),
+            ReciprocalPoint([0.3125, 0.3125, 0.4375], 3.0),
+            ReciprocalPoint([0.3125, 0.3125, 0.5625], 3.0),
+            ReciprocalPoint([0.3125, 0.3125, 0.6875], 3.0),
+            ReciprocalPoint([0.3125, 0.4375, 0.4375], 3.0),
+            ReciprocalPoint([0.3125, 0.4375, 0.5625], 6.0),
+            ReciprocalPoint([0.3125, 0.4375, 0.6875], 6.0),
+            ReciprocalPoint([0.3125, 0.5625, 0.5625], 3.0),
+            ReciprocalPoint([0.4375, 0.4375, 0.4375], 1.0),
+            ReciprocalPoint([0.4375, 0.4375, 0.5625], 3.0),
+        ])
     end
 end
 
