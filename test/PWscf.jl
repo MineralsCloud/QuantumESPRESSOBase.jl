@@ -8,37 +8,37 @@ using StructArrays: StructArray
 using QuantumESPRESSOBase
 using QuantumESPRESSOBase.Inputs.PWscf
 
-@testset "Constructing `AtomicSpecies`" begin
+@testset "Construct `AtomicSpecies`" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L128.
     x = AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
     @test_throws AssertionError @set x.atom = "sulfur"
     @test_throws InexactError @set x.mass = 1im
     @test x == AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
-    @test AtomicSpecies(
+    @test x == AtomicSpecies(
         AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764]),
         32.066,
         "S.pz-n-rrkjus_psl.0.1.UPF",
-    ) == x
+    )
 end
 
-@testset "Test constructing `AtomicSpeciesCard` from `StructArray`s" begin
+@testset "Construct `AtomicSpeciesCard` from a `StructArray`" begin
     a = ["Al", "As"]
     m = [24590.7655930491, 68285.4024548272]
     pp = ["Al.pbe-n-kjpaw_psl.1.0.0.UPF", "As.pbe-n-kjpaw_psl.1.0.0.UPF"]
     card = AtomicSpeciesCard(StructArray{AtomicSpecies}((a, m, pp)))
-    @test card.data == [
+    @test card == AtomicSpeciesCard([
         AtomicSpecies("Al", 24590.7655930491, "Al.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
-    ]
+    ])
     push!(card.data, AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"))
-    @test card.data == [
+    @test card == AtomicSpeciesCard([
         AtomicSpecies("Al", 24590.7655930491, "Al.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("As", 68285.4024548272, "As.pbe-n-kjpaw_psl.1.0.0.UPF"),
         AtomicSpecies("Si", 25591.1924913552, "Si.pbe-n-kjpaw_psl.1.0.0.UPF"),
-    ]
+    ])
 end
 
-@testset "Constructing `AtomicPosition`" begin
+@testset "Construct `AtomicPosition`" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
     x = AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764])
     @test_throws AssertionError @set x.atom = "sulfur"
@@ -46,13 +46,13 @@ end
     @test_throws ErrorException x.posi = [0.1, 0.2, 0.3]  # Given a wrong field name
     @test x.if_pos == [1, 1, 1]
     @test x == AtomicPosition('S', [0.500000000, 0.288675130, 1.974192764])
-    @test AtomicPosition(
+    @test x == AtomicPosition(
         AtomicSpecies('S', 32.066, "S.pz-n-rrkjus_psl.0.1.UPF"),
         [0.500000000, 0.288675130, 1.974192764],
-    ) == x
+    )
 end
 
-@testset "Test constructing `AtomicPositionsCard` from `StructArray`s" begin
+@testset "Construct `AtomicPositionsCard` from a `StructArray`" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L129-L132.
     a = ["S", "Mo", "S"]
     pos = [
@@ -64,14 +64,17 @@ end
         StructArray{AtomicPosition}((a, pos, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
         "alat",
     )
-    @test card.data == [
-        AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
-        AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
-        AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
-    ]
+    @test card == AtomicPositionsCard(
+        [
+            AtomicPosition("S", [0.500000000, 0.288675130, 1.974192764]),
+            AtomicPosition("Mo", [0.000000000, 0.577350270, 2.462038339]),
+            AtomicPosition("S", [0.000000000, -0.577350270, 2.950837559]),
+        ],
+        "alat",
+    )
 end
 
-@testset "Constructing `CellParametersCard`" begin
+@testset "Construct `CellParametersCard`" begin
     #Data from https://gitlab.com/QEF/q-e/blob/master/NEB/examples/neb1.in
     option = "bohr"
     data = [
@@ -95,24 +98,24 @@ end
     @test CellParametersCard(data).option == "alat" # default option is alat
 end
 
-@testset "Constructing `AtomicForce`" begin
+@testset "Construct `AtomicForce`" begin
     x = AtomicForce("H", [1, 2, 3])
     @test_throws DimensionMismatch @set x.force = [1, 2]
     @test_throws DimensionMismatch @set x.force = [1, 2, 3, 4]
 end
 
-@testset "Test constructing `AtomicForce` from `StructArray`" begin
+@testset "Construct `AtomicForce` from a `StructArray`" begin
     a = ["H", "O", "H"]
     f = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     card = AtomicForcesCard(StructArray{AtomicForce}((a, f)))
-    @test card.data == [
+    @test card == AtomicForcesCard([
         AtomicForce("H", [1, 2, 3]),
         AtomicForce("O", [4, 5, 6]),
         AtomicForce("H", [7, 8, 9]),
-    ]
+    ])
 end
 
-@testset "Test constructing a `PWInput`: silicon" begin
+@testset "Construct a `PWInput`: silicon" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(
@@ -151,12 +154,11 @@ end
             atomic_species = atomic_species,
             atomic_positions = atomic_positions,
             k_points = k_points,
-            cell_parameters = nothing,
         )
     end
 end
 
-@testset "Test constructing a `PWInput`: silicon bands" begin
+@testset "Construct a `PWInput`: silicon bands" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(
@@ -218,12 +220,11 @@ end
             atomic_species = atomic_species,
             atomic_positions = atomic_positions,
             k_points = k_points,
-            cell_parameters = nothing,
         )
     end
 end
 
-@testset "Test constructing a `PWInput`: aluminium" begin
+@testset "Construct a `PWInput`: aluminium" begin
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(
@@ -319,7 +320,6 @@ end
             atomic_species = atomic_species,
             atomic_positions = atomic_positions,
             k_points = k_points,
-            cell_parameters = nothing,
         )
     end
 end
