@@ -125,7 +125,8 @@ allcards(input::PWInput) = (
 
 Return an iterator of required `Namelist`s from a `PWInput`. You may want to `collect` them.
 """
-required_namelists(input::PWInput) = (getfield(input, f) for f in (:control, :system, :electrons))
+required_namelists(input::PWInput) =
+    (getfield(input, f) for f in (:control, :system, :electrons))
 
 """
     optional_namelists(input::PWInput)
