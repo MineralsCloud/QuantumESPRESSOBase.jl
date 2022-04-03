@@ -155,7 +155,6 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
-        @test input.cell_parameters === nothing
         @test input.electrons.diagonalization == diago
         @test input == PWInput(;
             control = control,
@@ -165,6 +164,10 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
+        @test collect(required_namelists(input)) == [control, system, electrons]
+        @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
+        @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
+        @test collect(optional_cards(input)) == fill(nothing, 4)
     end
 end
 
@@ -231,7 +234,6 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
-        @test input.cell_parameters === nothing
         @test input.electrons.diagonalization == diago
         # Test whether equality holds for different constructions of `PWInput`
         @test input == PWInput(;
@@ -242,6 +244,10 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
+        @test collect(required_namelists(input)) == [control, system, electrons]
+        @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
+        @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
+        @test collect(optional_cards(input)) == fill(nothing, 4)
     end
 end
 
@@ -342,7 +348,6 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
-        @test input.cell_parameters === nothing
         @test input.electrons.diagonalization == diago
         @test input == PWInput(;
             control = control,
@@ -414,6 +419,10 @@ end
             ReciprocalPoint([0.4375, 0.4375, 0.4375], 1.0),
             ReciprocalPoint([0.4375, 0.4375, 0.5625], 3.0),
         ])
+        @test collect(required_namelists(input)) == [control, system, electrons]
+        @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
+        @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
+        @test collect(optional_cards(input)) == fill(nothing, 4)
     end
 end
 
