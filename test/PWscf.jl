@@ -168,6 +168,11 @@ end
         @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
         @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
         @test collect(optional_cards(input)) == fill(nothing, 4)
+        @test collect(allnamelists(input)) == collect(
+            Iterators.flatten((required_namelists(input), optional_namelists(input))),
+        )
+        @test collect(allcards(input)) ==
+              collect(Iterators.flatten((required_cards(input), optional_cards(input))))
     end
 end
 
@@ -248,6 +253,11 @@ end
         @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
         @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
         @test collect(optional_cards(input)) == fill(nothing, 4)
+        @test collect(allnamelists(input)) == collect(
+            Iterators.flatten((required_namelists(input), optional_namelists(input))),
+        )
+        @test collect(allcards(input)) ==
+              collect(Iterators.flatten((required_cards(input), optional_cards(input))))
     end
 end
 
@@ -423,6 +433,11 @@ end
         @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
         @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
         @test collect(optional_cards(input)) == fill(nothing, 4)
+        @test collect(allnamelists(input)) == collect(
+            Iterators.flatten((required_namelists(input), optional_namelists(input))),
+        )
+        @test collect(allcards(input)) ==
+              collect(Iterators.flatten((required_cards(input), optional_cards(input))))
     end
 end
 
