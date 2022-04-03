@@ -1,3 +1,5 @@
+using Compat: Iterators
+
 import ..Inputs:
     allnamelists,
     allcards,
@@ -149,7 +151,9 @@ required_cards(input::PWInput) =
 Return an iterator of optional `Card`s from a `PWInput`. You may want to `collect` them.
 """
 optional_cards(input::PWInput) =
-    (getfield(input, f) for f in (:cell_parameters, :constraints, :occupations, :atomic_forces))
+    Iterators.map((:cell_parameters, :constraints, :occupations, :atomic_forces)) do f
+        getfield(input, f)
+    end
 
 """
     getpotentials(input::PWInput)
