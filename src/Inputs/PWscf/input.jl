@@ -84,6 +84,8 @@ function PWInput(;
     )
 end
 
+@batteries PWInput eq = true hash = true
+
 exitfile(template::PWInput) = abspath(
     expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT")),
 )
