@@ -110,8 +110,8 @@ allnamelists(input::PWInput) =
 
 Get all `Card`s from a `PWInput`.
 """
-allcards(input::PWInput) = (
-    getfield(input, f) for f in (
+allcards(input::PWInput) =
+    Iterators.map((
         :atomic_species,
         :atomic_positions,
         :k_points,
@@ -119,8 +119,9 @@ allcards(input::PWInput) = (
         :constraints,
         :occupations,
         :atomic_forces,
-    )
-)
+    )) do f
+        getfield(input, f)
+    end
 
 """
     required_namelists(input::PWInput)
