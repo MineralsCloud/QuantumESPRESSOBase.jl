@@ -169,3 +169,5 @@ getpotentials(input::PWInput) = getpotentials(input.atomic_species)
 Get the directory storing the pseudopotential files.
 """
 getpseudodir(input::PWInput) = getpseudodir(input.control)
+
+getxmldir(input::PWInput) = getxmldir(input.control)
