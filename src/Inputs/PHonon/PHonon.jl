@@ -36,6 +36,10 @@ include("namelists.jl")
 struct QPointsCard <: Card
     data::Vector{ReciprocalPoint}
 end
+function QPointsCard(data::AbstractMatrix)
+    @assert size(data, 2) == 4
+    return QPointsCard(map(x -> ReciprocalPoint(x...), eachrow(data)))
+end
 @batteries QPointsCard eq = true hash = true
 
 include("inputs.jl")
