@@ -121,9 +121,9 @@ end
         control = ControlNamelist(;
             tstress = true,
             tprnfor = true,
-            outdir = raw"$TMP_DIR/",
+            outdir = "./",
             prefix = "silicon",
-            pseudo_dir = raw"$PSEUDO_DIR/",
+            pseudo_dir = "pseudo/",
         )
         system =
             SystemNamelist(; ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
@@ -155,7 +155,6 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
-        @test input.cell_parameters === nothing
         @test input.electrons.diagonalization == diago
         @test input == PWInput(;
             control = control,
@@ -165,6 +164,18 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
+        @test collect(required_namelists(input)) == [control, system, electrons]
+        @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
+        @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
+        @test collect(optional_cards(input)) == fill(nothing, 4)
+        @test collect(allnamelists(input)) == collect(
+            Iterators.flatten((required_namelists(input), optional_namelists(input))),
+        )
+        @test collect(allcards(input)) ==
+              collect(Iterators.flatten((required_cards(input), optional_cards(input))))
+        @test getpotentials(input) == ["Si.pz-vbc.UPF"]
+        @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
+        @test getxmldir(input) == joinpath(@__DIR__, "silicon.save")
     end
 end
 
@@ -173,8 +184,8 @@ end
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(;
             calculation = "bands",
-            pseudo_dir = raw"$PSEUDO_DIR/",
-            outdir = raw"$TMP_DIR/",
+            pseudo_dir = "pseudo/",
+            outdir = "./",
             prefix = "silicon",
         )
         system = SystemNamelist(;
@@ -231,7 +242,6 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
-        @test input.cell_parameters === nothing
         @test input.electrons.diagonalization == diago
         # Test whether equality holds for different constructions of `PWInput`
         @test input == PWInput(;
@@ -242,6 +252,18 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
+        @test collect(required_namelists(input)) == [control, system, electrons]
+        @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
+        @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
+        @test collect(optional_cards(input)) == fill(nothing, 4)
+        @test collect(allnamelists(input)) == collect(
+            Iterators.flatten((required_namelists(input), optional_namelists(input))),
+        )
+        @test collect(allcards(input)) ==
+              collect(Iterators.flatten((required_cards(input), optional_cards(input))))
+        @test getpotentials(input) == ["Si.pz-vbc.UPF"]
+        @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
+        @test getxmldir(input.control) == joinpath(@__DIR__, "silicon.save")
     end
 end
 
@@ -251,8 +273,8 @@ end
         control = ControlNamelist(;
             calculation = "scf",
             restart_mode = "from_scratch",
-            pseudo_dir = raw"$PSEUDO_DIR/",
-            outdir = raw"$TMP_DIR/",
+            pseudo_dir = "pseudo/",
+            outdir = "./",
             prefix = "al",
             tprnfor = true,
             tstress = true,
@@ -342,7 +364,6 @@ end
             atomic_positions = atomic_positions,
             k_points = k_points,
         )
-        @test input.cell_parameters === nothing
         @test input.electrons.diagonalization == diago
         @test input == PWInput(;
             control = control,
@@ -414,6 +435,18 @@ end
             ReciprocalPoint([0.4375, 0.4375, 0.4375], 1.0),
             ReciprocalPoint([0.4375, 0.4375, 0.5625], 3.0),
         ])
+        @test collect(required_namelists(input)) == [control, system, electrons]
+        @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
+        @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
+        @test collect(optional_cards(input)) == fill(nothing, 4)
+        @test collect(allnamelists(input)) == collect(
+            Iterators.flatten((required_namelists(input), optional_namelists(input))),
+        )
+        @test collect(allcards(input)) ==
+              collect(Iterators.flatten((required_cards(input), optional_cards(input))))
+        @test getpotentials(input) == ["Al.pz-vbc.UPF"]
+        @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
+        @test getxmldir(input.control) == joinpath(@__DIR__, "al.save")
     end
 end
 

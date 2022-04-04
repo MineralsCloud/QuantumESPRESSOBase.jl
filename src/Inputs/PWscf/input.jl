@@ -1,3 +1,5 @@
+using Compat: Iterators
+
 import ..Inputs:
     allnamelists,
     allcards,
@@ -84,6 +86,8 @@ function PWInput(;
     )
 end
 
+@batteries PWInput eq = true hash = true
+
 exitfile(template::PWInput) = abspath(
     expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT")),
 )
@@ -106,8 +110,8 @@ allnamelists(input::PWInput) =
 
 Get all `Card`s from a `PWInput`.
 """
-allcards(input::PWInput) = (
-    getfield(input, f) for f in (
+allcards(input::PWInput) =
+    Iterators.map((
         :atomic_species,
         :atomic_positions,
         :k_points,
@@ -115,15 +119,17 @@ allcards(input::PWInput) = (
         :constraints,
         :occupations,
         :atomic_forces,
-    )
-)
+    )) do f
+        getfield(input, f)
+    end
 
 """
     required_namelists(input::PWInput)
 
 Return an iterator of required `Namelist`s from a `PWInput`. You may want to `collect` them.
 """
-required_namelists(input::PWInput) = (getfield(input, f) for f in (:control, :system, :electrons))
+required_namelists(input::PWInput) =
+    (getfield(input, f) for f in (:control, :system, :electrons))
 
 """
     optional_namelists(input::PWInput)
@@ -146,7 +152,9 @@ required_cards(input::PWInput) =
 Return an iterator of optional `Card`s from a `PWInput`. You may want to `collect` them.
 """
 optional_cards(input::PWInput) =
-    (getfield(input, f) for f in (:cell_parameters, :constraints, :occupations, :atomic_forces))
+    Iterators.map((:cell_parameters, :constraints, :occupations, :atomic_forces)) do f
+        getfield(input, f)
+    end
 
 """
     getpotentials(input::PWInput)
@@ -161,3 +169,5 @@ getpotentials(input::PWInput) = getpotentials(input.atomic_species)
 Get the directory storing the pseudopotential files.
 """
 getpseudodir(input::PWInput) = getpseudodir(input.control)
+
+getxmldir(input::PWInput) = getxmldir(input.control)
