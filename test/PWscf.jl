@@ -121,9 +121,9 @@ end
         control = ControlNamelist(;
             tstress = true,
             tprnfor = true,
-            outdir = raw"$TMP_DIR/",
+            outdir = "./",
             prefix = "silicon",
-            pseudo_dir = raw"$PSEUDO_DIR/",
+            pseudo_dir = "pseudo/",
         )
         system =
             SystemNamelist(; ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
@@ -173,6 +173,9 @@ end
         )
         @test collect(allcards(input)) ==
               collect(Iterators.flatten((required_cards(input), optional_cards(input))))
+        @test getpotentials(input) == ["Si.pz-vbc.UPF"]
+        @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
+        @test getxmldir(input) == joinpath(@__DIR__, "silicon.save")
     end
 end
 
@@ -181,8 +184,8 @@ end
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(;
             calculation = "bands",
-            pseudo_dir = raw"$PSEUDO_DIR/",
-            outdir = raw"$TMP_DIR/",
+            pseudo_dir = "pseudo/",
+            outdir = "./",
             prefix = "silicon",
         )
         system = SystemNamelist(;
@@ -258,6 +261,9 @@ end
         )
         @test collect(allcards(input)) ==
               collect(Iterators.flatten((required_cards(input), optional_cards(input))))
+        @test getpotentials(input) == ["Si.pz-vbc.UPF"]
+        @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
+        @test getxmldir(input.control) == joinpath(@__DIR__, "silicon.save")
     end
 end
 
@@ -267,8 +273,8 @@ end
         control = ControlNamelist(;
             calculation = "scf",
             restart_mode = "from_scratch",
-            pseudo_dir = raw"$PSEUDO_DIR/",
-            outdir = raw"$TMP_DIR/",
+            pseudo_dir = "pseudo/",
+            outdir = "./",
             prefix = "al",
             tprnfor = true,
             tstress = true,
@@ -438,6 +444,9 @@ end
         )
         @test collect(allcards(input)) ==
               collect(Iterators.flatten((required_cards(input), optional_cards(input))))
+        @test getpotentials(input) == ["Al.pz-vbc.UPF"]
+        @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
+        @test getxmldir(input.control) == joinpath(@__DIR__, "al.save")
     end
 end
 
