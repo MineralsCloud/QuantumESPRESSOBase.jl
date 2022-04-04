@@ -133,11 +133,11 @@ function ControlNamelist(;
 end
 ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml; kwargs...)
 
-getxmldir(nml::ControlNamelist) = expanduser(joinpath(nml.outdir, nml.prefix * ".save"))
+getxmldir(nml::ControlNamelist) =
+    abspath(expanduser(joinpath(nml.outdir, nml.prefix * ".save")))
 
 wfcfiles(nml::ControlNamelist, n = 1) =
     [joinpath(getxmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
-
 
 """
     getpseudodir(nml::ControlNamelist)
