@@ -13,6 +13,7 @@ module PHonon
 
 using Crystallography: ReciprocalPoint
 using Setfield: @set!
+using StructHelpers: @batteries
 
 using ..Inputs: Card
 
@@ -35,6 +36,7 @@ include("namelists.jl")
 struct QPointsCard <: Card
     data::Vector{ReciprocalPoint}
 end
+@batteries QPointsCard eq = true hash = true
 
 include("inputs.jl")
 
