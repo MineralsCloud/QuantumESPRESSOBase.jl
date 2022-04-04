@@ -174,8 +174,10 @@ end
         @test collect(allcards(input)) ==
               collect(Iterators.flatten((required_cards(input), optional_cards(input))))
         @test getpotentials(input) == ["Si.pz-vbc.UPF"]
-        @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
-        @test getxmldir(input) == joinpath(@__DIR__, "silicon.save")
+        if !Sys.iswindows()
+            @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
+            @test getxmldir(input) == joinpath(@__DIR__, "silicon.save")
+        end
     end
 end
 
@@ -262,8 +264,10 @@ end
         @test collect(allcards(input)) ==
               collect(Iterators.flatten((required_cards(input), optional_cards(input))))
         @test getpotentials(input) == ["Si.pz-vbc.UPF"]
-        @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
-        @test getxmldir(input.control) == joinpath(@__DIR__, "silicon.save")
+        if !Sys.iswindows()
+            @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
+            @test getxmldir(input) == joinpath(@__DIR__, "silicon.save")
+        end
     end
 end
 
@@ -445,8 +449,10 @@ end
         @test collect(allcards(input)) ==
               collect(Iterators.flatten((required_cards(input), optional_cards(input))))
         @test getpotentials(input) == ["Al.pz-vbc.UPF"]
-        @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
-        @test getxmldir(input.control) == joinpath(@__DIR__, "al.save")
+        if !Sys.iswindows()
+            @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
+            @test getxmldir(input) == joinpath(@__DIR__, "al.save")
+        end
     end
 end
 
