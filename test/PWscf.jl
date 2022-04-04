@@ -157,12 +157,12 @@ end
         )
         @test input.electrons.diagonalization == diago
         @test input == PWInput(;
-            control = control,
-            system = system,
-            electrons = electrons,
-            atomic_species = atomic_species,
-            atomic_positions = atomic_positions,
-            k_points = k_points,
+            control = deepcopy(control),
+            system = deepcopy(system),
+            electrons = deepcopy(electrons),
+            atomic_species = deepcopy(atomic_species),
+            atomic_positions = deepcopy(atomic_positions),
+            k_points = deepcopy(k_points),
         )
         @test collect(required_namelists(input)) == [control, system, electrons]
         @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
@@ -247,12 +247,12 @@ end
         @test input.electrons.diagonalization == diago
         # Test whether equality holds for different constructions of `PWInput`
         @test input == PWInput(;
-            control = control,
-            system = system,
-            electrons = electrons,
-            atomic_species = atomic_species,
-            atomic_positions = atomic_positions,
-            k_points = k_points,
+            control = deepcopy(control),
+            system = deepcopy(system),
+            electrons = deepcopy(electrons),
+            atomic_species = deepcopy(atomic_species),
+            atomic_positions = deepcopy(atomic_positions),
+            k_points = deepcopy(k_points),
         )
         @test collect(required_namelists(input)) == [control, system, electrons]
         @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
@@ -370,12 +370,12 @@ end
         )
         @test input.electrons.diagonalization == diago
         @test input == PWInput(;
-            control = control,
-            system = system,
-            electrons = electrons,
-            atomic_species = atomic_species,
-            atomic_positions = atomic_positions,
-            k_points = k_points,
+            control = deepcopy(control),
+            system = deepcopy(system),
+            electrons = deepcopy(electrons),
+            atomic_species = deepcopy(atomic_species),
+            atomic_positions = deepcopy(atomic_positions),
+            k_points = deepcopy(k_points),
         )
         @test input.k_points == SpecialPointsCard([
             ReciprocalPoint([0.0625, 0.0625, 0.0625], 1.0),
