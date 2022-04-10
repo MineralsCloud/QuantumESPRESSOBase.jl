@@ -52,7 +52,9 @@ function Lattice(input::PWInput)
         return Lattice(input.system)
     else
         if optionof(input.cell_parameters) == "alat"
-            return Lattice(transpose(input.cell_parameters.data) * first(input.system.celldm))
+            return Lattice(
+                transpose(input.cell_parameters.data) * first(input.system.celldm),
+            )
         else
             return Lattice(input.cell_parameters)
         end
@@ -118,7 +120,10 @@ end
 
 function crystaldensity(input::PWInput)
     lattice = Lattice(input) * 1u"bohr"
-    atoms = (Symbol(uppercasefirst(atomic_position.atom)) for atomic_position in input.atomic_positions.data)
+    atoms = (
+        Symbol(uppercasefirst(atomic_position.atom)) for
+        atomic_position in input.atomic_positions.data
+    )
     return crystaldensity(lattice, atoms)
 end
 
