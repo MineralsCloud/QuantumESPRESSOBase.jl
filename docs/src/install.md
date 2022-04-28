@@ -23,7 +23,7 @@ or
 $ brew install julia  # Build from source, works on all operating systems
 ```
 
-On Linux, the best way to install Julia is to use the *Generic Linux Binaries*. The
+On Linux, the best way to install Julia is to use the _Generic Linux Binaries_. The
 [JILL](https://github.com/abelsiqueira/jill) script does this for you. Run
 
 ```shell
