@@ -128,8 +128,8 @@ struct AtomicPositionsCard <: Card
 end
 AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard(
     [
-        AtomicPosition(string(atom), pos)
-        for (atom, pos) in zip(cell.numbers, cell.positions)
+        AtomicPosition(string(atom), pos) for
+        (atom, pos) in zip(cell.numbers, cell.positions)
     ],
     option,
 )
