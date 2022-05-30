@@ -58,7 +58,7 @@ platform to explain the following steps:
 2. Run the following commands and wait for them to finish:
 
    ```julia
-   julia> using Pkg; Pkg.update()
+   julia> using Pkg
 
    julia> Pkg.add("QuantumESPRESSOBase")
    ```
@@ -77,7 +77,7 @@ platform to explain the following steps:
 If you want to install the latest in development (maybe buggy) version of `QuantumESPRESSOBase`, type
 
 ```julia
-julia> using Pkg; Pkg.update()
+julia> using Pkg
 
 julia> pkg"add QuantumESPRESSOBase#master"
 ```
