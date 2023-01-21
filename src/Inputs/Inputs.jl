@@ -12,7 +12,6 @@ julia>
 module Inputs
 
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
-using Compat: only, isnothing
 using OrderedCollections: OrderedDict
 
 export optionof,

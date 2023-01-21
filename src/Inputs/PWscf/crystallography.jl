@@ -1,4 +1,3 @@
-using Compat: Iterators
 using Crystallography: CartesianFromFractional
 using LinearAlgebra: det
 using Spglib: get_dataset

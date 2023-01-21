@@ -1,5 +1,3 @@
-using Compat: Iterators
-
 import ..Inputs:
     allnamelists,
     allcards,

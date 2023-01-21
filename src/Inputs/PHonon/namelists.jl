@@ -1,5 +1,4 @@
 using AbInitioSoftwareBase.Inputs: Namelist
-using Compat: @NamedTuple
 using ConstructionBase: setproperties
 using StructHelpers: @batteries
 

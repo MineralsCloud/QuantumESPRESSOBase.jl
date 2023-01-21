@@ -1,4 +1,3 @@
-using Compat: eachcol
 using Crystallography: Cell, ReciprocalPoint, MonkhorstPackGrid
 using Functors: fmap
 using StaticArrays: SVector, SMatrix
