@@ -23,7 +23,7 @@ const Maybe{T} = Union{T,Nothing}
 
 Represent the `CONTROL` namelist of `pw.x`.
 """
-struct ControlNamelist <: Namelist
+@struct_hash_equal struct ControlNamelist <: Namelist
     calculation::String
     title::String
     verbosity::String
@@ -153,7 +153,7 @@ getpseudodir(nml::ControlNamelist) = abspath(expanduser(nml.pseudo_dir))
 
 Represent the `SYSTEM` namelist of `pw.x`.
 """
-struct SystemNamelist <: Namelist
+@struct_hash_equal struct SystemNamelist <: Namelist
     ibrav::Int8
     celldm::Vector{Maybe{Float64}}
     A::Float64
@@ -501,7 +501,7 @@ SystemNamelist(nml::SystemNamelist; kwargs...) = setproperties(nml; kwargs...)
 
 Represent the `ELECTRONS` namelist of `pw.x`.
 """
-struct ElectronsNamelist <: Namelist
+@struct_hash_equal struct ElectronsNamelist <: Namelist
     electron_maxstep::UInt
     scf_must_converge::Bool
     conv_thr::Float64
@@ -591,7 +591,7 @@ Represent the `IONS` namelist of `pw.x`.
 
 Input this namelist only if `calculation` is `"relax"`, `"md"`, `"vc-relax"`, or `"vc-md"`.
 """
-struct IonsNamelist <: Namelist
+@struct_hash_equal struct IonsNamelist <: Namelist
     ion_dynamics::String
     ion_positions::String
     pot_extrapolation::String
@@ -680,7 +680,7 @@ Represent the `CELL` namelist of `pw.x`.
 
 Input this namelist only if `calculation` is `"vc-relax"` or `"vc-md"`.
 """
-struct CellNamelist <: Namelist
+@struct_hash_equal struct CellNamelist <: Namelist
     cell_dynamics::String
     press::Float64
     wmass::Float64
@@ -736,7 +736,7 @@ CellNamelist(nml::CellNamelist; kwargs...) = setproperties(nml; kwargs...)
 
 Represent the `DOS` namelist of `dos.x`.
 """
-struct DosNamelist <: Namelist
+@struct_hash_equal struct DosNamelist <: Namelist
     prefix::String
     outdir::String
     ngauss::Int
@@ -769,7 +769,7 @@ DosNamelist(nml::DosNamelist; kwargs...) = setproperties(nml; kwargs...)
 
 Represent the `BANDS` namelist of `bands.x`.
 """
-struct BandsNamelist <: Namelist
+@struct_hash_equal struct BandsNamelist <: Namelist
     prefix::String
     outdir::String
     filband::String
@@ -814,14 +814,6 @@ function BandsNamelist(;
     )
 end
 BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
-
-@batteries ControlNamelist eq = true hash = true
-@batteries SystemNamelist eq = true hash = true
-@batteries ElectronsNamelist eq = true hash = true
-@batteries IonsNamelist eq = true hash = true
-@batteries CellNamelist eq = true hash = true
-@batteries DosNamelist eq = true hash = true
-@batteries BandsNamelist eq = true hash = true
 
 function (x::VerbositySetter)(control::ControlNamelist)
     if x.v == "high"
