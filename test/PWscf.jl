@@ -8,6 +8,16 @@ using StructArrays: StructArray
 using QuantumESPRESSOBase
 using QuantumESPRESSOBase.Inputs.PWscf
 
+@testset "Test if `==` is working" begin
+    @test ControlNamelist() == ControlNamelist()
+    @test SystemNamelist() == SystemNamelist()
+    @test ElectronsNamelist() == ElectronsNamelist()
+    @test IonsNamelist() == IonsNamelist()
+    @test CellNamelist() == CellNamelist()
+    @test DosNamelist() == DosNamelist()
+    @test BandsNamelist() == BandsNamelist()
+end
+
 @testset "Construct `AtomicSpecies`" begin
     # Data from https://github.com/QEF/q-e/blob/7be27df/PW/examples/gatefield/run_example#L128.
     x = AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")

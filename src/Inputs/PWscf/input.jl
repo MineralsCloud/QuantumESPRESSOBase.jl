@@ -33,7 +33,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
 - `k_points::AbstractKPointsCard`: the `K_POINTS` card of the input. Must be provided explicitly.
 - `cell_parameters::Union{Nothing,CellParametersCard}`: the `CELL_PARAMETERS` card of the input. Must be either `nothing` or a `CellParametersCard`.
 """
-struct PWInput <: QuantumESPRESSOInput
+@struct_hash_equal struct PWInput <: QuantumESPRESSOInput
     control::ControlNamelist
     system::SystemNamelist
     electrons::ElectronsNamelist
@@ -83,8 +83,6 @@ function PWInput(;
         atomic_forces,
     )
 end
-
-@batteries PWInput eq = true hash = true
 
 exitfile(template::PWInput) = abspath(
     expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT")),

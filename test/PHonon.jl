@@ -76,4 +76,11 @@ end
     @test input == MatdynInput(deepcopy(matdyn), deepcopy(q_points))
 end
 
+@testset "Test if `==` is working" begin
+    @test PhInput() == PhInput()
+    @test Q2rInput() == Q2rInput()
+    @test MatdynInput() == MatdynInput()
+    @test DynmatInput() == DynmatInput()
+end
+
 end
