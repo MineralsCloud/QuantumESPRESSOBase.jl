@@ -5,26 +5,26 @@ using ..Inputs.PWscf: PWInput
     title_line::String
     inputph::PhNamelist
     q_points::Union{Nothing,QPointsCard}
-end # struct PhInput
+end
 PhInput(inputph::PhNamelist, qpts::QPointsCard) = PhInput(inputph.prefix, inputph, qpts)
 PhInput(inputph::PhNamelist) = PhInput(inputph.prefix, inputph, nothing)
 PhInput() = PhInput(PhNamelist().prefix, PhNamelist(), nothing)
 
 struct Q2rInput <: QuantumESPRESSOInput
     input::Q2rNamelist
-end # struct Q2rInput
+end
 Q2rInput() = Q2rInput(Q2rNamelist())
 
 @struct_hash_equal struct MatdynInput <: QuantumESPRESSOInput
     input::MatdynNamelist
     q_points::Union{Nothing,QPointsCard}
-end # struct MatdynInput
+end
 MatdynInput(input) = MatdynInput(input, nothing)
 MatdynInput() = MatdynInput(MatdynNamelist(), nothing)
 
 @struct_hash_equal struct DynmatInput <: QuantumESPRESSOInput
     input::DynmatNamelist
-end # struct DynmatInput
+end
 DynmatInput() = DynmatInput(DynmatNamelist())
 
 function (x::VerbositySetter)(template::PhInput)
@@ -44,7 +44,7 @@ function relayinfo(pw::PWInput, ph::PhInput)
     @set! ph.inputph.outdir = pw.control.outdir
     @set! ph.inputph.prefix = pw.control.prefix
     return ph
-end # function relayinfo
+end
 """
     relayinfo(from::PhInput, to::Q2rInput)
 
@@ -55,7 +55,7 @@ A `PhInput` before a `Q2rInput` has the information of `fildyn`. It must keep th
 function relayinfo(ph::PhInput, q2r::Q2rInput)
     @set! q2r.input.fildyn = ph.inputph.fildyn
     return q2r
-end # function relayinfo
+end
 """
     relayinfo(from::Q2rInput, to::MatdynInput)
 
@@ -68,12 +68,12 @@ function relayinfo(q2r::Q2rInput, matdyn::MatdynInput)
     @set! matdyn.input.flfrc = q2r.input.flfrc
     @set! matdyn.input.loto_2d = q2r.input.loto_2d
     return matdyn
-end # function relayinfo
+end
 function relayinfo(ph::PhInput, matdyn::MatdynInput)
     @set! matdyn.input.amass = ph.inputph.amass
     @set! matdyn.input.q_in_band_form = ph.inputph.q_in_band_form
     return matdyn
-end # function relayinfo
+end
 """
     relayinfo(from::PhInput, to::DynmatInput)
 
@@ -87,4 +87,4 @@ function relayinfo(ph::PhInput, dynmat::DynmatInput)
     @set! dynmat.input.fildyn = ph.inputph.fildyn
     @set! dynmat.input.amass = ph.inputph.amass
     return dynmat
-end # function relayinfo
+end
