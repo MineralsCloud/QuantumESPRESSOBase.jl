@@ -13,7 +13,7 @@ It is written purely in language [`Julia`](https://julialang.org/).
 
 Please [cite this package](https://doi.org/10.1016/j.cpc.2022.108515) as:
 
-Q. Zhang, C. Gu, J. Zhuang et al., `express`: extensible, high-level workflows for swifter *ab initio* materials modeling, *Computer Physics Communications*, 108515, doi: https://doi.org/10.1016/j.cpc.2022.108515.
+Q. Zhang, C. Gu, J. Zhuang et al., `express`: extensible, high-level workflows for swifter _ab initio_ materials modeling, _Computer Physics Communications_, 108515, doi: https://doi.org/10.1016/j.cpc.2022.108515.
 
 The BibTeX format is:
 
