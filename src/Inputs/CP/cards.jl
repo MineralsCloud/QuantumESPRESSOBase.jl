@@ -121,7 +121,7 @@ Represent the `ATOMIC_POSITIONS` card in QE.
 struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
     option::String
-    function AtomicPositionsCard(data, option = "alat")
+    function AtomicPositionsCard(data, option="alat")
         @assert option in optionpool(AtomicPositionsCard)
         return new(data, option)
     end
@@ -156,12 +156,12 @@ Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 struct CellParametersCard{T<:Real} <: AbstractCellParametersCard
     data::SMatrix{3,3,T}
     option::String
-    function CellParametersCard{T}(data, option = "alat") where {T<:Real}
+    function CellParametersCard{T}(data, option="alat") where {T<:Real}
         @assert option in optionpool(CellParametersCard)
         return new(data, option)
     end
 end
-CellParametersCard(data::AbstractMatrix{T}, option = "alat") where {T} =
+CellParametersCard(data::AbstractMatrix{T}, option="alat") where {T} =
     CellParametersCard{T}(data, option)
 CellParametersCard(lattice::Lattice{T}, option) where {T} =
     CellParametersCard(convert(Matrix{T}, lattice), option)
@@ -232,10 +232,10 @@ end
 struct RefCellParametersCard <: AbstractCellParametersCard
     data::SMatrix{3,3,Float64}
     option::String
-    function RefCellParametersCard(data, option = "bohr")
+    function RefCellParametersCard(data, option="bohr")
         @assert option in optionpool(RefCellParametersCard)
         return new(data, option)
     end
 end
-RefCellParametersCard(data::AbstractMatrix, option = "bohr") =
+RefCellParametersCard(data::AbstractMatrix, option="bohr") =
     RefCellParametersCard(data, option)

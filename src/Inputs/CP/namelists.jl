@@ -35,7 +35,7 @@ Represent the `CONTROL` namelist of `cp.x`.
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
     @assert(
         calculation in
-        ("cp", "scf", "nscf", "relax", "vc-relax", "vc-cp", "cp-wf", "vc-cp-wf")
+            ("cp", "scf", "nscf", "relax", "vc-relax", "vc-cp", "cp-wf", "vc-cp-wf")
     )
     @assert verbosity in ("high", "low", "debug", "medium", "default", "minimal")
     @assert isave >= 1

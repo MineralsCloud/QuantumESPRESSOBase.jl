@@ -52,7 +52,7 @@ function Lattice(input::PWInput)
     else
         if optionof(input.cell_parameters) == "alat"
             return Lattice(
-                transpose(input.cell_parameters.data) * first(input.system.celldm),
+                transpose(input.cell_parameters.data) * first(input.system.celldm)
             )
         else
             return Lattice(input.cell_parameters)
@@ -126,7 +126,7 @@ function crystaldensity(input::PWInput)
     return crystaldensity(lattice, atoms)
 end
 
-function find_symmetry(input::PWInput, symprec = 1e-5)
+function find_symmetry(input::PWInput, symprec=1e-5)
     lattice = Lattice(input)
     option = input.atomic_positions.option
     data = Iterators.map(input.atomic_positions.data) do atomic_position

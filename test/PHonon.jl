@@ -7,16 +7,16 @@ using QuantumESPRESSOBase.Inputs.PHonon:
 
 @testset "Construct a `PhInput`: silicon" begin
     ph = PhNamelist(;
-        verbosity = "high",
-        fildyn = "dyn",
-        outdir = "./tmp",
-        prefix = "silicon",
-        ldisp = true,
-        tr2_ph = 1e-14,
-        nq1 = 2,
-        nq2 = 2,
-        nq3 = 2,
-        amass = [28.086],
+        verbosity="high",
+        fildyn="dyn",
+        outdir="./tmp",
+        prefix="silicon",
+        ldisp=true,
+        tr2_ph=1e-14,
+        nq1=2,
+        nq2=2,
+        nq3=2,
+        amass=[28.086],
     )
     q_points = QPointsCard(
         [
@@ -38,7 +38,7 @@ using QuantumESPRESSOBase.Inputs.PHonon:
 end
 
 @testset "Construct a `Q2rInput`" begin
-    q2r = Q2rNamelist(; fildyn = "dyn", zasr = "crystal", flfrc = "fc.out")
+    q2r = Q2rNamelist(; fildyn="dyn", zasr="crystal", flfrc="fc.out")
     input = Q2rInput(q2r)
     # Test struct equality
     @test input == Q2rInput(deepcopy(q2r))
@@ -46,16 +46,16 @@ end
 
 @testset "Construct a `MatdynInput`: silicon" begin
     matdyn = MatdynNamelist(;
-        asr = "crystal",
-        amass = [28.086],
-        flfrc = "fc.out",
-        flfrq = "freq.out",
-        flvec = "modes.out",
-        dos = true,
-        q_in_band_form = false,
-        nk1 = 8,
-        nk2 = 8,
-        nk3 = 8,
+        asr="crystal",
+        amass=[28.086],
+        flfrc="fc.out",
+        flfrq="freq.out",
+        flvec="modes.out",
+        dos=true,
+        q_in_band_form=false,
+        nk1=8,
+        nk2=8,
+        nk3=8,
     )
     q_points = QPointsCard(
         [

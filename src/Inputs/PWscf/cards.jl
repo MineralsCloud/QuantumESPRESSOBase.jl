@@ -146,15 +146,17 @@ Represent the `ATOMIC_POSITIONS` card in QE.
 @struct_hash_equal struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
     option::String
-    function AtomicPositionsCard(data, option = "alat")
+    function AtomicPositionsCard(data, option="alat")
         @assert option in optionpool(AtomicPositionsCard)
         return new(data, option)
     end
 end
-AtomicPositionsCard(cell::Cell, option) =
-    AtomicPositionsCard(map(cell.types, eachcol(cell.positions)) do atom, position
+AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard(
+    map(cell.types, eachcol(cell.positions)) do atom, position
         AtomicPosition(string(atom), position)
-    end, option)
+    end,
+    option,
+)
 
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
 abstract type AbstractCellParametersCard <: Card end
@@ -168,7 +170,7 @@ Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 struct CellParametersCard <: AbstractCellParametersCard
     data::SMatrix{3,3,Float64}
     option::String
-    function CellParametersCard(data, option = "alat")
+    function CellParametersCard(data, option="alat")
         @assert option in optionpool(CellParametersCard)
         return new(data, option)
     end
@@ -202,7 +204,7 @@ eachatom(card::Union{AtomicSpeciesCard,AtomicPositionsCard,AtomicForcesCard}) =
 
 Base.length(iter::EachAtom) = length(iter.card.data)
 
-Base.iterate(iter::EachAtom, state = 1) =
+Base.iterate(iter::EachAtom, state=1) =
     state > length(iter) ? nothing : (iter.card.data[state], state + 1)
 
 Base.eltype(iter::EachAtom) = eltype(iter.card.data)
@@ -220,13 +222,15 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
     if new_option == old_option
         return card  # No conversion is needed
     else
-        typeof(card)(if (old_option => new_option) == ("bohr" => "angstrom")
-            return @. ustrip(u"angstrom", card.data * u"bohr")
-        elseif (old_option => new_option) == ("angstrom" => "bohr")
-            return @. ustrip(u"bohr", card.data * u"angstrom")
-        else
-            error("unknown conversion rule $(old_option => new_option)!")
-        end)
+        typeof(card)(
+            if (old_option => new_option) == ("bohr" => "angstrom")
+                return @. ustrip(u"angstrom", card.data * u"bohr")
+            elseif (old_option => new_option) == ("angstrom" => "bohr")
+                return @. ustrip(u"bohr", card.data * u"angstrom")
+            else
+                error("unknown conversion rule $(old_option => new_option)!")
+            end,
+        )
     end
 end # function optconvert
 
@@ -250,12 +254,12 @@ Represent the `K_POINTS` card in QE.
 @struct_hash_equal struct SpecialPointsCard <: KPointsCard
     data::Vector{ReciprocalPoint}
     option::String
-    function SpecialPointsCard(data, option = "tpiba")
+    function SpecialPointsCard(data, option="tpiba")
         @assert option in optionpool(SpecialPointsCard)
         return new(data, option)
     end
 end
-function SpecialPointsCard(data::AbstractMatrix, option = "tpiba")
+function SpecialPointsCard(data::AbstractMatrix, option="tpiba")
     @assert size(data, 2) == 4
     return SpecialPointsCard(map(x -> ReciprocalPoint(x...), eachrow(data)), option)
 end

@@ -48,18 +48,18 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     atomic_forces::Union{Nothing,AtomicForcesCard}
 end # struct PWInput
 function PWInput(;
-    control = ControlNamelist(),
+    control=ControlNamelist(),
     system,
-    electrons = ElectronsNamelist(),
-    ions = IonsNamelist(),
-    cell = CellNamelist(),
+    electrons=ElectronsNamelist(),
+    ions=IonsNamelist(),
+    cell=CellNamelist(),
     atomic_species,
     atomic_positions,
     k_points,
-    cell_parameters = nothing,
-    constraints = nothing,
-    occupations = nothing,
-    atomic_forces = nothing,
+    cell_parameters=nothing,
+    constraints=nothing,
+    occupations=nothing,
+    atomic_forces=nothing,
 )
     @assert !isnothing(cell_parameters) || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
     foreach(atomic_species.data) do datum
@@ -85,7 +85,7 @@ function PWInput(;
 end
 
 exitfile(template::PWInput) = abspath(
-    expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT")),
+    expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT"))
 )
 function mkexitfile(template::PWInput)
     path = exitfile(template)

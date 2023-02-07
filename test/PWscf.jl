@@ -71,8 +71,7 @@ end
         [0.000000000, -0.577350270, 2.950837559],
     ]
     card = AtomicPositionsCard(
-        StructArray{AtomicPosition}((a, pos, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])),
-        "alat",
+        StructArray{AtomicPosition}((a, pos, [[1, 1, 1], [1, 1, 1], [1, 1, 1]])), "alat"
     )
     @test card == AtomicPositionsCard(
         [
@@ -129,19 +128,13 @@ end
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(;
-            tstress = true,
-            tprnfor = true,
-            outdir = "./",
-            prefix = "silicon",
-            pseudo_dir = "pseudo/",
+            tstress=true, tprnfor=true, outdir="./", prefix="silicon", pseudo_dir="pseudo/"
         )
-        system =
-            SystemNamelist(; ibrav = 2, celldm = [10.2], nat = 2, ntyp = 1, ecutwfc = 18.0)
-        electrons = ElectronsNamelist(; conv_thr = 1.0e-8, diagonalization = diago)
+        system = SystemNamelist(; ibrav=2, celldm=[10.2], nat=2, ntyp=1, ecutwfc=18.0)
+        electrons = ElectronsNamelist(; conv_thr=1.0e-8, diagonalization=diago)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([
-            AtomicPosition("Si", [0.0, 0.0, 0.0]),
-            AtomicPosition("Si", [0.25, 0.25, 0.25]),
+            AtomicPosition("Si", [0.0, 0.0, 0.0]), AtomicPosition("Si", [0.25, 0.25, 0.25])
         ])
         k_points = SpecialPointsCard(
             [
@@ -158,31 +151,31 @@ end
             ],
         )
         input = PWInput(;
-            control = control,
-            system = system,
-            electrons = electrons,
-            atomic_species = atomic_species,
-            atomic_positions = atomic_positions,
-            k_points = k_points,
+            control=control,
+            system=system,
+            electrons=electrons,
+            atomic_species=atomic_species,
+            atomic_positions=atomic_positions,
+            k_points=k_points,
         )
         @test input.electrons.diagonalization == diago
         @test input == PWInput(;
-            control = deepcopy(control),
-            system = deepcopy(system),
-            electrons = deepcopy(electrons),
-            atomic_species = deepcopy(atomic_species),
-            atomic_positions = deepcopy(atomic_positions),
-            k_points = deepcopy(k_points),
+            control=deepcopy(control),
+            system=deepcopy(system),
+            electrons=deepcopy(electrons),
+            atomic_species=deepcopy(atomic_species),
+            atomic_positions=deepcopy(atomic_positions),
+            k_points=deepcopy(k_points),
         )
         @test collect(required_namelists(input)) == [control, system, electrons]
         @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
         @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
         @test collect(optional_cards(input)) == fill(nothing, 4)
         @test collect(allnamelists(input)) == collect(
-            Iterators.flatten((required_namelists(input), optional_namelists(input))),
+            Iterators.flatten((required_namelists(input), optional_namelists(input)))
         )
         @test collect(allcards(input)) ==
-              collect(Iterators.flatten((required_cards(input), optional_cards(input))))
+            collect(Iterators.flatten((required_cards(input), optional_cards(input))))
         @test getpotentials(input) == ["Si.pz-vbc.UPF"]
         if !Sys.iswindows()
             @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
@@ -195,24 +188,15 @@ end
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(;
-            calculation = "bands",
-            pseudo_dir = "pseudo/",
-            outdir = "./",
-            prefix = "silicon",
+            calculation="bands", pseudo_dir="pseudo/", outdir="./", prefix="silicon"
         )
         system = SystemNamelist(;
-            ibrav = 2,
-            celldm = [10.2],
-            nat = 2,
-            ntyp = 1,
-            ecutwfc = 18.0,
-            nbnd = 8,
+            ibrav=2, celldm=[10.2], nat=2, ntyp=1, ecutwfc=18.0, nbnd=8
         )
-        electrons = ElectronsNamelist(; diagonalization = diago)
+        electrons = ElectronsNamelist(; diagonalization=diago)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Si", 28.086, "Si.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([
-            AtomicPosition("Si", [0.0, 0.0, 0.0]),
-            AtomicPosition("Si", [0.25, 0.25, 0.25]),
+            AtomicPosition("Si", [0.0, 0.0, 0.0]), AtomicPosition("Si", [0.25, 0.25, 0.25])
         ])
         k_points = SpecialPointsCard(
             [
@@ -247,32 +231,32 @@ end
             ],
         )
         input = PWInput(;
-            control = control,
-            system = system,
-            electrons = electrons,
-            atomic_species = atomic_species,
-            atomic_positions = atomic_positions,
-            k_points = k_points,
+            control=control,
+            system=system,
+            electrons=electrons,
+            atomic_species=atomic_species,
+            atomic_positions=atomic_positions,
+            k_points=k_points,
         )
         @test input.electrons.diagonalization == diago
         # Test whether equality holds for different constructions of `PWInput`
         @test input == PWInput(;
-            control = deepcopy(control),
-            system = deepcopy(system),
-            electrons = deepcopy(electrons),
-            atomic_species = deepcopy(atomic_species),
-            atomic_positions = deepcopy(atomic_positions),
-            k_points = deepcopy(k_points),
+            control=deepcopy(control),
+            system=deepcopy(system),
+            electrons=deepcopy(electrons),
+            atomic_species=deepcopy(atomic_species),
+            atomic_positions=deepcopy(atomic_positions),
+            k_points=deepcopy(k_points),
         )
         @test collect(required_namelists(input)) == [control, system, electrons]
         @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
         @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
         @test collect(optional_cards(input)) == fill(nothing, 4)
         @test collect(allnamelists(input)) == collect(
-            Iterators.flatten((required_namelists(input), optional_namelists(input))),
+            Iterators.flatten((required_namelists(input), optional_namelists(input)))
         )
         @test collect(allcards(input)) ==
-              collect(Iterators.flatten((required_cards(input), optional_cards(input))))
+            collect(Iterators.flatten((required_cards(input), optional_cards(input))))
         @test getpotentials(input) == ["Si.pz-vbc.UPF"]
         if !Sys.iswindows()
             @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
@@ -285,25 +269,25 @@ end
     # This example is from https://github.com/QEF/q-e/blob/master/PW/examples/example01/run_example.
     for diago in ("david", "cg", "ppcg")
         control = ControlNamelist(;
-            calculation = "scf",
-            restart_mode = "from_scratch",
-            pseudo_dir = "pseudo/",
-            outdir = "./",
-            prefix = "al",
-            tprnfor = true,
-            tstress = true,
+            calculation="scf",
+            restart_mode="from_scratch",
+            pseudo_dir="pseudo/",
+            outdir="./",
+            prefix="al",
+            tprnfor=true,
+            tstress=true,
         )
         system = SystemNamelist(;
-            ibrav = 2,
-            celldm = [7.50],
-            nat = 1,
-            ntyp = 1,
-            ecutwfc = 15.0,
-            occupations = "smearing",
-            smearing = "marzari-vanderbilt",
-            degauss = 0.05,
+            ibrav=2,
+            celldm=[7.50],
+            nat=1,
+            ntyp=1,
+            ecutwfc=15.0,
+            occupations="smearing",
+            smearing="marzari-vanderbilt",
+            degauss=0.05,
         )
-        electrons = ElectronsNamelist(; diagonalization = diago, mixing_beta = 0.7)
+        electrons = ElectronsNamelist(; diagonalization=diago, mixing_beta=0.7)
         atomic_species = AtomicSpeciesCard([AtomicSpecies("Al", 26.98, "Al.pz-vbc.UPF")])
         atomic_positions = AtomicPositionsCard([AtomicPosition("Al", [0.0, 0.0, 0.0])])
         k_points = SpecialPointsCard(
@@ -371,21 +355,21 @@ end
             ],
         )
         input = PWInput(;
-            control = control,
-            system = system,
-            electrons = electrons,
-            atomic_species = atomic_species,
-            atomic_positions = atomic_positions,
-            k_points = k_points,
+            control=control,
+            system=system,
+            electrons=electrons,
+            atomic_species=atomic_species,
+            atomic_positions=atomic_positions,
+            k_points=k_points,
         )
         @test input.electrons.diagonalization == diago
         @test input == PWInput(;
-            control = deepcopy(control),
-            system = deepcopy(system),
-            electrons = deepcopy(electrons),
-            atomic_species = deepcopy(atomic_species),
-            atomic_positions = deepcopy(atomic_positions),
-            k_points = deepcopy(k_points),
+            control=deepcopy(control),
+            system=deepcopy(system),
+            electrons=deepcopy(electrons),
+            atomic_species=deepcopy(atomic_species),
+            atomic_positions=deepcopy(atomic_positions),
+            k_points=deepcopy(k_points),
         )
         @test input.k_points == SpecialPointsCard([
             ReciprocalPoint([0.0625, 0.0625, 0.0625], 1.0),
@@ -454,10 +438,10 @@ end
         @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
         @test collect(optional_cards(input)) == fill(nothing, 4)
         @test collect(allnamelists(input)) == collect(
-            Iterators.flatten((required_namelists(input), optional_namelists(input))),
+            Iterators.flatten((required_namelists(input), optional_namelists(input)))
         )
         @test collect(allcards(input)) ==
-              collect(Iterators.flatten((required_cards(input), optional_cards(input))))
+            collect(Iterators.flatten((required_cards(input), optional_cards(input))))
         @test getpotentials(input) == ["Al.pz-vbc.UPF"]
         if !Sys.iswindows()
             @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")

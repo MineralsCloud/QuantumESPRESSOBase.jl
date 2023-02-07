@@ -41,7 +41,7 @@ end
 @testset "Apply `ElectronicTemperatureSetter` on `SystemNamelist`" begin
     system = SystemNamelist()
     @test (system.occupations, system.degauss, system.smearing) ==
-          ("fixed", 0.0, "gaussian")
+        ("fixed", 0.0, "gaussian")
     for value in (
         0.0019000869380733452,
         300u"K",

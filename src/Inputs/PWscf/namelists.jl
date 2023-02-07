@@ -1,5 +1,5 @@
 using ConstructionBase: setproperties
-import Unitful
+using Unitful: Unitful
 
 export ControlNamelist,
     SystemNamelist,
@@ -55,35 +55,35 @@ Represent the `CONTROL` namelist of `pw.x`.
     gate::Bool
 end # struct ControlNamelist
 function ControlNamelist(;
-    calculation = "scf",
-    title = " ",
-    verbosity = "low",
-    restart_mode = "from_scratch",
-    wf_collect = true,
-    nstep = 50,
-    iprint = 100000,
-    tstress = false,
-    tprnfor = false,
-    dt = 20.0,
-    outdir = "./",
-    wfcdir = "./",
-    prefix = "pwscf",
-    lkpoint_dir = true,
-    max_seconds = 10000000.0,
-    etot_conv_thr = 1e-4,
-    forc_conv_thr = 1e-3,
-    disk_io = ifelse(calculation == "scf", "low", "medium"),
-    pseudo_dir = raw"$HOME/espresso/pseudo/",
-    tefield = false,
-    dipfield = false,
-    lelfield = false,
-    nberrycyc = 1,
-    lorbm = false,
-    lberry = false,
-    gdir = 1,  # The QE default value is `0`!
-    nppstr = 0,
-    lfcpopt = false,
-    gate = false,
+    calculation="scf",
+    title=" ",
+    verbosity="low",
+    restart_mode="from_scratch",
+    wf_collect=true,
+    nstep=50,
+    iprint=100000,
+    tstress=false,
+    tprnfor=false,
+    dt=20.0,
+    outdir="./",
+    wfcdir="./",
+    prefix="pwscf",
+    lkpoint_dir=true,
+    max_seconds=10000000.0,
+    etot_conv_thr=1e-4,
+    forc_conv_thr=1e-3,
+    disk_io=ifelse(calculation == "scf", "low", "medium"),
+    pseudo_dir=raw"$HOME/espresso/pseudo/",
+    tefield=false,
+    dipfield=false,
+    lelfield=false,
+    nberrycyc=1,
+    lorbm=false,
+    lberry=false,
+    gdir=1,  # The QE default value is `0`!
+    nppstr=0,
+    lfcpopt=false,
+    gate=false,
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1282-L1369.
     @assert calculation in ("scf", "nscf", "bands", "relax", "md", "vc-relax", "vc-md")
@@ -136,7 +136,7 @@ ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml; kwargs...)
 getxmldir(nml::ControlNamelist) =
     abspath(expanduser(joinpath(nml.outdir, nml.prefix * ".save")))
 
-wfcfiles(nml::ControlNamelist, n = 1) =
+wfcfiles(nml::ControlNamelist, n=1) =
     [joinpath(getxmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
 
 """
@@ -253,103 +253,103 @@ Represent the `SYSTEM` namelist of `pw.x`.
     block_height::Float64
 end # struct SystemNamelist
 function SystemNamelist(;
-    ibrav = 127,
-    celldm = zeros(6),  # Must specify
-    A = 0.0,
-    B = 0.0,
-    C = 0.0,
-    cosAB = 0.0,
-    cosAC = 0.0,
-    cosBC = 0.0,
-    nat = 0,
-    ntyp = 0,
-    nbnd = 0,
-    tot_charge = 0.0,
-    starting_charge = [],
-    tot_magnetization = -1.0,
-    starting_magnetization = [],
-    ecutwfc = 0.0,
-    ecutrho = 4ecutwfc,
-    ecutfock = ecutrho,
-    nr1 = 0,
-    nr2 = 0,
-    nr3 = 0,
-    nr1s = 0,
-    nr2s = 0,
-    nr3s = 0,
-    nosym = false,
-    nosym_evc = false,
-    noinv = false,
-    no_t_rev = false,
-    force_symmorphic = false,
-    use_all_frac = false,
-    occupations = "fixed",
-    one_atom_occupations = false,
-    starting_spin_angle = false,
-    degauss = 0.0,
-    smearing = "gaussian",
-    nspin = 1,
-    noncolin = false,
-    ecfixed = 0.0,
-    qcutz = 0.0,
-    q2sigma = 0.1,  # The default value in QE's source code is 0.01
-    input_dft = "none",
-    exx_fraction = 0.25,
-    screening_parameter = 0.106,
-    exxdiv_treatment = "gygi-baldereschi",
-    x_gamma_extrapolation = true,
-    ecutvcut = 0.0,
-    nqx1 = 1,
-    nqx2 = 1,
-    nqx3 = 1,
-    localization_thr = 0.0,  # This is only for QE 6.4
-    lda_plus_u = false,
-    lda_plus_u_kind = 0,
-    Hubbard_U = [],
-    Hubbard_J0 = [],
-    Hubbard_alpha = [],
-    Hubbard_beta = [],
+    ibrav=127,
+    celldm=zeros(6),  # Must specify
+    A=0.0,
+    B=0.0,
+    C=0.0,
+    cosAB=0.0,
+    cosAC=0.0,
+    cosBC=0.0,
+    nat=0,
+    ntyp=0,
+    nbnd=0,
+    tot_charge=0.0,
+    starting_charge=[],
+    tot_magnetization=-1.0,
+    starting_magnetization=[],
+    ecutwfc=0.0,
+    ecutrho=4ecutwfc,
+    ecutfock=ecutrho,
+    nr1=0,
+    nr2=0,
+    nr3=0,
+    nr1s=0,
+    nr2s=0,
+    nr3s=0,
+    nosym=false,
+    nosym_evc=false,
+    noinv=false,
+    no_t_rev=false,
+    force_symmorphic=false,
+    use_all_frac=false,
+    occupations="fixed",
+    one_atom_occupations=false,
+    starting_spin_angle=false,
+    degauss=0.0,
+    smearing="gaussian",
+    nspin=1,
+    noncolin=false,
+    ecfixed=0.0,
+    qcutz=0.0,
+    q2sigma=0.1,  # The default value in QE's source code is 0.01
+    input_dft="none",
+    exx_fraction=0.25,
+    screening_parameter=0.106,
+    exxdiv_treatment="gygi-baldereschi",
+    x_gamma_extrapolation=true,
+    ecutvcut=0.0,
+    nqx1=1,
+    nqx2=1,
+    nqx3=1,
+    localization_thr=0.0,  # This is only for QE 6.4
+    lda_plus_u=false,
+    lda_plus_u_kind=0,
+    Hubbard_U=[],
+    Hubbard_J0=[],
+    Hubbard_alpha=[],
+    Hubbard_beta=[],
     # Hubbard_J = [zeros(ntyp)]  ,  # The default value in QE's source code is just one 0.0
-    starting_ns_eigenvalue = -1.0,  # It's actually a multidimensional array.
-    U_projection_type = "atomic",
-    edir = 1,
-    emaxpos = 0.5,
-    eopreg = 0.1,
-    eamp = 0.001,  # The default value in QE's source code is 0.0
-    angle1 = [],
-    angle2 = [],
-    constrained_magnetization = "none",
-    fixed_magnetization = zeros(3),  # The default value in QE's source code is just one 0.0
-    lambda = 1.0,
-    report = 100,
-    lspinorb = false,
-    assume_isolated = "none",
-    esm_bc = "pbc",
-    esm_w = 0.0,
-    esm_efield = 0.0,
-    esm_nfit = 4,
-    fcp_mu = 0.0,
-    vdw_corr = "none",
-    london = false,
-    london_s6 = 0.75,
-    london_c6 = [],
-    london_rvdw = [],
-    london_rcut = 200.0,
-    ts_vdw_econv_thr = 1e-06,
-    ts_vdw_isolated = false,
-    xdm = false,
-    xdm_a1 = 0.6836,  # The default value in QE's source code is 0.0
-    xdm_a2 = 1.5045,  # The default value in QE's source code is 0.0
-    space_group = 0,
-    uniqueb = false,
-    origin_choice = 1,
-    rhombohedral = true,
-    zgate = 0.5,
-    relaxz = false,
-    block = false,
-    block_1 = 0.45,
-    block_2 = 0.55,
-    block_height = 0.1,  # The default value in QE's source code is 0.0
+    starting_ns_eigenvalue=-1.0,  # It's actually a multidimensional array.
+    U_projection_type="atomic",
+    edir=1,
+    emaxpos=0.5,
+    eopreg=0.1,
+    eamp=0.001,  # The default value in QE's source code is 0.0
+    angle1=[],
+    angle2=[],
+    constrained_magnetization="none",
+    fixed_magnetization=zeros(3),  # The default value in QE's source code is just one 0.0
+    lambda=1.0,
+    report=100,
+    lspinorb=false,
+    assume_isolated="none",
+    esm_bc="pbc",
+    esm_w=0.0,
+    esm_efield=0.0,
+    esm_nfit=4,
+    fcp_mu=0.0,
+    vdw_corr="none",
+    london=false,
+    london_s6=0.75,
+    london_c6=[],
+    london_rvdw=[],
+    london_rcut=200.0,
+    ts_vdw_econv_thr=1e-06,
+    ts_vdw_isolated=false,
+    xdm=false,
+    xdm_a1=0.6836,  # The default value in QE's source code is 0.0
+    xdm_a2=1.5045,  # The default value in QE's source code is 0.0
+    space_group=0,
+    uniqueb=false,
+    origin_choice=1,
+    rhombohedral=true,
+    zgate=0.5,
+    relaxz=false,
+    block=false,
+    block_1=0.45,
+    block_2=0.55,
+    block_height=0.1,  # The default value in QE's source code is 0.0
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1378-L1499.
     @assert ibrav in union(0:1:14, (-3, -5, -9, 91, -12, -13), 127)
@@ -391,7 +391,7 @@ function SystemNamelist(;
     @assert length(london_c6) <= ntyp
     @assert length(london_rvdw) <= ntyp
     @assert exxdiv_treatment in
-            ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none")
+        ("gygi-baldereschi", "gygi-bald", "g-b", "vcut_ws", "vcut_spherical", "none")
     @assert !(x_gamma_extrapolation && exxdiv_treatment in ("vcut_ws", "vcut_spherical")) "`x_gamma_extrapolation` cannot be used with `vcut`!"
     return SystemNamelist(
         ibrav,
@@ -526,28 +526,28 @@ Represent the `ELECTRONS` namelist of `pw.x`.
     tqr::Bool
 end # struct ElectronsNamelist
 function ElectronsNamelist(;
-    electron_maxstep = 100,
-    scf_must_converge = true,
-    conv_thr = 1e-6,
-    adaptive_thr = false,
-    conv_thr_init = 1e-3,
-    conv_thr_multi = 0.1,
-    mixing_mode = "plain",
-    mixing_beta = 0.7,
-    mixing_ndim = 8,
-    mixing_fixed_ns = 0,
-    diagonalization = "david",
-    ortho_para = 0,
-    diago_thr_init = 0.0,
-    diago_cg_maxiter = 20,
-    diago_david_ndim = 4,
-    diago_full_acc = false,
-    efield = 0.0,
-    efield_cart = zeros(3),
-    efield_phase = "none",
-    startingpot = "atomic",  # This depends on `calculation`
-    startingwfc = "atomic+random",  # This depends on `calculation`
-    tqr = false,
+    electron_maxstep=100,
+    scf_must_converge=true,
+    conv_thr=1e-6,
+    adaptive_thr=false,
+    conv_thr_init=1e-3,
+    conv_thr_multi=0.1,
+    mixing_mode="plain",
+    mixing_beta=0.7,
+    mixing_ndim=8,
+    mixing_fixed_ns=0,
+    diagonalization="david",
+    ortho_para=0,
+    diago_thr_init=0.0,
+    diago_cg_maxiter=20,
+    diago_david_ndim=4,
+    diago_full_acc=false,
+    efield=0.0,
+    efield_cart=zeros(3),
+    efield_phase="none",
+    startingpot="atomic",  # This depends on `calculation`
+    startingwfc="atomic+random",  # This depends on `calculation`
+    tqr=false,
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1508-L1543.
     @assert mixing_mode in ("plain", "TF", "local-TF")
@@ -612,28 +612,28 @@ Input this namelist only if `calculation` is `"relax"`, `"md"`, `"vc-relax"`, or
     w_2::Float64
 end # struct IonsNamelist
 function IonsNamelist(;
-    ion_dynamics = "none",
-    ion_positions = "default",
-    pot_extrapolation = "atomic",
-    wfc_extrapolation = "none",
-    remove_rigid_rot = false,
-    ion_temperature = "not_controlled",
-    tempw = 300.0,
-    tolp = 100.0,
-    delta_t = 1.0,
-    nraise = 1,
-    refold_pos = false,
-    upscale = 100.0,
-    bfgs_ndim = 1,
-    trust_radius_max = 0.8,
-    trust_radius_min = 1e-3,  # The default value in QE's source code is 0.0001
-    trust_radius_ini = 0.5,
-    w_1 = 0.01,
-    w_2 = 0.5,
+    ion_dynamics="none",
+    ion_positions="default",
+    pot_extrapolation="atomic",
+    wfc_extrapolation="none",
+    remove_rigid_rot=false,
+    ion_temperature="not_controlled",
+    tempw=300.0,
+    tolp=100.0,
+    delta_t=1.0,
+    nraise=1,
+    refold_pos=false,
+    upscale=100.0,
+    bfgs_ndim=1,
+    trust_radius_max=0.8,
+    trust_radius_min=1e-3,  # The default value in QE's source code is 0.0001
+    trust_radius_ini=0.5,
+    w_1=0.01,
+    w_2=0.5,
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1552-L1585.
     @assert ion_dynamics in
-            ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman")
+        ("none", "bfgs", "damp", "verlet", "langevin", "langevin-smc", "beeman")
     @assert ion_positions in ("default", "from_input")
     @assert pot_extrapolation in ("none", "atomic", "first_order", "second_order")
     @assert wfc_extrapolation in ("none", "first_order", "second_order")
@@ -689,12 +689,12 @@ Input this namelist only if `calculation` is `"vc-relax"` or `"vc-md"`.
     cell_dofree::String
 end # struct CellNamelist
 function CellNamelist(;
-    cell_dynamics = "none",
-    press = 0.0,
-    wmass = 0.0,
-    cell_factor = 0.0,
-    press_conv_thr = 0.5,
-    cell_dofree = "all",
+    cell_dynamics="none",
+    press=0.0,
+    wmass=0.0,
+    cell_factor=0.0,
+    press_conv_thr=0.5,
+    cell_dofree="all",
 )
     # These checks are from https://github.com/QEF/q-e/blob/4132a64/Modules/read_namelists.f90#L1596-L1625.
     @assert cell_dynamics in ("none", "sd", "damp-pr", "damp-w", "bfgs", "pr", "w")
@@ -718,12 +718,7 @@ function CellNamelist(;
         "epitaxial_bc",  # New in 6.4
     )
     return CellNamelist(
-        cell_dynamics,
-        press,
-        wmass,
-        cell_factor,
-        press_conv_thr,
-        cell_dofree,
+        cell_dynamics, press, wmass, cell_factor, press_conv_thr, cell_dofree
     )
 end
 CellNamelist(nml::CellNamelist; kwargs...) = setproperties(nml; kwargs...)
@@ -747,14 +742,14 @@ Represent the `DOS` namelist of `dos.x`.
     fildos::String
 end # struct DosNamelist
 function DosNamelist(;
-    prefix = "pwscf",
-    outdir = "./",
-    ngauss = 0,
-    degauss = 0.0,
-    Emin = -1000000.0,
-    Emax = 1000000.0,
-    DeltaE = 0.01,
-    fildos = "$(prefix).dos",
+    prefix="pwscf",
+    outdir="./",
+    ngauss=0,
+    degauss=0.0,
+    Emin=-1000000.0,
+    Emax=1000000.0,
+    DeltaE=0.01,
+    fildos="$(prefix).dos",
 )
     @assert ngauss in (0, 1, -1, -99)
     return DosNamelist(prefix, outdir, ngauss, degauss, Emin, Emax, DeltaE, fildos)
@@ -784,18 +779,18 @@ Represent the `BANDS` namelist of `bands.x`.
     lastk::UInt
 end # struct BandsNamelist
 function BandsNamelist(;
-    prefix = "pwscf",
-    outdir = "./",
-    filband = "bands.out",
-    spin_component = 1,
-    lsigma = falses(3),  # The default value in QE's source code is just one `false`
-    lp = false,
-    filp = "p_avg.dat",
-    lsym = true,
-    no_overlap = true,
-    plot_2d = false,
-    firstk = 0,
-    lastk = 10000000,
+    prefix="pwscf",
+    outdir="./",
+    filband="bands.out",
+    spin_component=1,
+    lsigma=falses(3),  # The default value in QE's source code is just one `false`
+    lp=false,
+    filp="p_avg.dat",
+    lsym=true,
+    no_overlap=true,
+    plot_2d=false,
+    firstk=0,
+    lastk=10000000,
 )
     @assert spin_component in 1:2
     return BandsNamelist(
