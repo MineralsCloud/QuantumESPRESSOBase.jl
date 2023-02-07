@@ -11,7 +11,7 @@ julia>
 """
 module PHonon
 
-using Crystallography: ReciprocalPoint
+using CrystallographyBase: ReciprocalPoint
 using Setfield: @set!
 using StructEquality: @struct_hash_equal
 

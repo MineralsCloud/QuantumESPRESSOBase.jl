@@ -1,10 +1,10 @@
-using Crystallography: CartesianFromFractional
+using CrystallographyBase: CartesianFromFractional
 using LinearAlgebra: det
 using Spglib: get_dataset
 
 using ..Inputs: Ibrav
 
-import Crystallography: crystaldensity
+import CrystallographyBase: crystaldensity
 import Spglib: Cell
 
 export find_symmetry

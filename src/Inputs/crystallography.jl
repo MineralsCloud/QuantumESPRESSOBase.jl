@@ -1,4 +1,4 @@
-using Crystallography:
+using CrystallographyBase.Bravais:
     PrimitiveCubic,
     FaceCenteredCubic,
     BodyCenteredCubic,
@@ -16,7 +16,7 @@ using Crystallography:
     BCenteredMonoclinic,
     PrimitiveTriclinic
 
-import Crystallography: Bravais, Lattice
+import CrystallographyBase: Bravais, Lattice
 
 export Ibrav
 
