@@ -9,7 +9,7 @@ import Spglib: Cell
 
 export find_symmetry
 
-struct LackCellInfoError <: Exception
+struct LackInfoError <: Exception
     msg::AbstractString
 end
 
@@ -34,7 +34,7 @@ Return a `Lattice` from a `CellParametersCard`.
 function Lattice(card::CellParametersCard)
     m, option = transpose(card.data), optionof(card)
     if option == "alat"
-        throw(LackCellInfoError("parameter `celldm[1]` needed!"))
+        throw(LackInfoError("parameter `celldm[1]` needed!"))
     elseif option == "bohr"
         return Lattice(m)
     else  # option == "angstrom"
@@ -82,7 +82,7 @@ function cellvolume(card::AbstractCellParametersCard)
     elseif option == "angstrom"
         return ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
     else  # option == "alat"
-        throw(LackCellInfoError("parameter `celldm[1]` needed!"))
+        throw(LackInfoError("parameter `celldm[1]` needed!"))
     end
 end
 """
@@ -99,12 +99,12 @@ Return the volume of the cell based on the information given in a `PWInput`, in 
 function cellvolume(input::PWInput)
     if input.system.ibrav == 0
         if isnothing(input.cell_parameters)
-            throw(LackCellInfoError("`ibrav` is 0, must read cell parameters!"))
+            throw(LackInfoError("`ibrav` is 0, must read cell parameters!"))
         else
             if optionof(input.cell_parameters) == "alat"
                 # If no value of `celldm` is changed...
                 if isnothing(input.system.celldm[1])
-                    throw(LackCellInfoError("parameter `celldm[1]` needed!"))
+                    throw(LackInfoError("parameter `celldm[1]` needed!"))
                 else
                     return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
                 end
