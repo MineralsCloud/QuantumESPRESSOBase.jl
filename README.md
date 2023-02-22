@@ -95,3 +95,7 @@ guidelines that should be followed when opening pull requests and contributing c
 
 [discussions-url]: https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/discussions
 [issues-url]: https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/issues
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=MineralsCloud/QuantumESPRESSOBase.jl&type=Date)](https://star-history.com/#MineralsCloud/QuantumESPRESSOBase.jl&Date)
