@@ -18,61 +18,27 @@ using CrystallographyBase.Bravais:
 
 import CrystallographyBase: Bravais, Lattice
 
-export Ibrav
-
-struct Ibrav
-    i::Int
-    function Ibrav(i)
-        @assert i in union(0:1:14, (-3, -5, -9, 91, -12, -13)) "Bravais lattice undefined for `ibrav = $i`!"
-        return new(i)
-    end
-end
-
-function Bravais(ibrav::Ibrav)
-    i = ibrav.i
-    if i == 1
-        return PrimitiveCubic(true)
-    elseif i == 2
-        return FaceCenteredCubic(true)
-    elseif i == 3
-        return BodyCenteredCubic(true)
-    elseif i == -3
-        return BodyCenteredCubic(false)
-    elseif i == 4
-        return PrimitiveHexagonal(true)
-    elseif i == 5
-        return RCenteredHexagonal(true)
-    elseif i == -5
-        return RCenteredHexagonal(false)
-    elseif i == 6
-        return PrimitiveTetragonal(true)
-    elseif i == 7
-        return BodyCenteredTetragonal(true)
-    elseif i == 8
-        return PrimitiveOrthorhombic(true)
-    elseif i == 9
-        return BCenteredOrthorhombic(true)
-    elseif i == -9
-        return BCenteredOrthorhombic(false)
-    elseif i == 91
-        return ACenteredOrthorhombic(true)  # New in QE 6.5
-    elseif i == 10
-        return FaceCenteredOrthorhombic(true)
-    elseif i == 11
-        return BodyCenteredOrthorhombic(true)
-    elseif i == 12
-        return PrimitiveMonoclinic(true)
-    elseif i == -12
-        return PrimitiveMonoclinic(false)
-    elseif i == 13
-        return CCenteredMonoclinic(true)
-    elseif i == -13
-        return BCenteredMonoclinic(true)  # New in QE 6.5
-    elseif i == 14
-        return PrimitiveTriclinic(true)
-    else
-        throw(ArgumentError("ambiguous `ibrav` number $i is given!"))
-    end
+@enum Ibrav begin
+    PrimitiveCubic = 1
+    FaceCenteredCubic = 2
+    BodyCenteredCubic = 3
+    BodyCenteredCubic2 = -3
+    PrimitiveHexagonal = 4
+    RCenteredHexagonal = 5
+    RCenteredHexagonal2 = -5
+    PrimitiveTetragonal = 6
+    BodyCenteredTetragonal = 7
+    PrimitiveOrthorhombic = 8
+    BCenteredOrthorhombic = 9
+    BCenteredOrthorhombic2 = -9
+    ACenteredOrthorhombic = 91  # New in QE 6.5=91
+    FaceCenteredOrthorhombic = 10
+    BodyCenteredOrthorhombic = 11
+    PrimitiveMonoclinic = 12
+    PrimitiveMonoclinic2 = -12
+    CCenteredMonoclinic = 13
+    BCenteredMonoclinic2 = -13  # New in QE 6.5=-13
+    PrimitiveTriclinic = 14
 end
 
 """
