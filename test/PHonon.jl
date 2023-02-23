@@ -3,7 +3,14 @@ module PHonon
 using Test
 
 using QuantumESPRESSOBase.Inputs.PHonon:
-    PhNamelist, Q2rNamelist, MatdynNamelist, QPointsCard, PhInput, Q2rInput, MatdynInput
+    PhNamelist,
+    Q2rNamelist,
+    MatdynNamelist,
+    QPointsCard,
+    PhInput,
+    Q2rInput,
+    MatdynInput,
+    DynmatInput
 
 @testset "Construct a `PhInput`: silicon" begin
     ph = PhNamelist(;
