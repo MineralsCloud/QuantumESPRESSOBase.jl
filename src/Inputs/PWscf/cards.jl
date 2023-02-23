@@ -1,4 +1,4 @@
-using Crystallography: Cell, ReciprocalPoint, MonkhorstPackGrid
+using CrystallographyBase: Cell, ReciprocalPoint, MonkhorstPackGrid
 using Functors: fmap
 using StaticArrays: SVector, SMatrix
 

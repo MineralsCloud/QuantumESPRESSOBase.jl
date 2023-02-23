@@ -1,7 +1,7 @@
 module PWscf
 
 using Test: @testset, @test, @test_throws
-using Crystallography: ReciprocalPoint
+using CrystallographyBase: ReciprocalPoint
 using Setfield: @set
 using StructArrays: StructArray
 

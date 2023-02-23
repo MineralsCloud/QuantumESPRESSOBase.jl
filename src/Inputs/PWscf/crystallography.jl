@@ -1,40 +1,39 @@
-using Crystallography: CartesianFromFractional
+using CrystallographyBase: CartesianFromFractional
 using LinearAlgebra: det
 using Spglib: get_dataset
 
 using ..Inputs: Ibrav
 
-import Crystallography: crystaldensity
-import Spglib: Cell
+import CrystallographyBase: Cell, crystaldensity
 
 export find_symmetry
 
-struct LackCellInfoError <: Exception
+struct InsufficientInfoError <: Exception
     msg::AbstractString
 end
 
 """
-    Bravais(nml::SystemNamelist)
+    Ibrav(nml::SystemNamelist)
 
-Return a `Bravais` from a `SystemNamelist`.
+Return a `Ibrav` from a `SystemNamelist`.
 """
-Bravais(nml::SystemNamelist) = Bravais(Ibrav(nml.ibrav))
+Ibrav(nml::SystemNamelist) = Ibrav(nml.ibrav)
 
 """
     Lattice(nml::SystemNamelist)
 
-Return a `Lattice` from a `SystemNamelist`.
+Create a `Lattice` from a `SystemNamelist`.
 """
-Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
+Lattice(nml::SystemNamelist) = Lattice(nml.celldm, Ibrav(nml))
 """
     Lattice(card::CellParametersCard)
 
-Return a `Lattice` from a `CellParametersCard`.
+Create a `Lattice` from a `CellParametersCard`.
 """
 function Lattice(card::CellParametersCard)
     m, option = transpose(card.data), optionof(card)
     if option == "alat"
-        throw(LackCellInfoError("parameter `celldm[1]` needed!"))
+        throw(InsufficientInfoError("parameter `celldm[1]` needed!"))
     elseif option == "bohr"
         return Lattice(m)
     else  # option == "angstrom"
@@ -44,7 +43,7 @@ end
 """
     Lattice(card::PWInput)
 
-Return a `Lattice` from a `PWInput`.
+Create a `Lattice` from a `PWInput`.
 """
 function Lattice(input::PWInput)
     if isnothing(input.cell_parameters)
@@ -82,7 +81,7 @@ function cellvolume(card::AbstractCellParametersCard)
     elseif option == "angstrom"
         return ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
     else  # option == "alat"
-        throw(LackCellInfoError("parameter `celldm[1]` needed!"))
+        throw(InsufficientInfoError("parameter `celldm[1]` needed!"))
     end
 end
 """
@@ -99,12 +98,12 @@ Return the volume of the cell based on the information given in a `PWInput`, in 
 function cellvolume(input::PWInput)
     if input.system.ibrav == 0
         if isnothing(input.cell_parameters)
-            throw(LackCellInfoError("`ibrav` is 0, must read cell parameters!"))
+            throw(InsufficientInfoError("`ibrav` is 0, must read cell parameters!"))
         else
             if optionof(input.cell_parameters) == "alat"
                 # If no value of `celldm` is changed...
                 if isnothing(input.system.celldm[1])
-                    throw(LackCellInfoError("parameter `celldm[1]` needed!"))
+                    throw(InsufficientInfoError("parameter `celldm[1]` needed!"))
                 else
                     return input.system.celldm[1]^3 * abs(det(input.cell_parameters.data))
                 end
@@ -145,7 +144,7 @@ function find_symmetry(input::PWInput, symprec=1e-5)
         end
         position, atom
     end
-    cell = Cell(lattice.data, first.(data), last.(data))
+    cell = Cell(lattice, first.(data), last.(data))
     dataset = get_dataset(cell, symprec)
     return dataset
 end
