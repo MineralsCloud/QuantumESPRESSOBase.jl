@@ -243,7 +243,7 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [[deps.QuantumESPRESSOBase]]
 deps = ["AbInitioSoftwareBase", "ConstructionBase", "CrystallographyBase", "Functors", "LinearAlgebra", "OrderedCollections", "Setfield", "Spglib", "StaticArrays", "StructEquality", "Unitful", "UnitfulAtomic"]
-git-tree-sha1 = "f4ce1b595905b0af3f0277d76394a28ca2092614"
+git-tree-sha1 = "aa1d48a37e40aa2e12a2640e45cab05f8799c3c9"
 repo-rev = "main"
 repo-url = "https://github.com/MineralsCloud/QuantumESPRESSOBase.jl"
 uuid = "51b62caa-b28f-11e9-38c2-1f67cb498e05"
