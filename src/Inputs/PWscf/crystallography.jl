@@ -14,18 +14,18 @@ struct InsufficientInfoError <: Exception
 end
 
 """
-    Bravais(nml::SystemNamelist)
+    Ibrav(nml::SystemNamelist)
 
-Return a `Bravais` from a `SystemNamelist`.
+Return a `Ibrav` from a `SystemNamelist`.
 """
-Bravais(nml::SystemNamelist) = Bravais(Ibrav(nml.ibrav))
+Ibrav(nml::SystemNamelist) = Ibrav(nml.ibrav)
 
 """
     Lattice(nml::SystemNamelist)
 
 Return a `Lattice` from a `SystemNamelist`.
 """
-Lattice(nml::SystemNamelist) = Lattice(Bravais(nml), nml.celldm)
+Lattice(nml::SystemNamelist) = Lattice(nml.celldm, Ibrav(nml))
 """
     Lattice(card::CellParametersCard)
 
