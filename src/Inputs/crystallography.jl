@@ -1,21 +1,3 @@
-using CrystallographyBase.Bravais:
-    PrimitiveCubic,
-    FaceCenteredCubic,
-    BodyCenteredCubic,
-    PrimitiveHexagonal,
-    RCenteredHexagonal,
-    PrimitiveTetragonal,
-    BodyCenteredTetragonal,
-    PrimitiveOrthorhombic,
-    BCenteredOrthorhombic,
-    ACenteredOrthorhombic,
-    FaceCenteredOrthorhombic,
-    BodyCenteredOrthorhombic,
-    PrimitiveMonoclinic,
-    CCenteredMonoclinic,
-    BCenteredMonoclinic,
-    PrimitiveTriclinic
-
 import CrystallographyBase: Bravais, Lattice
 
 @enum Ibrav begin
