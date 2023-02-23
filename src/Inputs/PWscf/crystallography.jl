@@ -4,8 +4,7 @@ using Spglib: get_dataset
 
 using ..Inputs: Ibrav
 
-import CrystallographyBase: crystaldensity
-import Spglib: Cell
+import CrystallographyBase: Cell, crystaldensity
 
 export find_symmetry
 
@@ -145,7 +144,7 @@ function find_symmetry(input::PWInput, symprec=1e-5)
         end
         position, atom
     end
-    cell = Cell(lattice.data, first.(data), last.(data))
+    cell = Cell(lattice, first.(data), last.(data))
     dataset = get_dataset(cell, symprec)
     return dataset
 end
