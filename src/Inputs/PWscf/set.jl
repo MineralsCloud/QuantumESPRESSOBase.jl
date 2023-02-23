@@ -52,7 +52,7 @@ function (x::CellParametersCardSetter)(template::PWInput)
             optionof(template.cell_parameters) == "alat"
             @set! template.system.celldm = [template.system.celldm[1]]
         else  # optionof(template.cell_parameters) is "bohr" or "angstrom"
-            throw(LackInfoError("the `CellParametersCard` does not have units!"))
+            throw(InsufficientInfoError("the `CellParametersCard` does not have units!"))
         end
     else  # "bohr" or "angstrom"
         @set! template.system.celldm = zeros(6)
