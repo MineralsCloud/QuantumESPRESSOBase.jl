@@ -1,4 +1,4 @@
-import CrystallographyBase: Bravais, Lattice
+import CrystallographyBase: Lattice
 
 @enum Ibrav begin
     PrimitiveCubic = 1
