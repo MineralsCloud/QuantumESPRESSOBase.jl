@@ -23,13 +23,13 @@ Ibrav(nml::SystemNamelist) = Ibrav(nml.ibrav)
 """
     Lattice(nml::SystemNamelist)
 
-Return a `Lattice` from a `SystemNamelist`.
+Create a `Lattice` from a `SystemNamelist`.
 """
 Lattice(nml::SystemNamelist) = Lattice(nml.celldm, Ibrav(nml))
 """
     Lattice(card::CellParametersCard)
 
-Return a `Lattice` from a `CellParametersCard`.
+Create a `Lattice` from a `CellParametersCard`.
 """
 function Lattice(card::CellParametersCard)
     m, option = transpose(card.data), optionof(card)
@@ -44,7 +44,7 @@ end
 """
     Lattice(card::PWInput)
 
-Return a `Lattice` from a `PWInput`.
+Create a `Lattice` from a `PWInput`.
 """
 function Lattice(input::PWInput)
     if isnothing(input.cell_parameters)
