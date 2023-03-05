@@ -157,7 +157,7 @@ optional_cards(input::PWInput) =
 
 Get the pseudopotential names from a `PWInput`.
 """
-getpotentials(input::PWInput) = getpotentials(input.atomic_species)
+listpotentials(input::PWInput) = listpotentials(input.atomic_species)
 
 """
     getpseudodir(input::PWInput)

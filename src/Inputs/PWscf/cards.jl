@@ -14,7 +14,7 @@ export AtomicSpecies,
     KMeshCard,
     GammaPointCard,
     SpecialPointsCard
-export optconvert, optionpool, eachatom, getpotentials
+export optconvert, optionpool, eachatom, listpotentials
 
 """
     AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
@@ -79,15 +79,11 @@ Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 end
 
 """
-    getpotentials(card::AtomicSpeciesCard)
+    listpotentials(card::AtomicSpeciesCard)
 
-Get the pseudopotential names from an `AtomicSpeciesCard`.
+List the pseudopotentials in an `AtomicSpeciesCard`.
 """
-function getpotentials(card::AtomicSpeciesCard)
-    return map(card.data) do atomic_species
-        atomic_species.pseudopot
-    end
-end
+listpotentials(card::AtomicSpeciesCard) = map(atom -> atom.pseudopot, eachatom(card))
 
 """
     AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
