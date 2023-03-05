@@ -178,9 +178,9 @@ CellParametersCard(cell::Cell, option="alat") =
 
 struct AtomicForce
     atom::String
-    force::SVector{3,Float64}
-    function AtomicForce(atom::Union{AbstractChar,AbstractString}, force)
-        @assert length(atom) <= 3 "`atom` can have at most 3 characters!"
+    force::MVector{3,Float64}
+    function AtomicForce(atom, force)
+        @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
         return new(string(atom), force)
     end
 end
