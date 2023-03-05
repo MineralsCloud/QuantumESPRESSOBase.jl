@@ -251,6 +251,8 @@ Represent the `K_POINTS` card in QE.
     end
 end
 
+getoption(card::Card) = card.option
+getoption(::Union{AtomicSpeciesCard,AtomicForcesCard}) = ""
 getoption(::KMeshCard) = "automatic"
 getoption(::GammaPointCard) = "gamma"
 
