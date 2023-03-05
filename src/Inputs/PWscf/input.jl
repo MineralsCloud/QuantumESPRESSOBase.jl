@@ -1,18 +1,4 @@
-import ..Inputs:
-    allnamelists,
-    allcards,
-    required_namelists,
-    optional_namelists,
-    required_cards,
-    optional_cards
-
-export PWInput,
-    allnamelists,
-    allcards,
-    required_namelists,
-    optional_namelists,
-    required_cards,
-    optional_cards
+export PWInput, isrequired, isoptional
 
 """
     PWInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
@@ -85,64 +71,11 @@ exitfile(input::PWInput) = exitfile(input.control)
 
 mkexitfile(input::PWInput) = mkexitfile(input.control)
 
-"""
-    allnamelists(input::PWInput)
+isrequired(nml::Namelist) = nml isa Union{ControlNamelist,SystemNamelist,ElectronsNamelist}
+isrequired(card::Card) = card isa Union{AtomicSpeciesCard,AtomicPositionsCard,KPointsCard}
 
-Return an iterator of all `Namelist`s from a `PWInput`. You may want to `collect` them.
-"""
-allnamelists(input::PWInput) =
-    (getfield(input, f) for f in (:control, :system, :electrons, :ions, :cell))
-
-"""
-    allcards(input::PWInput)
-
-Get all `Card`s from a `PWInput`.
-"""
-allcards(input::PWInput) =
-    Iterators.map((
-        :atomic_species,
-        :atomic_positions,
-        :k_points,
-        :cell_parameters,
-        :constraints,
-        :occupations,
-        :atomic_forces,
-    )) do f
-        getfield(input, f)
-    end
-
-"""
-    required_namelists(input::PWInput)
-
-Return an iterator of required `Namelist`s from a `PWInput`. You may want to `collect` them.
-"""
-required_namelists(input::PWInput) =
-    (getfield(input, f) for f in (:control, :system, :electrons))
-
-"""
-    optional_namelists(input::PWInput)
-
-Return an iterator of optional `Namelist`s from a `PWInput`. You may want to `collect` them.
-"""
-optional_namelists(input::PWInput) = (getfield(input, f) for f in (:ions, :cell))
-
-"""
-    required_cards(input::PWInput)
-
-Return an iterator of required `Card`s from a `PWInput`. You may want to `collect` them.
-"""
-required_cards(input::PWInput) =
-    (getfield(input, f) for f in (:atomic_species, :atomic_positions, :k_points))
-
-"""
-    optional_cards(input::PWInput)
-
-Return an iterator of optional `Card`s from a `PWInput`. You may want to `collect` them.
-"""
-optional_cards(input::PWInput) =
-    Iterators.map((:cell_parameters, :constraints, :occupations, :atomic_forces)) do f
-        getfield(input, f)
-    end
+isoptional(nml::Namelist) = nml isa Union{IonsNamelist,CellNamelist}
+isoptional(card::Card) = card isa Union{CellParametersCard,AtomicForcesCard}
 
 """
     getpotentials(input::PWInput)

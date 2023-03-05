@@ -3,15 +3,7 @@ module Inputs
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
 using OrderedCollections: OrderedDict
 
-export getoption,
-    optionpool,
-    groupname,
-    required_namelists,
-    optional_namelists,
-    required_cards,
-    optional_cards,
-    allnamelists,
-    allcards
+export getoption, optionpool, groupname
 
 """
     dropdefault(nml::Namelist)
@@ -63,18 +55,6 @@ function optionpool end
 
 "Represent input files of executables (such as `pw.x` and `cp.x`)."
 abstract type QuantumESPRESSOInput <: Input end
-
-function allnamelists end
-
-function allcards end
-
-function required_namelists end
-
-function optional_namelists end
-
-function required_cards end
-
-function optional_cards end
 
 struct VerbositySetter <: Setter
     v::String
