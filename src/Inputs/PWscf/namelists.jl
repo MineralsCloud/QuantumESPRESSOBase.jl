@@ -1,5 +1,6 @@
 using ConstructionBase: setproperties
-using Unitful: Unitful
+using Unitful: Temperature, Energy, Frequency, Wavenumber
+using UnitfulEquivalences: Thermal, Spectral
 
 export ControlNamelist,
     SystemNamelist,
@@ -840,19 +841,19 @@ function (x::VerbositySetter)(control::ControlNamelist)
 end
 
 struct ElectronicTemperatureSetter{T<:Number} <: Setter
-    temp::T
+    value::T
 end
 function (x::ElectronicTemperatureSetter)(system::SystemNamelist)
     @set! system.occupations = "smearing"
     @set! system.smearing = "fermi-dirac"
-    @set! system.degauss = degauss(x.temp)
+    @set! system.degauss = degauss(x.value)
     return system
 end
-degauss(temp::Real) = temp
-degauss(temp::Unitful.Temperature) = ustrip(u"K", temp) / 315775.02480407 * 2
-degauss(temp::Unitful.Energy) = ustrip(u"Ry", temp)
-degauss(temp::Unitful.Frequency) = ustrip(u"Hz", temp) / 6579683920502000.0 * 2
-degauss(temp::Unitful.Wavenumber) = ustrip(u"m^-1", temp) / 21947463.13632 * 2
+degauss(value::Real) = value
+degauss(value::Temperature) = ustrip(u"Ry", value, Thermal())
+degauss(value::Energy) = ustrip(u"Ry", value)
+degauss(value::Frequency) = ustrip(u"Ry", value, Spectral())
+degauss(value::Wavenumber) = ustrip(u"Ry", value, Spectral())
 
 const ElecTempSetter = ElectronicTemperatureSetter
 
