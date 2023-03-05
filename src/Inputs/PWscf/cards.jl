@@ -8,13 +8,15 @@ export AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
-    CellParametersCard,
     AtomicForce,
     AtomicForcesCard,
+    AtomicVelocity,
+    AtomicVelocitiesCard,
     KPointsCard,
     KMeshCard,
     GammaPointCard,
-    SpecialPointsCard
+    SpecialPointsCard,
+    CellParametersCard
 export getoption, convertoption, optionpool, eachatom, listpotentials
 
 """
@@ -188,13 +190,25 @@ end
     data::Vector{AtomicForce}
 end
 
+struct AtomicVelocity
+    atom::String
+    velocity::MVector{3,Float64}
+    function AtomicVelocity(atom, velocity)
+        @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
+        return new(string(atom), velocity)
+    end
+end
+
+@struct_hash_equal struct AtomicVelocitiesCard <: Card
+    data::Vector{AtomicVelocity}
+end
+
 # See https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1008-L1032 & https://github.com/JuliaLang/julia/blob/de3a70a/base/io.jl#L971-L1054
 struct EachAtom{T}
     card::T
 end
 
-eachatom(card::Union{AtomicSpeciesCard,AtomicPositionsCard,AtomicForcesCard}) =
-    EachAtom(card)
+eachatom(card::Card) = EachAtom(card)
 
 Base.length(iter::EachAtom) = length(iter.card.data)
 
@@ -248,6 +262,16 @@ Represent the `K_POINTS` card in QE.
         return new(data, option)
     end
 end
+
+struct AdditionalKPointsCard <: Card end
+
+struct ConstraintsCard <: Card end
+
+struct OccupationsCard <: Card end
+
+struct SolventsCard <: Card end
+
+struct HubbardCard <: Card end
 
 getoption(::KMeshCard) = "automatic"
 getoption(::GammaPointCard) = "gamma"

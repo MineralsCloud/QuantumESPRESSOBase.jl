@@ -823,6 +823,10 @@ function BandsNamelist(;
 end
 BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
 
+@struct_hash_equal struct FcpNamelist end
+
+@struct_hash_equal struct RismNamelist end
+
 function (x::VerbositySetter)(control::ControlNamelist)
     if x.v == "high"
         @set! control.verbosity = "high"
