@@ -16,6 +16,7 @@ Depth = 3
 ## Methods
 
 ```@docs
+getoption
 optionpool
 allnamelists
 allcards

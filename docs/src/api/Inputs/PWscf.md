@@ -12,7 +12,7 @@ Depth = 3
 ## Types
 
 ```@docs
-Bravais
+Ibrav
 Lattice
 cellvolume
 ControlNamelist
@@ -34,7 +34,7 @@ PWInput
 ## Methods
 
 ```@docs
-optconvert
+convertoption
 getpseudodir
 getpotentials
 ```
