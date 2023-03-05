@@ -1,7 +1,9 @@
 using QuantumESPRESSOBase
 using Documenter
 
-DocMeta.setdocmeta!(QuantumESPRESSOBase, :DocTestSetup, :(using QuantumESPRESSOBase); recursive=true)
+DocMeta.setdocmeta!(
+    QuantumESPRESSOBase, :DocTestSetup, :(using QuantumESPRESSOBase); recursive=true
+)
 
 makedocs(;
     modules=[QuantumESPRESSOBase],
@@ -16,9 +18,7 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        "Manual" => [
-            "Installation Guide" => "installation.md",
-        ],
+        "Manual" => ["Installation Guide" => "installation.md"],
         "Public API" => [
             "`QuantumESPRESSOBase` module" => "api/api.md",
             "`Inputs` module" => "api/Inputs/Inputs.md",
@@ -34,7 +34,4 @@ makedocs(;
     ],
 )
 
-deploydocs(;
-    repo="github.com/MineralsCloud/QuantumESPRESSOBase.jl",
-    devbranch="main",
-)
+deploydocs(; repo="github.com/MineralsCloud/QuantumESPRESSOBase.jl", devbranch="main")
