@@ -21,7 +21,7 @@ export getoption, optconvert, optionpool, eachatom, listpotentials
     AtomicSpecies(atom::Union{Char,String}, mass, pseudopot)
     AtomicSpecies(x::AtomicPosition, mass, pseudopot)
 
-Represent each line of the `ATOMIC_SPECIES` card in QE.
+Represent each line in the `ATOMIC_SPECIES` card in `pw.x` input files.
 
 The `atom` field accepts no more than 3 characters.
 
@@ -90,7 +90,7 @@ listpotentials(card::AtomicSpeciesCard) = map(atom -> atom.pseudopot, eachatom(c
     AtomicPosition(atom::Union{Char,String}, pos[, if_pos])
     AtomicPosition(x::AtomicSpecies, pos, if_pos)
 
-Represent each line in `ATOMIC_POSITIONS` card in `pw.x` input files.
+Represent each line in the `ATOMIC_POSITIONS` card in `pw.x` input files.
 
 The `atom` field accepts no more than 3 characters.
 
@@ -132,7 +132,7 @@ AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, 
 """
     AtomicPositionsCard <: Card
 
-Represent the `ATOMIC_POSITIONS` card in QE.
+Represent the `ATOMIC_POSITIONS` card in `pw.x` input files.
 
 # Arguments
 - `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
@@ -155,9 +155,7 @@ AtomicPositionsCard(cell::Cell, option="alat") = AtomicPositionsCard(
 
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
 abstract type AbstractCellParametersCard <: Card end
-
 """
-    CellParametersCard{T<:Real} <: AbstractCellParametersCard
     CellParametersCard(data::AbstractMatrix, option::String)
 
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
@@ -207,10 +205,10 @@ Base.eltype(iter::EachAtom) = eltype(iter.card.data)
 """
     optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
 
-Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom", or its reverse.
+Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom", etc.
 
 !!! warning
-    It does not support conversion between `"alat"` and the others.
+    It does not support conversions between `"alat"` and others.
 """
 function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
     old_option = getoption(card)
@@ -251,6 +249,11 @@ Represent the `K_POINTS` card in QE.
     end
 end
 
+"""
+    getoption(card::Card)
+
+Return the option of a `Card`.
+"""
 getoption(card::Card) = card.option
 getoption(::Union{AtomicSpeciesCard,AtomicForcesCard}) = ""
 getoption(::KMeshCard) = "automatic"
