@@ -15,7 +15,7 @@ export AtomicSpecies,
     KMeshCard,
     GammaPointCard,
     SpecialPointsCard
-export optconvert, optionpool, eachatom, listpotentials
+export getoption, optconvert, optionpool, eachatom, listpotentials
 
 """
     AtomicSpecies(atom::Union{Char,String}, mass, pseudopot)
@@ -213,7 +213,7 @@ Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom",
     It does not support conversion between `"alat"` and the others.
 """
 function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
-    old_option = optionof(card)
+    old_option = getoption(card)
     if new_option == old_option
         return card  # No conversion is needed
     else
@@ -251,8 +251,8 @@ Represent the `K_POINTS` card in QE.
     end
 end
 
-optionof(::KMeshCard) = "automatic"
-optionof(::GammaPointCard) = "gamma"
+getoption(::KMeshCard) = "automatic"
+getoption(::GammaPointCard) = "gamma"
 
 optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
