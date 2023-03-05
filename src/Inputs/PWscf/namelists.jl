@@ -11,7 +11,7 @@ export ControlNamelist,
     BandsNamelist,
     ElectronicTemperatureSetter,
     ElecTempSetter
-export exitfile, mkexitfile, getxmldir, wfcfiles, getpseudodir
+export exitfile, mkexitfile, getxmldir, listwfcfiles, getpseudodir
 
 # From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4
 const Maybe{T} = Union{T,Nothing}
@@ -146,10 +146,20 @@ function mkexitfile(nml::ControlNamelist)
     return path
 end
 
+"""
+    getxmldir(nml::ControlNamelist)
+
+Return the path to directory storing the XML files.
+"""
 getxmldir(nml::ControlNamelist) =
     abspath(expanduser(joinpath(nml.outdir, nml.prefix * ".save")))
 
-wfcfiles(nml::ControlNamelist, n=1) =
+"""
+    listwfcfiles(nml::ControlNamelist, n=1)
+
+List all wave function files.
+"""
+listwfcfiles(nml::ControlNamelist, n=1) =
     [joinpath(getxmldir(nml), nml.prefix * ".wfc$i") for i in 1:n]
 
 """

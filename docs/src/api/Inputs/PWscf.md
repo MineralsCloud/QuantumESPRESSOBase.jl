@@ -14,7 +14,6 @@ Depth = 3
 ```@docs
 Ibrav
 Lattice
-cellvolume
 ControlNamelist
 SystemNamelist
 ElectronsNamelist
@@ -34,7 +33,12 @@ PWInput
 ## Methods
 
 ```@docs
+isrequired
+isoptional
+cellvolume
 convertoption
 getpseudodir
-getpotentials
+listpotentials
+getxmldir
+listwfcfiles
 ```

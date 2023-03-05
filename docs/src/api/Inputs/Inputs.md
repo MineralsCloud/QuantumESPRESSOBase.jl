@@ -11,17 +11,13 @@ Depth = 3
 
 ## Types
 
-
+```@docs
+QuantumESPRESSOInput
+```
 
 ## Methods
 
 ```@docs
 getoption
 optionpool
-allnamelists
-allcards
-required_namelists
-optional_namelists
-required_cards
-optional_cards
 ```

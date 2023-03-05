@@ -89,9 +89,21 @@ exitfile(input::PWInput) = exitfile(input.control)
 
 mkexitfile(input::PWInput) = mkexitfile(input.control)
 
+"""
+    isrequired(nml::Namelist)
+    isrequired(card::Card)
+
+Test whether a `Namelist` or a `Card` is required in `PWInput`.
+"""
 isrequired(nml::Namelist) = nml isa Union{ControlNamelist,SystemNamelist,ElectronsNamelist}
 isrequired(card::Card) = card isa Union{AtomicSpeciesCard,AtomicPositionsCard,KPointsCard}
 
+"""
+    isoptional(nml::Namelist)
+    isoptional(card::Card)
+
+Test whether a `Namelist` or a `Card` is optional in `PWInput`.
+"""
 isoptional(nml::Namelist) =
     nml isa Union{IonsNamelist,CellNamelist,FcpNamelist,RismNamelist}
 isoptional(card::Card) =
