@@ -78,9 +78,9 @@ isoptional(nml::Namelist) = nml isa Union{IonsNamelist,CellNamelist}
 isoptional(card::Card) = card isa Union{CellParametersCard,AtomicForcesCard}
 
 """
-    getpotentials(input::PWInput)
+    listpotentials(input::PWInput)
 
-Get the pseudopotential names from a `PWInput`.
+List the pseudopotentials in a `PWInput`.
 """
 listpotentials(input::PWInput) = listpotentials(input.atomic_species)
 
