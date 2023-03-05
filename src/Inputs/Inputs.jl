@@ -53,12 +53,13 @@ Return a `String` representing the option of a `Card`.
 getoption(card::Card) = hasproperty(card, :option) ? getproperty(card, :option) : ""
 
 """
+    optionpool(card::Card)
     optionpool(T::Type{<:Card})
 
-Return the allowed options for `Card` `T`.
+Return the allowed options for a `Card` or a `Card` type.
 
 # Examples
-```julia
+```jldoctest
 julia> optionpool(AtomicPositionsCard)
 ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 
