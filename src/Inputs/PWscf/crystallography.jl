@@ -15,13 +15,6 @@ struct InsufficientInfoError <: Exception
 end
 
 """
-    Ibrav(nml::SystemNamelist)
-
-Return a `Ibrav` from a `SystemNamelist`.
-"""
-Ibrav(nml::SystemNamelist) = Ibrav(nml.ibrav)
-
-"""
     Lattice(nml::SystemNamelist)
 
 Create a `Lattice` from a `SystemNamelist`.
