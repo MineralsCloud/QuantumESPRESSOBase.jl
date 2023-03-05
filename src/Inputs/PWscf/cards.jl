@@ -1,5 +1,5 @@
 using CrystallographyBase: Cell, ReciprocalPoint, MonkhorstPackGrid
-using StaticArrays: SVector, SMatrix
+using StaticArrays: SVector, MVector, SMatrix
 
 import ..Inputs: optionpool
 
@@ -86,15 +86,15 @@ List the pseudopotentials in an `AtomicSpeciesCard`.
 listpotentials(card::AtomicSpeciesCard) = map(atom -> atom.pseudopot, eachatom(card))
 
 """
-    AtomicPosition(atom::Union{AbstractChar,String}, pos::Vector{Float64}[, if_pos::Vector{Int}])
+    AtomicPosition(atom::Union{Char,String}, pos[, if_pos])
     AtomicPosition(x::AtomicSpecies, pos, if_pos)
 
-Represent each line of the `ATOMIC_POSITIONS` card in QE.
+Represent each line in `ATOMIC_POSITIONS` card in `pw.x` input files.
 
-The `atom` field accepts at most 3 characters.
+The `atom` field accepts no more than 3 characters.
 
 # Examples
-```julia
+```jldoctest
 julia> AtomicPosition('O', [0, 0, 0])
 AtomicPosition("O", [0.0, 0.0, 0.0], Bool[1, 1, 1])
 
@@ -109,7 +109,7 @@ struct AtomicPosition
     "Label of the atom as specified in `AtomicSpecies`."
     atom::String
     "Atomic positions. A three-element vector of floats."
-    pos::SVector{3,Float64}
+    pos::MVector{3,Float64}
     """
     Component `i` of the force for this atom is multiplied by `if_pos(i)`,
     which must be either `0` or `1`.  Used to keep selected atoms and/or
@@ -118,13 +118,12 @@ struct AtomicPosition
     With `crystal_sg` atomic coordinates the constraints are copied in all equivalent
     atoms.
     """
-    if_pos::SVector{3,Bool}
-    function AtomicPosition(atom::Union{AbstractChar,AbstractString}, pos, if_pos)
-        @assert length(atom) <= 3 "`atom` can have at most 3 characters!"
+    if_pos::MVector{3,Bool}
+    function AtomicPosition(atom, pos, if_pos=trues(3))
+        @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
         return new(string(atom), pos, if_pos)
     end
 end
-AtomicPosition(atom, pos) = AtomicPosition(atom, pos, trues(3))
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 # Introudce mutual constructors since they share the same atoms.
 AtomicSpecies(x::AtomicPosition, mass, pseudopot) = AtomicSpecies(x.atom, mass, pseudopot)
