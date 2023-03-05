@@ -17,15 +17,15 @@ export AtomicSpecies,
 export optconvert, optionpool, eachatom, listpotentials
 
 """
-    AtomicSpecies(atom::Union{AbstractChar,String}, mass::Float64, pseudopot::String)
+    AtomicSpecies(atom::Union{Char,String}, mass, pseudopot)
     AtomicSpecies(x::AtomicPosition, mass, pseudopot)
 
 Represent each line of the `ATOMIC_SPECIES` card in QE.
 
-The `atom` field accepts at most 3 characters.
+The `atom` field accepts no more than 3 characters.
 
 # Examples
-```julia
+```jldoctest
 julia> AtomicSpecies("C1", 12, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
 AtomicSpecies("C1", 12.0, "C.pbe-n-kjpaw_psl.1.0.0.UPF")
 
@@ -56,8 +56,8 @@ struct AtomicSpecies
     See also: [`pseudoformat`](@ref)
     """
     pseudopot::String
-    function AtomicSpecies(atom::Union{AbstractChar,AbstractString}, mass, pseudopot)
-        @assert length(atom) <= 3 "`atom` can have at most 3 characters!"
+    function AtomicSpecies(atom, mass, pseudopot)
+        @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
         return new(string(atom), mass, pseudopot)
     end
 end
