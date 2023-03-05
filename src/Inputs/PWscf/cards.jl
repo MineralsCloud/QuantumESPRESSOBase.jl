@@ -145,8 +145,8 @@ Represent the `ATOMIC_POSITIONS` card in QE.
         return new(data, option)
     end
 end
-AtomicPositionsCard(cell::Cell, option) = AtomicPositionsCard(
-    map(cell.types, eachcol(cell.positions)) do atom, position
+AtomicPositionsCard(cell::Cell, option="alat") = AtomicPositionsCard(
+    map(cell.atoms, cell.positions) do atom, position
         AtomicPosition(string(atom), position)
     end,
     option,
