@@ -1,14 +1,3 @@
-"""
-# module Inputs
-
-
-
-# Examples
-
-```julia
-julia>
-```
-"""
 module Inputs
 
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname

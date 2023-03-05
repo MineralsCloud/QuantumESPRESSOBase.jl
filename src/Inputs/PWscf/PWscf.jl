@@ -1,14 +1,3 @@
-"""
-# module PWscf
-
-
-
-# Examples
-
-```julia
-julia>
-```
-"""
 module PWscf
 
 using AbInitioSoftwareBase.Inputs: InputEntry, Namelist, Card, Setter

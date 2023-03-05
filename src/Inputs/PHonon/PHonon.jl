@@ -1,14 +1,3 @@
-"""
-# module PHonon
-
-
-
-# Examples
-
-```julia
-julia>
-```
-"""
 module PHonon
 
 using CrystallographyBase: ReciprocalPoint
