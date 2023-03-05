@@ -203,8 +203,7 @@ eachatom(card::Union{AtomicSpeciesCard,AtomicPositionsCard,AtomicForcesCard}) =
 
 Base.length(iter::EachAtom) = length(iter.card.data)
 
-Base.iterate(iter::EachAtom, state=1) =
-    state > length(iter) ? nothing : (iter.card.data[state], state + 1)
+Base.iterate(iter::EachAtom, state=1) = iterate(iter.card.data, state)
 
 Base.eltype(iter::EachAtom) = eltype(iter.card.data)
 
