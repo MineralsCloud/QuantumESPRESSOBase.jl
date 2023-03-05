@@ -3,7 +3,7 @@ using CrystallographyBase: CartesianFromFractional
 using LinearAlgebra: det
 using Spglib: get_dataset
 
-using ..Inputs: Ibrav
+using ..Inputs: Ibrav, latticevectors
 
 import CrystallographyBase: Cell, crystaldensity
 import ChemicalFormula: Formula
@@ -15,18 +15,11 @@ struct InsufficientInfoError <: Exception
 end
 
 """
-    Ibrav(nml::SystemNamelist)
-
-Return a `Ibrav` from a `SystemNamelist`.
-"""
-Ibrav(nml::SystemNamelist) = Ibrav(nml.ibrav)
-
-"""
     Lattice(nml::SystemNamelist)
 
 Create a `Lattice` from a `SystemNamelist`.
 """
-Lattice(nml::SystemNamelist) = Lattice(nml.celldm, Ibrav(nml))
+Lattice(nml::SystemNamelist) = Lattice(latticevectors(nml.celldm, Ibrav(nml.ibrav)))
 """
     Lattice(card::CellParametersCard)
 
