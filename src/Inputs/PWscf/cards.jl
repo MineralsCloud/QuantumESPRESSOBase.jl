@@ -263,6 +263,16 @@ Represent the `K_POINTS` card in QE.
     end
 end
 
+struct AdditionalKPointsCard <: Card end
+
+struct ConstraintsCard <: Card end
+
+struct OccupationsCard <: Card end
+
+struct SolventsCard <: Card end
+
+struct HubbardCard <: Card end
+
 getoption(::KMeshCard) = "automatic"
 getoption(::GammaPointCard) = "gamma"
 
