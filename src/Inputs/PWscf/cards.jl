@@ -208,8 +208,7 @@ struct EachAtom{T}
     card::T
 end
 
-eachatom(card::Union{AtomicSpeciesCard,AtomicPositionsCard,AtomicForcesCard}) =
-    EachAtom(card)
+eachatom(card::Card) = EachAtom(card)
 
 Base.length(iter::EachAtom) = length(iter.card.data)
 
