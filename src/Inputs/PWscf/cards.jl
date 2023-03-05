@@ -229,13 +229,10 @@ function optconvert(new_option::AbstractString, card::AbstractCellParametersCard
 end
 
 abstract type KPointsCard <: Card end
-
 struct KMeshCard <: KPointsCard
     data::MonkhorstPackGrid
 end
-
 struct GammaPointCard <: KPointsCard end
-
 """
     SpecialKPointsCard(data, option)
 
@@ -252,10 +249,6 @@ Represent the `K_POINTS` card in QE.
         @assert option in optionpool(SpecialPointsCard)
         return new(data, option)
     end
-end
-function SpecialPointsCard(data::AbstractMatrix, option="tpiba")
-    @assert size(data, 2) == 4
-    return SpecialPointsCard(map(x -> ReciprocalPoint(x...), eachrow(data)), option)
 end
 
 optionof(::KMeshCard) = "automatic"
