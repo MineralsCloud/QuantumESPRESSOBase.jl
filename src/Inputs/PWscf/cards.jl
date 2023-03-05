@@ -259,6 +259,7 @@ getoption(::Union{AtomicSpeciesCard,AtomicForcesCard}) = ""
 getoption(::KMeshCard) = "automatic"
 getoption(::GammaPointCard) = "gamma"
 
+optionpool(card::Card) = optionpool(typeof(card))
 optionpool(::Type{AtomicPositionsCard}) =
     ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
 optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
