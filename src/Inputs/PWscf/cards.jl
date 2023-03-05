@@ -8,13 +8,15 @@ export AtomicSpecies,
     AtomicSpeciesCard,
     AtomicPosition,
     AtomicPositionsCard,
-    CellParametersCard,
     AtomicForce,
     AtomicForcesCard,
+    AtomicVelocity,
+    AtomicVelocitiesCard,
     KPointsCard,
     KMeshCard,
     GammaPointCard,
-    SpecialPointsCard
+    SpecialPointsCard,
+    CellParametersCard
 export getoption, convertoption, optionpool, eachatom, listpotentials
 
 """
@@ -186,6 +188,19 @@ end
 
 @struct_hash_equal struct AtomicForcesCard <: Card
     data::Vector{AtomicForce}
+end
+
+struct AtomicVelocity
+    atom::String
+    velocity::MVector{3,Float64}
+    function AtomicVelocity(atom, velocity)
+        @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
+        return new(string(atom), velocity)
+    end
+end
+
+@struct_hash_equal struct AtomicVelocitiesCard <: Card
+    data::Vector{AtomicVelocity}
 end
 
 # See https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1008-L1032 & https://github.com/JuliaLang/julia/blob/de3a70a/base/io.jl#L971-L1054
