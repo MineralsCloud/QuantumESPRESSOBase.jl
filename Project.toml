@@ -5,6 +5,7 @@ version = "0.8.0"
 
 [deps]
 AbInitioSoftwareBase = "df5135bc-470e-46c6-b451-292e27ca5b84"
+ChemicalFormula = "069161ab-964a-4228-89a0-7a676f2e1f46"
 ConstructionBase = "187b0558-2788-49d3-abe0-74a17ed4e7c9"
 CrystallographyBase = "93b1d1cd-a8ea-4aa5-adb1-b2407ea0ba8d"
 Functors = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
