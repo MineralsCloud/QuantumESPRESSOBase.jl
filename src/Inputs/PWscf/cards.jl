@@ -1,5 +1,5 @@
 using CrystallographyBase: Cell, ReciprocalPoint, MonkhorstPackGrid
-using StaticArrays: SVector, MVector, SMatrix
+using StaticArrays: SVector, MVector, SMatrix, MMatrix
 
 import ..Inputs: optionpool
 
@@ -162,18 +162,19 @@ abstract type AbstractCellParametersCard <: Card end
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
 struct CellParametersCard <: AbstractCellParametersCard
-    data::SMatrix{3,3,Float64}
+    data::MMatrix{3,3,Float64,9}
     option::String
     function CellParametersCard(data, option="alat")
         @assert option in optionpool(CellParametersCard)
         return new(data, option)
     end
 end
-CellParametersCard(lattice::Lattice{<:Real}, option) =
+CellParametersCard(lattice::Lattice, option="alat") =
     CellParametersCard(transpose(lattice.data), option)
 CellParametersCard(lattice::Lattice{<:Length}) =
     CellParametersCard(Lattice(map(x -> ustrip(u"bohr", x), lattice.data)), "bohr")
-CellParametersCard(cell::Cell, option) = CellParametersCard(transpose(cell.lattice), option)
+CellParametersCard(cell::Cell, option="alat") =
+    CellParametersCard(transpose(cell.lattice), option)
 
 struct AtomicForce
     atom::String
