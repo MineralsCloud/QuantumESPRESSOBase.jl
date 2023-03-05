@@ -1,5 +1,4 @@
 using CrystallographyBase: Cell, ReciprocalPoint, MonkhorstPackGrid
-using Functors: fmap
 using StaticArrays: SVector, SMatrix
 
 import ..Inputs: optionpool
@@ -178,7 +177,7 @@ end
 CellParametersCard(lattice::Lattice{<:Real}, option) =
     CellParametersCard(transpose(lattice.data), option)
 CellParametersCard(lattice::Lattice{<:Length}) =
-    CellParametersCard(fmap(x -> ustrip(u"bohr", x), lattice), "bohr")
+    CellParametersCard(Lattice(map(x -> ustrip(u"bohr", x), lattice.data)), "bohr")
 CellParametersCard(cell::Cell, option) = CellParametersCard(transpose(cell.lattice), option)
 
 struct AtomicForce
