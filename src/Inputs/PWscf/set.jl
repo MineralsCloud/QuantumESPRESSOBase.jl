@@ -20,7 +20,7 @@ function (x::VolumeSetter{<:Real})(template::PWInput)
         @set! template.system.celldm[1] *= factor
     else
         @set! template.system.celldm = zeros(6)
-        @set! template.cell_parameters = optconvert(
+        @set! template.cell_parameters = convertoption(
             CellParametersCard(template.cell_parameters.data * factor), "bohr"
         )
     end
