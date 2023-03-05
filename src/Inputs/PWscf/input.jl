@@ -39,10 +39,10 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     atomic_species::AtomicSpeciesCard
     atomic_positions::AtomicPositionsCard
     k_points::KPointsCard
-    cell_parameters::Union{Nothing,CellParametersCard}
-    constraints::Union{Union{Nothing,Float64}}
-    occupations::Union{Nothing,Float64}
-    atomic_forces::Union{Nothing,AtomicForcesCard}
+    cell_parameters::Maybe{CellParametersCard}
+    constraints::Maybe{Float64}
+    occupations::Maybe{Float64}
+    atomic_forces::Maybe{AtomicForcesCard}
 end
 function PWInput(;
     control=ControlNamelist(),
