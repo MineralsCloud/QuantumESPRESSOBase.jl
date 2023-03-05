@@ -1,6 +1,6 @@
 using ConstructionBase: constructorof
 using CrystallographyBase: Cell, ReciprocalPoint, MonkhorstPackGrid
-using StaticArrays: SVector, MVector, SMatrix, MMatrix
+using StaticArrays: MVector, MMatrix
 
 import ..Inputs: optionpool
 
