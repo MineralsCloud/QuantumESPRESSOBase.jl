@@ -16,12 +16,12 @@ struct VolumeSetter{T<:Number} <: Setter
 end
 function (x::VolumeSetter{<:Real})(template::PWInput)
     factor = cbrt(x.vol / cellvolume(template))
-    if isnothing(template.cell_parameters) || optionof(template.cell_parameters) == "alat"
+    if isnothing(template.cell_parameters) || getoption(template.cell_parameters) == "alat"
         @set! template.system.celldm[1] *= factor
     else
         @set! template.system.celldm = zeros(6)
-        @set! template.cell_parameters = optconvert(
-            "bohr", CellParametersCard(template.cell_parameters.data * factor)
+        @set! template.cell_parameters = convertoption(
+            CellParametersCard(template.cell_parameters.data * factor), "bohr"
         )
     end
     return template
@@ -47,9 +47,9 @@ const CellParametersCardSetter = CardSetter{CellParametersCard}
 const AtomicPositionsCardSetter = CardSetter{AtomicPositionsCard}
 
 function (x::CellParametersCardSetter)(template::PWInput)
-    if optionof(x.card) == "alat"
+    if getoption(x.card) == "alat"
         if isnothing(template.cell_parameters) ||
-            optionof(template.cell_parameters) == "alat"
+            getoption(template.cell_parameters) == "alat"
             @set! template.system.celldm = [template.system.celldm[1]]
         else  # optionof(template.cell_parameters) is "bohr" or "angstrom"
             throw(InsufficientInfoError("the `CellParametersCard` does not have units!"))

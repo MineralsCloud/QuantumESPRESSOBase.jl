@@ -33,7 +33,7 @@ Lattice(nml::SystemNamelist) = Lattice(nml.celldm, Ibrav(nml))
 Create a `Lattice` from a `CellParametersCard`.
 """
 function Lattice(card::CellParametersCard)
-    m, option = transpose(card.data), optionof(card)
+    m, option = transpose(card.data), getoption(card)
     if option == "alat"
         throw(InsufficientInfoError("parameter `celldm[1]` needed!"))
     elseif option == "bohr"
@@ -51,7 +51,7 @@ function Lattice(input::PWInput)
     if isnothing(input.cell_parameters)
         return Lattice(input.system)
     else
-        if optionof(input.cell_parameters) == "alat"
+        if getoption(input.cell_parameters) == "alat"
             return Lattice(
                 transpose(input.cell_parameters.data) * first(input.system.celldm)
             )
@@ -77,7 +77,7 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
     It will throw an error if the option is `"alat"`.
 """
 function cellvolume(card::AbstractCellParametersCard)
-    option = optionof(card)
+    option = getoption(card)
     if option == "bohr"
         return abs(det(card.data))
     elseif option == "angstrom"
@@ -102,7 +102,7 @@ function cellvolume(input::PWInput)
         if isnothing(input.cell_parameters)
             throw(InsufficientInfoError("`ibrav` is 0, must read cell parameters!"))
         else
-            if optionof(input.cell_parameters) == "alat"
+            if getoption(input.cell_parameters) == "alat"
                 # If no value of `celldm` is changed...
                 if isnothing(input.system.celldm[1])
                     throw(InsufficientInfoError("parameter `celldm[1]` needed!"))

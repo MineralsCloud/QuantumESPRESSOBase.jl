@@ -7,8 +7,6 @@ import ..Inputs:
     optional_cards
 
 export PWInput,
-    exitfile,
-    mkexitfile,
     allnamelists,
     allcards,
     required_namelists,
@@ -17,7 +15,6 @@ export PWInput,
     optional_cards
 
 """
-    PWInput <: QuantumESPRESSOInput
     PWInput(control, system, electrons, ions, cell, atomic_species, atomic_positions, k_points, cell_parameters)
 
 Construct a `PWInput` which represents the input of program `pw.x`.
@@ -46,7 +43,7 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     constraints::Union{Union{Nothing,Float64}}
     occupations::Union{Nothing,Float64}
     atomic_forces::Union{Nothing,AtomicForcesCard}
-end # struct PWInput
+end
 function PWInput(;
     control=ControlNamelist(),
     system,
@@ -62,8 +59,8 @@ function PWInput(;
     atomic_forces=nothing,
 )
     @assert !isnothing(cell_parameters) || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
-    foreach(atomic_species.data) do datum
-        path = joinpath(control.pseudo_dir, datum.pseudopot)
+    foreach(eachatom(atomic_species)) do atom
+        path = joinpath(expanduser(control.pseudo_dir), atom.pseudopot)
         if !isfile(path)
             @warn "pseudopotential file \"$path\" does not exist!"
         end
@@ -84,14 +81,9 @@ function PWInput(;
     )
 end
 
-exitfile(template::PWInput) = abspath(
-    expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT"))
-)
-function mkexitfile(template::PWInput)
-    path = exitfile(template)
-    mkpath(dirname(path))
-    return touch(path)
-end
+exitfile(input::PWInput) = exitfile(input.control)
+
+mkexitfile(input::PWInput) = mkexitfile(input.control)
 
 """
     allnamelists(input::PWInput)
