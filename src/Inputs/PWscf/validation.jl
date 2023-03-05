@@ -1,3 +1,5 @@
+export iscompatible
+
 function iscompatible(system::SystemNamelist, cell_parameters::CellParametersCard)
     ibrav, celldm = system.ibrav, system.celldm
     if iszero(ibrav)
@@ -9,5 +11,5 @@ function iscompatible(system::SystemNamelist, cell_parameters::CellParametersCar
     else
         return false
     end
-end # function iscompatible
-iscompatible(x::CellParametersCard, y::SystemNamelist) = iscompatible(y, x)
+end
+iscompatible(x, y) = iscompatible(y, x)
