@@ -7,8 +7,6 @@ import ..Inputs:
     optional_cards
 
 export PWInput,
-    exitfile,
-    mkexitfile,
     allnamelists,
     allcards,
     required_namelists,
@@ -83,14 +81,9 @@ function PWInput(;
     )
 end
 
-exitfile(template::PWInput) = abspath(
-    expanduser(joinpath(template.control.outdir, template.control.prefix * ".EXIT"))
-)
-function mkexitfile(template::PWInput)
-    path = exitfile(template)
-    mkpath(dirname(path))
-    return touch(path)
-end
+exitfile(input::PWInput) = exitfile(input.control)
+
+mkexitfile(input::PWInput) = mkexitfile(input.control)
 
 """
     allnamelists(input::PWInput)

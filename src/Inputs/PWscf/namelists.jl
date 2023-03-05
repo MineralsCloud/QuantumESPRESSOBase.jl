@@ -10,7 +10,7 @@ export ControlNamelist,
     BandsNamelist,
     ElectronicTemperatureSetter,
     ElecTempSetter
-export getxmldir, wfcfiles, getpseudodir
+export exitfile, mkexitfile, getxmldir, wfcfiles, getpseudodir
 
 # From https://discourse.julialang.org/t/aliases-for-union-t-nothing-and-union-t-missing/15402/4
 const Maybe{T} = Union{T,Nothing}
@@ -132,6 +132,18 @@ function ControlNamelist(;
     )
 end
 ControlNamelist(nml::ControlNamelist; kwargs...) = setproperties(nml; kwargs...)
+
+exitfile(nml::ControlNamelist) =
+    abspath(expanduser(joinpath(nml.outdir, nml.prefix * ".EXIT")))
+
+function mkexitfile(nml::ControlNamelist)
+    path = exitfile(nml)
+    if !isfile(path)
+        mkpath(dirname(path))
+        touch(path)
+    end
+    return path
+end
 
 getxmldir(nml::ControlNamelist) =
     abspath(expanduser(joinpath(nml.outdir, nml.prefix * ".save")))
