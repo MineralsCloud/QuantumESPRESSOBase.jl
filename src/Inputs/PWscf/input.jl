@@ -22,13 +22,19 @@ Construct a `PWInput` which represents the input of program `pw.x`.
     electrons::ElectronsNamelist
     ions::IonsNamelist
     cell::CellNamelist
+    fcp::FcpNamelist
+    rism::RismNamelist
     atomic_species::AtomicSpeciesCard
     atomic_positions::AtomicPositionsCard
     k_points::KPointsCard
     cell_parameters::Maybe{CellParametersCard}
-    constraints::Maybe{Float64}
-    occupations::Maybe{Float64}
+    occupations::Maybe{OccupationsCard}
+    constraints::Maybe{ConstraintsCard}
+    atomic_velocities::Maybe{AtomicVelocitiesCard}
     atomic_forces::Maybe{AtomicForcesCard}
+    additional_k_points::Maybe{AdditionalKPointsCard}
+    solvents::Maybe{SolventsCard}
+    hubbard::Maybe{HubbardCard}
 end
 function PWInput(;
     control=ControlNamelist(),
@@ -36,13 +42,19 @@ function PWInput(;
     electrons=ElectronsNamelist(),
     ions=IonsNamelist(),
     cell=CellNamelist(),
+    fcp=FcpNamelist(),
+    rism=RismNamelist(),
     atomic_species,
     atomic_positions,
     k_points,
     cell_parameters=nothing,
-    constraints=nothing,
     occupations=nothing,
+    constraints=nothing,
+    atomic_velocities=nothing,
     atomic_forces=nothing,
+    additional_k_points=nothing,
+    solvents=nothing,
+    hubbard=nothing,
 )
     @assert !isnothing(cell_parameters) || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
     foreach(eachatom(atomic_species)) do atom
@@ -57,13 +69,19 @@ function PWInput(;
         electrons,
         ions,
         cell,
+        fcp,
+        rism,
         atomic_species,
         atomic_positions,
         k_points,
         cell_parameters,
-        constraints,
         occupations,
+        constraints,
+        atomic_velocities,
         atomic_forces,
+        additional_k_points,
+        solvents,
+        hubbard,
     )
 end
 
@@ -74,8 +92,19 @@ mkexitfile(input::PWInput) = mkexitfile(input.control)
 isrequired(nml::Namelist) = nml isa Union{ControlNamelist,SystemNamelist,ElectronsNamelist}
 isrequired(card::Card) = card isa Union{AtomicSpeciesCard,AtomicPositionsCard,KPointsCard}
 
-isoptional(nml::Namelist) = nml isa Union{IonsNamelist,CellNamelist}
-isoptional(card::Card) = card isa Union{CellParametersCard,AtomicForcesCard}
+isoptional(nml::Namelist) =
+    nml isa Union{IonsNamelist,CellNamelist,FcpNamelist,RismNamelist}
+isoptional(card::Card) =
+    card isa Union{
+        CellParametersCard,
+        OccupationsCard,
+        ConstraintsCard,
+        AtomicVelocitiesCard,
+        AtomicForcesCard,
+        AdditionalKPointsCard,
+        SolventsCard,
+        HubbardCard,
+    }
 
 """
     listpotentials(input::PWInput)
