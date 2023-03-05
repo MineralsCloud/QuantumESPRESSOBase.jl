@@ -14,7 +14,7 @@ module Inputs
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
 using OrderedCollections: OrderedDict
 
-export optionof,
+export getoption,
     optionpool,
     groupname,
     required_namelists,
@@ -43,14 +43,14 @@ function dropdefault(nml::Namelist)
 end
 
 """
-    optionof(x::Card)
+    getoption(card::Card)
 
-Return a `String` representing the option for `Card` `x`.
+Return a `String` representing the option of a `Card`.
 
 !!! warning
-    Do not use `x.option` to access a `Card`'s `option`.
+    Do not use `card.option` to access the option since it may not exist.
 """
-optionof(card::Card) = hasfield(typeof(card), :option) ? getfield(card, :option) : nothing
+getoption(card::Card) = hasproperty(card, :option) ? getproperty(card, :option) : ""
 
 """
     optionpool(T::Type{<:Card})

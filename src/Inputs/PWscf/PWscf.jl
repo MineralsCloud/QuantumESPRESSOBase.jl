@@ -22,9 +22,8 @@ using ..Inputs: QuantumESPRESSOInput, VerbositySetter
 import AbInitioSoftwareBase.Inputs: groupname, getpseudodir, getpotentials
 import CrystallographyBase: Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
-import ..Inputs: optionof
 
-export optionof, groupname
+export groupname
 
 include("namelists.jl")
 include("cards.jl")

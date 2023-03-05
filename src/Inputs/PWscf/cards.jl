@@ -2,7 +2,7 @@ using ConstructionBase: constructorof
 using CrystallographyBase: Cell, ReciprocalPoint, MonkhorstPackGrid
 using StaticArrays: MVector, MMatrix
 
-import ..Inputs: optionpool
+import ..Inputs: getoption, optionpool
 
 export AtomicSpecies,
     AtomicSpeciesCard,
@@ -249,13 +249,6 @@ Represent the `K_POINTS` card in QE.
     end
 end
 
-"""
-    getoption(card::Card)
-
-Return the option of a `Card`.
-"""
-getoption(card::Card) = card.option
-getoption(::Union{AtomicSpeciesCard,AtomicForcesCard}) = ""
 getoption(::KMeshCard) = "automatic"
 getoption(::GammaPointCard) = "gamma"
 
