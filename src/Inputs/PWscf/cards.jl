@@ -203,14 +203,14 @@ Base.iterate(iter::EachAtom, state=1) = iterate(iter.card.data, state)
 Base.eltype(iter::EachAtom) = eltype(iter.card.data)
 
 """
-    optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
+    optconvert(card::AbstractCellParametersCard, new_option::AbstractString)
 
 Convert the option of an `AbstractCellParametersCard` from "bohr" to "angstrom", etc.
 
 !!! warning
     It does not support conversions between `"alat"` and others.
 """
-function optconvert(new_option::AbstractString, card::AbstractCellParametersCard)
+function optconvert(card::AbstractCellParametersCard, new_option::AbstractString)
     old_option = getoption(card)
     if new_option == old_option
         return card  # No conversion is needed

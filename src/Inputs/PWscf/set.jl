@@ -21,7 +21,7 @@ function (x::VolumeSetter{<:Real})(template::PWInput)
     else
         @set! template.system.celldm = zeros(6)
         @set! template.cell_parameters = optconvert(
-            "bohr", CellParametersCard(template.cell_parameters.data * factor)
+            CellParametersCard(template.cell_parameters.data * factor), "bohr"
         )
     end
     return template
