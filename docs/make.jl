@@ -20,10 +20,9 @@ makedocs(;
             "Installation Guide" => "installation.md",
         ],
         "Public API" => [
-            "`QuantumESPRESSOBase` module" => "api/api.md",
-            "`Inputs` module" => "api/Inputs/Inputs.md",
-            "`Inputs.PWscf` module" => "api/Inputs/PWscf.md",
-            "`Inputs.PHonon` module" => "api/Inputs/PHonon.md",
+            "`QuantumESPRESSOBase` module" => "api/QuantumESPRESSOBase.md",
+            "`PWscf` module" => "api/PWscf.md",
+            "`PHonon` module" => "api/PHonon.md",
         ],
         "Developer Docs" => [
             "Contributing" => "developers/contributing.md",
