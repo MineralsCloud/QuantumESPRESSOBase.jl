@@ -1,10 +1,5 @@
 # [Style Guide](@id style)
 
-```@contents
-Pages = ["style.md"]
-Depth = 3
-```
-
 This section describes the coding style rules that apply to our code and that
 we recommend you to use it also.
 
@@ -27,7 +22,7 @@ If not following, your pull requests may not be accepted.
 
 ## Formatting
 
-### [Run JuliaFormatter](@id formatter)
+### Run JuliaFormatter
 
 QuantumESPRESSOBase uses [JuliaFormatter](https://github.com/domluna/JuliaFormatter.jl) as
 an auto-formatting tool.
@@ -40,9 +35,9 @@ To format your code, `cd` to the QuantumESPRESSOBase directory, then run:
 using Pkg
 Pkg.add("JuliaFormatter")
 using JuliaFormatter: format
-format("docs");
-format("src");
-format("test");
+format("docs")
+format("src")
+format("test")
 ```
 
 !!! info
@@ -54,7 +49,7 @@ automatically by JuliaFormatter.
 
 ### Use the Julia extension for Visual Studio Code
 
-Please use [VS Code](https://code.visualstudio.com/) with the
+Please use [Visual Studio Code](https://code.visualstudio.com/) with the
 [Julia extension](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia)
 to edit, format, and test your code.
 We do not recommend using other editors to edit your code for the time being.

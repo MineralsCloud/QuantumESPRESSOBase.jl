@@ -2,7 +2,7 @@
 
 ```@contents
 Pages = ["contributing.md"]
-Depth = 3
+Depth = 2
 ```
 
 Welcome! This document explains some ways you can contribute to QuantumESPRESSOBase.
@@ -10,7 +10,7 @@ Welcome! This document explains some ways you can contribute to QuantumESPRESSOB
 ## Code of conduct
 
 This project and everyone participating in it is governed by the
-["Contributor Covenant Code of Conduct"](https://github.com/MineralsCloud/.github/blob/main/CODE_OF_CONDUCT.md).
+[Contributor Covenant Code of Conduct](https://github.com/MineralsCloud/.github/blob/main/CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code.
 
 ## Join the community forum
@@ -36,12 +36,12 @@ The docs are written in Markdown and are built using
 You can find the source of all the docs
 [here](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/tree/main/docs).
 
-If your change is small (like fixing typos, or one or two sentence corrections),
+If your change is small (like fixing typos or one or two sentence corrections),
 the easiest way to do this is via GitHub's online editor. (GitHub has
 [help](https://help.github.com/articles/editing-files-in-another-user-s-repository/)
 on how to do this.)
 
-If your change is larger, or touches multiple files, you will need to make the
+If your change is larger or touches multiple files, you will need to make the
 change locally and then use Git to submit a
 [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
 (See [Contribute code to QuantumESPRESSOBase](@ref) below for more on this.)
@@ -58,7 +58,7 @@ before posting. You can also find a copy of that info
 !!! tip
     If you're unsure whether you have a real bug, post on the
     [community forum](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/discussions)
-    first. Someone will either help you fix the problem, or let you know the
+    first. Someone will either help you fix the problem or let you know the
     most appropriate place to open a bug report.
 
 ## Contribute code to QuantumESPRESSOBase
@@ -83,7 +83,7 @@ The first step is to find an [open issue](https://github.com/MineralsCloud/Quant
 (or open a new one) for the problem you want to solve. Then, _before_ spending
 too much time on it, discuss what you are planning to do in the issue to see if
 other contributors are fine with your proposed changes. Getting feedback early can
-improve code quality, and avoid time spent writing code that does not get merged into
+improve code quality and avoid time spent writing code that does not get merged into
 QuantumESPRESSOBase.
 
 !!! tip
@@ -114,7 +114,7 @@ environment variable. If you're on
 Windows, this will be `C:\\Users\\<my_name>\\.julia\\dev\\QuantumESPRESSOBase`.
 In the following text, we will call it `PKGROOT`.
 
-Go to `PKGROOT`, start a new Julia session and run
+Go to `PKGROOT`, start a new Julia session, and run
 
 ```@repl
 using Pkg
@@ -129,10 +129,10 @@ to instantiate the project.
     In the following, replace any instance of `GITHUB_ACCOUNT` with your GitHub
     username.
 
-The next step is to checkout a development branch. In a terminal (or command
+The next step is to check out a development branch. In a terminal (or command
 prompt on Windows), run:
 
-```shell
+```bash
 cd ~/.julia/dev/QuantumESPRESSOBase
 
 git remote add GITHUB_ACCOUNT https://github.com/GITHUB_ACCOUNT/QuantumESPRESSOBase.jl.git
@@ -151,8 +151,8 @@ directory.
 
 Make sure you:
 
-- Follow our [Style Guide](@ref style) and [run `JuliaFormatter.jl`](@ref formatter)
-- Add tests and documentation for any changes or new features
+- Follow our [Style Guide](@ref style) and [Run JuliaFormatter](@ref).
+- Add tests and documentation for any changes or new features.
 
 !!! tip
     When you change the source code, you'll need to restart Julia for the
@@ -164,20 +164,24 @@ Make sure you:
 To test that your changes work, run the QuantumESPRESSOBase test-suite by opening Julia and
 running:
 
-```@repl
-cd("~/.julia/dev/QuantumESPRESSOBase")
-using Pkg
-Pkg.activate(".")
-Pkg.test()
+```julia-repl
+julia> cd(joinpath(DEPOT_PATH[1], "dev", "QuantumESPRESSOBase"))
+
+julia> using Pkg
+
+julia> Pkg.activate(".")
+  Activating new project at `~/.julia/dev/QuantumESPRESSOBase`
+
+julia> Pkg.test()
 ```
 
 !!! warning
     Running the tests might take a long time.
 
 !!! tip
-    If you're using `Revise.jl`, you can also run the tests by calling `include`:
+    If you are using Revise.jl, you can also run the tests by calling `include`:
 
-    ```julia
+    ```julia-repl
     include("test/runtests.jl")
     ```
 
@@ -187,11 +191,15 @@ Pkg.test()
 
 Open Julia, then run:
 
-```@repl
-cd("~/.julia/dev/QuantumESPRESSOBase/docs")
-using Pkg
-Pkg.activate(".")
-include("src/make.jl")
+```julia-repl
+julia> cd(joinpath(DEPOT_PATH[1], "dev", "QuantumESPRESSOBase", "docs"))
+
+julia> using Pkg
+
+julia> Pkg.activate(".")
+  Activating new project at `~/.julia/dev/QuantumESPRESSOBase/docs`
+
+julia> include("src/make.jl")
 ```
 
 After a while, a folder `PKGROOT/docs/build` will appear. Open
@@ -203,13 +211,13 @@ After a while, a folder `PKGROOT/docs/build` will appear. Open
 !!! tip
     If there's a problem with the tests that you don't know how to fix, don't
     worry. Continue to step 5, and one of the QuantumESPRESSOBase contributors will comment
-    on your pull request telling you how to fix things.
+    on your pull request, telling you how to fix things.
 
 ### Step 7: make a pull request
 
 Once you've made changes, you're ready to push the changes to GitHub. Run:
 
-```shell
+```bash
 cd ~/.julia/dev/QuantumESPRESSOBase
 
 git add .
@@ -235,10 +243,10 @@ automatically update.
 
 ### Step 9: cleaning up
 
-Once the PR is merged, clean-up your Git repository ready for the
+Once the PR is merged, clean-up your Git repository, ready for the
 next contribution!
 
-```shell
+```bash
 cd ~/.julia/dev/QuantumESPRESSOBase
 
 git checkout main

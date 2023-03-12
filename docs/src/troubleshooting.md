@@ -2,7 +2,7 @@
 
 ```@contents
 Pages = ["troubleshooting.md"]
-Depth = 3
+Depth = 2
 ```
 
 This page collects some possible errors you may encounter and trick how to fix them.

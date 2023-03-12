@@ -9,7 +9,7 @@ Documentation for [QuantumESPRESSOBase](https://github.com/MineralsCloud/Quantum
 [QuantumESPRESSOBase.jl](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl) declares
 basic data types and methods for manipulating crystal structures, generating input files for
 [Quantum ESPRESSO](https://www.quantum-espresso.org/), error checking before running, etc.
-It is written purely in language [`Julia`](https://julialang.org/).
+It is written purely in the language [Julia](https://julialang.org/).
 
 Please [cite this package](https://doi.org/10.1016/j.cpc.2022.108515) as:
 

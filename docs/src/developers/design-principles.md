@@ -2,7 +2,7 @@
 
 ```@contents
 Pages = ["design-principles.md"]
-Depth = 3
+Depth = 2
 ```
 
 We adopt some [`SciML`](https://sciml.ai/) design [guidelines](https://github.com/SciML/SciMLStyle)
@@ -31,9 +31,7 @@ easier to ensure that large style improvement are isolated from substantive (and
 If the standard for code contributions is that every PR needs to support every possible input type that anyone can
 think of, the barrier would be too high for newcomers. Instead, the principle is to be as correct as possible to
 begin with, and grow the generic support over time. All recommended functionality should be tested, any known
-generality issues should be documented in an issue (and with a `@test_broken` test when possible). However, a
-function which is known to not be GPU-compatible is not grounds to block merging, rather it is an encouragement for a
-follow-up PR to improve the general type support!
+generality issues should be documented in an issue (and with a `@test_broken` test when possible).
 
 ## Generic code is preferred unless code is known to be specific
 
@@ -178,7 +176,7 @@ of today can generate. That said, the worst of all worlds is when code mixes mut
 code. Not only is this a mishmash of coding styles, it has the potential non-locality and compiler
 proof issues of mutating code while not fully benefiting from the mutation.
 
-## Out-Of-Place and Immutability is preferred when sufficient performant
+## Out-of-place and immutability is preferred when sufficient performant
 
 Mutation is used to get more performance by decreasing the amount of heap allocations. However,
 if it's not helpful for heap allocations in a given spot, do not use mutation. Mutation is scary
@@ -225,7 +223,7 @@ constants and have an all uppercase name separated with underscores (e.g. `MY_CO
 defined at the top of the file, immediately after imports and exports but before an `__init__` function.
 If you truly want mutable global style behavior you may want to look into mutable containers.
 
-## Type-stable and Type-grounded code is preferred wherever possible
+## Type-stable and type-grounded code is preferred wherever possible
 
 Type-stable and type-grounded code helps the compiler create not only more optimized code, but also
 faster to compile code. Always keep containers well-typed, functions specializing on the appropriate
@@ -240,23 +238,6 @@ code with closures; if someone is looking for type instabilities, this is faster
 not contain closures.
 Furthermore, if you want to update variables in an outer scope, do so explicitly with `Ref`s or self
 defined structs.
-For example,
-
-```julia
-map(Base.Fix2(getindex, i), vector_of_vectors)
-```
-
-is preferred over
-
-```julia
-map(v -> v[i], vector_of_vectors)
-```
-
-or
-
-```julia
-[v[i] for v in vector_of_vectors]
-```
 
 ## Numerical functionality should use the appropriate generic numerical interfaces
 
