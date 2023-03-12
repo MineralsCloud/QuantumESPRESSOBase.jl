@@ -1,6 +1,4 @@
-# API Reference
-
-## `QuantumESPRESSOBase` module
+# `QuantumESPRESSOBase` module
 
 ```@contents
 Pages = ["QuantumESPRESSOBase.md"]
