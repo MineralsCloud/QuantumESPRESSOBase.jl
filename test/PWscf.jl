@@ -165,16 +165,7 @@ end
             atomic_positions=deepcopy(atomic_positions),
             k_points=deepcopy(k_points),
         )
-        @test collect(required_namelists(input)) == [control, system, electrons]
-        @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
-        @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
-        @test collect(optional_cards(input)) == fill(nothing, 4)
-        @test collect(allnamelists(input)) == collect(
-            Iterators.flatten((required_namelists(input), optional_namelists(input)))
-        )
-        @test collect(allcards(input)) ==
-            collect(Iterators.flatten((required_cards(input), optional_cards(input))))
-        @test getpotentials(input) == ["Si.pz-vbc.UPF"]
+        @test listpotentials(input) == ["Si.pz-vbc.UPF"]
         if !Sys.iswindows()
             @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
             @test getxmldir(input) == joinpath(@__DIR__, "silicon.save")
@@ -244,16 +235,7 @@ end
             atomic_positions=deepcopy(atomic_positions),
             k_points=deepcopy(k_points),
         )
-        @test collect(required_namelists(input)) == [control, system, electrons]
-        @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
-        @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
-        @test collect(optional_cards(input)) == fill(nothing, 4)
-        @test collect(allnamelists(input)) == collect(
-            Iterators.flatten((required_namelists(input), optional_namelists(input)))
-        )
-        @test collect(allcards(input)) ==
-            collect(Iterators.flatten((required_cards(input), optional_cards(input))))
-        @test getpotentials(input) == ["Si.pz-vbc.UPF"]
+        @test listpotentials(input) == ["Si.pz-vbc.UPF"]
         if !Sys.iswindows()
             @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
             @test getxmldir(input) == joinpath(@__DIR__, "silicon.save")
@@ -427,16 +409,7 @@ end
             ReciprocalPoint([0.4375, 0.4375, 0.4375], 1.0),
             ReciprocalPoint([0.4375, 0.4375, 0.5625], 3.0),
         ])
-        @test collect(required_namelists(input)) == [control, system, electrons]
-        @test collect(optional_namelists(input)) == [IonsNamelist(), CellNamelist()]
-        @test collect(required_cards(input)) == [atomic_species, atomic_positions, k_points]
-        @test collect(optional_cards(input)) == fill(nothing, 4)
-        @test collect(allnamelists(input)) == collect(
-            Iterators.flatten((required_namelists(input), optional_namelists(input)))
-        )
-        @test collect(allcards(input)) ==
-            collect(Iterators.flatten((required_cards(input), optional_cards(input))))
-        @test getpotentials(input) == ["Al.pz-vbc.UPF"]
+        @test listpotentials(input) == ["Al.pz-vbc.UPF"]
         if !Sys.iswindows()
             @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
             @test getxmldir(input) == joinpath(@__DIR__, "al.save")
