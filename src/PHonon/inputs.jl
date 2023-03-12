@@ -1,5 +1,5 @@
-using ..Inputs: QuantumESPRESSOInput
-using ..Inputs.PWscf: PWInput
+using ..QuantumESPRESSOBase: QuantumESPRESSOInput
+using ..PWscf: PWInput
 
 @struct_hash_equal struct PhInput <: QuantumESPRESSOInput
     title_line::String

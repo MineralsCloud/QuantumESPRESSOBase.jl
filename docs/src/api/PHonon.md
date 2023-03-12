@@ -1,8 +1,8 @@
 ```@meta
-CurrentModule = QuantumESPRESSOBase.Inputs.PHonon
+CurrentModule = QuantumESPRESSOBase.PHonon
 ```
 
-# `QuantumESPRESSOBase.Inputs.PHonon` module
+# `QuantumESPRESSOBase.PHonon` module
 
 ```@contents
 Pages = ["PHonon.md"]

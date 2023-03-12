@@ -6,7 +6,7 @@ using Setfield
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase
-using QuantumESPRESSOBase.Inputs.CP
+using QuantumESPRESSOBase.CP
 
 @testset "Constructing `AtomicVelocity`" begin
     # Data from https://gitlab.com/QEF/q-e/blob/master/CPV/examples/autopilot-example/reference/water.autopilot.out

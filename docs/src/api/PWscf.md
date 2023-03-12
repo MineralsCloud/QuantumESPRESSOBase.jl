@@ -1,8 +1,8 @@
 ```@meta
-CurrentModule = QuantumESPRESSOBase.Inputs.PWscf
+CurrentModule = QuantumESPRESSOBase.PWscf
 ```
 
-# `QuantumESPRESSOBase.Inputs.PWscf` module
+# `QuantumESPRESSOBase.PWscf` module
 
 ```@contents
 Pages = ["PWscf.md"]

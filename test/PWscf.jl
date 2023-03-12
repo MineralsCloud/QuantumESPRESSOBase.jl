@@ -6,7 +6,7 @@ using Setfield: @set
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase
-using QuantumESPRESSOBase.Inputs.PWscf
+using QuantumESPRESSOBase.PWscf
 
 @testset "Test if `==` is working" begin
     @test ControlNamelist() == ControlNamelist()

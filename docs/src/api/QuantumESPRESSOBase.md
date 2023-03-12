@@ -1,11 +1,9 @@
-```@meta
-CurrentModule = QuantumESPRESSOBase.Inputs
-```
+# API Reference
 
-# `QuantumESPRESSOBase.Inputs` module
+## `QuantumESPRESSOBase` module
 
 ```@contents
-Pages = ["Inputs.md"]
+Pages = ["QuantumESPRESSOBase.md"]
 Depth = 3
 ```
 

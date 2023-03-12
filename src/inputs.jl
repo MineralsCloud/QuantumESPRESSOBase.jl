@@ -1,5 +1,3 @@
-module Inputs
-
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
 using OrderedCollections: OrderedDict
 
@@ -62,11 +60,4 @@ struct VerbositySetter <: Setter
         @assert v in ("high", "low")
         return new(v)
     end
-end
-
-include("crystallography.jl")
-include("PWscf/PWscf.jl")
-# include("CP/CP.jl")
-include("PHonon/PHonon.jl")
-
 end

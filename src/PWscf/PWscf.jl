@@ -6,7 +6,7 @@ using StructEquality: @struct_hash_equal
 using Unitful: AbstractQuantity, Length, Temperature, ustrip, @u_str
 using UnitfulAtomic
 
-using ..Inputs: QuantumESPRESSOInput, VerbositySetter
+using ..QuantumESPRESSOBase: QuantumESPRESSOInput, VerbositySetter
 
 import AbInitioSoftwareBase.Inputs: groupname, getpseudodir, getpotentials
 import CrystallographyBase: Lattice, cellvolume

@@ -7,7 +7,7 @@ using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful
 using UnitfulAtomic
 
-using ..Inputs:
+using ..QuantumESPRESSOBase:
     Namelist,
     QuantumESPRESSOInput,
     Card,
@@ -23,7 +23,7 @@ using ..Inputs:
 import AbInitioSoftwareBase.Inputs: asstring, groupname
 import Crystallography: Bravais, Lattice
 # import Pseudopotentials: pseudoformat
-import ..Inputs:
+import ..QuantumESPRESSOBase:
     optionpool,
     allnamelists,
     allcards,

@@ -2,7 +2,7 @@ module PHonon
 
 using Test
 
-using QuantumESPRESSOBase.Inputs.PHonon:
+using QuantumESPRESSOBase.PHonon:
     PhNamelist,
     Q2rNamelist,
     MatdynNamelist,
