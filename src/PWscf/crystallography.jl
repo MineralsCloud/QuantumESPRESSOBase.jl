@@ -3,7 +3,7 @@ using CrystallographyBase: CartesianFromFractional
 using LinearAlgebra: det
 using Spglib: get_dataset
 
-using ..Inputs: Ibrav, latticevectors
+using ..QuantumESPRESSOBase: Ibrav, latticevectors
 
 import CrystallographyBase: Cell, crystaldensity
 import ChemicalFormula: Formula

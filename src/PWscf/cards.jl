@@ -2,7 +2,7 @@ using ConstructionBase: constructorof
 using CrystallographyBase: Cell, ReciprocalPoint, MonkhorstPackGrid
 using StaticArrays: MVector, MMatrix
 
-import ..Inputs: getoption, optionpool
+import ..QuantumESPRESSOBase: getoption, optionpool
 
 export AtomicSpecies,
     AtomicSpeciesCard,

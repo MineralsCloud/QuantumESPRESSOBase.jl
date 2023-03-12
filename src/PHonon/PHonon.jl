@@ -4,9 +4,9 @@ using CrystallographyBase: ReciprocalPoint
 using Setfield: @set!
 using StructEquality: @struct_hash_equal
 
-using ..Inputs: Card
+using ..QuantumESPRESSOBase: Card
 
-import ..Inputs: VerbositySetter, groupname
+import ..QuantumESPRESSOBase: VerbositySetter, groupname
 
 export QPointsCard,
     PhInput,

@@ -4,7 +4,7 @@ using Test: @testset, @test
 using Unitful
 using UnitfulAtomic
 
-using QuantumESPRESSOBase.Inputs.PWscf:
+using QuantumESPRESSOBase.PWscf:
     ControlNamelist, SystemNamelist, VerbositySetter, ElectronicTemperatureSetter
 
 @testset "Apply `VerbositySetter` on `ControlNamelist`" begin

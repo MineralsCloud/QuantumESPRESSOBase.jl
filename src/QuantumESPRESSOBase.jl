@@ -1,5 +1,9 @@
 module QuantumESPRESSOBase
 
-include("Inputs/Inputs.jl")
+include("inputs.jl")
+include("crystallography.jl")
+include("PWscf/PWscf.jl")
+# include("CP/CP.jl")
+include("PHonon/PHonon.jl")
 
 end
