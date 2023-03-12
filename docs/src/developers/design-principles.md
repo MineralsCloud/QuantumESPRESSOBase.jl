@@ -236,6 +236,8 @@ long run it saves time to always program defensively and avoid writing closures 
 even when a particular closure would not have been problematic. A similar argument applies to reading
 code with closures; if someone is looking for type instabilities, this is faster to do when code does
 not contain closures.
+See examples [here](https://discourse.julialang.org/t/are-closures-should-be-avoided-whenever-possible-still-valid-in-julia-v1-9/95893/5).
+
 Furthermore, if you want to update variables in an outer scope, do so explicitly with `Ref`s or self
 defined structs.
 
