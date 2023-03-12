@@ -108,7 +108,7 @@ julia> AtomicPosition(
 AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
 ```
 """
-struct AtomicPosition
+@struct_hash_equal struct AtomicPosition
     "Label of the atom as specified in `AtomicSpecies`."
     atom::String
     "Atomic positions. A three-element vector of floats."
@@ -177,7 +177,7 @@ CellParametersCard(lattice::Lattice{<:Length}) =
 CellParametersCard(cell::Cell, option="alat") =
     CellParametersCard(transpose(cell.lattice), option)
 
-struct AtomicForce
+@struct_hash_equal struct AtomicForce
     atom::String
     force::MVector{3,Float64}
     function AtomicForce(atom, force)
@@ -190,7 +190,7 @@ end
     data::Vector{AtomicForce}
 end
 
-struct AtomicVelocity
+@struct_hash_equal struct AtomicVelocity
     atom::String
     velocity::MVector{3,Float64}
     function AtomicVelocity(atom, velocity)
