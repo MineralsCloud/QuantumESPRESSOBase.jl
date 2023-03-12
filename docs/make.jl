@@ -1,7 +1,12 @@
 using QuantumESPRESSOBase
 using Documenter
 
-DocMeta.setdocmeta!(QuantumESPRESSOBase, :DocTestSetup, :(using QuantumESPRESSOBase); recursive=true)
+DocMeta.setdocmeta!(
+    QuantumESPRESSOBase,
+    :DocTestSetup,
+    :(using QuantumESPRESSOBase, QuantumESPRESSOBase.PWscf, QuantumESPRESSOBase.PHonon);
+    recursive=true,
+)
 
 makedocs(;
     modules=[QuantumESPRESSOBase],

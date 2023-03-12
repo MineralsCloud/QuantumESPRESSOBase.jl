@@ -240,18 +240,29 @@ function convertoption(card::AbstractCellParametersCard, new_option::AbstractStr
     end
 end
 
+"Represent the general `K_POINTS` card in Quantum ESPRESSO."
 abstract type KPointsCard <: Card end
+"""
+    KMeshCard(data::MonkhorstPackGrid)
+
+Represent the `K_POINTS` card in Quantum ESPRESSO with Monkhorst–Pack grid.
+"""
 struct KMeshCard <: KPointsCard
     data::MonkhorstPackGrid
 end
+"""
+    GammaPointCard()
+
+Represent the `K_POINTS` card in Quantum ESPRESSO with only Γ-point.
+"""
 struct GammaPointCard <: KPointsCard end
 """
-    SpecialKPointsCard(data, option)
+    SpecialPointsCard(data, option)
 
-Represent the `K_POINTS` card in QE.
+Represent the `K_POINTS` card in Quantum ESPRESSO with a list of k-points.
 
 # Arguments
-- `data::Union{MonkhorstPackGrid,GammaPoint,AbstractVector{SpecialKPoint}}`: A Γ point, a Monkhorst--Pack grid or a vector containing `SpecialKPoint`s.
+- `data::Vector{ReciprocalPoint}`: a vector containing `ReciprocalPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
 @struct_hash_equal struct SpecialPointsCard <: KPointsCard

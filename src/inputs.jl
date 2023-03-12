@@ -1,7 +1,7 @@
 using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
 using OrderedCollections: OrderedDict
 
-export getoption, optionpool, groupname
+export QuantumESPRESSOInput, getoption, optionpool, groupname
 
 """
     dropdefault(nml::Namelist)
@@ -45,7 +45,7 @@ julia> optionpool(AtomicPositionsCard)
 julia> optionpool(CellParametersCard)
 ("alat", "bohr", "angstrom")
 
-julia> optionpool(SpecialKPointsCard)
+julia> optionpool(SpecialPointsCard)
 ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
 ```
 """

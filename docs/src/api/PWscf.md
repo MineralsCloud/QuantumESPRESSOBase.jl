@@ -12,7 +12,6 @@ Depth = 3
 ## Types
 
 ```@docs
-Ibrav
 Lattice
 ControlNamelist
 SystemNamelist
@@ -26,6 +25,8 @@ AtomicSpeciesCard
 AtomicPosition
 AtomicPositionsCard
 CellParametersCard
+KMeshCard
+GammaPointCard
 SpecialPointsCard
 PWInput
 ```
