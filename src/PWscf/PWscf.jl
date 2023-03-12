@@ -8,7 +8,7 @@ using UnitfulAtomic
 
 using ..QuantumESPRESSOBase: QuantumESPRESSOInput, VerbositySetter
 
-import AbInitioSoftwareBase.Inputs: groupname, getpseudodir, getpotentials
+import AbInitioSoftwareBase.Inputs: groupname, getpseudodir
 import CrystallographyBase: Lattice, cellvolume
 # import Pseudopotentials: pseudoformat
 
