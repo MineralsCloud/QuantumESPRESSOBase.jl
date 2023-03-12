@@ -93,11 +93,19 @@ Depth = 3
 ## Library outline
 
 ```@contents
-Pages = ["public.md"]
+Pages = [
+    "api/QuantumESPRESSOBase.md",
+    "api/PWscf.md",
+    "api/PHonon.md",
+]
 ```
 
 ### [Index](@id main-index)
 
 ```@index
-Pages = ["public.md"]
+Pages = [
+    "api/QuantumESPRESSOBase.md",
+    "api/PWscf.md",
+    "api/PHonon.md",
+]
 ```
