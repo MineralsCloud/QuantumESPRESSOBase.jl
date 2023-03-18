@@ -833,9 +833,68 @@ function BandsNamelist(;
 end
 BandsNamelist(nml::BandsNamelist; kwargs...) = setproperties(nml; kwargs...)
 
-@struct_hash_equal struct FcpNamelist <: Namelist end
+@struct_hash_equal struct FcpNamelist <: Namelist
+    # fcp_mu
+    # fcp_dynamics
+    fcp_conv_thr::Float64
+    # fcp_ndiis
+    # fcp_mass
+    # fcp_velocity
+    # fcp_temperature
+    # fcp_tempw
+    # fcp_tolp
+    # fcp_delta_t
+    # fcp_nraise
+    # freeze_all_atoms
+end
+function FcpNamelist(; fcp_conv_thr=1e-2)
+    return FcpNamelist(fcp_conv_thr)
+end
 
-@struct_hash_equal struct RismNamelist <: Namelist end
+@struct_hash_equal struct RismNamelist <: Namelist
+    # nsolv
+    closure::String
+    # tempv
+    # ecutsolv
+    # solute_lj
+    # solute_epsilon
+    # solute_sigma
+    # starting1d
+    # starting3d
+    # smear1d
+    # smear3d
+    # rism1d_maxstep
+    # rism3d_maxstep
+    # rism1d_conv_thr
+    # rism3d_conv_thr
+    # mdiis1d_size
+    # mdiis3d_size
+    # mdiis1d_step
+    # mdiis3d_step
+    # rism1d_bond_width
+    # rism1d_dielectric
+    # rism1d_molesize
+    # rism1d_nproc
+    # rism3d_conv_level
+    # rism3d_planar_average
+    # laue_nfit
+    # laue_expand_right
+    # laue_expand_left
+    # laue_starting_right
+    # laue_starting_left
+    # laue_buffer_right
+    # laue_buffer_left
+    # laue_both_hands
+    # laue_wall
+    # laue_wall_z
+    # laue_wall_rho
+    # laue_wall_epsilon
+    # laue_wall_sigma
+    # laue_wall_lj6
+end
+function RismNamelist(; closure="kh")
+    return RismNamelist(closure)
+end
 
 function (x::VerbositySetter)(control::ControlNamelist)
     if x.v == "high"
