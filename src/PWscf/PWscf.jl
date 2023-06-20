@@ -16,7 +16,7 @@ export groupname
 
 include("namelists.jl")
 include("cards.jl")
-include("input.jl")
+include("inputs.jl")
 include("crystallography.jl")
 include("set.jl")
 include("validation.jl")
