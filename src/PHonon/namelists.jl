@@ -1,4 +1,4 @@
-using AbInitioSoftwareBase.Inputs: Namelist
+using AbInitioSoftwareBase: Namelist
 using ConstructionBase: setproperties
 
 const DVSCF_STAR = @NamedTuple begin

@@ -20,7 +20,7 @@ using ..QuantumESPRESSOBase:
     required_cards,
     optional_cards
 
-import AbInitioSoftwareBase.Inputs: asstring, groupname
+import AbInitioSoftwareBase: asstring, groupname
 import Crystallography: Bravais, Lattice
 # import Pseudopotentials: pseudoformat
 import ..QuantumESPRESSOBase:
