@@ -1,4 +1,4 @@
-using AbInitioSoftwareBase.Inputs: Input, InputEntry, Namelist, Card, Setter, groupname
+using AbInitioSoftwareBase: Input, InputEntry, Namelist, Card, Setter, groupname
 using OrderedCollections: OrderedDict
 
 export QuantumESPRESSOInput, getoption, optionpool, groupname

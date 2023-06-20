@@ -19,7 +19,7 @@ UnitfulAtomic = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
 UnitfulEquivalences = "da9c4bc3-91c8-4f02-8a40-6b990d2a7e0c"
 
 [compat]
-AbInitioSoftwareBase = "0.6.1, 0.8, 0.9"
+AbInitioSoftwareBase = "0.10"
 ChemicalFormula = "0.2, 0.3"
 ConstructionBase = "1"
 CrystallographyBase = "0.9, 0.10"
