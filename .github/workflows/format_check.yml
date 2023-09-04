@@ -22,7 +22,7 @@ jobs:
         with:
           version: ${{ matrix.julia-version }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install JuliaFormatter and format
         # The version of JuliaFormatter used is just to show how to specify the version. The latest
         # version would be preferrable.
