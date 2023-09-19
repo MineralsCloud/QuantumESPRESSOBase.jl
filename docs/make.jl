@@ -21,9 +21,7 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        "Manual" => [
-            "Installation Guide" => "installation.md",
-        ],
+        "Manual" => ["Installation Guide" => "installation.md"],
         "Public API" => [
             "`QuantumESPRESSOBase` module" => "api/QuantumESPRESSOBase.md",
             "`PWscf` module" => "api/PWscf.md",
@@ -38,7 +36,4 @@ makedocs(;
     ],
 )
 
-deploydocs(;
-    repo="github.com/MineralsCloud/QuantumESPRESSOBase.jl",
-    devbranch="main",
-)
+deploydocs(; repo="github.com/MineralsCloud/QuantumESPRESSOBase.jl", devbranch="main")
