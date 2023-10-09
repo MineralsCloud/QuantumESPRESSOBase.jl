@@ -10,7 +10,6 @@ ConstructionBase = "187b0558-2788-49d3-abe0-74a17ed4e7c9"
 CrystallographyBase = "93b1d1cd-a8ea-4aa5-adb1-b2407ea0ba8d"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
-Spglib = "f761d5c5-86db-4880-b97f-9680a7cccfb5"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 StructEquality = "6ec83bb0-ed9f-11e9-3b4c-2b04cb4e219c"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
@@ -19,10 +18,12 @@ UnitfulEquivalences = "da9c4bc3-91c8-4f02-8a40-6b990d2a7e0c"
 
 [weakdeps]
 ChemicalFormula = "069161ab-964a-4228-89a0-7a676f2e1f46"
+Crystallography = "3bff3928-7a76-11e9-2089-d112443085a5"
 StructTypes = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"
 
 [extensions]
 ChemicalFormulaExt = "ChemicalFormula"
+CrystallographyExt = "Crystallography"
 StructTypesExt = "StructTypes"
 
 [compat]
@@ -31,7 +32,6 @@ Accessors = "0.1"
 ConstructionBase = "1"
 CrystallographyBase = "0.14"
 OrderedCollections = "1"
-Spglib = "0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8"
 StaticArrays = "0.8.3, 0.9, 0.10, 0.11, 0.12, 1"
 StructEquality = "2"
 Unitful = "0.18, 1"
