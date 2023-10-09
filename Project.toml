@@ -20,6 +20,7 @@ UnitfulEquivalences = "da9c4bc3-91c8-4f02-8a40-6b990d2a7e0c"
 
 [compat]
 AbInitioSoftwareBase = "0.10"
+Accessors = "0.1"
 ChemicalFormula = "0.2, 0.3"
 ConstructionBase = "1"
 CrystallographyBase = "0.14"
