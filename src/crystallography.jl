@@ -101,14 +101,14 @@ function latticevectors(p, ::Val{14})
 end
 
 """
-    ReciprocalPoint(x, y, z, w)
+    SpecialPoint(x, y, z, w)
 
-Represent a special point of the 3D Brillouin zone. Each of them has a weight `w`.
+Represent a special point in the irreducible Brillouin zone with weight `w`.
 """
-struct ReciprocalPoint{T}
+struct SpecialPoint{T}
     coordinates::SVector{3,T}
     weight::Float64
 end
-ReciprocalPoint(coordinates, weight) =
-    ReciprocalPoint(SVector{3,eltype(coordinates)}(coordinates), weight)
-ReciprocalPoint(x, y, z, w) = ReciprocalPoint(SVector(x, y, z), w)
+SpecialPoint(coordinates, weight) =
+    SpecialPoint(SVector{3,eltype(coordinates)}(coordinates), weight)
+SpecialPoint(x, y, z, w) = SpecialPoint((x, y, z), w)
