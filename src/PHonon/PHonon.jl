@@ -3,7 +3,7 @@ module PHonon
 using Setfield: @set!
 using StructEquality: @struct_hash_equal
 
-using ..QuantumESPRESSOBase: ReciprocalPoint, Card
+using ..QuantumESPRESSOBase: SpecialPoint, Card
 
 import ..QuantumESPRESSOBase: VerbositySetter, groupname
 
@@ -22,11 +22,11 @@ export relayinfo
 include("namelists.jl")
 
 @struct_hash_equal struct QPointsCard <: Card
-    data::Vector{ReciprocalPoint}
+    data::Vector{SpecialPoint}
 end
 function QPointsCard(data::AbstractMatrix)
     @assert size(data, 2) == 4
-    return QPointsCard(map(ReciprocalPoint, eachrow(data)))
+    return QPointsCard(map(SpecialPoint, eachrow(data)))
 end
 
 include("inputs.jl")

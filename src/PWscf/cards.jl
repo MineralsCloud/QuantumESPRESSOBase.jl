@@ -3,7 +3,7 @@ using CrystallographyBase: Cell, MonkhorstPackGrid
 using StaticArrays: MVector, MMatrix
 
 import AbInitioSoftwareBase: listpotentials
-import ..QuantumESPRESSOBase: ReciprocalPoint, getoption, optionpool
+import ..QuantumESPRESSOBase: SpecialPoint, getoption, optionpool
 
 export AtomicSpecies,
     AtomicSpeciesCard,
@@ -263,11 +263,11 @@ struct GammaPointCard <: KPointsCard end
 Represent the `K_POINTS` card in Quantum ESPRESSO with a list of k-points.
 
 # Arguments
-- `data::Vector{ReciprocalPoint}`: a vector containing `ReciprocalPoint`s.
+- `data::Vector{SpecialPoint}`: a vector containing `SpecialPoint`s.
 - `option::String="tpiba"`: allowed values are: "tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c" and "crystal_c".
 """
 @struct_hash_equal struct SpecialPointsCard <: KPointsCard
-    data::Vector{ReciprocalPoint}
+    data::Vector{SpecialPoint}
     option::String
     function SpecialPointsCard(data, option="tpiba")
         @assert option in optionpool(SpecialPointsCard)
