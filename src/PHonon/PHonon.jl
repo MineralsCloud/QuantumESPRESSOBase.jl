@@ -1,10 +1,9 @@
 module PHonon
 
-using CrystallographyBase: ReciprocalPoint
 using Setfield: @set!
 using StructEquality: @struct_hash_equal
 
-using ..QuantumESPRESSOBase: Card
+using ..QuantumESPRESSOBase: ReciprocalPoint, Card
 
 import ..QuantumESPRESSOBase: VerbositySetter, groupname
 

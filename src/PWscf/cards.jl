@@ -1,9 +1,9 @@
 using ConstructionBase: constructorof
-using CrystallographyBase: Cell, ReciprocalPoint, MonkhorstPackGrid
+using CrystallographyBase: Cell, MonkhorstPackGrid
 using StaticArrays: MVector, MMatrix
 
 import AbInitioSoftwareBase: listpotentials
-import ..QuantumESPRESSOBase: getoption, optionpool
+import ..QuantumESPRESSOBase: ReciprocalPoint, getoption, optionpool
 
 export AtomicSpecies,
     AtomicSpeciesCard,
