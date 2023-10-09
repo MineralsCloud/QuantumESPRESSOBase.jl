@@ -2,12 +2,12 @@ export VerbositySetter,
     VolumeSetter, PressureSetter, CellParametersCardSetter, AtomicPositionsCardSetter
 
 function (s::VerbositySetter)(template::PWInput)
-    @set! template.control = s(template.control)
+    @reset template.control = s(template.control)
     return template
 end
 
 function (x::ElectronicTemperatureSetter)(template::PWInput)
-    @set! template.system = x(template.system)
+    @reset template.system = x(template.system)
     return template
 end
 
@@ -17,10 +17,10 @@ end
 function (x::VolumeSetter{<:Real})(template::PWInput)
     factor = cbrt(x.vol / cellvolume(template))
     if isnothing(template.cell_parameters) || getoption(template.cell_parameters) == "alat"
-        @set! template.system.celldm[1] *= factor
+        @reset template.system.celldm[1] *= factor
     else
-        @set! template.system.celldm = zeros(6)
-        @set! template.cell_parameters = convertoption(
+        @reset template.system.celldm = zeros(6)
+        @reset template.cell_parameters = convertoption(
             CellParametersCard(template.cell_parameters.data * factor), "bohr"
         )
     end
@@ -33,7 +33,7 @@ struct PressureSetter{T<:Number} <: Setter
     press::T
 end
 function (x::PressureSetter{<:Real})(template::PWInput)
-    @set! template.cell.press = x.press
+    @reset template.cell.press = x.press
     return template
 end
 (x::PressureSetter{<:AbstractQuantity})(template::PWInput) =
@@ -50,18 +50,18 @@ function (x::CellParametersCardSetter)(template::PWInput)
     if getoption(x.card) == "alat"
         if isnothing(template.cell_parameters) ||
             getoption(template.cell_parameters) == "alat"
-            @set! template.system.celldm = [template.system.celldm[1]]
+            @reset template.system.celldm = [template.system.celldm[1]]
         else  # getoption(template.cell_parameters) is "bohr" or "angstrom"
             throw(InsufficientInfoError("the `CellParametersCard` does not have units!"))
         end
     else  # "bohr" or "angstrom"
-        @set! template.system.celldm = zeros(6)
+        @reset template.system.celldm = zeros(6)
     end
-    @set! template.system.ibrav = 0
-    @set! template.cell_parameters = x.card
+    @reset template.system.ibrav = 0
+    @reset template.cell_parameters = x.card
     return template
 end
 function (x::AtomicPositionsCardSetter)(template::PWInput)
-    @set! template.atomic_positions = x.card
+    @reset template.atomic_positions = x.card
     return template
 end

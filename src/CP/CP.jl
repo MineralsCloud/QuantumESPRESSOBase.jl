@@ -2,7 +2,7 @@ module CP
 
 using LinearAlgebra: det
 using Parameters: @with_kw
-using Setfield: get, set, @lens, @set
+using Accessors: get, set, @lens, @set
 using StaticArrays: SVector, SMatrix, FieldVector
 using Unitful
 using UnitfulAtomic

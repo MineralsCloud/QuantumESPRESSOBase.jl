@@ -1,7 +1,7 @@
 module PWscf
 
 using AbInitioSoftwareBase: InputEntry, Namelist, Card, Setter
-using Setfield: @set!
+using Accessors: @reset
 using StructEquality: @struct_hash_equal
 using Unitful: AbstractQuantity, Length, Temperature, ustrip, @u_str
 using UnitfulAtomic

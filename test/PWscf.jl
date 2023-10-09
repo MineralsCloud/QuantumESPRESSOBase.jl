@@ -1,7 +1,7 @@
 module PWscf
 
 using Test: @testset, @test, @test_throws
-using Setfield: @set
+using Accessors: @set
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase

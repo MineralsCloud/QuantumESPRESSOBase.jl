@@ -28,7 +28,7 @@ end
 DynmatInput() = DynmatInput(DynmatNamelist())
 
 function (x::VerbositySetter)(template::PhInput)
-    @set! template.inputph.verbosity = x.v
+    @reset template.inputph.verbosity = x.v
     return template
 end
 
@@ -41,8 +41,8 @@ A `PWInput` before a `PhInput` has the information of `outdir` and `prefix`. The
 phonon calculation.
 """
 function relayinfo(pw::PWInput, ph::PhInput)
-    @set! ph.inputph.outdir = pw.control.outdir
-    @set! ph.inputph.prefix = pw.control.prefix
+    @reset ph.inputph.outdir = pw.control.outdir
+    @reset ph.inputph.prefix = pw.control.prefix
     return ph
 end
 """
@@ -53,7 +53,7 @@ Relay shared information from a `PhInput` to a `Q2rInput`.
 A `PhInput` before a `Q2rInput` has the information of `fildyn`. It must keep the same in a q2r calculation.
 """
 function relayinfo(ph::PhInput, q2r::Q2rInput)
-    @set! q2r.input.fildyn = ph.inputph.fildyn
+    @reset q2r.input.fildyn = ph.inputph.fildyn
     return q2r
 end
 """
@@ -65,13 +65,13 @@ A `Q2rInput` before a `MatdynInput` has the information of `fildyn`, `flfrc` and
 in a matdyn calculation.
 """
 function relayinfo(q2r::Q2rInput, matdyn::MatdynInput)
-    @set! matdyn.input.flfrc = q2r.input.flfrc
-    @set! matdyn.input.loto_2d = q2r.input.loto_2d
+    @reset matdyn.input.flfrc = q2r.input.flfrc
+    @reset matdyn.input.loto_2d = q2r.input.loto_2d
     return matdyn
 end
 function relayinfo(ph::PhInput, matdyn::MatdynInput)
-    @set! matdyn.input.amass = ph.inputph.amass
-    @set! matdyn.input.q_in_band_form = ph.inputph.q_in_band_form
+    @reset matdyn.input.amass = ph.inputph.amass
+    @reset matdyn.input.q_in_band_form = ph.inputph.q_in_band_form
     return matdyn
 end
 """
@@ -83,8 +83,8 @@ A `PhInput` before a `DynmatInput` has the information of `asr`, `fildyn` and `a
 in a dynmat calculation.
 """
 function relayinfo(ph::PhInput, dynmat::DynmatInput)
-    # @set! dynmat.input.asr = ph.inputph.asr  # TODO
-    @set! dynmat.input.fildyn = ph.inputph.fildyn
-    @set! dynmat.input.amass = ph.inputph.amass
+    # @reset dynmat.input.asr = ph.inputph.asr  # TODO
+    @reset dynmat.input.fildyn = ph.inputph.fildyn
+    @reset dynmat.input.amass = ph.inputph.amass
     return dynmat
 end

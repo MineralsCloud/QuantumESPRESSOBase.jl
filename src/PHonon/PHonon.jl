@@ -1,6 +1,6 @@
 module PHonon
 
-using Setfield: @set!
+using Accessors: @reset
 using StructEquality: @struct_hash_equal
 
 using ..QuantumESPRESSOBase: SpecialPoint, Card
