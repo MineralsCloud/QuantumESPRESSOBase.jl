@@ -19,9 +19,11 @@ UnitfulEquivalences = "da9c4bc3-91c8-4f02-8a40-6b990d2a7e0c"
 
 [weakdeps]
 ChemicalFormula = "069161ab-964a-4228-89a0-7a676f2e1f46"
+StructTypes = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"
 
 [extensions]
 ChemicalFormulaExt = "ChemicalFormula"
+StructTypesExt = "StructTypes"
 
 [compat]
 AbInitioSoftwareBase = "0.10"
