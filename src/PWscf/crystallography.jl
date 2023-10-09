@@ -1,11 +1,9 @@
-using ChemicalFormula: sumformula
 using LinearAlgebra: det
 using Spglib: get_dataset
 
 using ..QuantumESPRESSOBase: Ibrav, latticevectors
 
 import CrystallographyBase: Cell, crystaldensity
-import ChemicalFormula: Formula
 
 export find_symmetry
 
@@ -142,12 +140,3 @@ function find_symmetry(input::PWInput, symprec=1e-5)
     dataset = get_dataset(cell, symprec)
     return dataset
 end
-
-function Formula(card::AtomicPositionsCard)
-    atoms = map(card.data) do position
-        filter(isletter, position.atom)
-    end
-    str = join(symbol^count(atom == symbol for atom in atoms) for symbol in unique(atoms))
-    return Formula(sumformula(Formula(str)))
-end
-Formula(input::PWInput) = Formula(input.atomic_positions)
