@@ -1,5 +1,4 @@
 using ChemicalFormula: sumformula
-using CrystallographyBase: CartesianFromFractional
 using LinearAlgebra: det
 using Spglib: get_dataset
 
@@ -133,7 +132,7 @@ function find_symmetry(input::PWInput, symprec=1e-5)
         elseif option == "angstrom"
             ustrip.(u"bohr", position * u"angstrom")
         elseif option == "crystal"
-            CartesianFromFractional(lattice)(position)
+            lattice(position)
         else  # option == "crystal_sg"
             error("unimplemented!")  # FIXME
         end
