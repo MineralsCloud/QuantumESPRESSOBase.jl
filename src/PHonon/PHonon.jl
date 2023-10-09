@@ -26,7 +26,7 @@ include("namelists.jl")
 end
 function QPointsCard(data::AbstractMatrix)
     @assert size(data, 2) == 4
-    return QPointsCard(map(x -> ReciprocalPoint(x...), eachrow(data)))
+    return QPointsCard(map(ReciprocalPoint, eachrow(data)))
 end
 
 include("inputs.jl")
