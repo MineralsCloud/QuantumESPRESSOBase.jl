@@ -1,4 +1,4 @@
-using StaticArrays: MVector
+using StaticArrays: MVector, SVector
 
 @enum Ibrav begin
     PrimitiveCubic = 1
@@ -99,3 +99,16 @@ function latticevectors(p, ::Val{14})
         [r2 * cosβ, r2 * (cosα - cosβ * cosγ) / sinγ, δ],
     ]
 end
+
+"""
+    SpecialPoint(x, y, z, w)
+
+Represent a special point in the irreducible Brillouin zone with weight `w`.
+"""
+struct SpecialPoint{T}
+    coordinates::SVector{3,T}
+    weight::Float64
+end
+SpecialPoint(coordinates, weight) =
+    SpecialPoint(SVector{3,eltype(coordinates)}(coordinates), weight)
+SpecialPoint(x, y, z, w) = SpecialPoint((x, y, z), w)
