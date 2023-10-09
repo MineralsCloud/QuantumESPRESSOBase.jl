@@ -1,9 +1,10 @@
 module CrystallographyExt
 
-using Crystallography: Lattice, Cell, getsymmetry
+using Crystallography: Lattice, Cell
+using QuantumESPRESSOBase.PWscf: PWInput
 using Unitful: ustrip, @u_str
 
-function find_symmetry(input::PWInput, symprec=1e-5)
+function getsymmetry(input::PWInput, symprec=1e-5)
     lattice = Lattice(input)
     option = input.atomic_positions.option
     data = Iterators.map(input.atomic_positions.data) do atomic_position
