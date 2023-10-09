@@ -17,6 +17,12 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAtomic = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
 UnitfulEquivalences = "da9c4bc3-91c8-4f02-8a40-6b990d2a7e0c"
 
+[weakdeps]
+ChemicalFormula = "069161ab-964a-4228-89a0-7a676f2e1f46"
+
+[extensions]
+ChemicalFormulaExt = "ChemicalFormula"
+
 [compat]
 AbInitioSoftwareBase = "0.10"
 Accessors = "0.1"
