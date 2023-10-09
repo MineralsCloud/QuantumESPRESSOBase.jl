@@ -1,4 +1,4 @@
-using StaticArrays: MVector
+using StaticArrays: MVector, SVector
 
 @enum Ibrav begin
     PrimitiveCubic = 1
@@ -99,3 +99,16 @@ function latticevectors(p, ::Val{14})
         [r2 * cosβ, r2 * (cosα - cosβ * cosγ) / sinγ, δ],
     ]
 end
+
+"""
+    ReciprocalPoint(x, y, z, w)
+
+Represent a special point of the 3D Brillouin zone. Each of them has a weight `w`.
+"""
+struct ReciprocalPoint{T}
+    coordinates::SVector{3,T}
+    weight::Float64
+end
+ReciprocalPoint(coordinates, weight) =
+    ReciprocalPoint(SVector{3,eltype(coordinates)}(coordinates), weight)
+ReciprocalPoint(x, y, z, w) = ReciprocalPoint(SVector(x, y, z), w)
