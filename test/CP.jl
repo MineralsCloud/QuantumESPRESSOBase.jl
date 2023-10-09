@@ -2,7 +2,7 @@ module CP
 
 using Test
 
-using Setfield
+using Accessors
 using StructArrays: StructArray
 
 using QuantumESPRESSOBase

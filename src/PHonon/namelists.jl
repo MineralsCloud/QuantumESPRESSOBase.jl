@@ -202,7 +202,7 @@ end
 PhNamelist(nml::PhNamelist; kwargs...) = setproperties(nml, kwargs...)
 
 function (x::VerbositySetter)(control::PhNamelist)
-    @set! control.verbosity = x.v
+    @reset control.verbosity = x.v
     return control
 end
 

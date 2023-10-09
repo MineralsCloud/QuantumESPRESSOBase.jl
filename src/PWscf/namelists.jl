@@ -898,17 +898,17 @@ end
 
 function (x::VerbositySetter)(control::ControlNamelist)
     if x.v == "high"
-        @set! control.verbosity = "high"
-        @set! control.wf_collect = true
-        @set! control.tstress = true
-        @set! control.tprnfor = true
-        @set! control.disk_io = "high"
+        @reset control.verbosity = "high"
+        @reset control.wf_collect = true
+        @reset control.tstress = true
+        @reset control.tprnfor = true
+        @reset control.disk_io = "high"
     else
-        @set! control.verbosity = "low"
-        @set! control.wf_collect = false
-        @set! control.tstress = false
-        @set! control.tprnfor = false
-        @set! control.disk_io = "low"
+        @reset control.verbosity = "low"
+        @reset control.wf_collect = false
+        @reset control.tstress = false
+        @reset control.tprnfor = false
+        @reset control.disk_io = "low"
     end
     return control
 end
@@ -917,9 +917,9 @@ struct ElectronicTemperatureSetter{T<:Number} <: Setter
     value::T
 end
 function (x::ElectronicTemperatureSetter)(system::SystemNamelist)
-    @set! system.occupations = "smearing"
-    @set! system.smearing = "fermi-dirac"
-    @set! system.degauss = degauss(x.value)
+    @reset system.occupations = "smearing"
+    @reset system.smearing = "fermi-dirac"
+    @reset system.degauss = degauss(x.value)
     return system
 end
 degauss(value::Real) = value
