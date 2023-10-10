@@ -196,9 +196,17 @@ CellParametersCard(lattice::Lattice{<:Length}) =
 CellParametersCard(cell::Cell, option="alat") =
     CellParametersCard(transpose(cell.lattice), option)
 
-@struct_hash_equal struct AtomicForce
+struct Force{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
+
+similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
+
+struct AtomicForce
     atom::String
-    force::MVector{3,Float64}
+    force::Force{Float64}
     function AtomicForce(atom, force)
         @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
         return new(string(atom), force)
