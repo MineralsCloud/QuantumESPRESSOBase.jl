@@ -202,7 +202,14 @@ struct Force{T} <: FieldVector{3,T}
     z::T
 end
 
+struct Velocity{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
+
 similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
+similar_type(::Type{<:Velocity}, ::Type{T}, s::Size{(3,)}) where {T} = Velocity{T}
 
 struct AtomicForce
     atom::String
@@ -217,9 +224,9 @@ end
     data::Vector{AtomicForce}
 end
 
-@struct_hash_equal struct AtomicVelocity
+struct AtomicVelocity
     atom::String
-    velocity::MVector{3,Float64}
+    velocity::Velocity{Float64}
     function AtomicVelocity(atom, velocity)
         @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
         return new(string(atom), velocity)
