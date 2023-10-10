@@ -165,11 +165,11 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 """
 function cellvolume(card::AbstractCellParametersCard)
     option = optionof(card)
-    if option == "bohr"
+    if option == :bohr
         abs(det(card.data))
-    elseif option == "angstrom"
+    elseif option == :angstrom
         ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
-    else  # option == "alat"
+    else  # option == :alat
         error("information not enough! Parameter `celldm[1]` needed!")
     end
 end # function cellvolume

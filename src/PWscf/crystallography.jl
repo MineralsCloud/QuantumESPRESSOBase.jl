@@ -21,11 +21,11 @@ Create a `Lattice` from a `CellParametersCard`.
 """
 function Lattice(card::CellParametersCard)
     m, option = transpose(card.data), getoption(card)
-    if option == "alat"
+    if option == :alat
         throw(InsufficientInfoError("parameter `celldm[1]` needed!"))
-    elseif option == "bohr"
+    elseif option == :bohr
         return Lattice(m)
-    else  # option == "angstrom"
+    else  # option == :angstrom
         return Lattice(m * ustrip(u"bohr", 1u"angstrom"))
     end
 end
@@ -65,11 +65,11 @@ Return the cell volume of a `CellParametersCard` or `RefCellParametersCard`, in 
 """
 function cellvolume(card::AbstractCellParametersCard)
     option = getoption(card)
-    if option == "bohr"
+    if option == :bohr
         return abs(det(card.data))
-    elseif option == "angstrom"
+    elseif option == :angstrom
         return ustrip(u"bohr^3", abs(det(card.data)) * u"angstrom^3")
-    else  # option == "alat"
+    else  # option == :alat
         throw(InsufficientInfoError("parameter `celldm[1]` needed!"))
     end
 end

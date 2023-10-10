@@ -103,7 +103,7 @@ end
         4 3 2 1
         8 7 6 5
     ]
-    @test CellParametersCard(data).option == "alat" # default option is alat
+    @test CellParametersCard(data).option == :alat # default option is alat
 end
 
 @testset "Construct `AtomicForce`" begin
