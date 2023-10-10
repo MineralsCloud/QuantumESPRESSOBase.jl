@@ -3,7 +3,6 @@ using CrystallographyCore: EachAtom
 using CrystallographyBase: Cell, MonkhorstPackGrid
 using StaticArrays: FieldVector, SMatrix, Size
 
-import AbInitioSoftwareBase: listpotentials
 import CrystallographyCore: eachatom
 import StaticArrays: similar_type
 
