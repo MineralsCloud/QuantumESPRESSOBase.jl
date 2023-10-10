@@ -1,6 +1,6 @@
 using ConstructionBase: constructorof
 using CrystallographyBase: Cell, MonkhorstPackGrid
-using StaticArrays: FieldVector, MVector, MMatrix
+using StaticArrays: FieldVector, MVector, MMatrix, Size
 
 import AbInitioSoftwareBase: listpotentials
 import StaticArrays: similar_type
@@ -127,11 +127,11 @@ julia> AtomicPosition(
 AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
 ```
 """
-@struct_hash_equal struct AtomicPosition
+struct AtomicPosition
     "Label of the atom as specified in `AtomicSpecies`."
     atom::String
     "Atomic positions. A three-element vector of floats."
-    pos::MVector{3,Float64}
+    pos::Position{Float64}
     """
     Component `i` of the force for this atom is multiplied by `if_pos(i)`,
     which must be either `0` or `1`.  Used to keep selected atoms and/or
@@ -140,7 +140,7 @@ AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
     With `crystal_sg` atomic coordinates the constraints are copied in all equivalent
     atoms.
     """
-    if_pos::MVector{3,Bool}
+    if_pos::IfPosition{Bool}
     function AtomicPosition(atom, pos, if_pos=trues(3))
         @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
         return new(string(atom), pos, if_pos)
