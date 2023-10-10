@@ -1,6 +1,6 @@
 using ConstructionBase: constructorof
 using CrystallographyBase: Cell, MonkhorstPackGrid
-using StaticArrays: FieldVector, MVector, MMatrix, Size
+using StaticArrays: FieldVector, SMatrix, Size
 
 import AbInitioSoftwareBase: listpotentials
 import StaticArrays: similar_type
@@ -184,7 +184,7 @@ abstract type AbstractCellParametersCard <: Card end
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
 struct CellParametersCard <: AbstractCellParametersCard
-    data::MMatrix{3,3,Float64,9}
+    data::SMatrix{3,3,Float64,9}
     option::String
     function CellParametersCard(data, option="alat")
         @assert option in optionpool(CellParametersCard)
@@ -192,11 +192,10 @@ struct CellParametersCard <: AbstractCellParametersCard
     end
 end
 CellParametersCard(lattice::Lattice, option="alat") =
-    CellParametersCard(transpose(lattice.data), option)
+    CellParametersCard(transpose(parent(lattice)), option)
 CellParametersCard(lattice::Lattice{<:Length}) =
-    CellParametersCard(Lattice(map(x -> ustrip(u"bohr", x), lattice.data)), "bohr")
-CellParametersCard(cell::Cell, option="alat") =
-    CellParametersCard(transpose(cell.lattice), option)
+    CellParametersCard(Lattice(map(Base.Fix1(ustrip, u"bohr"), parent(lattice))), "bohr")
+CellParametersCard(cell::Cell, option="alat") = CellParametersCard(Lattice(cell), option)
 
 struct Force{T} <: FieldVector{3,T}
     x::T
