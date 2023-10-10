@@ -333,4 +333,6 @@ optionpool(::Type{SpecialPointsCard}) =
 groupname(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 groupname(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
 groupname(::Type{CellParametersCard}) = "CELL_PARAMETERS"
-groupname(::Type{<:KPointsCard}) = "K_POINTS"
+groupname(::Type{KMeshCard}) = "K_POINTS"
+groupname(::Type{GammaPointCard}) = "K_POINTS"
+groupname(::Type{SpecialPointsCard}) = "K_POINTS"
