@@ -99,7 +99,7 @@ end # testset
         4 3 2 1
         8 7 6 5
     ]
-    @test RefCellParametersCard(data).option == "bohr"
+    @test RefCellParametersCard(data).option == :bohr
 end # testset
 
 end # module CP

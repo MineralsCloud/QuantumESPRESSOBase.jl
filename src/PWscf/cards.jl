@@ -159,17 +159,17 @@ Represent the `ATOMIC_POSITIONS` card in `pw.x` input files.
 
 # Arguments
 - `data::AbstractVector{AtomicPosition}`: A vector containing `AtomicPosition`s.
-- `option::String="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
+- `option::Symbol="alat"`: allowed values are: "alat", "bohr", "angstrom", "crystal", and "crystal_sg".
 """
 @struct_hash_equal struct AtomicPositionsCard <: Card
     data::Vector{AtomicPosition}
-    option::String
-    function AtomicPositionsCard(data, option="alat")
+    option::Symbol
+    function AtomicPositionsCard(data, option=:alat)
         @assert option in optionpool(AtomicPositionsCard)
         return new(data, option)
     end
 end
-AtomicPositionsCard(cell::Cell, option="alat") = AtomicPositionsCard(
+AtomicPositionsCard(cell::Cell, option=:alat) = AtomicPositionsCard(
     map(cell.atoms, cell.positions) do atom, position
         AtomicPosition(string(atom), position)
     end,
@@ -179,19 +179,19 @@ AtomicPositionsCard(cell::Cell, option="alat") = AtomicPositionsCard(
 "Represent the abstraction of `CELL_PARAMETERS` and `REF_CELL_PARAMETERS` cards in QE."
 abstract type AbstractCellParametersCard <: Card end
 """
-    CellParametersCard(data::AbstractMatrix, option::String)
+    CellParametersCard(data::AbstractMatrix, option::Symbol)
 
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
 struct CellParametersCard <: AbstractCellParametersCard
     data::SMatrix{3,3,Float64,9}
-    option::String
-    function CellParametersCard(data, option="alat")
+    option::Symbol
+    function CellParametersCard(data, option=:alat)
         @assert option in optionpool(CellParametersCard)
         return new(data, option)
     end
 end
-CellParametersCard(lattice::Lattice, option="alat") =
+CellParametersCard(lattice::Lattice, option=:alat) =
     CellParametersCard(transpose(parent(lattice)), option)
 CellParametersCard(lattice::Lattice{<:Length}) =
     CellParametersCard(Lattice(map(Base.Fix1(ustrip, u"bohr"), parent(lattice))), "bohr")
@@ -265,9 +265,9 @@ function convertoption(card::AbstractCellParametersCard, new_option::AbstractStr
         return card  # No conversion is needed
     else
         constructor = constructorof(typeof(card))
-        if (old_option => new_option) == ("bohr" => "angstrom")
+        if old_option == :bohr && new_option == :angstrom
             return constructor(ustrip.(u"angstrom", card.data .* u"bohr"))
-        elseif (old_option => new_option) == ("angstrom" => "bohr")
+        elseif old_option == :angstrom && new_option == :bohr
             return constructor(ustrip.(u"bohr", card.data .* u"angstrom"))
         else
             error("unknown conversion rule $(old_option => new_option)!")
@@ -302,8 +302,8 @@ Represent the `K_POINTS` card in Quantum ESPRESSO with a list of k-points.
 """
 @struct_hash_equal struct SpecialPointsCard <: KPointsCard
     data::Vector{SpecialPoint}
-    option::String
-    function SpecialPointsCard(data, option="tpiba")
+    option::Symbol
+    function SpecialPointsCard(data, option=:tpiba)
         @assert option in optionpool(SpecialPointsCard)
         return new(data, option)
     end
@@ -319,17 +319,16 @@ struct SolventsCard <: Card end
 
 struct HubbardCard <: Card end
 
-getoption(::KMeshCard) = "automatic"
-getoption(::GammaPointCard) = "gamma"
+getoption(::KMeshCard) = :automatic
+getoption(::GammaPointCard) = :gamma
 
 optionpool(card::Card) = optionpool(typeof(card))
-optionpool(::Type{AtomicPositionsCard}) =
-    ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
-optionpool(::Type{CellParametersCard}) = ("alat", "bohr", "angstrom")
-optionpool(::Type{KMeshCard}) = ("automatic",)
-optionpool(::Type{GammaPointCard}) = ("gamma",)
+optionpool(::Type{AtomicPositionsCard}) = (:alat, :bohr, :angstrom, :crystal, :crystal_sg)
+optionpool(::Type{CellParametersCard}) = (:alat, :bohr, :angstrom)
+optionpool(::Type{KMeshCard}) = (:automatic,)
+optionpool(::Type{GammaPointCard}) = (:gamma,)
 optionpool(::Type{SpecialPointsCard}) =
-    ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+    (:tpiba, :crystal, :tpiba_b, :crystal_b, :tpiba_c, :crystal_c)
 
 groupname(::Type{AtomicSpeciesCard}) = "ATOMIC_SPECIES"
 groupname(::Type{AtomicPositionsCard}) = "ATOMIC_POSITIONS"
