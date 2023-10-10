@@ -57,7 +57,7 @@ function PWInput(;
     hubbard=nothing,
 )
     @assert !isnothing(cell_parameters) || system.ibrav != 0 "`cell_parameters` is empty with `ibrav = 0`!"
-    foreach(eachpotential(atomic_species)) do potential
+    foreach(eachpotential(atomic_species)) do (_, potential)
         path = joinpath(expanduser(control.pseudo_dir), potential)
         if !isfile(path)
             @warn "pseudopotential file \"$path\" does not exist!"
