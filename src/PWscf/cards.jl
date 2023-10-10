@@ -22,7 +22,7 @@ export AtomicSpecies,
     GammaPointCard,
     SpecialPointsCard,
     CellParametersCard
-export getoption, convertoption, optionpool, listpotentials
+export getoption, convertoption, optionpool, eachpotential
 
 abstract type AtomicData end
 
@@ -87,13 +87,6 @@ Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
 @struct_hash_equal struct AtomicSpeciesCard <: Card
     data::Vector{AtomicSpecies}
 end
-
-"""
-    listpotentials(card::AtomicSpeciesCard)
-
-List the pseudopotentials in an `AtomicSpeciesCard`.
-"""
-listpotentials(card::AtomicSpeciesCard) = map(atom -> atom.pseudopot, eachatom(card))
 
 struct EachPotential{N,A,B}
     atoms::NTuple{N,A}
