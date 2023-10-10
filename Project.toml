@@ -12,19 +12,21 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 StructEquality = "6ec83bb0-ed9f-11e9-3b4c-2b04cb4e219c"
-Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
-UnitfulAtomic = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
-UnitfulEquivalences = "da9c4bc3-91c8-4f02-8a40-6b990d2a7e0c"
 
 [weakdeps]
 ChemicalFormula = "069161ab-964a-4228-89a0-7a676f2e1f46"
 Crystallography = "3bff3928-7a76-11e9-2089-d112443085a5"
 StructTypes = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+UnitfulAtomic = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
+UnitfulEquivalences = "da9c4bc3-91c8-4f02-8a40-6b990d2a7e0c"
 
 [extensions]
 ChemicalFormulaExt = "ChemicalFormula"
 CrystallographyExt = "Crystallography"
 StructTypesExt = "StructTypes"
+UnitfulExt = ["Unitful", "UnitfulAtomic"]
+UnitfulEquivalencesExt = ["Unitful", "UnitfulEquivalences"]
 
 [compat]
 AbInitioSoftwareBase = "0.10"
