@@ -22,6 +22,8 @@ export AtomicSpecies,
     CellParametersCard
 export getoption, convertoption, optionpool, eachatom, listpotentials
 
+abstract type AtomicData end
+
 """
     AtomicSpecies(atom::Union{Char,String}, mass, pseudopot)
     AtomicSpecies(x::AtomicPosition, mass, pseudopot)
@@ -43,7 +45,7 @@ julia> AtomicSpecies(
 AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
 ```
 """
-struct AtomicSpecies
+struct AtomicSpecies <: AtomicData
     "Label of the atom. Max total length cannot exceed 3 characters."
     atom::String
     """
@@ -127,7 +129,7 @@ julia> AtomicPosition(
 AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
 ```
 """
-struct AtomicPosition
+struct AtomicPosition <: AtomicData
     "Label of the atom as specified in `AtomicSpecies`."
     atom::String
     "Atomic positions. A three-element vector of floats."
@@ -211,7 +213,7 @@ end
 similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
 similar_type(::Type{<:Velocity}, ::Type{T}, s::Size{(3,)}) where {T} = Velocity{T}
 
-struct AtomicForce
+struct AtomicForce <: AtomicData
     atom::String
     force::Force{Float64}
     function AtomicForce(atom, force)
@@ -224,7 +226,7 @@ end
     data::Vector{AtomicForce}
 end
 
-struct AtomicVelocity
+struct AtomicVelocity <: AtomicData
     atom::String
     velocity::Velocity{Float64}
     function AtomicVelocity(atom, velocity)
