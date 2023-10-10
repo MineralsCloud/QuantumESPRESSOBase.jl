@@ -89,7 +89,7 @@ function cellvolume(input::PWInput)
         if isnothing(input.cell_parameters)
             throw(InsufficientInfoError("`ibrav` is 0, must read cell parameters!"))
         else
-            if getoption(input.cell_parameters) == "alat"
+            if getoption(input.cell_parameters) == :alat
                 # If no value of `celldm` is changed...
                 if isnothing(input.system.celldm[1])
                     throw(InsufficientInfoError("parameter `celldm[1]` needed!"))
