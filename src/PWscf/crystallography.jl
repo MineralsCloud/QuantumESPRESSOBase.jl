@@ -20,13 +20,13 @@ Lattice(nml::SystemNamelist) = Lattice(latticevectors(nml.celldm, Ibrav(nml.ibra
 Create a `Lattice` from a `CellParametersCard`.
 """
 function Lattice(card::CellParametersCard)
-    m, option = transpose(card.data), getoption(card)
+    data, option = transpose(card.data), getoption(card)
     if option == :alat
         throw(InsufficientInfoError("parameter `celldm[1]` needed!"))
     elseif option == :bohr
-        return Lattice(m)
+        return Lattice(data)
     else  # option == :angstrom
-        return Lattice(m * ustrip(u"bohr", 1u"angstrom"))
+        return Lattice(data * ustrip(u"bohr", 1u"angstrom"))
     end
 end
 """
