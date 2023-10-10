@@ -1,8 +1,9 @@
 using ConstructionBase: constructorof
+using CrystallographyCore: EachAtom
 using CrystallographyBase: Cell, MonkhorstPackGrid
 using StaticArrays: FieldVector, SMatrix, Size
 
-import AbInitioSoftwareBase: listpotentials
+import CrystallographyCore: eachatom
 import StaticArrays: similar_type
 
 import ..QuantumESPRESSOBase: SpecialPoint, getoption, optionpool
@@ -20,7 +21,7 @@ export AtomicSpecies,
     GammaPointCard,
     SpecialPointsCard,
     CellParametersCard
-export getoption, convertoption, optionpool, eachatom, listpotentials
+export getoption, convertoption, optionpool, eachpotential
 
 abstract type AtomicData end
 
@@ -86,12 +87,30 @@ Represent the `ATOMIC_SPECIES` card in QE. It does not have an "option".
     data::Vector{AtomicSpecies}
 end
 
-"""
-    listpotentials(card::AtomicSpeciesCard)
+struct EachPotential{N,A,B}
+    atoms::NTuple{N,A}
+    potentials::NTuple{N,B}
+end
 
-List the pseudopotentials in an `AtomicSpeciesCard`.
-"""
-listpotentials(card::AtomicSpeciesCard) = map(atom -> atom.pseudopot, eachatom(card))
+eachpotential(card::AtomicSpeciesCard) = EachPotential(
+    Tuple(datum.atom for datum in card.data),
+    Tuple(datum.pseudopot for datum in card.data),
+)
+
+# Similar to https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1028-L1032
+function Base.iterate(iter::EachPotential, state=1)
+    if state > length(iter)
+        return nothing
+    else
+        return (iter.atoms[state], iter.potentials[state]), state + 1
+    end
+end
+
+Base.eltype(::Type{EachPotential{N,A,B}}) where {N,A,B} = Tuple{A,B}
+
+Base.length(::EachPotential{N}) where {N} = N
+
+Base.IteratorSize(::Type{<:EachPotential}) = Base.HasLength()
 
 struct Position{T} <: FieldVector{3,T}
     x::T
@@ -238,18 +257,9 @@ end
     data::Vector{AtomicVelocity}
 end
 
-# See https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1008-L1032 & https://github.com/JuliaLang/julia/blob/de3a70a/base/io.jl#L971-L1054
-struct EachAtom{T}
-    card::T
-end
-
-eachatom(card::Card) = EachAtom(card)
-
-Base.length(iter::EachAtom) = length(iter.card.data)
-
-Base.iterate(iter::EachAtom, state=1) = iterate(iter.card.data, state)
-
-Base.eltype(iter::EachAtom) = eltype(iter.card.data)
+eachatom(card::AtomicPositionsCard) = EachAtom(
+    Tuple(datum.atom for datum in card.data), Tuple(datum.pos for datum in card.data)
+)
 
 """
     convertoption(card::AbstractCellParametersCard, new_option::AbstractString)

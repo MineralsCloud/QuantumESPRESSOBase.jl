@@ -119,11 +119,11 @@ isoptional(card::Card) =
     }
 
 """
-    listpotentials(input::PWInput)
+    eachpotential(input::PWInput)
 
-List the pseudopotentials in a `PWInput`.
+Iterate the pseudopotentials in a `PWInput`.
 """
-listpotentials(input::PWInput) = listpotentials(input.atomic_species)
+eachpotential(input::PWInput) = eachpotential(input.atomic_species)
 
 """
     getpseudodir(input::PWInput)

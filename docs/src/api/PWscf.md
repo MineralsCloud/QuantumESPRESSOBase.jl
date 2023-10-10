@@ -39,7 +39,7 @@ isoptional
 cellvolume
 convertoption
 getpseudodir
-listpotentials
+eachpotential
 getxmldir
 listwfcfiles
 ```

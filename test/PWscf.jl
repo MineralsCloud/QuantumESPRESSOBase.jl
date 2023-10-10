@@ -164,7 +164,7 @@ end
             atomic_positions=deepcopy(atomic_positions),
             k_points=deepcopy(k_points),
         )
-        @test listpotentials(input) == ["Si.pz-vbc.UPF"]
+        @test collect(eachpotential(input)) == ["Si.pz-vbc.UPF"]
         if !Sys.iswindows()
             @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
             @test getxmldir(input) == joinpath(@__DIR__, "silicon.save")
@@ -234,7 +234,7 @@ end
             atomic_positions=deepcopy(atomic_positions),
             k_points=deepcopy(k_points),
         )
-        @test listpotentials(input) == ["Si.pz-vbc.UPF"]
+        @test collect(eachpotential(input)) == ["Si.pz-vbc.UPF"]
         if !Sys.iswindows()
             @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
             @test getxmldir(input) == joinpath(@__DIR__, "silicon.save")
@@ -408,7 +408,7 @@ end
             SpecialPoint([0.4375, 0.4375, 0.4375], 1.0),
             SpecialPoint([0.4375, 0.4375, 0.5625], 3.0),
         ])
-        @test listpotentials(input) == ["Al.pz-vbc.UPF"]
+        @test collect(eachpotential(input)) == ["Al.pz-vbc.UPF"]
         if !Sys.iswindows()
             @test getpseudodir(input) == joinpath(@__DIR__, "pseudo/")
             @test getxmldir(input) == joinpath(@__DIR__, "al.save")
