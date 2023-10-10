@@ -1,8 +1,10 @@
 using ConstructionBase: constructorof
 using CrystallographyBase: Cell, MonkhorstPackGrid
-using StaticArrays: MVector, MMatrix
+using StaticArrays: FieldVector, SMatrix, Size
 
 import AbInitioSoftwareBase: listpotentials
+import StaticArrays: similar_type
+
 import ..QuantumESPRESSOBase: SpecialPoint, getoption, optionpool
 
 export AtomicSpecies,
@@ -19,6 +21,8 @@ export AtomicSpecies,
     SpecialPointsCard,
     CellParametersCard
 export getoption, convertoption, optionpool, eachatom, listpotentials
+
+abstract type AtomicData end
 
 """
     AtomicSpecies(atom::Union{Char,String}, mass, pseudopot)
@@ -41,7 +45,7 @@ julia> AtomicSpecies(
 AtomicSpecies("S", 32.066, "S.pz-n-rrkjus_psl.0.1.UPF")
 ```
 """
-struct AtomicSpecies
+struct AtomicSpecies <: AtomicData
     "Label of the atom. Max total length cannot exceed 3 characters."
     atom::String
     """
@@ -89,6 +93,22 @@ List the pseudopotentials in an `AtomicSpeciesCard`.
 """
 listpotentials(card::AtomicSpeciesCard) = map(atom -> atom.pseudopot, eachatom(card))
 
+struct Position{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
+
+struct IfPosition{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
+
+# See https://juliaarrays.github.io/StaticArrays.jl/dev/pages/api/#StaticArraysCore.FieldVector
+similar_type(::Type{<:Position}, ::Type{T}, s::Size{(3,)}) where {T} = Position{T}
+similar_type(::Type{<:IfPosition}, ::Type{T}, s::Size{(3,)}) where {T} = IfPosition{T}
+
 """
     AtomicPosition(atom::Union{Char,String}, pos[, if_pos])
     AtomicPosition(x::AtomicSpecies, pos, if_pos)
@@ -109,11 +129,11 @@ julia> AtomicPosition(
 AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
 ```
 """
-@struct_hash_equal struct AtomicPosition
+struct AtomicPosition <: AtomicData
     "Label of the atom as specified in `AtomicSpecies`."
     atom::String
     "Atomic positions. A three-element vector of floats."
-    pos::MVector{3,Float64}
+    pos::Position{Float64}
     """
     Component `i` of the force for this atom is multiplied by `if_pos(i)`,
     which must be either `0` or `1`.  Used to keep selected atoms and/or
@@ -122,7 +142,7 @@ AtomicPosition("S", [0.5, 0.28867513, 1.974192764], Bool[1, 1, 1])
     With `crystal_sg` atomic coordinates the constraints are copied in all equivalent
     atoms.
     """
-    if_pos::MVector{3,Bool}
+    if_pos::IfPosition{Bool}
     function AtomicPosition(atom, pos, if_pos=trues(3))
         @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
         return new(string(atom), pos, if_pos)
@@ -164,7 +184,7 @@ abstract type AbstractCellParametersCard <: Card end
 Represent the `CELL_PARAMETERS` cards in `PWscf` and `CP` packages.
 """
 struct CellParametersCard <: AbstractCellParametersCard
-    data::MMatrix{3,3,Float64,9}
+    data::SMatrix{3,3,Float64,9}
     option::String
     function CellParametersCard(data, option="alat")
         @assert option in optionpool(CellParametersCard)
@@ -172,15 +192,29 @@ struct CellParametersCard <: AbstractCellParametersCard
     end
 end
 CellParametersCard(lattice::Lattice, option="alat") =
-    CellParametersCard(transpose(lattice.data), option)
+    CellParametersCard(transpose(parent(lattice)), option)
 CellParametersCard(lattice::Lattice{<:Length}) =
-    CellParametersCard(Lattice(map(x -> ustrip(u"bohr", x), lattice.data)), "bohr")
-CellParametersCard(cell::Cell, option="alat") =
-    CellParametersCard(transpose(cell.lattice), option)
+    CellParametersCard(Lattice(map(Base.Fix1(ustrip, u"bohr"), parent(lattice))), "bohr")
+CellParametersCard(cell::Cell, option="alat") = CellParametersCard(Lattice(cell), option)
 
-@struct_hash_equal struct AtomicForce
+struct Force{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
+
+struct Velocity{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
+
+similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
+similar_type(::Type{<:Velocity}, ::Type{T}, s::Size{(3,)}) where {T} = Velocity{T}
+
+struct AtomicForce <: AtomicData
     atom::String
-    force::MVector{3,Float64}
+    force::Force{Float64}
     function AtomicForce(atom, force)
         @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
         return new(string(atom), force)
@@ -191,9 +225,9 @@ end
     data::Vector{AtomicForce}
 end
 
-@struct_hash_equal struct AtomicVelocity
+struct AtomicVelocity <: AtomicData
     atom::String
-    velocity::MVector{3,Float64}
+    velocity::Velocity{Float64}
     function AtomicVelocity(atom, velocity)
         @assert length(atom) <= 3 "`atom` accepts no more than 3 characters!"
         return new(string(atom), velocity)
