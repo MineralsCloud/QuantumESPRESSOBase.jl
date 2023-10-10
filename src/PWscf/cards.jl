@@ -1,8 +1,10 @@
 using ConstructionBase: constructorof
 using CrystallographyBase: Cell, MonkhorstPackGrid
-using StaticArrays: MVector, MMatrix
+using StaticArrays: FieldVector, MVector, MMatrix
 
 import AbInitioSoftwareBase: listpotentials
+import StaticArrays: similar_type
+
 import ..QuantumESPRESSOBase: SpecialPoint, getoption, optionpool
 
 export AtomicSpecies,
@@ -88,6 +90,22 @@ end
 List the pseudopotentials in an `AtomicSpeciesCard`.
 """
 listpotentials(card::AtomicSpeciesCard) = map(atom -> atom.pseudopot, eachatom(card))
+
+struct Position{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
+
+struct IfPosition{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
+
+# See https://juliaarrays.github.io/StaticArrays.jl/dev/pages/api/#StaticArraysCore.FieldVector
+similar_type(::Type{<:Position}, ::Type{T}, s::Size{(3,)}) where {T} = Position{T}
+similar_type(::Type{<:IfPosition}, ::Type{T}, s::Size{(3,)}) where {T} = IfPosition{T}
 
 """
     AtomicPosition(atom::Union{Char,String}, pos[, if_pos])
