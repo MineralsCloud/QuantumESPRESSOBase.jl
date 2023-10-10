@@ -50,9 +50,9 @@ end
 
 function Cell(input::PWInput)
     lattice = Lattice(input) * 1u"bohr"
-    positions = [atomic_position.pos for atomic_position in input.atomic_positions.data]
-    types = [atomic_position.atom for atomic_position in input.atomic_positions.data]
-    return Cell(lattice, positions, types)
+    positions = [position for (_, position) in eachatom(input.atomic_positions)]
+    atoms = [atom for (atom, _) in eachatom(input.atomic_positions)]
+    return Cell(lattice, positions, atoms)
 end
 
 """
@@ -107,9 +107,6 @@ end
 
 function crystaldensity(input::PWInput)
     lattice = Lattice(input) * 1u"bohr"
-    atoms = (
-        Symbol(uppercasefirst(atomic_position.atom)) for
-        atomic_position in input.atomic_positions.data
-    )
+    atoms = (Symbol(uppercasefirst(atom)) for (atom, _) in eachatom(input.atomic_positions))
     return crystaldensity(lattice, atoms)
 end

@@ -189,7 +189,7 @@ Represent the `ATOMIC_POSITIONS` card in `pw.x` input files.
     end
 end
 AtomicPositionsCard(cell::Cell, option=:alat) = AtomicPositionsCard(
-    map(cell.atoms, cell.positions) do atom, position
+    map(eachatom(cell)) do (atom, position)
         AtomicPosition(string(atom), position)
     end,
     option,
