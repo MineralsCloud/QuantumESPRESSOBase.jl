@@ -1,8 +1,10 @@
 using ConstructionBase: constructorof
+using CrystallographyCore: EachAtom
 using CrystallographyBase: Cell, MonkhorstPackGrid
 using StaticArrays: FieldVector, SMatrix, Size
 
 import AbInitioSoftwareBase: listpotentials
+import CrystallographyCore: eachatom
 import StaticArrays: similar_type
 
 import ..QuantumESPRESSOBase: SpecialPoint, getoption, optionpool
@@ -20,7 +22,7 @@ export AtomicSpecies,
     GammaPointCard,
     SpecialPointsCard,
     CellParametersCard
-export getoption, convertoption, optionpool, eachatom, listpotentials
+export getoption, convertoption, optionpool, listpotentials
 
 abstract type AtomicData end
 
@@ -238,18 +240,9 @@ end
     data::Vector{AtomicVelocity}
 end
 
-# See https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1008-L1032 & https://github.com/JuliaLang/julia/blob/de3a70a/base/io.jl#L971-L1054
-struct EachAtom{T}
-    card::T
-end
-
-eachatom(card::Card) = EachAtom(card)
-
-Base.length(iter::EachAtom) = length(iter.card.data)
-
-Base.iterate(iter::EachAtom, state=1) = iterate(iter.card.data, state)
-
-Base.eltype(iter::EachAtom) = eltype(iter.card.data)
+eachatom(card::AtomicPositionsCard) = EachAtom(
+    Tuple(datum.atom for datum in card.data), Tuple(datum.pos for datum in card.data)
+)
 
 """
     convertoption(card::AbstractCellParametersCard, new_option::AbstractString)
