@@ -3,6 +3,8 @@ module PWscf
 using AbInitioSoftwareBase: InputEntry, Namelist, Card, Setter
 using Accessors: @reset
 using StructEquality: @struct_hash_equal
+using Unitful: AbstractQuantity, Length, Temperature, ustrip, @u_str
+using UnitfulAtomic
 
 using ..QuantumESPRESSOBase: QuantumESPRESSOInput, VerbositySetter
 

@@ -14,7 +14,7 @@ end
 struct VolumeSetter{T<:Number} <: Setter
     vol::T
 end
-function (x::VolumeSetter)(template::PWInput)
+function (x::VolumeSetter{<:Real})(template::PWInput)
     factor = cbrt(x.vol / cellvolume(template))
     if isnothing(template.cell_parameters) || getoption(template.cell_parameters) == "alat"
         @reset template.system.celldm[1] *= factor
@@ -26,14 +26,18 @@ function (x::VolumeSetter)(template::PWInput)
     end
     return template
 end
+(x::VolumeSetter{<:AbstractQuantity})(template::PWInput) =
+    VolumeSetter(ustrip(u"bohr^3", x.vol))(template)
 
 struct PressureSetter{T<:Number} <: Setter
     press::T
 end
-function (x::PressureSetter)(template::PWInput)
+function (x::PressureSetter{<:Real})(template::PWInput)
     @reset template.cell.press = x.press
     return template
 end
+(x::PressureSetter{<:AbstractQuantity})(template::PWInput) =
+    PressureSetter(ustrip(u"kbar", x.press))(template)
 
 struct CardSetter{T} <: Setter
     card::T

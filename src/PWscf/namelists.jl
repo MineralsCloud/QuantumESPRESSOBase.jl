@@ -1,4 +1,6 @@
 using ConstructionBase: setproperties
+using Unitful: Temperature, Energy, Frequency, Wavenumber
+using UnitfulEquivalences: Thermal, Spectral
 
 export ControlNamelist,
     SystemNamelist,
@@ -921,6 +923,10 @@ function (x::ElectronicTemperatureSetter)(system::SystemNamelist)
     return system
 end
 degauss(value::Real) = value
+degauss(value::Temperature) = ustrip(u"Ry", value, Thermal())
+degauss(value::Energy) = ustrip(u"Ry", value)
+degauss(value::Frequency) = ustrip(u"Ry", value, Spectral())
+degauss(value::Wavenumber) = ustrip(u"Ry", value, Spectral())
 
 const ElecTempSetter = ElectronicTemperatureSetter
 
