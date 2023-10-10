@@ -17,7 +17,7 @@ function getsymmetry(input::PWInput, symprec=1e-5)
         elseif option == :bohr
             position
         elseif option == :angstrom
-            ustrip.(u"bohr", position * u"angstrom")
+            ustrip.(u"bohr", position .* u"angstrom")
         elseif option == :crystal
             lattice(position)
         else  # option == :crystal_sg
