@@ -1,7 +1,7 @@
 using AbInitioSoftwareBase: Input, InputEntry, Namelist, Card, Setter, groupname
 using OrderedCollections: OrderedDict
 
-export QuantumESPRESSOInput, getoption, optionpool, groupname
+export QuantumESPRESSOInput, hasoption, getoption, optionpool, groupname
 
 """
     dropdefault(nml::Namelist)
@@ -29,7 +29,10 @@ Return a `String` representing the option of a `Card`.
 !!! warning
     Do not use `card.option` to access the option since it may not exist.
 """
-getoption(card::Card) = hasproperty(card, :option) ? getproperty(card, :option) : ""
+getoption(card::Card) = hasoption(card) ? card.option : nothing
+
+hasoption(::Type{T}) where {T} = hasfield(T, :option)
+hasoption(card::Card) = hasproperty(card, :option)
 
 """
     optionpool(card::Card)
