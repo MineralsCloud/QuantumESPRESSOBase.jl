@@ -1,13 +1,13 @@
 module CrystallographyExt
 
-using Crystallography: Lattice, Cell
+using CrystallographyBase: Lattice, Cell
 using QuantumESPRESSOBase.PWscf: PWInput
 using Unitful: ustrip, @u_str
-using UnitfulAtomic: bohr
+using UnitfulAtomic
 
-import CrystallographyBase: getsymmetry
+import Crystallography: findsymmetry
 
-function getsymmetry(input::PWInput, symprec=1e-5)
+function findsymmetry(input::PWInput, symprec=1e-5)
     lattice = Lattice(input)
     option = input.atomic_positions.option
     data = Iterators.map(input.atomic_positions.data) do atomic_position
@@ -27,7 +27,7 @@ function getsymmetry(input::PWInput, symprec=1e-5)
         position, atom
     end
     cell = Cell(lattice, first.(data), last.(data))
-    return getsymmetry(cell, symprec)
+    return findsymmetry(cell, symprec)
 end
 
 end
