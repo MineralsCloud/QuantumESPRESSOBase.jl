@@ -3,6 +3,7 @@ module CrystallographyExt
 using Crystallography: Lattice, Cell
 using QuantumESPRESSOBase.PWscf: PWInput
 using Unitful: ustrip, @u_str
+using UnitfulAtomic: bohr
 
 import CrystallographyBase: getsymmetry
 
