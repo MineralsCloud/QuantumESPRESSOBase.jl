@@ -4,28 +4,30 @@
 
 # QuantumESPRESSOBase
 
-|                                 **Documentation**                                  |                                                                                                 **Build Status**                                                                                                 |                                        **Others**                                         |
-| :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------: |
-| [![Stable][docs-stable-img]][docs-stable-url] [![Dev][docs-dev-img]][docs-dev-url] | [![Build Status][gha-img]][gha-url] [![Build Status][appveyor-img]][appveyor-url] [![Build Status][cirrus-img]][cirrus-url] [![pipeline status][gitlab-img]][gitlab-url] [![Coverage][codecov-img]][codecov-url] | [![GitHub license][license-img]][license-url] [![Code Style: Blue][style-img]][style-url] |
+|                                 **Documentation**                                  |                                                                                                 **Build Status**                                                                                                 |                                                                  **Others**                                                                   |
+| :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------: |
+| [![Stable][docs-stable-img]][docs-stable-url] [![Dev][docs-dev-img]][docs-dev-url] | [![Build Status][gha-img]][gha-url] [![Build Status][appveyor-img]][appveyor-url] [![Build Status][cirrus-img]][cirrus-url] [![pipeline status][gitlab-img]][gitlab-url] [![Coverage][codecov-img]][codecov-url] | [![GitHub license][license-img]][license-url] [![Code Style: Blue][style-img]][style-url] [![QuantumESPRESSOBase Downloads][downloads-img]][downloads-url] |
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: https://MineralsCloud.github.io/QuantumESPRESSOBase.jl/stable
+[docs-stable-url]: https://singularitti.github.io/Spglib.jl/stable
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[docs-dev-url]: https://MineralsCloud.github.io/QuantumESPRESSOBase.jl/dev
-[gha-img]: https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/workflows/CI/badge.svg
-[gha-url]: https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/actions
-[appveyor-img]: https://ci.appveyor.com/api/projects/status/github/MineralsCloud/QuantumESPRESSOBase.jl?svg=true
-[appveyor-url]: https://ci.appveyor.com/project/singularitti/QuantumESPRESSOBase-jl
-[cirrus-img]: https://api.cirrus-ci.com/github/MineralsCloud/QuantumESPRESSOBase.jl.svg
-[cirrus-url]: https://cirrus-ci.com/github/MineralsCloud/QuantumESPRESSOBase.jl
-[gitlab-img]: https://gitlab.com/singularitti/QuantumESPRESSOBase.jl/badges/main/pipeline.svg
-[gitlab-url]: https://gitlab.com/singularitti/QuantumESPRESSOBase.jl/-/pipelines
-[codecov-img]: https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl/branch/main/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl
-[license-img]: https://img.shields.io/github/license/MineralsCloud/QuantumESPRESSOBase.jl
-[license-url]: https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/blob/main/LICENSE
+[docs-dev-url]: https://singularitti.github.io/Spglib.jl/dev
+[gha-img]: https://github.com/singularitti/Spglib.jl/workflows/CI/badge.svg
+[gha-url]: https://github.com/singularitti/Spglib.jl/actions
+[appveyor-img]: https://ci.appveyor.com/api/projects/status/github/singularitti/Spglib.jl?svg=true
+[appveyor-url]: https://ci.appveyor.com/project/singularitti/Spglib-jl
+[cirrus-img]: https://api.cirrus-ci.com/github/singularitti/Spglib.jl.svg
+[cirrus-url]: https://cirrus-ci.com/github/singularitti/Spglib.jl
+[gitlab-img]: https://gitlab.com/singularitti/Spglib.jl/badges/main/pipeline.svg
+[gitlab-url]: https://gitlab.com/singularitti/Spglib.jl/-/pipelines
+[codecov-img]: https://codecov.io/gh/singularitti/Spglib.jl/branch/main/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/singularitti/Spglib.jl
+[license-img]: https://img.shields.io/github/license/singularitti/Spglib.jl
+[license-url]: https://github.com/singularitti/Spglib.jl/blob/main/LICENSE
 [style-img]: https://img.shields.io/badge/code%20style-blue-4495d1.svg
 [style-url]: https://github.com/invenia/BlueStyle
+[downloads-img]: https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/QuantumESPRESSOBase
+[downloads-url]: https://pkgs.genieframework.com?packages=QuantumESPRESSOBase
 
 [QuantumESPRESSOBase.jl](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl) declares
 basic data types and methods for manipulating crystal structures, generating input files for
