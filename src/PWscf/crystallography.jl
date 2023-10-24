@@ -48,12 +48,15 @@ function Lattice(input::PWInput)
     end
 end
 
-function Cell(input::PWInput)
-    lattice = Lattice(input) * 1u"bohr"
-    positions = [position for (_, position) in eachatom(input.atomic_positions)]
-    atoms = [atom for (atom, _) in eachatom(input.atomic_positions)]
+function Cell(cell_parameters::CellParametersCard, atomic_positions::AtomicPositionsCard)
+    lattice = Lattice(cell_parameters)
+    positions = [position for (_, position) in eachatom(atomic_positions)]
+    atoms = [atom for (atom, _) in eachatom(atomic_positions)]
     return Cell(lattice, positions, atoms)
 end
+Cell(atomic_positions::AtomicPositionsCard, cell_parameters::CellParametersCard) =
+    Cell(cell_parameters, atomic_positions)
+Cell(input::PWInput) = Cell(input.cell_parameters, input.atomic_positions)
 
 """
     cellvolume(card)
