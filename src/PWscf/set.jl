@@ -1,5 +1,9 @@
 export VerbositySetter,
-    VolumeSetter, PressureSetter, CellParametersCardSetter, AtomicPositionsCardSetter
+    VolumeSetter,
+    PressureSetter,
+    CardSetter,
+    CellParametersCardSetter,
+    AtomicPositionsCardSetter
 
 function (s::VerbositySetter)(template::PWInput)
     @reset template.control = s(template.control)
