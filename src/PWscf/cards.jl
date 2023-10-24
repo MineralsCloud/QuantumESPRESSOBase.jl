@@ -195,8 +195,8 @@ end
 CellParametersCard(lattice::Lattice, option=:alat) =
     CellParametersCard(transpose(parent(lattice)), option)
 CellParametersCard(lattice::Lattice{<:Length}) =
-    CellParametersCard(Lattice(map(Base.Fix1(ustrip, u"bohr"), parent(lattice))), "bohr")
-CellParametersCard(cell::Cell, option="alat") = CellParametersCard(Lattice(cell), option)
+    CellParametersCard(Lattice(map(Base.Fix1(ustrip, u"bohr"), parent(lattice))), :bohr)
+CellParametersCard(cell::Cell, option=:alat) = CellParametersCard(Lattice(cell), option)
 
 struct Force{T} <: FieldVector{3,T}
     x::T
