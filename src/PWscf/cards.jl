@@ -194,8 +194,10 @@ struct CellParametersCard <: AbstractCellParametersCard
 end
 CellParametersCard(lattice::Lattice, option=:alat) =
     CellParametersCard(transpose(parent(lattice)), option)
-CellParametersCard(lattice::Lattice{<:Length}) =
-    CellParametersCard(Lattice(map(Base.Fix1(ustrip, u"bohr"), parent(lattice))), :bohr)
+function CellParametersCard(lattice::Lattice{<:Length}, option=:alat)
+    option = option == :alat ? :bohr : option
+    return CellParametersCard(Lattice(Base.Fix1(ustrip, u"bohr").(parent(lattice))), :bohr)
+end
 CellParametersCard(cell::Cell, option=:alat) = CellParametersCard(Lattice(cell), option)
 
 struct Force{T} <: FieldVector{3,T}
