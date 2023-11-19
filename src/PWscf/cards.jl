@@ -1,11 +1,10 @@
 using AbInitioSoftwareBase: EachPotential
 using ConstructionBase: constructorof
-using CrystallographyCore: EachAtom
-using CrystallographyBase: Cell, MonkhorstPackGrid
+using CrystallographyBase: Cell, MonkhorstPackGrid, EachAtom
 using StaticArrays: FieldVector, SMatrix, Size
 
 import AbInitioSoftwareBase: eachpotential
-import CrystallographyCore: eachatom
+import CrystallographyBase: eachatom
 import StaticArrays: similar_type
 
 import ..QuantumESPRESSOBase: SpecialPoint, getoption, optionpool
