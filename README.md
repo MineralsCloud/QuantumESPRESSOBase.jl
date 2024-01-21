@@ -4,32 +4,21 @@
 
 # QuantumESPRESSOBase
 
-|                                 **Documentation**                                  |                                                                                                 **Build Status**                                                                                                 |                                                                  **Others**                                                                   |
-| :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------: |
-| [![Stable][docs-stable-img]][docs-stable-url] [![Dev][docs-dev-img]][docs-dev-url] | [![Build Status][gha-img]][gha-url] [![Build Status][appveyor-img]][appveyor-url] [![Build Status][cirrus-img]][cirrus-url] [![pipeline status][gitlab-img]][gitlab-url] [![Coverage][codecov-img]][codecov-url] | [![GitHub license][license-img]][license-url] [![Code Style: Blue][style-img]][style-url] [![QuantumESPRESSOBase Downloads][downloads-img]][downloads-url] |
+| **Documentation** | [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://MineralsCloud.github.io/QuantumESPRESSOBase.jl/stable/) [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://MineralsCloud.github.io/QuantumESPRESSOBase.jl/dev/)                                                                                                                                                                                                                                                                                                                                     |
+| :---------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Build Status**  | [![Build Status](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/actions/workflows/CI.yml?query=branch%3Amain) [![Build Status](https://ci.appveyor.com/api/projects/status/github/MineralsCloud/QuantumESPRESSOBase.jl?svg=true)](https://ci.appveyor.com/project/MineralsCloud/QuantumESPRESSOBase-jl)[![Build Status](https://api.cirrus-ci.com/github/MineralsCloud/QuantumESPRESSOBase.jl.svg)](https://cirrus-ci.com/github/MineralsCloud/QuantumESPRESSOBase.jl) |
+|   **Coverage**    | [![Coverage](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/badges/main/coverage.svg)](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/commits/main) [![Coverage](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/MineralsCloud/QuantumESPRESSOBase.jl)                                                                                                                                                                                                                                                  |
+|    **Others**     | [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle) [![License](https://img.shields.io/github/license/MineralsCloud/QuantumESPRESSOBase.jl)](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/blob/main/LICENSE) [![QuantumESPRESSOBase Downloads][https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/QuantumESPRESSOBase]][https://pkgs.genieframework.com?packages=QuantumESPRESSOBase]                                                                                            |
 
-[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: https://singularitti.github.io/Spglib.jl/stable
-[docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[docs-dev-url]: https://singularitti.github.io/Spglib.jl/dev
-[gha-img]: https://github.com/singularitti/Spglib.jl/workflows/CI/badge.svg
-[gha-url]: https://github.com/singularitti/Spglib.jl/actions
-[appveyor-img]: https://ci.appveyor.com/api/projects/status/github/singularitti/Spglib.jl?svg=true
-[appveyor-url]: https://ci.appveyor.com/project/singularitti/Spglib-jl
-[cirrus-img]: https://api.cirrus-ci.com/github/singularitti/Spglib.jl.svg
-[cirrus-url]: https://cirrus-ci.com/github/singularitti/Spglib.jl
-[gitlab-img]: https://gitlab.com/singularitti/Spglib.jl/badges/main/pipeline.svg
-[gitlab-url]: https://gitlab.com/singularitti/Spglib.jl/-/pipelines
-[codecov-img]: https://codecov.io/gh/singularitti/Spglib.jl/branch/main/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/singularitti/Spglib.jl
-[license-img]: https://img.shields.io/github/license/singularitti/Spglib.jl
-[license-url]: https://github.com/singularitti/Spglib.jl/blob/main/LICENSE
-[style-img]: https://img.shields.io/badge/code%20style-blue-4495d1.svg
-[style-url]: https://github.com/invenia/BlueStyle
-[downloads-img]: https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/QuantumESPRESSOBase
-[downloads-url]: https://pkgs.genieframework.com?packages=QuantumESPRESSOBase
+The code, which is [hosted on GitHub](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl), is tested
+using various continuous integration services for its validity.
 
-[QuantumESPRESSOBase.jl](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl) declares
+This repository is created and maintained by
+[@singularitti](https://github.com/singularitti), and contributions are highly welcome.
+
+## Package features
+
+[`QuantumESPRESSOBase.jl`](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl) declares
 basic data types and methods for manipulating crystal structures, generating input files for
 [Quantum ESPRESSO](https://www.quantum-espresso.org/), error checking before running, etc.
 It is written purely in the language [Julia](https://julialang.org/).
@@ -65,13 +54,14 @@ You are very welcome to contribute.
 ## Installation
 
 The package can be installed with the Julia package manager.
-From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
+From [the Julia REPL](https://docs.julialang.org/en/v1/stdlib/REPL/), type `]` to enter
+the [Pkg mode](https://docs.julialang.org/en/v1/stdlib/REPL/#Pkg-mode) and run:
 
-```
+```julia-repl
 pkg> add QuantumESPRESSOBase
 ```
 
-Or, equivalently, via the [`Pkg` API](https://pkgdocs.julialang.org/v1/getting-started/):
+Or, equivalently, via [`Pkg.jl`](https://pkgdocs.julialang.org/v1/):
 
 ```julia
 julia> import Pkg; Pkg.add("QuantumESPRESSOBase")
@@ -84,19 +74,18 @@ julia> import Pkg; Pkg.add("QuantumESPRESSOBase")
 
 ## Project status
 
-The package is tested against, and being developed for, Julia `1.6` and above on Linux,
-macOS, and Windows.
+The package is developed for and tested against Julia `v1.6` and above on Linux, macOS, and
+Windows.
 
 ## Questions and contributions
 
-You are welcome to post usage questions on [our discussion page][discussions-url].
+You can post usage questions on
+[our discussion page](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/discussions).
 
-Contributions are very welcome, as are feature requests and suggestions. Please open an
-[issue][issues-url] if you encounter any problems. The [Contributing](@ref) page has
-guidelines that should be followed when opening pull requests and contributing code.
-
-[discussions-url]: https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/discussions
-[issues-url]: https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/issues
+We welcome contributions, feature requests, and suggestions. If you encounter any problems,
+please open an [issue](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/issues).
+The [Contributing](@ref) page has
+a few guidelines that should be followed when opening pull requests and contributing code.
 
 ## Star History
 
