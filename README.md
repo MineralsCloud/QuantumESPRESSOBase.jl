@@ -87,6 +87,6 @@ please open an [issue](https://github.com/MineralsCloud/QuantumESPRESSOBase.jl/i
 The [Contributing](@ref) page has
 a few guidelines that should be followed when opening pull requests and contributing code.
 
-## Star History
+## Stargazers over time
 
-[![Star History Chart](https://api.star-history.com/svg?repos=MineralsCloud/QuantumESPRESSOBase.jl&type=Date)](https://star-history.com/#MineralsCloud/QuantumESPRESSOBase.jl&Date)
+[![Stargazers over time](https://starchart.cc/MineralsCloud/QuantumESPRESSOBase.jl.svg?variant=adaptive)](https://starchart.cc/MineralsCloud/QuantumESPRESSOBase.jl)
