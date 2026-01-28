@@ -1,7 +1,12 @@
 using QuantumESPRESSOBase
 using Documenter
 
-DocMeta.setdocmeta!(QuantumESPRESSOBase, :DocTestSetup, :(using QuantumESPRESSOBase, QuantumESPRESSOBase.PWscf, QuantumESPRESSOBase.PHonon); recursive=true)
+DocMeta.setdocmeta!(
+    QuantumESPRESSOBase,
+    :DocTestSetup,
+    :(using QuantumESPRESSOBase, QuantumESPRESSOBase.PWscf, QuantumESPRESSOBase.PHonon);
+    recursive=true,
+)
 
 makedocs(;
     modules=[QuantumESPRESSOBase],
@@ -22,7 +27,7 @@ makedocs(;
             "Public API" => "lib/public.md",
             "Internals" => map(
                 s -> "lib/internals/$(s)",
-                sort(readdir(joinpath(@__DIR__, "src/lib/internals")))
+                sort(readdir(joinpath(@__DIR__, "src/lib/internals"))),
             ),
         ],
         "Developer Docs" => [
@@ -33,7 +38,4 @@ makedocs(;
     ],
 )
 
-deploydocs(;
-    repo="github.com/MineralsCloud/QuantumESPRESSOBase.jl",
-    devbranch="main",
-)
+deploydocs(; repo="github.com/MineralsCloud/QuantumESPRESSOBase.jl", devbranch="main")
